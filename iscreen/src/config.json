@@ -1,0 +1,9 @@
+{
+  "UI": {
+    "apiServer": "https://api.wenglab.org/screen_v13",
+    "minipeakServer": "https://api.wenglab.org/screen_v13/dataws/re_detail/",
+    "bed_intersect": "https://api.wenglab.org/screen_v13/postws/lines",
+    "staticServer": "/assets",
+    "overrides": {}
+  }
+}
