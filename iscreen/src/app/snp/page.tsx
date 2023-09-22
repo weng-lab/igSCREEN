@@ -2,7 +2,7 @@
 import React, {useState} from "react"
 import { DataTable } from "@weng-lab/psychscreen-ui-components"
 import { Tabs,  Typography } from "@mui/material"
-import { client } from "../search/ccredetails/client"
+import { client } from "../../common/utils"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { ReadonlyURLSearchParams, useSearchParams, usePathname } from "next/navigation"
 
@@ -11,7 +11,7 @@ import { useQuery } from "@apollo/client"
 import { SnpAutoComplete } from "../../common/components/mainsearch/SnpAutocomplete"
 import { StyledTab } from "../../common/utils"
 
-  export const EQTL_QUERY = gql`
+const EQTL_QUERY = gql`
   query iCREeQTLQuery($study: String!, $rsid: String) 
     {
         icreeQTLQuery(study:$study, rsid:$rsid) {

@@ -15,7 +15,7 @@ import { GeneAutoComplete } from "../../common/components/mainsearch/GeneAutocom
 
 
 
-  export const EQTL_QUERY = gql`
+const EQTL_QUERY = gql`
   query iCREeQTLQuery($study: String!, $geneid: String) 
     {
         icreeQTLQuery(study:$study, geneid:$geneid) {

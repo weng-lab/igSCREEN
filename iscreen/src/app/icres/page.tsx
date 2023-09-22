@@ -6,9 +6,9 @@ import { StyledTab } from "../../common/utils"
 import { client } from "../../common/utils"
 import SearchIcon from "@mui/icons-material/Search"
 import { Typography } from "@mui/material"
-import { Tabs, Tab } from "@mui/material"
+import { Tabs } from "@mui/material"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
-import { Stack, TextField, IconButton, InputAdornment, InputBaseProps, createTheme } from "@mui/material"
+import { TextField, IconButton, InputAdornment,  createTheme } from "@mui/material"
 import { FormControl, MenuItem } from "@mui/material"
 import { useQuery } from "@apollo/client"
 import { gql } from "@apollo/client"
@@ -18,7 +18,7 @@ import { GenomeBrowserView } from "../../common/gbview/genomebrowserview"
 import { CcreAutoComplete } from "../../common/components/mainsearch/CcreAutocomplete"
 import { DataTable } from "@weng-lab/psychscreen-ui-components"
 
-export const ICRES_QUERY = gql`
+const ICRES_QUERY = gql`
 query iCREQuery($coordinates: [GenomicRangeInput!]) 
   {
     iCREQuery(coordinates:$coordinates) {

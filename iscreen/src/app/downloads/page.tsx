@@ -4,6 +4,7 @@ export default async function Downloads({ searchParams }: { searchParams: { [key
 
   return (
     <main>
+      {'Donwloads'}
     </main>
   )
 }
