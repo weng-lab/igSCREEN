@@ -18,36 +18,6 @@ type GenomeBrowserViewProps = {
   gene?: string
   assembly: string
 }
-const BIOSAMPLE_QUERY = gql`
-  query biosamples {
-    human: ccREBiosampleQuery(assembly: "grch38") {
-      biosamples {
-        name
-        dnase: experimentAccession(assay: "DNase")
-        h3k4me3: experimentAccession(assay: "H3K4me3")
-        h3k27ac: experimentAccession(assay: "H3K27ac")
-        ctcf: experimentAccession(assay: "CTCF")
-        dnase_signal: fileAccession(assay: "DNase")
-        h3k4me3_signal: fileAccession(assay: "H3K4me3")
-        h3k27ac_signal: fileAccession(assay: "H3K27ac")
-        ctcf_signal: fileAccession(assay: "CTCF")
-      }
-    }
-    mouse: ccREBiosampleQuery(assembly: "mm10") {
-      biosamples {
-        name
-        dnase: experimentAccession(assay: "DNase")
-        h3k4me3: experimentAccession(assay: "H3K4me3")
-        h3k27ac: experimentAccession(assay: "H3K27ac")
-        ctcf: experimentAccession(assay: "CTCF")
-        dnase_signal: fileAccession(assay: "DNase")
-        h3k4me3_signal: fileAccession(assay: "H3K4me3")
-        h3k27ac_signal: fileAccession(assay: "H3K27ac")
-        ctcf_signal: fileAccession(assay: "CTCF")
-      }
-    }
-  }
-`
 const GENE_QUERY = gql`
   query s($chromosome: String, $start: Int, $end: Int, $assembly: String!) {
     gene(chromosome: $chromosome, start: $start, end: $end, assembly: $assembly) {
@@ -131,11 +101,7 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (props) => {
   )
   const l = useCallback((c) => ((c - coordinates.start) * 1400) / (coordinates.end - coordinates.start), [coordinates])
 
-  const { loading: bloading, data: bdata } = useQuery(BIOSAMPLE_QUERY, {
-    fetchPolicy: "cache-and-network",
-    nextFetchPolicy: "cache-first",
-    client,
-  })
+
   return (
     <>
       <Grid2 container spacing={3} sx={{ mt: "1rem", mb: "1rem" }}>

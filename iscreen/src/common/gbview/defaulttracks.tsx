@@ -124,7 +124,7 @@ const DefaultTracks: React.FC<DefaultTracksProps> = (props) => {
 
   const [settingsMousedOver, setSettingsMousedOver] = useState(false)
 
-  return loading || (data?.bigRequests.length || 0) < 2 ? (
+  return loading || (data?.bigRequests.length || 0) < 1 ? (
     <EmptyTrack width={1400} height={40} transform="" id="" text="Loading..." />
   ) : (
     <>
@@ -165,7 +165,7 @@ const DefaultTracks: React.FC<DefaultTracksProps> = (props) => {
         transform="translate(20,0)"
       />
       <text transform={`rotate(270) translate(-${height / 2},12)`} textAnchor="middle" fill="#4c1f8f">
-        iCRE Track
+        iCREs
       </text>
     </>
   )
