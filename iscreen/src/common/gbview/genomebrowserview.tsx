@@ -8,6 +8,7 @@ import CytobandView, { GenomicRange } from "./cytobandview"
 import EGeneTracks from "./egenetracks"
 import { client } from "../utils"
 import DefaultTracks from "./defaulttracks"
+import BulkAtacTracks from "./bulkatactracks";
 type GenomeBrowserViewProps = {
   coordinates: {
     start: number
@@ -146,6 +147,10 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (props) => {
               oncCREMousedOver={(x) => x && setHighlight(x)}
               oncCREMousedOut={() => setHighlight(null)}
             />}
+            <BulkAtacTracks
+          assembly="GRCh38"
+          domain={coordinates}
+        />
           </GenomeBrowser>
         </Grid2>
       </Grid2>

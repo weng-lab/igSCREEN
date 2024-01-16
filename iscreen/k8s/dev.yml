@@ -27,7 +27,7 @@ metadata:
   name: nextjs-iscreen-cert
 spec:
   domains:
-    - iscreen.wenglab.org
+    - immuscreen.wenglab.org
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress

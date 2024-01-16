@@ -11,6 +11,7 @@ import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation"
 import { DataTable } from "@weng-lab/psychscreen-ui-components"
 import { GenomeBrowserView } from "../../common/gbview/genomebrowserview"
 import { GeneAutoComplete } from "../../common/components/mainsearch/GeneAutocomplete"
+import { RNAUMAP } from "./rnaumap"
 
 
 
@@ -106,6 +107,7 @@ const Gene = () =>{
                     <Tabs aria-label="basic tabs example" value={value} onChange={handleChange}>
                     <StyledTab label="Genome Browser" />
                               <StyledTab label="eQTLs" />
+                        <StyledTab label="Calderon RNA UMAP" />
                     </Tabs>
                   </Grid2>
             </Grid2>
@@ -213,6 +215,11 @@ const Gene = () =>{
                 coordinates={{ start: +searchParams.get("start")-20000, end: +searchParams.get("end")+20000, 
                 chromosome:searchParams.get("chromosome") }}
               />}
+            {value===2 && 
+            <Grid2 xs={6} lg={6}>
+            <RNAUMAP gene={searchParams.get('gene')}/>
+            </Grid2>
+            }
         </Grid2>
        
       
