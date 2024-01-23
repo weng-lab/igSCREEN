@@ -9,7 +9,7 @@ import React, {
   
   import TitledImportanceTrack from "./titledimportancetrack";
   import { BigBedData } from "bigwig-reader";
-  
+  import ChromBPNetAtacModal from "./chrombpnetatacmodal"
   export type GenomicRange = {
     chromosome?: string;
     start: number;
@@ -77,6 +77,18 @@ import React, {
   
     return (
       <>
+      <ChromBPNetAtacModal
+        open={settingsModalShown}
+        onCancel={() => setSettingsModalShown(false)}
+        onAccept={(x) => {
+          setDisplayedTracks(x);
+          setSettingsModalShown(false);
+        }}
+        initialSelection={displayedTracks}
+      />
+      <g className="encode-fetal-brain">
+        <rect y={10} height={55} fill="none" width={1400} />
+      </g>
         {displayedTracks
           .map((x, i) => (
               <TitledImportanceTrack            
