@@ -9,6 +9,8 @@ import EGeneTracks from "./egenetracks"
 import { client } from "../utils"
 import DefaultTracks from "./defaulttracks"
 import BulkAtacTracks from "./bulkatactracks";
+import  ChromBPNetAtacTracks  from "./chrombpnetatactracks";
+
 type GenomeBrowserViewProps = {
   coordinates: {
     start: number
@@ -151,6 +153,8 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (props) => {
           assembly="GRCh38"
           domain={coordinates}
         />
+        <ChromBPNetAtacTracks 
+          domain={coordinates}/>
           </GenomeBrowser>
         </Grid2>
       </Grid2>
