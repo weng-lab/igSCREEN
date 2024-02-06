@@ -1,9 +1,10 @@
 'use client'
 import React, { useMemo } from 'react';
 import { Group } from '@visx/group';
-import { Cluster, Tree, hierarchy } from '@visx/hierarchy';
+import { Tree, hierarchy } from '@visx/hierarchy';
 import { HierarchyPointNode, HierarchyPointLink } from '@visx/hierarchy/lib/types';
 import { LinkVertical } from '@visx/shape';
+import { LinkHorizontal } from '@visx/shape';
 import { CellTypes } from './page';
 
 const linkStroke = '#000000';
@@ -33,50 +34,50 @@ export default function CellTypeTree({ width, height, selectedCells, setSelected
     return (
       {
         ctName: 'UNDEFINED',
-        displayName: 'Hematopoietic stem cell',
+        displayName: 'Hematopoietic,stem cell',
         image: '',
-        selected: true,
+        selected: false,
         children: [
           {
             ctName: 'UNDEFINED',
-            displayName: 'Multipotent progenitor',
+            displayName: 'Multipotent,progenitor',
             image: '',
-            selected: true,
+            selected: false,
             children: [
               {
                 ctName: 'UNDEFINED',
-                displayName: 'Common myeloid progenitor',
+                displayName: 'Common myeloid,progenitor',
                 image: '',
-                selected: true,
+                selected: false,
                 children: [
                   {
                     ctName: 'UNDEFINED',
-                    displayName: 'Granuloctye-monocyte progenitor',
+                    displayName: 'Granuloctye-monocyte,progenitor',
                     image: '',
-                    selected: true,
+                    selected: false,
                     children: [
                       {
                         ctName: 'UNDEFINED',
                         displayName: 'Neutrophil',
                         image: '',
-                        selected: true,
+                        selected: false,
                       },
                       {
                         ctName: 'pDCs',
-                        displayName: 'Plasmacytoid dendritic cell',
-                        image: 'pDCs.png',
+                        displayName: 'Plasmacytoid,dendritic cell',
+                        image: '/cellTypes/pDCs.png',
                         selected: true,
                       },
                       {
                         ctName: 'Myeloid_DCs',
                         displayName: 'Myeloid dendritic cell',
-                        image: 'Myeloid_DCs.png',
+                        image: '/cellTypes/Myeloid_DCs.png',
                         selected: true,
                       },
                       {
                         ctName: 'Monocyte',
                         displayName: 'Monocyte',
-                        image: 'Monocytes.png',
+                        image: '/cellTypes/Monocytes.png',
                         selected: true,
                       }
                     ]
@@ -87,13 +88,13 @@ export default function CellTypeTree({ width, height, selectedCells, setSelected
                 ctName: 'UNDEFINED',
                 displayName: 'Megakaryocyte-erythroid progenitor',
                 image: '',
-                selected: true,
+                selected: false,
                 children: [
                   {
                     ctName: 'UNDEFINED',
                     displayName: 'Erythroid',
                     image: '',
-                    selected: true,
+                    selected: false,
                   }
                 ]
               },
@@ -101,36 +102,36 @@ export default function CellTypeTree({ width, height, selectedCells, setSelected
                 ctName: 'UNDEFINED',
                 displayName: 'Lymphoid-primed multipotent progenitor',
                 image: '',
-                selected: true,
+                selected: false,
                 children: [
                   {
                     ctName: 'UNDEFINED',
                     displayName: 'Common lymphoid progenitor',
                     image: '',
-                    selected: true,
+                    selected: false,
                     children: [
                       {
                         ctName: 'UNDEFINED',
                         displayName: 'Double-negative cell',
                         image: '',
-                        selected: true,
+                        selected: false,
                         children: [
                           {
                             ctName: 'Immature_NK',
                             displayName: 'Immature NK cell',
-                            image: 'Immature_NK.png',
+                            image: '/cellTypes/Immature_NK.png',
                             selected: true,
                             children: [
                               {
                                 ctName: 'Mature_NK',
                                 displayName: 'Mature NK cell',
-                                image: 'Mature_NK.png',
+                                image: '/cellTypes/Mature_NK.png',
                                 selected: true,
                                 children: [
                                   {
                                     ctName: 'Memory_NK',
                                     displayName: 'Memory NK cell',
-                                    image: 'Memory_NK.png',
+                                    image: '/cellTypes/Memory_NK.png',
                                     selected: true,
                                   }
                                 ]
@@ -140,23 +141,161 @@ export default function CellTypeTree({ width, height, selectedCells, setSelected
                           {
                             ctName: 'Gamma_delta_T',
                             displayName: 'T cell',
-                            image: 'Gamma_delta_T.png',
+                            image: '/cellTypes/Gamma_delta_T.png',
                             selected: true,
                           },
                           {
                             ctName: 'UNDEFINED',
                             displayName: 'CD4 immature single-positive cell',
                             image: '',
-                            selected: true,
+                            selected: false,
                             children: [
                               {
                                 ctName: 'UNDEFINED',
                                 displayName: 'Double-positive cell',
                                 image: '',
-                                selected: true,
+                                selected: false,
+                                children: [
+                                  {
+                                    ctName: 'UNDEFINED',
+                                    displayName: 'mCD4 T cell',
+                                    image: '',
+                                    selected: false,
+                                    children: [
+                                      {
+                                        ctName: 'Effector_CD4',
+                                        displayName: 'Effector CD4+ T cell',
+                                        image: '/cellTypes/Effector_CD4pos_T.png',
+                                        selected: true,
+                                        children: [
+                                          {
+                                            ctName: 'Naive_Teffs',
+                                            displayName: 'Naïve T effector cell',
+                                            image: '/cellTypes/Naive_teffs.png',
+                                            selected: true,
+                                            children: [
+                                              {
+                                                ctName: 'Memory_Teffs',
+                                                displayName: 'Memory T effector cell',
+                                                image: '/cellTypes/Memory_Teffs.png',
+                                                selected: true,
+                                                children: [
+                                                  {
+                                                    ctName: 'Th1_precursors',
+                                                    displayName: 'Th1 precursor',
+                                                    image: '/cellTypes/Th1_precursors.png',
+                                                    selected: true
+                                                  },
+                                                  {
+                                                    ctName: 'Th2_precursors',
+                                                    displayName: 'Th2 precursor',
+                                                    image: '/cellTypes/Th2_precursors.png',
+                                                    selected: true
+                                                  },
+                                                  {
+                                                    ctName: 'Th17_precursors',
+                                                    displayName: 'Th17 precursor',
+                                                    image: '/cellTypes/Th17_precursors.png',
+                                                    selected: true
+                                                  },
+                                                  {
+                                                    ctName: 'Follicular_T_Helper',
+                                                    displayName: 'T follicular helper cell',
+                                                    image: '/cellTypes/Follicular_T_helper.png',
+                                                    selected: true
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        ctName: 'Regulatory_T',
+                                        displayName: 'Regulatory CD4+  T cell',
+                                        image: '/cellTypes/Regulatory_T.png',
+                                        selected: true,
+                                        children: [
+                                          {
+                                            ctName: 'Naive_Tregs',
+                                            displayName:'Naïve T regulatory cell',
+                                            image: '/cellTypes/Naive_Tregs.png',
+                                            selected: true,
+                                            children: [
+                                              {
+                                                ctName: 'Memory_Tregs',
+                                                displayName: 'Memory T regulatory cell',
+                                                image: '/cellTypes/Memory_Tregs.png',
+                                                selected: true
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    ctName: 'CD8pos_T',
+                                    displayName: 'CD8+ T cell',
+                                    image: '/cellTypes/CD8pos_T.png',
+                                    selected: true,
+                                    children: [
+                                      {
+                                        ctName: 'Naive_CD8_T',
+                                        displayName: 'Naïve CD8+ T cell',
+                                        image: '/cellTypes/Naive_CD8_T.png',
+                                        selected: true,
+                                        children: [
+                                          {
+                                            ctName: 'Central_memory_CD8pos_T',
+                                            displayName: 'Central memory,CD8+ T cell',
+                                            image: '/cellTypes/Central_Memory_CD8pos_T.png',
+                                            selected: true,
+                                          },
+                                          {
+                                            ctName: 'Effector_memory_CD8pos_T',
+                                            displayName: 'Effector memory CD8+ T cell',
+                                            image: '/cellTypes/Effector_memory_CD8pos_T.png',
+                                            selected: true,
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
                               }
                             ]
                           },
+                        ]
+                      },
+                      {
+                        ctName: 'Bulk_B',
+                        displayName: 'Bulk B cell',
+                        image: '/cellTypes/Bulk_B.png',
+                        selected: true,
+                        children: [
+                          {
+                            ctName: 'Naive_B',
+                            displayName: 'Naïve B cell',
+                            image: '/cellTypes/Naive_B.png',
+                            selected: true,
+                            children: [
+                              {
+                                ctName: 'Mem_B',
+                                displayName: 'Memory B cell',
+                                image: '/cellTypes/Mem_B.png',
+                                selected: true,
+                                children: [
+                                  {
+                                    ctName: 'Plasmablasts',
+                                    displayName: 'Plasmablast',
+                                    image: '/cellTypes/Plasmablasts.png',
+                                    selected: true,
+                                  }
+                                ]
+                              }
+                            ]
+                          }
                         ]
                       }
                     ]
@@ -171,8 +310,8 @@ export default function CellTypeTree({ width, height, selectedCells, setSelected
   }, [selectedCells])
 
   const data = useMemo(() => hierarchy<NodeShape>(clusterData), []);
-  const xMax = width - margin.left - margin.right;
-  const yMax = height - margin.top - margin.bottom;
+  const xMax = height - margin.left - margin.right;
+  const yMax = width - margin.top - margin.bottom;
 
   function Node({ node }: { node: HierarchyPointNode<NodeShape> }) {
     const width = 60;
@@ -181,20 +320,26 @@ export default function CellTypeTree({ width, height, selectedCells, setSelected
     const centerY = -height / 2;
 
     return (
-      <Group top={node.y} left={node.x}
+      <Group top={node.x} left={node.y}
         onClick={() => {
           // setSelectedCells({bulk_b: !node.data.selected})
           window.alert("clicked " + node.data.ctName)
         }}
       >
         <text
-          dy="-2.5em"
+          x='50%'
+          // dy="-4.5em"
+          y='-6%'
           fontSize={11}
           fontFamily="Arial"
           textAnchor="middle"
           style={{ pointerEvents: 'none' }}
         >
-          {node.data.displayName}
+          {node.data.displayName.split(',').map((str, i) => {
+            return (
+              <tspan key={i} x="0" dy="1.2em">{str}</tspan>
+            )
+          })}
         </text>
         <image
           href={node.data.image}
@@ -227,7 +372,7 @@ export default function CellTypeTree({ width, height, selectedCells, setSelected
         {(tree) => (
           <Group top={margin.top} left={margin.left}>
             {tree.links().map((link, i) => (
-              <LinkVertical<HierarchyPointLink<NodeShape>, HierarchyPointNode<NodeShape>>
+              <LinkHorizontal<HierarchyPointLink<NodeShape>, HierarchyPointNode<NodeShape>>
                 key={`cluster-link-${i}`}
                 data={link}
                 stroke={linkStroke}

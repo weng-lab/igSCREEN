@@ -12,7 +12,7 @@ export default async function Downloads({ searchParams }: { searchParams: { [key
 
   return (
     <main>
-      <CellTypeTree width={700} height={700} selectedCells={selectedCells} setSelectedCells={setSelectedCells}/>
+      <CellTypeTree width={1100} height={900} selectedCells={selectedCells} setSelectedCells={setSelectedCells}/>
     </main>
   )
 }
