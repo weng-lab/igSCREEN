@@ -1,9 +1,8 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Group } from '@visx/group';
 import { Tree, hierarchy } from '@visx/hierarchy';
 import { HierarchyPointNode, HierarchyPointLink } from '@visx/hierarchy/lib/types';
 import { LinkVertical } from '@visx/shape';
-import { LinkHorizontal } from '@visx/shape';
 import { CellTypeInfo, CellTypes } from './page';
 
 const linkStroke = '#000000';
@@ -14,7 +13,8 @@ interface CellNode extends CellTypeInfo {
 }
 
 const uninteractiveNode = {
-  imagePath: '',
+  id: null,
+  imagePath: null,
   selected: false,
   selectable: false,
   stimulated: false,
@@ -38,22 +38,27 @@ export default function CellTypeTree({ width, height, cellTypeState, setCellType
       {
         displayName: 'Hematopoietic/stem cell',
         ...uninteractiveNode,
+        justClicked: false,
         children: [
           {
             displayName: 'Multipotent/progenitor',
             ...uninteractiveNode,
+            justClicked: false,
             children: [
               {
                 displayName: 'Common myeloid/progenitor',
                 ...uninteractiveNode,
+                justClicked: false,
                 children: [
                   {
                     displayName: 'Granuloctye-monocyte/progenitor',
                     ...uninteractiveNode,
+                    justClicked: false,
                     children: [
                       {
                         displayName: 'Neutrophil',
                         ...uninteractiveNode,
+                        justClicked: false,
                       },
                       {
                         ...cellTypeState.pDCs
@@ -71,24 +76,29 @@ export default function CellTypeTree({ width, height, cellTypeState, setCellType
               {
                 displayName: 'Megakaryocyte-erythroid/progenitor',
                 ...uninteractiveNode,
+                justClicked: false,
                 children: [
                   {
                     displayName: 'Erythrocyte',
                     ...uninteractiveNode,
+                    justClicked: false,
                   }
                 ]
               },
               {
                 displayName: 'Lymphoid-primed/multipotent progenitor',
                 ...uninteractiveNode,
+                justClicked: false,
                 children: [
                   {
                     displayName: 'Common lymphoid/progenitor',
                     ...uninteractiveNode,
+                    justClicked: false,
                     children: [
                       {
                         displayName: 'Double-negative cell',
                         ...uninteractiveNode,
+                        justClicked: false,
                         children: [
                           {
                             ...cellTypeState.Immature_NK,
@@ -109,14 +119,17 @@ export default function CellTypeTree({ width, height, cellTypeState, setCellType
                           {
                             displayName: 'CD4 immature/single-positive cell',
                             ...uninteractiveNode,
+                            justClicked: false,
                             children: [
                               {
                                 displayName: 'Double-positive/cell',
                                 ...uninteractiveNode,
+                                justClicked: false,
                                 children: [
                                   {
                                     displayName: 'CD4+ T cell',
                                     ...uninteractiveNode,
+                                    justClicked: false,
                                     children: [
                                       {
                                         ...cellTypeState.Effector_CD4pos_T,
@@ -222,11 +235,7 @@ export default function CellTypeTree({ width, height, cellTypeState, setCellType
     const centerY = -height / 2;
 
     return (
-      <Group top={node.y} left={node.x}
-        onClick={() => {
-          node.data.selectable && window.alert("clicked " + node.data.displayName)
-        }}
-      >
+      <Group top={node.y} left={node.x}>
         <text
           x='50%'
           y={(-4.5 - (1.25 * (node.data.displayName.split('/').length - 1))).toString() + '%'}
@@ -247,27 +256,46 @@ export default function CellTypeTree({ width, height, cellTypeState, setCellType
           height={height}
           y={centerY}
           x={centerX}
-          opacity={node.data.selected ? 1 : 0.2}
+          opacity={(node.data.selected || Object.values(cellTypeState).every(cellType => cellType.selected === false)) ? 1 : 0.2}
+          onClick={() => {
+            if (node.data.selectable) {
+              setCellTypeState({
+                ...cellTypeState,
+                [node.data.id]: { ...cellTypeState[node.data.id], selected: !cellTypeState[node.data.id].selected, justClicked: true }
+              })
+            }
+          }}
+          
           onMouseEnter={
             (event: React.MouseEvent<SVGImageElement, MouseEvent>) => {
-              node.data.selectable &&
+              if (node.data.selectable && !node.data.justClicked){
                 //If selected, lower opacity. If unselected, raise opacity
-                node.data.selected ?
-                event.currentTarget.setAttribute('opacity', '0.2')
-                :
-                event.currentTarget.setAttribute('opacity', '1')
-              event.currentTarget.setAttribute('transform', 'scale(1.1)')
+                if (node.data.selected) {
+                  event.currentTarget.setAttribute('opacity', '0.2')
+                  event.currentTarget.setAttribute('transform', 'scale(0.9)')
+                } else {
+                  event.currentTarget.setAttribute('opacity', '1')
+                  event.currentTarget.setAttribute('transform', 'scale(1.1)')
+                }
+              }
             }
           }
           onMouseLeave={
             (event: React.MouseEvent<SVGImageElement, MouseEvent>) => {
-              node.data.selectable &&
-                //If selected, set opactiy back to 1. If unselected, set opactiy back down
-                node.data.selected ?
-                event.currentTarget.setAttribute('opacity', '1')
-                :
-                event.currentTarget.setAttribute('opacity', '0.2')
-              event.currentTarget.setAttribute('transform', 'scale(1)')
+              if (node.data.selectable){
+                //If selected, lower opacity. If unselected, raise opacity
+                if (node.data.selected) {
+                  event.currentTarget.setAttribute('opacity', '1')
+                  event.currentTarget.setAttribute('transform', 'scale(1)')
+                } else {
+                  event.currentTarget.setAttribute('opacity', '0.2')
+                  event.currentTarget.setAttribute('transform', 'scale(1)')
+                }
+                setCellTypeState({
+                  ...cellTypeState,
+                  [node.data.id]: { ...cellTypeState[node.data.id], justClicked: false }
+                })
+              }
             }
           }
         />
@@ -282,14 +310,24 @@ export default function CellTypeTree({ width, height, cellTypeState, setCellType
         {(tree) => (
           <Group top={margin.top} left={margin.left}>
             {tree.links().map((link, i) => (
-              <LinkVertical<HierarchyPointLink<CellNode>, HierarchyPointNode<CellNode>>
-                key={`cluster-link-${i}`}
-                data={link}
-                stroke={linkStroke}
-                strokeWidth="1"
-                strokeOpacity={0.2}
-                fill="none"
-              />
+              link.target.descendants().find((childNode, j) => childNode.data.selected) !== undefined ?
+                <LinkVertical<HierarchyPointLink<CellNode>, HierarchyPointNode<CellNode>>
+                  key={`cluster-link-${i}`}
+                  data={link}
+                  stroke={linkStroke}
+                  strokeWidth="3"
+                  strokeOpacity={0.6}
+                  fill="none"
+                />
+                :
+                <LinkVertical<HierarchyPointLink<CellNode>, HierarchyPointNode<CellNode>>
+                  key={`cluster-link-${i}`}
+                  data={link}
+                  stroke={linkStroke}
+                  strokeWidth="1"
+                  strokeOpacity={0.2}
+                  fill="none"
+                />
             ))}
             {tree.descendants().map((node, i) => (
               <Node key={`cluster-node-${i}`} node={node} />
