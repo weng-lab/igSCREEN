@@ -2,6 +2,8 @@
 import * as React from "react"
 import CellTypeTree from "./cellTypeTree"
 import { useState } from "react"
+import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
+import { Button, Tooltip } from "@mui/material";
 /**
  * @todo add hover info on cells (how many cCREs active)
  */
@@ -18,7 +20,7 @@ export interface CellTypeInfo {
   readonly queryValues?: {
     readonly unstimulated: string;
     readonly stimulated?: string;
-  } & (CellTypeInfo['stimulable'] extends true ? { stimulated: string } : {});
+  }
 }
 
 export interface CellTypes {
@@ -375,7 +377,7 @@ const cellTypeInitialState: CellTypes = {
     selected: false,
     stimulated: false,
     selectable: true,
-    displayName: "Mature NK cell",
+    displayName: "Mature/NK cell",
     imagePath: '/cellTypes/Mature_NK.png',
     stimulable: true,
     queryValues: {
@@ -401,10 +403,46 @@ const cellTypeInitialState: CellTypes = {
 
 export default function Downloads({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
   const [cellTypeState, setCellTypeState] = useState<CellTypes>(cellTypeInitialState)
+  const [stimulateMode, setStimulateMode] = useState<boolean>(false)
+  const [cursor, setCursor] = useState<'auto' | 'pointer' | 'cell' | 'not-allowed'>('auto')
+
+  const handleStimulateAll = (x: boolean) => {
+    let newObj = {...cellTypeState}
+    for (let cellName in newObj) {
+      newObj[cellName].stimulable && (newObj[cellName].stimulated = x)
+    }
+    setCellTypeState(newObj)
+  }
+
+  const handleSelectAll = (x: boolean) => {
+    let newObj = {...cellTypeState}
+    for (let cellName in newObj) {
+      newObj[cellName].selectable && (newObj[cellName].selected = x)
+    }
+    setCellTypeState(newObj)
+  }
+
+  const handleToggleStimulateMode = () => {
+    setStimulateMode(!stimulateMode)
+    setCursor(!stimulateMode ? 'cell' : 'auto')
+  }
 
   return (
-    <main>
-      <CellTypeTree width={1000} height={1000} cellTypeState={cellTypeState} setCellTypeState={setCellTypeState}/>
-    </main>
+    <Grid2 container mt={3} spacing={2} sx={{cursor}}>
+      <Grid2 xs={12} lg={8}>
+        <CellTypeTree width={1000} height={1000} cellTypeState={cellTypeState} setCellTypeState={setCellTypeState} stimulateMode={stimulateMode} setCursor={setCursor}/>
+      </Grid2>
+      <Grid2 xs={12} lg={4}>
+        <Tooltip title="Note: Dendritic cells, plasmablasts and immature/memory NK cells are not stimulable">
+          <Button variant="outlined" onClick={() => handleStimulateAll(true)}>Stimulate All</Button>
+        </Tooltip>
+        <Button variant="outlined" onClick={() => handleStimulateAll(false)}>Unstimulate All</Button>
+        <Button variant="outlined" onClick={handleToggleStimulateMode}>{stimulateMode ? 'Exit Stimulate Mode' : 'Enter Stimulate Mode'}</Button>
+        <Tooltip title="Note: Not all cells are selectable">
+          <Button variant="outlined" onClick={() => handleSelectAll(true)}>Select All</Button>
+        </Tooltip>
+        <Button variant="outlined" onClick={() => handleSelectAll(false)}>Unselect All</Button>
+      </Grid2>
+    </Grid2>
   )
 }

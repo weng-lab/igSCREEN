@@ -28,10 +28,12 @@ export type CellTypeTreeProps = {
   height: number;
   cellTypeState: CellTypes;
   setCellTypeState: React.Dispatch<React.SetStateAction<CellTypes>>;
+  stimulateMode: boolean
+  setCursor: React.Dispatch<React.SetStateAction<"auto" | "pointer" | "cell" | "not-allowed">>
   margin?: { top: number; right: number; bottom: number; left: number };
 };
 
-export default function CellTypeTree({ width, height, cellTypeState, setCellTypeState, margin = defaultMargin }: CellTypeTreeProps) {
+export default function CellTypeTree({ width, height, cellTypeState, setCellTypeState, stimulateMode, setCursor, margin = defaultMargin }: CellTypeTreeProps) {
 
   const clusterData: CellNode = useMemo(() => {
     return (
@@ -246,7 +248,10 @@ export default function CellTypeTree({ width, height, cellTypeState, setCellType
         >
           {node.data.displayName.split('/').map((str, i) => {
             return (
-              <tspan key={i} x="0" dy="1.2em">{str}</tspan>
+              i === node.data.displayName.split('/').length - 1 ?
+                <tspan key={i} x="0" dy="1.2em">{str + (node.data.stimulated ? ' (S)' : '')}</tspan>
+                :
+                <tspan key={i} x="0" dy="1.2em">{str}</tspan>
             )
           })}
         </text>
@@ -258,43 +263,67 @@ export default function CellTypeTree({ width, height, cellTypeState, setCellType
           x={centerX}
           opacity={(node.data.selected || Object.values(cellTypeState).every(cellType => cellType.selected === false)) ? 1 : 0.2}
           onClick={() => {
-            if (node.data.selectable) {
+            if (stimulateMode) {
+              if (node.data.stimulable) {
+                setCellTypeState({
+                  ...cellTypeState,
+                  [node.data.id]: { ...cellTypeState[node.data.id], stimulated: !cellTypeState[node.data.id].stimulated, justClicked: true }
+                })
+              }
+            } else if (node.data.selectable) {
               setCellTypeState({
                 ...cellTypeState,
                 [node.data.id]: { ...cellTypeState[node.data.id], selected: !cellTypeState[node.data.id].selected, justClicked: true }
               })
             }
           }}
-          
           onMouseEnter={
             (event: React.MouseEvent<SVGImageElement, MouseEvent>) => {
-              if (node.data.selectable && !node.data.justClicked){
-                //If selected, lower opacity. If unselected, raise opacity
-                if (node.data.selected) {
-                  event.currentTarget.setAttribute('opacity', '0.2')
-                  event.currentTarget.setAttribute('transform', 'scale(0.9)')
-                } else {
+              if (node.data.selectable) {
+                if (stimulateMode) {
                   event.currentTarget.setAttribute('opacity', '1')
                   event.currentTarget.setAttribute('transform', 'scale(1.1)')
+                  if (!node.data.stimulable) { setCursor("not-allowed") }
+                } else if (!node.data.justClicked) {
+                  //If selected, lower opacity. If unselected, raise opacity
+                  if (node.data.selected) {
+                    event.currentTarget.setAttribute('opacity', '0.2')
+                    event.currentTarget.setAttribute('transform', 'scale(0.9)')
+                  } else {
+                    event.currentTarget.setAttribute('opacity', '1')
+                    event.currentTarget.setAttribute('transform', 'scale(1.1)')
+                  }
+                  setCursor('pointer')
                 }
               }
             }
           }
           onMouseLeave={
             (event: React.MouseEvent<SVGImageElement, MouseEvent>) => {
-              if (node.data.selectable){
-                //If selected, lower opacity. If unselected, raise opacity
-                if (node.data.selected) {
-                  event.currentTarget.setAttribute('opacity', '1')
+              if (node.data.selectable) {
+                if (stimulateMode) {
+                  !node.data.stimulable && setCursor("cell")
+                  event.currentTarget.setAttribute('opacity', (node.data.selected || Object.values(cellTypeState).every(cellType => cellType.selected === false)) ? '1' : '0.2')
                   event.currentTarget.setAttribute('transform', 'scale(1)')
+                  setCellTypeState({
+                    ...cellTypeState,
+                    [node.data.id]: { ...cellTypeState[node.data.id], justClicked: false }
+                  })
                 } else {
-                  event.currentTarget.setAttribute('opacity', '0.2')
-                  event.currentTarget.setAttribute('transform', 'scale(1)')
+                  //If selected, lower opacity. If unselected, raise opacity
+                  if (node.data.selected) {
+                    event.currentTarget.setAttribute('opacity', '1')
+                    event.currentTarget.setAttribute('transform', 'scale(1)')
+                  } else {
+                    event.currentTarget.setAttribute('opacity', '0.2')
+                    event.currentTarget.setAttribute('transform', 'scale(1)')
+                  }
+                  setCellTypeState({
+                    ...cellTypeState,
+                    [node.data.id]: { ...cellTypeState[node.data.id], justClicked: false }
+                  })
+                  setCursor("auto")
                 }
-                setCellTypeState({
-                  ...cellTypeState,
-                  [node.data.id]: { ...cellTypeState[node.data.id], justClicked: false }
-                })
               }
             }
           }
@@ -310,13 +339,13 @@ export default function CellTypeTree({ width, height, cellTypeState, setCellType
         {(tree) => (
           <Group top={margin.top} left={margin.left}>
             {tree.links().map((link, i) => (
-              link.target.descendants().find((childNode, j) => childNode.data.selected) !== undefined ?
+              link.target.descendants().find((childNode) => childNode.data.selected) !== undefined ?
                 <LinkVertical<HierarchyPointLink<CellNode>, HierarchyPointNode<CellNode>>
                   key={`cluster-link-${i}`}
                   data={link}
                   stroke={linkStroke}
-                  strokeWidth="3"
-                  strokeOpacity={0.6}
+                  strokeWidth="2"
+                  strokeOpacity={0.4}
                   fill="none"
                 />
                 :
