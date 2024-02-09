@@ -1,7 +1,7 @@
 'use client'
 import * as React from "react"
 import CellTypeTree from "./cellTypeTree"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import { Button, Tooltip } from "@mui/material";
 /**
@@ -16,7 +16,6 @@ export interface CellTypeInfo {
   stimulated: boolean;
   readonly selectable: boolean;
   readonly stimulable: boolean;
-  justClicked: boolean; //workaround for onMouseEnter function being fired directly after onClick (unintended visual consequences)
   readonly queryValues?: {
     readonly unstimulated: string;
     readonly stimulated?: string;
@@ -66,7 +65,6 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: 'Monocytes-U',
       stimulated: 'Monocytes-S'
     },
-    justClicked: false
   },
   Myeloid_DCs: {
     id: 'Myeloid_DCs',
@@ -79,7 +77,6 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: 'Myeloid_DCs-U'
     },
-    justClicked: false
   },
   pDCs: {
     id: 'pDCs',
@@ -92,7 +89,6 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: 'pDCs-U'
     },
-    justClicked: false
   },
   Bulk_B: {
     id: 'Bulk_B',
@@ -106,7 +102,6 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: 'Bulk_B-U',
       stimulated: 'Bulk_B-S'
     },
-    justClicked: false
   },
   Naive_B: {
     id: 'Naive_B',
@@ -120,7 +115,6 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: 'Naive_B-U',
       stimulated: 'Naive_B-S'
     },
-    justClicked: false
   },
   Mem_B: {
     id: 'Mem_B',
@@ -134,7 +128,6 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: 'Mem_B-U',
       stimulated: 'Mem_B-S'
     },
-    justClicked: false
   },
   Plasmablasts: {
     id: 'Plasmablasts',
@@ -147,7 +140,6 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: 'Plasmablasts-U'
     },
-    justClicked: false
   },
   Regulatory_T: {
     id: 'Regulatory_T',
@@ -161,7 +153,6 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: 'Regulatory_T-U',
       stimulated: 'Regulatory_T-S'
     },
-    justClicked: false
   },
   Naive_Tregs: {
     id: 'Naive_Tregs',
@@ -175,7 +166,6 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: 'Naive_Tregs-U',
       stimulated: 'Naive_Tregs-S'
     },
-    justClicked: false
   },
   Memory_Tregs: {
     id: 'Memory_Tregs',
@@ -189,7 +179,6 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: 'Memory_Tregs-U',
       stimulated: 'Memory_Tregs-S'
     },
-    justClicked: false
   },
   Effector_CD4pos_T: {
     id: 'Effector_CD4pos_T',
@@ -203,7 +192,6 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: 'Effector_CD4pos_T-U',
       stimulated: 'Effector_CD4pos_T-S'
     },
-    justClicked: false
   },
   Naive_Teffs: {
     id: 'Naive_Teffs',
@@ -217,7 +205,6 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: 'Naive_Teffs-U',
       stimulated: 'Naive_Teffs-S'
     },
-    justClicked: false
   },
   Memory_Teffs: {
     id: 'Memory_Teffs',
@@ -231,7 +218,6 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: 'Memory_Teffs-U',
       stimulated: 'Memory_Teffs-S'
     },
-    justClicked: false
   },
   Th1_precursors: {
     id: 'Th1_precursors',
@@ -245,7 +231,6 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: 'Th1_precursors-U',
       stimulated: 'Th1_precursors-S'
     },
-    justClicked: false
   },
   Th2_precursors: {
     id: 'Th2_precursors',
@@ -259,7 +244,6 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: 'Th2_precursors-U',
       stimulated: 'Th2_precursors-S'
     },
-    justClicked: false
   },
   Th17_precursors: {
     id: 'Th17_precursors',
@@ -273,7 +257,6 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: 'Th17_precursors-U',
       stimulated: 'Th17_precursors-S'
     },
-    justClicked: false
   },
   Follicular_T_Helper: {
     id: 'Follicular_T_Helper',
@@ -287,7 +270,6 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: 'Follicular_T_Helper-U',
       stimulated: 'Follicular_T_Helper-S'
     },
-    justClicked: false
   },
   CD8pos_T: {
     id: 'CD8pos_T',
@@ -301,7 +283,6 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: 'CD8pos_T-U',
       stimulated: 'CD8pos_T-S'
     },
-    justClicked: false
   },
   Naive_CD8_T: {
     id: 'Naive_CD8_T',
@@ -315,7 +296,6 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: 'Naive_CD8_T-U',
       stimulated: 'Naive_CD8_T-S'
     },
-    justClicked: false
   },
   Central_memory_CD8pos_T: {
     id: 'Central_memory_CD8pos_T',
@@ -329,7 +309,6 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: 'Central_memory_CD8pos_T-U',
       stimulated: 'Central_memory_CD8pos_T-S'
     },
-    justClicked: false
   },
   Effector_memory_CD8pos_T: {
     id: 'Effector_memory_CD8pos_T',
@@ -343,7 +322,6 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: 'Effector_memory_CD8pos_T-U',
       stimulated: 'Effector_memory_CD8pos_T-S'
     },
-    justClicked: false
   },
   Gamma_delta_T: {
     id: 'Gamma_delta_T',
@@ -357,7 +335,6 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: 'Gamma_delta_T-U',
       stimulated: 'Gamma_delta_T-S'
     },
-    justClicked: false
   },
   Immature_NK: {
     id: 'Immature_NK',
@@ -370,7 +347,6 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: 'Immature_NK-U'
     },
-    justClicked: false
   },
   Mature_NK: {
     id: 'Mature_NK',
@@ -384,7 +360,6 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: 'Mature_NK-U',
       stimulated: 'Mature_NK-S'
     },
-    justClicked: false
   },
   Memory_NK: {
     id: 'Memory_NK',
@@ -397,7 +372,6 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: 'Memory_NK-U'
     },
-    justClicked: false
   },
 }
 
@@ -427,10 +401,24 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
     setCursor(!stimulateMode ? 'cell' : 'auto')
   }
 
+  //Wrap in useMemo to stop rerender of tree when cursor changes here
+  const cellTypeTree = useMemo(() => {
+    return (
+      <CellTypeTree
+        width={1000}
+        height={1000}
+        cellTypeState={cellTypeState}
+        setCellTypeState={setCellTypeState}
+        stimulateMode={stimulateMode}
+        setCursor={setCursor}
+      />
+    )
+  }, [cellTypeState, setCellTypeState, stimulateMode, setCursor])
+
   return (
     <Grid2 container mt={3} spacing={2} sx={{cursor}}>
       <Grid2 xs={12} lg={8}>
-        <CellTypeTree width={1000} height={1000} cellTypeState={cellTypeState} setCellTypeState={setCellTypeState} stimulateMode={stimulateMode} setCursor={setCursor}/>
+        {cellTypeTree}
       </Grid2>
       <Grid2 xs={12} lg={4}>
         <Tooltip title="Note: Dendritic cells, plasmablasts and immature/memory NK cells are not stimulable">

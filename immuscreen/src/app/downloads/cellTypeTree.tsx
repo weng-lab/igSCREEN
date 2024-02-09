@@ -40,27 +40,22 @@ export default function CellTypeTree({ width, height, cellTypeState, setCellType
       {
         displayName: 'Hematopoietic/stem cell',
         ...uninteractiveNode,
-        justClicked: false,
         children: [
           {
             displayName: 'Multipotent/progenitor',
             ...uninteractiveNode,
-            justClicked: false,
             children: [
               {
                 displayName: 'Common myeloid/progenitor',
                 ...uninteractiveNode,
-                justClicked: false,
                 children: [
                   {
                     displayName: 'Granuloctye-monocyte/progenitor',
                     ...uninteractiveNode,
-                    justClicked: false,
                     children: [
                       {
                         displayName: 'Neutrophil',
                         ...uninteractiveNode,
-                        justClicked: false,
                       },
                       {
                         ...cellTypeState.pDCs
@@ -78,29 +73,24 @@ export default function CellTypeTree({ width, height, cellTypeState, setCellType
               {
                 displayName: 'Megakaryocyte-erythroid/progenitor',
                 ...uninteractiveNode,
-                justClicked: false,
                 children: [
                   {
                     displayName: 'Erythrocyte',
                     ...uninteractiveNode,
-                    justClicked: false,
                   }
                 ]
               },
               {
                 displayName: 'Lymphoid-primed/multipotent progenitor',
                 ...uninteractiveNode,
-                justClicked: false,
                 children: [
                   {
                     displayName: 'Common lymphoid/progenitor',
                     ...uninteractiveNode,
-                    justClicked: false,
                     children: [
                       {
                         displayName: 'Double-negative cell',
                         ...uninteractiveNode,
-                        justClicked: false,
                         children: [
                           {
                             ...cellTypeState.Immature_NK,
@@ -121,17 +111,14 @@ export default function CellTypeTree({ width, height, cellTypeState, setCellType
                           {
                             displayName: 'CD4 immature/single-positive cell',
                             ...uninteractiveNode,
-                            justClicked: false,
                             children: [
                               {
                                 displayName: 'Double-positive/cell',
                                 ...uninteractiveNode,
-                                justClicked: false,
                                 children: [
                                   {
                                     displayName: 'CD4+ T cell',
                                     ...uninteractiveNode,
-                                    justClicked: false,
                                     children: [
                                       {
                                         ...cellTypeState.Effector_CD4pos_T,
@@ -235,7 +222,6 @@ export default function CellTypeTree({ width, height, cellTypeState, setCellType
     const height = 60;
     const centerX = -width / 2;
     const centerY = -height / 2;
-
     return (
       <Group top={node.y} left={node.x}>
         <text
@@ -267,33 +253,25 @@ export default function CellTypeTree({ width, height, cellTypeState, setCellType
               if (node.data.stimulable) {
                 setCellTypeState({
                   ...cellTypeState,
-                  [node.data.id]: { ...cellTypeState[node.data.id], stimulated: !cellTypeState[node.data.id].stimulated, justClicked: true }
+                  [node.data.id]: { ...cellTypeState[node.data.id], stimulated: !cellTypeState[node.data.id].stimulated }
                 })
               }
             } else if (node.data.selectable) {
               setCellTypeState({
                 ...cellTypeState,
-                [node.data.id]: { ...cellTypeState[node.data.id], selected: !cellTypeState[node.data.id].selected, justClicked: true }
+                [node.data.id]: { ...cellTypeState[node.data.id], selected: !cellTypeState[node.data.id].selected }
               })
             }
           }}
           onMouseEnter={
             (event: React.MouseEvent<SVGImageElement, MouseEvent>) => {
               if (node.data.selectable) {
-                if (stimulateMode) {
+                if (stimulateMode && !node.data.stimulable) {
+                  setCursor("not-allowed")
+                } else {
+                  event.currentTarget.setAttribute('transform', 'scale(1.15)')
                   event.currentTarget.setAttribute('opacity', '1')
-                  event.currentTarget.setAttribute('transform', 'scale(1.1)')
-                  if (!node.data.stimulable) { setCursor("not-allowed") }
-                } else if (!node.data.justClicked) {
-                  //If selected, lower opacity. If unselected, raise opacity
-                  if (node.data.selected) {
-                    event.currentTarget.setAttribute('opacity', '0.2')
-                    event.currentTarget.setAttribute('transform', 'scale(0.9)')
-                  } else {
-                    event.currentTarget.setAttribute('opacity', '1')
-                    event.currentTarget.setAttribute('transform', 'scale(1.1)')
-                  }
-                  setCursor('pointer')
+                  !stimulateMode && setCursor('pointer')
                 }
               }
             }
@@ -301,28 +279,12 @@ export default function CellTypeTree({ width, height, cellTypeState, setCellType
           onMouseLeave={
             (event: React.MouseEvent<SVGImageElement, MouseEvent>) => {
               if (node.data.selectable) {
-                if (stimulateMode) {
+                if (stimulateMode && !node.data.stimulable) {
                   !node.data.stimulable && setCursor("cell")
-                  event.currentTarget.setAttribute('opacity', (node.data.selected || Object.values(cellTypeState).every(cellType => cellType.selected === false)) ? '1' : '0.2')
-                  event.currentTarget.setAttribute('transform', 'scale(1)')
-                  setCellTypeState({
-                    ...cellTypeState,
-                    [node.data.id]: { ...cellTypeState[node.data.id], justClicked: false }
-                  })
                 } else {
-                  //If selected, lower opacity. If unselected, raise opacity
-                  if (node.data.selected) {
-                    event.currentTarget.setAttribute('opacity', '1')
-                    event.currentTarget.setAttribute('transform', 'scale(1)')
-                  } else {
-                    event.currentTarget.setAttribute('opacity', '0.2')
-                    event.currentTarget.setAttribute('transform', 'scale(1)')
-                  }
-                  setCellTypeState({
-                    ...cellTypeState,
-                    [node.data.id]: { ...cellTypeState[node.data.id], justClicked: false }
-                  })
-                  setCursor("auto")
+                  event.currentTarget.setAttribute('transform', 'scale(1)')
+                  event.currentTarget.setAttribute('opacity', (node.data.selected || Object.values(cellTypeState).every(cellType => cellType.selected === false)) ? '1' : '0.2')
+                  !stimulateMode && setCursor('auto')
                 }
               }
             }
