@@ -23,10 +23,11 @@ export interface CellTypeInfo {
 }
 
 export interface CellTypes {
-  Monocytes: CellTypeInfo,
+  //Calderon
+  // Monocytes: CellTypeInfo,
   Myeloid_DCs: CellTypeInfo,
   pDCs: CellTypeInfo,
-  Bulk_B: CellTypeInfo,
+  // Bulk_B: CellTypeInfo,
   Naive_B: CellTypeInfo,
   Mem_B: CellTypeInfo,
   Plasmablasts: CellTypeInfo,
@@ -40,7 +41,7 @@ export interface CellTypes {
   Th2_precursors: CellTypeInfo,
   Th17_precursors: CellTypeInfo,
   Follicular_T_Helper: CellTypeInfo,
-  CD8pos_T: CellTypeInfo,
+
   Naive_CD8_T: CellTypeInfo,
   Central_memory_CD8pos_T: CellTypeInfo,
   Effector_memory_CD8pos_T: CellTypeInfo,
@@ -48,6 +49,23 @@ export interface CellTypes {
   Immature_NK: CellTypeInfo,
   Mature_NK: CellTypeInfo,
   Memory_NK: CellTypeInfo,
+  //Corces
+  // CD34_Cord_Blood: CellTypeInfo, //Hematopoetic Stem Cell - How do I handle three versions of same node on tree? Excluded for now
+  // CD34_Bone_Marrow: CellTypeInfo, //Hematopoetic Stem Cell
+  HSC: CellTypeInfo, //Hematopoetic Stem Cell
+  MPP: CellTypeInfo, //Multipotent Progenitor
+  CMP: CellTypeInfo, //Common Myeloid Progenitor
+  MEP: CellTypeInfo, //Megakaryocyte Erythroid Progenitor
+  Ery: CellTypeInfo, //Erythrocyte
+  GMP: CellTypeInfo, //Granulocyte-Monocyte Progenitors
+  LPMP: CellTypeInfo, //Lymphocyte-Primed Multipotent Progenitor
+  CLP: CellTypeInfo, //Common Lymphoid Progenitor
+  CD4Tcell: CellTypeInfo, //CD4+ Tcell
+  Nkcell: CellTypeInfo, //NK cell
+  //Shared
+  Monocytes: CellTypeInfo, //Using Calderon "name". Also using Calderon's Stimulated/Unstimulated. In Corces it is "Mono", and no stimulation info
+  Bulk_B: CellTypeInfo, //Using Calderon "name". Also using Calderon's Stimulated/Unstimulated. In Corces it is "Bcell", and no stimulation info
+  CD8pos_T: CellTypeInfo, //Using Calderon "name". Also using Calderon's Stimulated/Unstimulated. In Corces it is "CD8Tcell", and no stimulation info
 }
 
 //Initial configuration of the cell type tree
@@ -64,6 +82,7 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: 'Monocytes-U',
       stimulated: 'Monocytes-S'
+      //IN Corces is "Mono"
     },
   },
   Myeloid_DCs: {
@@ -72,7 +91,7 @@ const cellTypeInitialState: CellTypes = {
     stimulated: false,
     selectable: true,
     displayName: "Myeloid/dendritic cell",
-    imagePath:  '/cellTypes/Myeloid_DCs.png',
+    imagePath: '/cellTypes/Myeloid_DCs.png',
     stimulable: false,
     queryValues: {
       unstimulated: 'Myeloid_DCs-U'
@@ -101,6 +120,7 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: 'Bulk_B-U',
       stimulated: 'Bulk_B-S'
+      //In Corces is "Bcell"
     },
   },
   Naive_B: {
@@ -282,6 +302,7 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: 'CD8pos_T-U',
       stimulated: 'CD8pos_T-S'
+      //In Corces is "CD8Tcell"
     },
   },
   Naive_CD8_T: {
@@ -373,6 +394,126 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: 'Memory_NK-U'
     },
   },
+  HSC: {
+    id: 'HSC',
+    selected: false,
+    stimulated: false,
+    selectable: true,
+    displayName: "Hematopoetic/stem cell",
+    imagePath: '/cellTypes/Missing.png',
+    stimulable: false,
+    queryValues: {
+      unstimulated: "HSC"
+    },
+  },
+  MPP: {
+    id: "MPP",
+    selected: false,
+    stimulated: false,
+    selectable: true,
+    displayName: "Multipotent/progenitor",
+    imagePath: '/cellTypes/Missing.png',
+    stimulable: false,
+    queryValues: {
+      unstimulated: "MPP"
+    },
+  },
+  CMP: {
+    id: "CMP",
+    selected: false,
+    stimulated: false,
+    selectable: true,
+    displayName: "Common myeloid/progenitor",
+    imagePath: '/cellTypes/Missing.png',
+    stimulable: false,
+    queryValues: {
+      unstimulated: "CMP"
+    },
+  },
+  MEP: {
+    id: "MEP",
+    selected: false,
+    stimulated: false,
+    selectable: true,
+    displayName: "Megakaryocyte-erythroid/progenitor",
+    imagePath: '/cellTypes/Missing.png',
+    stimulable: false,
+    queryValues: {
+      unstimulated: "MEP"
+    },
+  },
+  Ery: {
+    id: "Ery",
+    selected: false,
+    stimulated: false,
+    selectable: true,
+    displayName: "Erythrocyte",
+    imagePath: '/cellTypes/Missing.png',
+    stimulable: false,
+    queryValues: {
+      unstimulated: "Ery"
+    },
+  },
+  GMP: {
+    id: "GMP",
+    selected: false,
+    stimulated: false,
+    selectable: true,
+    displayName: "Granulocyte-monocyte/progenitors",
+    imagePath: '/cellTypes/Missing.png',
+    stimulable: false,
+    queryValues: {
+      unstimulated: "GMP"
+    },
+  },
+  LPMP: {
+    id: "LPMP",
+    selected: false,
+    stimulated: false,
+    selectable: true,
+    displayName: "Lymphocyte-primed/multipotent progenitor",
+    imagePath: '/cellTypes/Missing.png',
+    stimulable: false,
+    queryValues: {
+      unstimulated: "LPMP"
+    },
+  },
+  CLP: {
+    id: "CLP",
+    selected: false,
+    stimulated: false,
+    selectable: true,
+    displayName: "Common lymphoid/progenitor",
+    imagePath: '/cellTypes/Missing.png',
+    stimulable: false,
+    queryValues: {
+      unstimulated: "CLP"
+    },
+  },
+  CD4Tcell: {
+    id: "CD4Tcell",
+    selected: false,
+    stimulated: false,
+    selectable: true,
+    displayName: "CD4+ T cell",
+    imagePath: '/cellTypes/Missing.png',
+    stimulable: false,
+    queryValues: {
+      unstimulated: "CD4Tcell"
+    },
+  },
+  Nkcell: {
+    id: "Nkcell",
+    selected: false,
+    stimulated: false,
+    selectable: true,
+    displayName: "NK cell",
+    imagePath: '/cellTypes/Missing.png',
+    stimulable: false,
+    queryValues: {
+      unstimulated: "Nkcell"
+    },
+  }
 }
 
 export default function Downloads({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {

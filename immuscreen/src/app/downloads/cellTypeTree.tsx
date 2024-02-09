@@ -7,6 +7,9 @@ import { CellTypeInfo, CellTypes } from './page';
 
 const linkStroke = '#000000';
 const background = 'transparent';
+const fontSize = 12
+
+const fadedCellOpacity = 0.3
 
 interface CellNode extends CellTypeInfo {
   children?: CellNode[];
@@ -38,20 +41,16 @@ export default function CellTypeTree({ width, height, cellTypeState, setCellType
   const clusterData: CellNode = useMemo(() => {
     return (
       {
-        displayName: 'Hematopoietic/stem cell',
-        ...uninteractiveNode,
+        ...cellTypeState.HSC,
         children: [
           {
-            displayName: 'Multipotent/progenitor',
-            ...uninteractiveNode,
+            ...cellTypeState.MPP,
             children: [
               {
-                displayName: 'Common myeloid/progenitor',
-                ...uninteractiveNode,
+                ...cellTypeState.CMP,
                 children: [
                   {
-                    displayName: 'Granuloctye-monocyte/progenitor',
-                    ...uninteractiveNode,
+                    ...cellTypeState.GMP,
                     children: [
                       {
                         displayName: 'Neutrophil',
@@ -71,28 +70,27 @@ export default function CellTypeTree({ width, height, cellTypeState, setCellType
                 ]
               },
               {
-                displayName: 'Megakaryocyte-erythroid/progenitor',
-                ...uninteractiveNode,
+                ...cellTypeState.MEP,
                 children: [
                   {
-                    displayName: 'Erythrocyte',
-                    ...uninteractiveNode,
+                    ...cellTypeState.Ery,
                   }
                 ]
               },
               {
-                displayName: 'Lymphoid-primed/multipotent progenitor',
-                ...uninteractiveNode,
+                ...cellTypeState.LPMP,
                 children: [
                   {
-                    displayName: 'Common lymphoid/progenitor',
-                    ...uninteractiveNode,
+                    ...cellTypeState.CLP,
                     children: [
                       {
                         displayName: 'Double-negative cell',
                         ...uninteractiveNode,
                         children: [
                           {
+                            ...cellTypeState.Nkcell,
+                            children: [
+                              {
                             ...cellTypeState.Immature_NK,
                             children: [
                               {
@@ -103,6 +101,8 @@ export default function CellTypeTree({ width, height, cellTypeState, setCellType
                                   }
                                 ]
                               }
+                            ]
+                          },
                             ]
                           },
                           {
@@ -117,8 +117,7 @@ export default function CellTypeTree({ width, height, cellTypeState, setCellType
                                 ...uninteractiveNode,
                                 children: [
                                   {
-                                    displayName: 'CD4+ T cell',
-                                    ...uninteractiveNode,
+                                    ...cellTypeState.CD4Tcell,
                                     children: [
                                       {
                                         ...cellTypeState.Effector_CD4pos_T,
@@ -227,7 +226,7 @@ export default function CellTypeTree({ width, height, cellTypeState, setCellType
         <text
           x='50%'
           y={(-4.5 - (1.25 * (node.data.displayName.split('/').length - 1))).toString() + '%'}
-          fontSize={11}
+          fontSize={fontSize}
           fontFamily="Arial"
           textAnchor="middle"
           style={{ pointerEvents: 'none' }}
@@ -247,7 +246,7 @@ export default function CellTypeTree({ width, height, cellTypeState, setCellType
           height={height}
           y={centerY}
           x={centerX}
-          opacity={(node.data.selected || Object.values(cellTypeState).every(cellType => cellType.selected === false)) ? 1 : 0.2}
+          opacity={(node.data.selected || Object.values(cellTypeState).every(cellType => cellType.selected === false)) ? 1 : fadedCellOpacity}
           onClick={() => {
             if (stimulateMode) {
               if (node.data.stimulable) {
@@ -283,7 +282,7 @@ export default function CellTypeTree({ width, height, cellTypeState, setCellType
                   !node.data.stimulable && setCursor("cell")
                 } else {
                   event.currentTarget.setAttribute('transform', 'scale(1)')
-                  event.currentTarget.setAttribute('opacity', (node.data.selected || Object.values(cellTypeState).every(cellType => cellType.selected === false)) ? '1' : '0.2')
+                  event.currentTarget.setAttribute('opacity', (node.data.selected || Object.values(cellTypeState).every(cellType => cellType.selected === false)) ? '1' : String(fadedCellOpacity))
                   !stimulateMode && setCursor('auto')
                 }
               }
