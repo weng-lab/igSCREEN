@@ -551,22 +551,31 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
         cellTypeState={cellTypeState}
         setCellTypeState={setCellTypeState}
         stimulateMode={stimulateMode}
+        setStimulateMode={setStimulateMode}
         setCursor={setCursor}
       />
     )
   }, [cellTypeState, setCellTypeState, stimulateMode, setCursor])
 
   return (
-    <Grid2 container mt={3} spacing={2} sx={{cursor}}>
+    <Grid2 container mt={3} spacing={2} sx={{cursor}} >
       <Grid2 xs={12} lg={8}>
         {cellTypeTree}
       </Grid2>
       <Grid2 xs={12} lg={4}>
-        <Tooltip title="Note: Dendritic cells, plasmablasts and immature/memory NK cells are not stimulable">
-          <Button variant="outlined" onClick={() => handleStimulateAll(true)}>Stimulate All</Button>
+        <Tooltip title="Note: Not all cells are stimulable">
+          <Button onKeyDown={(event: React.KeyboardEvent<any>) => {
+        console.log("called")
+        if (event.key === "Shift") {
+          setStimulateMode(true)
+          setCursor("cell")
+        }
+      }} variant="outlined" onClick={() => handleStimulateAll(true)}>Stimulate All</Button>
         </Tooltip>
         <Button variant="outlined" onClick={() => handleStimulateAll(false)}>Unstimulate All</Button>
-        <Button variant="outlined" onClick={handleToggleStimulateMode}>{stimulateMode ? 'Exit Stimulate Mode' : 'Enter Stimulate Mode'}</Button>
+        <Tooltip title="Tip: Holding Control/Command will enter stimulate mode">
+          <Button variant="outlined" onClick={handleToggleStimulateMode}>{stimulateMode ? 'Exit Stimulate Mode' : 'Enter Stimulate Mode'}</Button>
+        </Tooltip>
         <Tooltip title="Note: Not all cells are selectable">
           <Button variant="outlined" onClick={() => handleSelectAll(true)}>Select All</Button>
         </Tooltip>

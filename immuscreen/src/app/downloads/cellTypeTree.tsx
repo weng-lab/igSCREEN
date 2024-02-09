@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Group } from '@visx/group';
 import { Tree, hierarchy } from '@visx/hierarchy';
 import { HierarchyPointNode, HierarchyPointLink } from '@visx/hierarchy/lib/types';
@@ -27,16 +27,43 @@ const uninteractiveNode = {
 const defaultMargin = { top: 80, left: 0, right: 0, bottom: 40 };
 
 export type CellTypeTreeProps = {
-  width: number;
-  height: number;
-  cellTypeState: CellTypes;
-  setCellTypeState: React.Dispatch<React.SetStateAction<CellTypes>>;
+  width: number
+  height: number
+  cellTypeState: CellTypes
+  setCellTypeState: React.Dispatch<React.SetStateAction<CellTypes>>
   stimulateMode: boolean
+  setStimulateMode: React.Dispatch<React.SetStateAction<boolean>>
   setCursor: React.Dispatch<React.SetStateAction<"auto" | "pointer" | "cell" | "not-allowed">>
-  margin?: { top: number; right: number; bottom: number; left: number };
-};
+  margin?: { top: number; right: number; bottom: number; left: number }
+}
 
-export default function CellTypeTree({ width, height, cellTypeState, setCellTypeState, stimulateMode, setCursor, margin = defaultMargin }: CellTypeTreeProps) {
+export default function CellTypeTree({ width, height, cellTypeState, setCellTypeState, stimulateMode, setStimulateMode, setCursor, margin = defaultMargin }: CellTypeTreeProps) {
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Control" || event.key === "Meta") {
+        setStimulateMode(true);
+        setCursor("cell")
+      }
+    };
+
+    const handleKeyUp = (event: KeyboardEvent) => {
+      if (event.key === "Control" || event.key === "Meta") {
+        setStimulateMode(false);
+        setCursor("auto")
+      }
+    };
+
+    // Attach event listeners to the document
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
+
+    // Cleanup: Remove event listeners when component unmounts
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('keyup', handleKeyUp);
+    };
+  }, []); // Empty dependency array ensures that the effect runs only once
 
   const clusterData: CellNode = useMemo(() => {
     return (
