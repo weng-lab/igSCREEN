@@ -135,64 +135,64 @@ export const TitledTrack: React.FC<{
   svgRef,
   color,
 }) => {
-  useEffect(
-    () => onHeightChanged && onHeightChanged(height + 40),
-    [height, onHeightChanged]
-  );
-  return (
-    <g transform={transform}>
-      <EmptyTrack
-        height={40}
-        width={1400}
-        transform="translate(0,8)"
-        id=""
-        text={title}
-      />
-      {url.endsWith(".bigBed") ? (
-        <DenseBigBed
+    useEffect(
+      () => onHeightChanged && onHeightChanged(height + 40),
+      [height, onHeightChanged]
+    );
+    return (
+      <g transform={transform}>
+        <EmptyTrack
+          height={40}
           width={1400}
-          height={height}
-          domain={domain}
-          id="adult-bCREs"
-          transform="translate(0,40)"
-          data={data as BigBedData[]}
-          svgRef={svgRef}
+          transform="translate(0,8)"
+          id=""
+          text={title}
+        />
+        {url.endsWith(".bigBed") ? (
+          <DenseBigBed
+            width={1400}
+            height={height}
+            domain={domain}
+            id="adult-bCREs"
+            transform="translate(0,40)"
+            data={data as BigBedData[]}
+            svgRef={svgRef}
           //tooltipContent={(rect) => <CCRETooltip {...rect} assembly="grch38" />}
-        />
-      ) : (
-        <FullBigWig
-          transform="translate(0,40)"
-          width={1400}
-          height={height}
-          domain={domain}
-          id="NeuN+"
-          color={color}
-          data={data as BigWigData[]}
-          noTransparency
-        />
-      )}
-    </g>
-  );
-};
+          />
+        ) : (
+          <FullBigWig
+            transform="translate(0,40)"
+            width={1400}
+            height={height}
+            domain={domain}
+            id="NeuN+"
+            color={color}
+            data={data as BigWigData[]}
+            noTransparency
+          />
+        )}
+      </g>
+    );
+  };
 
 const BulkAtacTracks: React.FC<BulkAtacTrackProps> = (props) => {
   const [cTracks, setTracks] = useState<[string, string][]>([
     [
-        "Bulk B Stimulated",
-        "https://downloads.wenglab.org/Bulk_B-S.bigWig",
-      ],
-      [
-        "Bulk B Untimulated",
-        "https://downloads.wenglab.org/Bulk_B-U.bigWig",
-      ],
-      [
-        "CD8pos T Stimulated",
-        "https://downloads.wenglab.org/CD8pos_T-S.bigWig",
-      ],
-      [
-        "CD8pos T Unstimulated",
-        "https://downloads.wenglab.org/CD8pos_T-U.bigWig",
-      ],
+      "Bulk B Stimulated",
+      "https://downloads.wenglab.org/Bulk_B-S.bigWig",
+    ],
+    [
+      "Bulk B Untimulated",
+      "https://downloads.wenglab.org/Bulk_B-U.bigWig",
+    ],
+    [
+      "CD8pos T Stimulated",
+      "https://downloads.wenglab.org/CD8pos_T-S.bigWig",
+    ],
+    [
+      "CD8pos T Unstimulated",
+      "https://downloads.wenglab.org/CD8pos_T-U.bigWig",
+    ],
   ]);
   const height = useMemo(() => cTracks.length * 80, [cTracks]);
   const bigRequests = useMemo(
@@ -235,7 +235,7 @@ const BulkAtacTracks: React.FC<BulkAtacTrackProps> = (props) => {
       </g>
       {(data?.bigRequests || []).map((data, i) => (
         <TitledTrack
-        key={i}
+          key={i}
           height={40}
           url={cTracks[i][1]}
           domain={props.domain}
@@ -283,7 +283,7 @@ const BulkAtacTracks: React.FC<BulkAtacTrackProps> = (props) => {
         textAnchor="middle"
         fill="#194023"
       >
-        Bulk Atac Tracks 
+        Bulk Atac Tracks
       </text>
     </>
   );

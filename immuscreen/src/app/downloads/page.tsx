@@ -1,9 +1,13 @@
 'use client'
 import * as React from "react"
-import CellTypeTree from "./cellTypeTree"
-import { useMemo, useState } from "react"
+import CellTypeTree from "../../common/components/cellTypeTree"
+import { useEffect, useMemo, useState } from "react"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
-import { Button, Tooltip } from "@mui/material";
+import { Button, CircularProgress, Tooltip } from "@mui/material";
+import { QueryResult, gql, useQuery } from "@apollo/client";
+import { DataTable } from "@weng-lab/psychscreen-ui-components";
+import { client } from "../../common/utils";
+
 /**
  * @todo add hover info on cells (how many cCREs active)
  */
@@ -11,9 +15,10 @@ import { Button, Tooltip } from "@mui/material";
 export interface CellTypeInfo {
   readonly id: string; // used to set state of correct celltype afer its content is spread (...) into tree data and stripped of key name. Needs to match key exactly
   readonly displayName: string;
-  readonly imagePath: string;
+  readonly unstimImagePath: string;
+  readonly stimImagePath?: string;
   selected: boolean;
-  stimulated: boolean;
+  stimulated: "S" | "U" | "B";
   readonly selectable: boolean;
   readonly stimulable: boolean;
   readonly queryValues?: {
@@ -74,10 +79,11 @@ const cellTypeInitialState: CellTypes = {
   Monocytes: {
     id: 'Monocytes',
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "Monocyte",
-    imagePath: '/cellTypes/Monocytes.png',
+    unstimImagePath: '/cellTypes/Monocytes-U.png',
+    stimImagePath: '/cellTypes/Monocytes-S.png',
     stimulable: true,
     queryValues: {
       unstimulated: 'Monocytes-U',
@@ -88,10 +94,10 @@ const cellTypeInitialState: CellTypes = {
   Myeloid_DCs: {
     id: 'Myeloid_DCs',
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "Myeloid/dendritic cell",
-    imagePath: '/cellTypes/Myeloid_DCs.png',
+    unstimImagePath: '/cellTypes/Myeloid_DCs-U.png',
     stimulable: false,
     queryValues: {
       unstimulated: 'Myeloid_DCs-U'
@@ -100,10 +106,10 @@ const cellTypeInitialState: CellTypes = {
   pDCs: {
     id: 'pDCs',
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "Plasmacytoid/dendritic cell",
-    imagePath: '/cellTypes/pDCs.png',
+    unstimImagePath: '/cellTypes/pDCs-U.png',
     stimulable: false,
     queryValues: {
       unstimulated: 'pDCs-U'
@@ -112,10 +118,11 @@ const cellTypeInitialState: CellTypes = {
   Bulk_B: {
     id: 'Bulk_B',
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "Bulk/B cell",
-    imagePath: '/cellTypes/Bulk_B.png',
+    unstimImagePath: '/cellTypes/Bulk_B-U.png',
+    stimImagePath: '/cellTypes/Bulk_B-S.png',
     stimulable: true,
     queryValues: {
       unstimulated: 'Bulk_B-U',
@@ -126,10 +133,11 @@ const cellTypeInitialState: CellTypes = {
   Naive_B: {
     id: 'Naive_B',
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "Naïve/B cell",
-    imagePath: '/cellTypes/Naive_B.png',
+    unstimImagePath: '/cellTypes/Naive_B-U.png',
+    stimImagePath: '/cellTypes/Naive_B-S.png',
     stimulable: true,
     queryValues: {
       unstimulated: 'Naive_B-U',
@@ -139,10 +147,11 @@ const cellTypeInitialState: CellTypes = {
   Mem_B: {
     id: 'Mem_B',
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "Memory/B cell",
-    imagePath: '/cellTypes/Mem_B.png',
+    unstimImagePath: '/cellTypes/Mem_B-U.png',
+    stimImagePath: '/cellTypes/Mem_B-S.png',
     stimulable: true,
     queryValues: {
       unstimulated: 'Mem_B-U',
@@ -152,10 +161,10 @@ const cellTypeInitialState: CellTypes = {
   Plasmablasts: {
     id: 'Plasmablasts',
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "Plasmablast",
-    imagePath: '/cellTypes/Plasmablasts.png',
+    unstimImagePath: '/cellTypes/Plasmablasts-U.png',
     stimulable: false,
     queryValues: {
       unstimulated: 'Plasmablasts-U'
@@ -164,10 +173,11 @@ const cellTypeInitialState: CellTypes = {
   Regulatory_T: {
     id: 'Regulatory_T',
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "Regulatory/CD4+ T cell",
-    imagePath: '/cellTypes/Regulatory_T.png',
+    unstimImagePath: '/cellTypes/Regulatory_T-U.png',
+    stimImagePath: '/cellTypes/Regulatory_T-S.png',
     stimulable: true,
     queryValues: {
       unstimulated: 'Regulatory_T-U',
@@ -177,10 +187,11 @@ const cellTypeInitialState: CellTypes = {
   Naive_Tregs: {
     id: 'Naive_Tregs',
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "Naïve T/regulatory cell",
-    imagePath: '/cellTypes/Naive_Tregs.png',
+    unstimImagePath: '/cellTypes/Naive_Tregs-U.png',
+    stimImagePath: '/cellTypes/Naive_Tregs-S.png',
     stimulable: true,
     queryValues: {
       unstimulated: 'Naive_Tregs-U',
@@ -190,10 +201,11 @@ const cellTypeInitialState: CellTypes = {
   Memory_Tregs: {
     id: 'Memory_Tregs',
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "Memory T/regulatory cell",
-    imagePath: '/cellTypes/Memory_Tregs.png',
+    unstimImagePath: '/cellTypes/Memory_Tregs-U.png',
+    stimImagePath: '/cellTypes/Memory_Tregs-S.png',
     stimulable: true,
     queryValues: {
       unstimulated: 'Memory_Tregs-U',
@@ -203,10 +215,11 @@ const cellTypeInitialState: CellTypes = {
   Effector_CD4pos_T: {
     id: 'Effector_CD4pos_T',
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "Effector/CD4+ T cell",
-    imagePath: '/cellTypes/Effector_CD4pos_T.png',
+    unstimImagePath: '/cellTypes/Effector_CD4pos_T-U.png',
+    stimImagePath: '/cellTypes/Effector_CD4pos_T-S.png',
     stimulable: true,
     queryValues: {
       unstimulated: 'Effector_CD4pos_T-U',
@@ -216,10 +229,11 @@ const cellTypeInitialState: CellTypes = {
   Naive_Teffs: {
     id: 'Naive_Teffs',
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "Naïve T/effector cell",
-    imagePath: '/cellTypes/Naive_teffs.png',
+    unstimImagePath: '/cellTypes/Naive_teffs-U.png',
+    stimImagePath: '/cellTypes/Naive_teffs-S.png',
     stimulable: true,
     queryValues: {
       unstimulated: 'Naive_Teffs-U',
@@ -229,10 +243,11 @@ const cellTypeInitialState: CellTypes = {
   Memory_Teffs: {
     id: 'Memory_Teffs',
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "Memory T/effector cell",
-    imagePath: '/cellTypes/Memory_Teffs.png',
+    unstimImagePath: '/cellTypes/Memory_Teffs-U.png',
+    stimImagePath: '/cellTypes/Memory_Teffs-S.png',
     stimulable: true,
     queryValues: {
       unstimulated: 'Memory_Teffs-U',
@@ -242,10 +257,11 @@ const cellTypeInitialState: CellTypes = {
   Th1_precursors: {
     id: 'Th1_precursors',
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "Th1/precursor",
-    imagePath: '/cellTypes/Th1_precursors.png',
+    unstimImagePath: '/cellTypes/Th1_precursors-U.png',
+    stimImagePath: '/cellTypes/Th1_precursors-S.png',
     stimulable: true,
     queryValues: {
       unstimulated: 'Th1_precursors-U',
@@ -255,10 +271,11 @@ const cellTypeInitialState: CellTypes = {
   Th2_precursors: {
     id: 'Th2_precursors',
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "Th2/precursor",
-    imagePath: '/cellTypes/Th2_precursors.png',
+    unstimImagePath: '/cellTypes/Th2_precursors-U.png',
+    stimImagePath: '/cellTypes/Th2_precursors-S.png',
     stimulable: true,
     queryValues: {
       unstimulated: 'Th2_precursors-U',
@@ -268,10 +285,11 @@ const cellTypeInitialState: CellTypes = {
   Th17_precursors: {
     id: 'Th17_precursors',
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "Th17/precursor",
-    imagePath: '/cellTypes/Th17_precursors.png',
+    unstimImagePath: '/cellTypes/Th17_precursors-U.png',
+    stimImagePath: '/cellTypes/Th17_precursors-S.png',
     stimulable: true,
     queryValues: {
       unstimulated: 'Th17_precursors-U',
@@ -281,10 +299,11 @@ const cellTypeInitialState: CellTypes = {
   Follicular_T_Helper: {
     id: 'Follicular_T_Helper',
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "T follicular/helper cell",
-    imagePath: '/cellTypes/Follicular_T_helper.png',
+    unstimImagePath: '/cellTypes/Follicular_T_helper-U.png',
+    stimImagePath: '/cellTypes/Follicular_T_helper-S.png',
     stimulable: true,
     queryValues: {
       unstimulated: 'Follicular_T_Helper-U',
@@ -294,10 +313,11 @@ const cellTypeInitialState: CellTypes = {
   CD8pos_T: {
     id: 'CD8pos_T',
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "CD8+ T cell",
-    imagePath: '/cellTypes/CD8pos_T.png',
+    unstimImagePath: '/cellTypes/CD8pos_T-U.png',
+    stimImagePath: '/cellTypes/CD8pos_T-S.png',
     stimulable: true,
     queryValues: {
       unstimulated: 'CD8pos_T-U',
@@ -308,10 +328,11 @@ const cellTypeInitialState: CellTypes = {
   Naive_CD8_T: {
     id: 'Naive_CD8_T',
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "Naïve CD8+/T cell",
-    imagePath: '/cellTypes/Naive_CD8_T.png',
+    unstimImagePath: '/cellTypes/Naive_CD8_T-U.png',
+    stimImagePath: '/cellTypes/Naive_CD8_T-S.png',
     stimulable: true,
     queryValues: {
       unstimulated: 'Naive_CD8_T-U',
@@ -321,10 +342,11 @@ const cellTypeInitialState: CellTypes = {
   Central_memory_CD8pos_T: {
     id: 'Central_memory_CD8pos_T',
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "Central/memory/CD8+ T cell",
-    imagePath: '/cellTypes/Central_Memory_CD8pos_T.png',
+    unstimImagePath: '/cellTypes/Central_Memory_CD8pos_T-U.png',
+    stimImagePath: '/cellTypes/Central_Memory_CD8pos_T-S.png',
     stimulable: true,
     queryValues: {
       unstimulated: 'Central_memory_CD8pos_T-U',
@@ -334,10 +356,11 @@ const cellTypeInitialState: CellTypes = {
   Effector_memory_CD8pos_T: {
     id: 'Effector_memory_CD8pos_T',
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "Effector/memory/CD8+ T cell",
-    imagePath: '/cellTypes/Effector_memory_CD8pos_T.png',
+    unstimImagePath: '/cellTypes/Effector_memory_CD8pos_T-U.png',
+    stimImagePath: '/cellTypes/Effector_memory_CD8pos_T-S.png',
     stimulable: true,
     queryValues: {
       unstimulated: 'Effector_memory_CD8pos_T-U',
@@ -347,10 +370,11 @@ const cellTypeInitialState: CellTypes = {
   Gamma_delta_T: {
     id: 'Gamma_delta_T',
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "Gamma-delta/T cell",
-    imagePath: '/cellTypes/Gamma_delta_T.png',
+    unstimImagePath: '/cellTypes/Gamma_delta_T-U.png',
+    stimImagePath: '/cellTypes/Gamma_delta_T-S.png',
     stimulable: true,
     queryValues: {
       unstimulated: 'Gamma_delta_T-U',
@@ -360,10 +384,10 @@ const cellTypeInitialState: CellTypes = {
   Immature_NK: {
     id: 'Immature_NK',
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "Immature/NK cell",
-    imagePath: '/cellTypes/Immature_NK.png',
+    unstimImagePath: '/cellTypes/Immature_NK-U.png',
     stimulable: false,
     queryValues: {
       unstimulated: 'Immature_NK-U'
@@ -372,10 +396,11 @@ const cellTypeInitialState: CellTypes = {
   Mature_NK: {
     id: 'Mature_NK',
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "Mature/NK cell",
-    imagePath: '/cellTypes/Mature_NK.png',
+    unstimImagePath: '/cellTypes/Mature_NK-U.png',
+    stimImagePath: '/cellTypes/Mature_NK-S.png',
     stimulable: true,
     queryValues: {
       unstimulated: 'Mature_NK-U',
@@ -385,10 +410,10 @@ const cellTypeInitialState: CellTypes = {
   Memory_NK: {
     id: 'Memory_NK',
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "Memory/NK cell",
-    imagePath: '/cellTypes/Memory_NK.png',
+    unstimImagePath: '/cellTypes/Memory_NK-U.png',
     stimulable: false,
     queryValues: {
       unstimulated: 'Memory_NK-U'
@@ -397,10 +422,10 @@ const cellTypeInitialState: CellTypes = {
   HSC: {
     id: 'HSC',
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "Hematopoetic/stem cell",
-    imagePath: '/cellTypes/Missing.png',
+    unstimImagePath: '/cellTypes/HSC.png',
     stimulable: false,
     queryValues: {
       unstimulated: "HSC"
@@ -409,10 +434,10 @@ const cellTypeInitialState: CellTypes = {
   MPP: {
     id: "MPP",
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "Multipotent/progenitor",
-    imagePath: '/cellTypes/Missing.png',
+    unstimImagePath: '/cellTypes/HSC.png',
     stimulable: false,
     queryValues: {
       unstimulated: "MPP"
@@ -421,10 +446,10 @@ const cellTypeInitialState: CellTypes = {
   CMP: {
     id: "CMP",
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "Common myeloid/progenitor",
-    imagePath: '/cellTypes/Missing.png',
+    unstimImagePath: '/cellTypes/CMP.png',
     stimulable: false,
     queryValues: {
       unstimulated: "CMP"
@@ -433,10 +458,10 @@ const cellTypeInitialState: CellTypes = {
   MEP: {
     id: "MEP",
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "Megakaryocyte-erythroid/progenitor",
-    imagePath: '/cellTypes/Missing.png',
+    unstimImagePath: '/cellTypes/MEP.png',
     stimulable: false,
     queryValues: {
       unstimulated: "MEP"
@@ -445,10 +470,10 @@ const cellTypeInitialState: CellTypes = {
   Ery: {
     id: "Ery",
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "Erythrocyte",
-    imagePath: '/cellTypes/Missing.png',
+    unstimImagePath: '/cellTypes/Erythrocyte.png',
     stimulable: false,
     queryValues: {
       unstimulated: "Ery"
@@ -457,10 +482,10 @@ const cellTypeInitialState: CellTypes = {
   GMP: {
     id: "GMP",
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "Granulocyte-monocyte/progenitors",
-    imagePath: '/cellTypes/Missing.png',
+    unstimImagePath: '/cellTypes/GMP.png',
     stimulable: false,
     queryValues: {
       unstimulated: "GMP"
@@ -469,10 +494,10 @@ const cellTypeInitialState: CellTypes = {
   LPMP: {
     id: "LPMP",
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "Lymphocyte-primed/multipotent progenitor",
-    imagePath: '/cellTypes/Missing.png',
+    unstimImagePath: '/cellTypes/LMP.png',
     stimulable: false,
     queryValues: {
       unstimulated: "LPMP"
@@ -481,10 +506,10 @@ const cellTypeInitialState: CellTypes = {
   CLP: {
     id: "CLP",
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "Common lymphoid/progenitor",
-    imagePath: '/cellTypes/Missing.png',
+    unstimImagePath: '/cellTypes/CLP.png',
     stimulable: false,
     queryValues: {
       unstimulated: "CLP"
@@ -493,10 +518,10 @@ const cellTypeInitialState: CellTypes = {
   CD4Tcell: {
     id: "CD4Tcell",
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "CD4+ T cell",
-    imagePath: '/cellTypes/Missing.png',
+    unstimImagePath: '/cellTypes/Missing.png',
     stimulable: false,
     queryValues: {
       unstimulated: "CD4Tcell"
@@ -505,10 +530,10 @@ const cellTypeInitialState: CellTypes = {
   Nkcell: {
     id: "Nkcell",
     selected: false,
-    stimulated: false,
+    stimulated: "U",
     selectable: true,
     displayName: "NK cell",
-    imagePath: '/cellTypes/Missing.png',
+    unstimImagePath: '/cellTypes/Missing.png',
     stimulable: false,
     queryValues: {
       unstimulated: "Nkcell"
@@ -516,21 +541,79 @@ const cellTypeInitialState: CellTypes = {
   }
 }
 
+const ICRE_QUERY = gql(`
+  query icrQuery($celltypes:[String!]){
+    iCREQuery(celltypes:$celltypes) {
+      celltypes
+      accession
+      coordinates {
+        start
+        end
+        chromosome
+      }
+      group
+      rdhs
+    }
+  }
+`)
+
+interface cCRECellTypeData {
+  celltypes: string[];
+  accession: string;
+  coordinates: {
+    start: number;
+    end: number;
+    chromosome: string;
+  };
+  group: string;
+  rdhs: string;
+}
+
 export default function Downloads({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
   const [cellTypeState, setCellTypeState] = useState<CellTypes>(cellTypeInitialState)
   const [stimulateMode, setStimulateMode] = useState<boolean>(false)
   const [cursor, setCursor] = useState<'auto' | 'pointer' | 'cell' | 'not-allowed'>('auto')
+  const [toFetch, setToFetch] = useState<string[]>(null)
 
-  const handleStimulateAll = (x: boolean) => {
-    let newObj = {...cellTypeState}
+  const extractCellNames = () => {
+    return (
+      Object.values(cellTypeState)
+        .filter((cellType: CellTypeInfo) => cellType.selected)
+        .flatMap((cellType: CellTypeInfo) => {
+          switch (cellType.stimulated) {
+            case "U": return [cellType.queryValues.unstimulated]
+            case "S": return [cellType.queryValues.stimulated]
+            case "B": return [cellType.queryValues.unstimulated, cellType.queryValues.stimulated]
+            default: return []
+          }
+        })
+    )
+  }
+
+  //Need to properly type the variable used and return data
+  const { data: data_cellTypeSpecific, loading: loading_cellTypeSpecific, error: error_cellTypeSpecific, refetch } = useQuery(
+    ICRE_QUERY,
+    {
+      variables: { celltypes: toFetch },
+      client,
+      skip: !toFetch
+    }
+  )
+
+  /**
+   * 
+   * @param x 
+   */
+  const handleStimulateAll = (mode: "U" | "S" | "B") => {
+    let newObj = { ...cellTypeState }
     for (let cellName in newObj) {
-      newObj[cellName].stimulable && (newObj[cellName].stimulated = x)
+      newObj[cellName].stimulable && (newObj[cellName].stimulated = mode)
     }
     setCellTypeState(newObj)
   }
 
   const handleSelectAll = (x: boolean) => {
-    let newObj = {...cellTypeState}
+    let newObj = { ...cellTypeState }
     for (let cellName in newObj) {
       newObj[cellName].selectable && (newObj[cellName].selected = x)
     }
@@ -542,12 +625,26 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
     setCursor(!stimulateMode ? 'cell' : 'auto')
   }
 
+  // Event handler for button click to update user-entered information
+  const handleFetch = () => {
+    // Update user-entered information in state
+    // This will trigger the useEffect hook to refetch the query
+    console.log(extractCellNames())
+    setToFetch(extractCellNames());
+  };
+
+  useEffect(() => {
+    refetch({ celltypes: toFetch });
+  }, [toFetch, refetch])
+
+
   //Wrap in useMemo to stop rerender of tree when cursor changes here
   const cellTypeTree = useMemo(() => {
     return (
       <CellTypeTree
         width={1000}
-        height={1000}
+        height={1100}
+        orientation="vertical"
         cellTypeState={cellTypeState}
         setCellTypeState={setCellTypeState}
         stimulateMode={stimulateMode}
@@ -558,28 +655,43 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
   }, [cellTypeState, setCellTypeState, stimulateMode, setCursor])
 
   return (
-    <Grid2 container mt={3} spacing={2} sx={{cursor}} >
+    <Grid2 container mt={3} spacing={2} sx={{ cursor }} >
       <Grid2 xs={12} lg={8}>
         {cellTypeTree}
       </Grid2>
       <Grid2 xs={12} lg={4}>
         <Tooltip title="Note: Not all cells are stimulable">
-          <Button onKeyDown={(event: React.KeyboardEvent<any>) => {
-        console.log("called")
-        if (event.key === "Shift") {
-          setStimulateMode(true)
-          setCursor("cell")
-        }
-      }} variant="outlined" onClick={() => handleStimulateAll(true)}>Stimulate All</Button>
+          <Button variant="outlined">Stimulate All</Button>
         </Tooltip>
-        <Button variant="outlined" onClick={() => handleStimulateAll(false)}>Unstimulate All</Button>
-        <Tooltip title="Tip: Holding Control/Command will enter stimulate mode">
+        <Button variant="outlined" onClick={() => handleStimulateAll("U")}>Unstimulate All</Button>
+        <Tooltip title="Tip: Holding Option/Command (MacOS) or Alt/Windows (Windows) will enter stimulate mode">
           <Button variant="outlined" onClick={handleToggleStimulateMode}>{stimulateMode ? 'Exit Stimulate Mode' : 'Enter Stimulate Mode'}</Button>
         </Tooltip>
         <Tooltip title="Note: Not all cells are selectable">
           <Button variant="outlined" onClick={() => handleSelectAll(true)}>Select All</Button>
         </Tooltip>
         <Button variant="outlined" onClick={() => handleSelectAll(false)}>Unselect All</Button>
+        <Button variant="outlined" onClick={handleFetch}>Fetch cCREs</Button>
+        {loading_cellTypeSpecific ?
+          <CircularProgress />
+          :
+          <DataTable
+            columns={[
+              {
+                header: "Accession",
+                value: (row: cCRECellTypeData) => row.accession
+              },
+              {
+                header: "Class",
+                value: (row: cCRECellTypeData) => row.group
+              }
+            ]}
+            rows={data_cellTypeSpecific?.iCREQuery || []}
+            searchable
+            emptyText="Please Select a Cell Type to see results"
+            tableTitle={toFetch?.length > 0 ? "iCREs active in: " + toFetch.join() : ''}
+          />
+        }
       </Grid2>
     </Grid2>
   )

@@ -27,6 +27,10 @@ const pageLinks = [
     pageName: "Downloads",
     link: "/downloads",
   },
+  {
+    pageName: "Test",
+    link: "/test",
+  },
 ]
 
 /**

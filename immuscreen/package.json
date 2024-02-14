@@ -51,7 +51,7 @@
     "@visx/hierarchy": "^3.3.0",
     "@visx/responsive": "^3.3.0",
     "@visx/shape": "^3.5.0",
-    "@weng-lab/psychscreen-ui-components": "^0.8.0-a.2",
+    "@weng-lab/psychscreen-ui-components": "^0.8.6",
     "@weng-lab/ts-ztable": "^4.0.1",
     "autoprefixer": "10.4.15",
     "bpnet-ui": "^0.2.9",
