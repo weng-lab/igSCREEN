@@ -22,8 +22,8 @@ export interface CellTypeInfo {
   readonly selectable: boolean;
   readonly stimulable: boolean;
   readonly queryValues?: {
-    readonly unstimulated: string;
-    readonly stimulated?: string;
+    readonly unstimulated: {Calderon?: string | string[], Corces?: string | string[]};
+    readonly stimulated?: {Calderon: string | string[]}
   }
 }
 
@@ -86,9 +86,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Monocytes-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: 'Monocytes-U',
-      stimulated: 'Monocytes-S'
-      //IN Corces is "Mono"
+      unstimulated: {Calderon: 'Monocytes-U', Corces: 'Mono'},
+      stimulated: {Calderon: 'Monocytes-S'}
     },
   },
   Myeloid_DCs: {
@@ -100,7 +99,7 @@ const cellTypeInitialState: CellTypes = {
     unstimImagePath: '/cellTypes/Myeloid_DCs-U.png',
     stimulable: false,
     queryValues: {
-      unstimulated: 'Myeloid_DCs-U'
+      unstimulated: {Calderon: "Myeloid_DCs-U"}
     },
   },
   pDCs: {
@@ -112,7 +111,7 @@ const cellTypeInitialState: CellTypes = {
     unstimImagePath: '/cellTypes/pDCs-U.png',
     stimulable: false,
     queryValues: {
-      unstimulated: 'pDCs-U'
+      unstimulated: {Calderon: 'pDCs-U'}
     },
   },
   Bulk_B: {
@@ -125,9 +124,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Bulk_B-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: 'Bulk_B-U',
-      stimulated: 'Bulk_B-S'
-      //In Corces is "Bcell"
+      unstimulated: {Calderon: 'Bulk_B-U', Corces: "Bcell"},
+      stimulated: {Calderon: 'Bulk_B-S'}
     },
   },
   Naive_B: {
@@ -140,8 +138,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Naive_B-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: 'Naive_B-U',
-      stimulated: 'Naive_B-S'
+      unstimulated: {Calderon: 'Naive_B-U'},
+      stimulated: {Calderon: 'Naive_B-S'}
     },
   },
   Mem_B: {
@@ -154,8 +152,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Mem_B-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: 'Mem_B-U',
-      stimulated: 'Mem_B-S'
+      unstimulated: {Calderon: 'Mem_B-U'},
+      stimulated: {Calderon: 'Mem_B-S'}
     },
   },
   Plasmablasts: {
@@ -167,7 +165,7 @@ const cellTypeInitialState: CellTypes = {
     unstimImagePath: '/cellTypes/Plasmablasts-U.png',
     stimulable: false,
     queryValues: {
-      unstimulated: 'Plasmablasts-U'
+      unstimulated: {Calderon: 'Plasmablasts-U'}
     },
   },
   Regulatory_T: {
@@ -180,8 +178,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Regulatory_T-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: 'Regulatory_T-U',
-      stimulated: 'Regulatory_T-S'
+      unstimulated: {Calderon: 'Regulatory_T-U'},
+      stimulated: {Calderon: 'Regulatory_T-S'}
     },
   },
   Naive_Tregs: {
@@ -194,8 +192,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Naive_Tregs-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: 'Naive_Tregs-U',
-      stimulated: 'Naive_Tregs-S'
+      unstimulated: {Calderon: 'Naive_Tregs-U'},
+      stimulated: {Calderon: 'Naive_Tregs-S'}
     },
   },
   Memory_Tregs: {
@@ -208,8 +206,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Memory_Tregs-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: 'Memory_Tregs-U',
-      stimulated: 'Memory_Tregs-S'
+      unstimulated: {Calderon: 'Memory_Tregs-U'},
+      stimulated: {Calderon: 'Memory_Tregs-S'}
     },
   },
   Effector_CD4pos_T: {
@@ -222,8 +220,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Effector_CD4pos_T-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: 'Effector_CD4pos_T-U',
-      stimulated: 'Effector_CD4pos_T-S'
+      unstimulated: {Calderon: 'Effector_CD4pos_T-U'},
+      stimulated: {Calderon: 'Effector_CD4pos_T-S'}
     },
   },
   Naive_Teffs: {
@@ -236,8 +234,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Naive_teffs-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: 'Naive_Teffs-U',
-      stimulated: 'Naive_Teffs-S'
+      unstimulated: {Calderon: 'Naive_Teffs-U'},
+      stimulated: {Calderon: 'Naive_Teffs-S'}
     },
   },
   Memory_Teffs: {
@@ -250,8 +248,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Memory_Teffs-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: 'Memory_Teffs-U',
-      stimulated: 'Memory_Teffs-S'
+      unstimulated: {Calderon: 'Memory_Teffs-U'},
+      stimulated: {Calderon: 'Memory_Teffs-S'}
     },
   },
   Th1_precursors: {
@@ -264,8 +262,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Th1_precursors-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: 'Th1_precursors-U',
-      stimulated: 'Th1_precursors-S'
+      unstimulated: {Calderon: 'Th1_precursors-U'},
+      stimulated: {Calderon: 'Th1_precursors-S'}
     },
   },
   Th2_precursors: {
@@ -278,8 +276,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Th2_precursors-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: 'Th2_precursors-U',
-      stimulated: 'Th2_precursors-S'
+      unstimulated: {Calderon: 'Th2_precursors-U'},
+      stimulated: {Calderon: 'Th2_precursors-S'}
     },
   },
   Th17_precursors: {
@@ -292,8 +290,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Th17_precursors-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: 'Th17_precursors-U',
-      stimulated: 'Th17_precursors-S'
+      unstimulated: {Calderon: 'Th17_precursors-U'},
+      stimulated: {Calderon: 'Th17_precursors-S'}
     },
   },
   Follicular_T_Helper: {
@@ -306,8 +304,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Follicular_T_helper-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: 'Follicular_T_Helper-U',
-      stimulated: 'Follicular_T_Helper-S'
+      unstimulated: {Calderon: 'Follicular_T_Helper-U'},
+      stimulated: {Calderon: 'Follicular_T_Helper-S'}
     },
   },
   CD8pos_T: {
@@ -320,9 +318,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/CD8pos_T-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: 'CD8pos_T-U',
-      stimulated: 'CD8pos_T-S'
-      //In Corces is "CD8Tcell"
+      unstimulated: {Calderon: 'CD8pos_T-U', Corces: "CD8Tcell"},
+      stimulated: {Calderon: 'CD8pos_T-S'}
     },
   },
   Naive_CD8_T: {
@@ -335,8 +332,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Naive_CD8_T-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: 'Naive_CD8_T-U',
-      stimulated: 'Naive_CD8_T-S'
+      unstimulated: {Calderon: 'Naive_CD8_T-U'},
+      stimulated: {Calderon: 'Naive_CD8_T-S'}
     },
   },
   Central_memory_CD8pos_T: {
@@ -349,8 +346,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Central_Memory_CD8pos_T-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: 'Central_memory_CD8pos_T-U',
-      stimulated: 'Central_memory_CD8pos_T-S'
+      unstimulated: {Calderon: 'Central_memory_CD8pos_T-U'},
+      stimulated: {Calderon: 'Central_memory_CD8pos_T-S'}
     },
   },
   Effector_memory_CD8pos_T: {
@@ -363,8 +360,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Effector_memory_CD8pos_T-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: 'Effector_memory_CD8pos_T-U',
-      stimulated: 'Effector_memory_CD8pos_T-S'
+      unstimulated: {Calderon: 'Effector_memory_CD8pos_T-U'},
+      stimulated: {Calderon: 'Effector_memory_CD8pos_T-S'}
     },
   },
   Gamma_delta_T: {
@@ -377,8 +374,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Gamma_delta_T-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: 'Gamma_delta_T-U',
-      stimulated: 'Gamma_delta_T-S'
+      unstimulated: {Calderon: 'Gamma_delta_T-U'},
+      stimulated: {Calderon: 'Gamma_delta_T-S'}
     },
   },
   Immature_NK: {
@@ -390,7 +387,7 @@ const cellTypeInitialState: CellTypes = {
     unstimImagePath: '/cellTypes/Immature_NK-U.png',
     stimulable: false,
     queryValues: {
-      unstimulated: 'Immature_NK-U'
+      unstimulated: {Calderon: 'Immature_NK-U'}
     },
   },
   Mature_NK: {
@@ -403,8 +400,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Mature_NK-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: 'Mature_NK-U',
-      stimulated: 'Mature_NK-S'
+      unstimulated: {Calderon: 'Mature_NK-U'},
+      stimulated: {Calderon: 'Mature_NK-S'}
     },
   },
   Memory_NK: {
@@ -416,7 +413,7 @@ const cellTypeInitialState: CellTypes = {
     unstimImagePath: '/cellTypes/Memory_NK-U.png',
     stimulable: false,
     queryValues: {
-      unstimulated: 'Memory_NK-U'
+      unstimulated: {Calderon: 'Memory_NK-U'}
     },
   },
   HSC: {
@@ -428,7 +425,7 @@ const cellTypeInitialState: CellTypes = {
     unstimImagePath: '/cellTypes/HSC.png',
     stimulable: false,
     queryValues: {
-      unstimulated: "HSC"
+      unstimulated: {Corces: ["HSC", "CD34_Cord_Blood", "CD34_Bone_Marrow"]}
     },
   },
   MPP: {
@@ -437,10 +434,10 @@ const cellTypeInitialState: CellTypes = {
     stimulated: "U",
     selectable: true,
     displayName: "Multipotent/progenitor",
-    unstimImagePath: '/cellTypes/HSC.png',
+    unstimImagePath: '/cellTypes/Missing.png',
     stimulable: false,
     queryValues: {
-      unstimulated: "MPP"
+      unstimulated: {Corces: "MPP"}
     },
   },
   CMP: {
@@ -452,7 +449,7 @@ const cellTypeInitialState: CellTypes = {
     unstimImagePath: '/cellTypes/CMP.png',
     stimulable: false,
     queryValues: {
-      unstimulated: "CMP"
+      unstimulated: {Corces: "CMP"}
     },
   },
   MEP: {
@@ -464,7 +461,7 @@ const cellTypeInitialState: CellTypes = {
     unstimImagePath: '/cellTypes/MEP.png',
     stimulable: false,
     queryValues: {
-      unstimulated: "MEP"
+      unstimulated: {Corces: "MEP"}
     },
   },
   Ery: {
@@ -476,7 +473,7 @@ const cellTypeInitialState: CellTypes = {
     unstimImagePath: '/cellTypes/Erythrocyte.png',
     stimulable: false,
     queryValues: {
-      unstimulated: "Ery"
+      unstimulated: {Corces: "Ery"}
     },
   },
   GMP: {
@@ -488,7 +485,7 @@ const cellTypeInitialState: CellTypes = {
     unstimImagePath: '/cellTypes/GMP.png',
     stimulable: false,
     queryValues: {
-      unstimulated: "GMP"
+      unstimulated: {Corces: "GMP"}
     },
   },
   LPMP: {
@@ -500,7 +497,7 @@ const cellTypeInitialState: CellTypes = {
     unstimImagePath: '/cellTypes/LMP.png',
     stimulable: false,
     queryValues: {
-      unstimulated: "LPMP"
+      unstimulated: {Corces: "LMPP"}
     },
   },
   CLP: {
@@ -512,7 +509,7 @@ const cellTypeInitialState: CellTypes = {
     unstimImagePath: '/cellTypes/CLP.png',
     stimulable: false,
     queryValues: {
-      unstimulated: "CLP"
+      unstimulated: {Corces: "CLP"}
     },
   },
   CD4Tcell: {
@@ -524,7 +521,7 @@ const cellTypeInitialState: CellTypes = {
     unstimImagePath: '/cellTypes/Missing.png',
     stimulable: false,
     queryValues: {
-      unstimulated: "CD4Tcell"
+      unstimulated: {Corces: "CD4Tcell"}
     },
   },
   Nkcell: {
@@ -536,7 +533,7 @@ const cellTypeInitialState: CellTypes = {
     unstimImagePath: '/cellTypes/Missing.png',
     stimulable: false,
     queryValues: {
-      unstimulated: "Nkcell"
+      unstimulated: {Corces: "NKcell"}
     },
   }
 }
@@ -575,15 +572,15 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
   const [cursor, setCursor] = useState<'auto' | 'pointer' | 'cell' | 'not-allowed'>('auto')
   const [toFetch, setToFetch] = useState<string[]>(null)
 
-  const extractCellNames = () => {
+  const extractCellNames = (): string[] => {
     return (
       Object.values(cellTypeState)
         .filter((cellType: CellTypeInfo) => cellType.selected)
         .flatMap((cellType: CellTypeInfo) => {
           switch (cellType.stimulated) {
-            case "U": return [cellType.queryValues.unstimulated]
-            case "S": return [cellType.queryValues.stimulated]
-            case "B": return [cellType.queryValues.unstimulated, cellType.queryValues.stimulated]
+            case "U": return [...(Object.values(cellType.queryValues.unstimulated).flat())]
+            case "S": return [...(Object.values(cellType.queryValues.stimulated).flat())]
+            case "B": return [...(Object.values(cellType.queryValues.unstimulated).flat()), ...(Object.values(cellType.queryValues.stimulated).flat())]
             default: return []
           }
         })
@@ -630,7 +627,7 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
     // Update user-entered information in state
     // This will trigger the useEffect hook to refetch the query
     console.log(extractCellNames())
-    setToFetch(extractCellNames());
+    // setToFetch(extractCellNames());
   };
 
   useEffect(() => {
@@ -643,7 +640,7 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
     return (
       <CellTypeTree
         width={1000}
-        height={1100}
+        height={1300}
         orientation="vertical"
         cellTypeState={cellTypeState}
         setCellTypeState={setCellTypeState}
@@ -661,7 +658,7 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
       </Grid2>
       <Grid2 xs={12} lg={4}>
         <Tooltip title="Note: Not all cells are stimulable">
-          <Button variant="outlined">Stimulate All</Button>
+          <Button variant="outlined" onClick={() => handleStimulateAll("S")}>Stimulate All</Button>
         </Tooltip>
         <Button variant="outlined" onClick={() => handleStimulateAll("U")}>Unstimulate All</Button>
         <Tooltip title="Tip: Holding Option/Command (MacOS) or Alt/Windows (Windows) will enter stimulate mode">

@@ -300,8 +300,7 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
         left={left}
       >
         <text
-          x='50%'
-          y={(-4.5 - (1.25 * (node.data.displayName.split('/').length))).toString() + '%'}
+          y={(-4.1 - (1.25 * (node.data.displayName.split('/').length))).toString() + '%'}
           fontSize={fontSize}
           fontFamily="Arial"
           textAnchor="middle"
