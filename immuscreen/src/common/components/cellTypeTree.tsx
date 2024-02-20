@@ -300,7 +300,7 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
         left={left}
       >
         <text
-          y={(-4.1 - (1.25 * (node.data.displayName.split('/').length))).toString() + '%'}
+          y={-60 - ((fontSize + 2) * (node.data.displayName.split('/').length - 1))}
           fontSize={fontSize}
           fontFamily="Arial"
           textAnchor="middle"
@@ -308,10 +308,10 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
         >
           {node.data.displayName.split('/').map((str, i) => {
             return (
-                <tspan key={i} x="0" dy="1.2em">{str}</tspan>
+                <tspan key={i} x="0" dy={fontSize + 2}>{str}</tspan>
             )
           })}
-          <tspan x="0" dy="1.2em">
+          <tspan x="0" dy={fontSize + 2}>
             {(node.data.stimulated === "S" ? '(Stim)' : node.data.stimulated === "B" ? '(Unstim + Stim)' : '(Unstim)')}
           </tspan>
         </text>

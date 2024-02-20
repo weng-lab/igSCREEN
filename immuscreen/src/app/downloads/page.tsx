@@ -3,14 +3,17 @@ import * as React from "react"
 import CellTypeTree from "../../common/components/cellTypeTree"
 import { useEffect, useMemo, useState } from "react"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
-import { Button, CircularProgress, Tooltip } from "@mui/material";
+import { Button, CircularProgress, Tooltip, Typography } from "@mui/material";
 import { QueryResult, gql, useQuery } from "@apollo/client";
 import { DataTable } from "@weng-lab/psychscreen-ui-components";
 import { client } from "../../common/utils";
+import UpSetPlot from "./UpSetPlot";
 
 /**
  * @todo add hover info on cells (how many cCREs active)
+ * @todo add error handling when more than 5 cell types selected
  */
+
 
 export interface CellTypeInfo {
   readonly id: string; // used to set state of correct celltype afer its content is spread (...) into tree data and stripped of key name. Needs to match key exactly
@@ -538,19 +541,17 @@ const cellTypeInitialState: CellTypes = {
   }
 }
 
-const ICRE_QUERY = gql(`
-  query icrQuery($celltypes:[String!]){
-    iCREQuery(celltypes:$celltypes) {
-      celltypes
-      accession
-      coordinates {
-        start
-        end
-        chromosome
-      }
-      group
-      rdhs
-    }
+const ICRE_COUNT = gql(`
+  query iCRECount(
+    $unionCellTypes: [String!]
+    $intersectCellTypes: [String!]
+    $excludeCellTypes: [String!]
+  ) {
+    iCREsCountQuery(
+      celltypes: $unionCellTypes
+      allcelltypes: $intersectCellTypes
+      excludecelltypes: $excludeCellTypes
+    )
   }
 `)
 
@@ -570,30 +571,108 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
   const [cellTypeState, setCellTypeState] = useState<CellTypes>(cellTypeInitialState)
   const [stimulateMode, setStimulateMode] = useState<boolean>(false)
   const [cursor, setCursor] = useState<'auto' | 'pointer' | 'cell' | 'not-allowed'>('auto')
-  const [toFetch, setToFetch] = useState<string[]>(null)
+  const [toFetch, setToFetch] = useState<string[][]>([])
 
-  const extractCellNames = (): string[] => {
+  /**
+   * 
+   * @param cellTypeState 
+   * @returns an array of string arrays. Nest arrays needed as some cell types have multiple query values associated with them that need to be unioned
+   */
+  const extractCellNames = (cellTypeState: CellTypes): string[][] => {
     return (
       Object.values(cellTypeState)
         .filter((cellType: CellTypeInfo) => cellType.selected)
         .flatMap((cellType: CellTypeInfo) => {
           switch (cellType.stimulated) {
-            case "U": return [...(Object.values(cellType.queryValues.unstimulated).flat())]
-            case "S": return [...(Object.values(cellType.queryValues.stimulated).flat())]
-            case "B": return [...(Object.values(cellType.queryValues.unstimulated).flat()), ...(Object.values(cellType.queryValues.stimulated).flat())]
-            default: return []
+            case "U": return [(Object.values(cellType.queryValues.unstimulated).flat())]
+            case "S": return [(Object.values(cellType.queryValues.stimulated).flat())]
+            case "B": return [(Object.values(cellType.queryValues.unstimulated).flat()), (Object.values(cellType.queryValues.stimulated).flat())]
           }
         })
     )
   }
 
-  //Need to properly type the variable used and return data
-  const { data: data_cellTypeSpecific, loading: loading_cellTypeSpecific, error: error_cellTypeSpecific, refetch } = useQuery(
-    ICRE_QUERY,
+  const generateGroups = (toFetch: string[][]) => {
+    let queryGroups: {intersect?: string[], exclude?: string[], union?: string[], name: string}[] = []
+    toFetch.length > 0 && queryGroups.push({union: toFetch.flat(), name: 'unionAll'}) //For cCREs active in all selected cells
+    
+    toFetch.forEach((cell, i) => {
+      queryGroups.push({union: cell, name: `count_${cell[0].replace('-', '_')}`}) //For individual downloads
+    })
+    
+    /**
+     * Using binary strings to represent unique intersection/subtraction combinations for UpSet plot.
+     * Binary strings from 1 to (2^n - 1) generated, and each celltype is mapped to an index/place 
+     * in the string to determine if that cell is to be intersected or excluded/subtracted
+     * 
+     * Example for 2 cells, A and B:
+     * 
+     * A B
+     * 0 1 -> exclude A, intersect B
+     * 1 0 -> intersect A, exclude B
+     * 1 1 -> intersect A and B, exclude none
+     * 
+     */
+    const n = toFetch.length
+    let binStrArray: string[] = []
+    for (let i = 1; i < (2 ** n); i++){
+      binStrArray.push(i.toString(2).padStart(n, '0')) //Create array of binary strings
+    }
+    console.log(binStrArray)
+    binStrArray.forEach((binString, i) => {
+      let query: {intersect: string[], exclude: string[], name: string} = {intersect: [], exclude: [], name: `upset${binString}`}
+      for (let i = 0; i < binString.length; i++) {
+        if (binString.charAt(i) === '1') {
+          query.intersect.push(toFetch[i][0]) //IGNORING SECONDARY/TERTIERY CELL QUERY VALUES FOR NOW
+        } else query.exclude.push(toFetch[i][0]) //IGNORING SECONDARY/TERTIERY CELL QUERY VALUES FOR NOW
+      }
+      queryGroups.push(query)
+    })
+    
+    console.log(queryGroups)
+    return queryGroups
+  }
+
+  const generateQuery = (groups: { intersect?: string[], exclude?: string[], union?: string[], name: string }[]) => {
+    let queryStrings: string[] = [];
+    groups.forEach((group, i) => {
+      queryStrings.push(
+        `${group.name}: iCREsCountQuery(
+          ${group?.union ? `celltypes: [\"${group.union.join('\", \"')}\"]` : '' }
+          ${group?.intersect ? `allcelltypes: [\"${group.intersect.join('\", \"')}\"]` : '' }
+          ${group?.exclude ? `excludecelltypes: [\"${group.exclude.join('\", \"')}\"]` : '' }
+        )`
+      )
+    })
+    console.log(`query {${queryStrings.join('\n')}}`)
+    return (gql(`query {${queryStrings.join('\n')}}`))
+  }
+
+  const QUERY = useMemo(() => {
+    if (toFetch.length > 0) {
+      console.log("hit")
+      return (
+        generateQuery(generateGroups(toFetch))
+      )
+    } else return (
+      gql`
+      query count{
+        a: iCREsCountQuery(
+          celltypes: ["Bcell"]
+        )
+        b: iCREsCountQuery(
+          celltypes: ["Bulk_B-U"]
+        )
+      }
+      `
+    )
+  }, [toFetch])
+
+  const { data: data_count, loading: loading_count, error: error_count, refetch } = useQuery(
+    QUERY,
     {
-      variables: { celltypes: toFetch },
       client,
-      skip: !toFetch
+      skip: !QUERY || toFetch.length === 0
     }
   )
 
@@ -622,16 +701,12 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
     setCursor(!stimulateMode ? 'cell' : 'auto')
   }
 
-  // Event handler for button click to update user-entered information
   const handleFetch = () => {
-    // Update user-entered information in state
-    // This will trigger the useEffect hook to refetch the query
-    console.log(extractCellNames())
-    // setToFetch(extractCellNames());
+    setToFetch(extractCellNames(cellTypeState));
   };
 
   useEffect(() => {
-    refetch({ celltypes: toFetch });
+    if (toFetch?.length > 0) refetch();
   }, [toFetch, refetch])
 
 
@@ -653,7 +728,7 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
 
   return (
     <Grid2 container mt={3} spacing={2} sx={{ cursor }} >
-      <Grid2 xs={12} lg={8}>
+      <Grid2 xs={12} lg={8} zIndex={10}>
         {cellTypeTree}
       </Grid2>
       <Grid2 xs={12} lg={4}>
@@ -669,7 +744,7 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
         </Tooltip>
         <Button variant="outlined" onClick={() => handleSelectAll(false)}>Unselect All</Button>
         <Button variant="outlined" onClick={handleFetch}>Fetch cCREs</Button>
-        {loading_cellTypeSpecific ?
+        {/* {loading_count ?
           <CircularProgress />
           :
           <DataTable
@@ -683,12 +758,21 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
                 value: (row: cCRECellTypeData) => row.group
               }
             ]}
-            rows={data_cellTypeSpecific?.iCREQuery || []}
+            rows={data_count?.iCREQuery || []}
             searchable
             emptyText="Please Select a Cell Type to see results"
             tableTitle={toFetch?.length > 0 ? "iCREs active in: " + toFetch.join() : ''}
           />
-        }
+        } */}
+        <Typography></Typography>
+      </Grid2>
+      <Grid2 xs={12}>
+        {UpSetPlot({
+          width: 500,
+          height: 500,
+          data: data_count ? Object.entries(data_count).map((x) => { return ({ name: x[0], count: x[1] }) }).filter(x => x.name.includes('upset')) as any : [],
+          events: true
+        })}
       </Grid2>
     </Grid2>
   )
