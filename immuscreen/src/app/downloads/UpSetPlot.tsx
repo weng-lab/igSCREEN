@@ -10,7 +10,7 @@ export type BarsProps = {
   width: number;
   height: number;
   //Is order of array for sure preserved when passed? Critical for aligning results with cell names
-  data: {name: string, count: number}[]
+  data: {name: string, count: number, color?: string}[]
   events?: boolean;
 };
 

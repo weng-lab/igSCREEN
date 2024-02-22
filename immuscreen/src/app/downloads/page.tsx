@@ -437,7 +437,7 @@ const cellTypeInitialState: CellTypes = {
     stimulated: "U",
     selectable: true,
     displayName: "Multipotent/progenitor",
-    unstimImagePath: '/cellTypes/Missing.png',
+    unstimImagePath: '/cellTypes/MPP.png',
     stimulable: false,
     queryValues: {
       unstimulated: {Corces: "MPP"}
@@ -521,7 +521,7 @@ const cellTypeInitialState: CellTypes = {
     stimulated: "U",
     selectable: true,
     displayName: "CD4+ T cell",
-    unstimImagePath: '/cellTypes/Missing.png',
+    unstimImagePath: '/cellTypes/CD4posT.png',
     stimulable: false,
     queryValues: {
       unstimulated: {Corces: "CD4Tcell"}
@@ -533,7 +533,7 @@ const cellTypeInitialState: CellTypes = {
     stimulated: "U",
     selectable: true,
     displayName: "NK cell",
-    unstimImagePath: '/cellTypes/Missing.png',
+    unstimImagePath: '/cellTypes/Nkcell.png',
     stimulable: false,
     queryValues: {
       unstimulated: {Corces: "NKcell"}
@@ -571,33 +571,77 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
   const [cellTypeState, setCellTypeState] = useState<CellTypes>(cellTypeInitialState)
   const [stimulateMode, setStimulateMode] = useState<boolean>(false)
   const [cursor, setCursor] = useState<'auto' | 'pointer' | 'cell' | 'not-allowed'>('auto')
-  const [toFetch, setToFetch] = useState<string[][]>([])
+  const [cellsToFetch, setCellsToFetch] = useState<CellTypeInfo[]>([])
 
   /**
    * 
    * @param cellTypeState 
    * @returns an array of string arrays. Nest arrays needed as some cell types have multiple query values associated with them that need to be unioned
    */
-  const extractCellNames = (cellTypeState: CellTypes): string[][] => {
-    return (
-      Object.values(cellTypeState)
-        .filter((cellType: CellTypeInfo) => cellType.selected)
-        .flatMap((cellType: CellTypeInfo) => {
-          switch (cellType.stimulated) {
-            case "U": return [(Object.values(cellType.queryValues.unstimulated).flat())]
-            case "S": return [(Object.values(cellType.queryValues.stimulated).flat())]
-            case "B": return [(Object.values(cellType.queryValues.unstimulated).flat()), (Object.values(cellType.queryValues.stimulated).flat())]
-          }
-        })
-    )
+  // const extractCellNames = (cellTypeState: CellTypes): string[][] => {
+  //   return (
+  //     Object.values(cellTypeState)
+  //       .filter((cellType: CellTypeInfo) => cellType.selected)
+  //       .flatMap((cellType: CellTypeInfo) => {
+  //         switch (cellType.stimulated) {
+  //           case "U": return [(Object.values(cellType.queryValues.unstimulated).flat())]
+  //           case "S": return [(Object.values(cellType.queryValues.stimulated).flat())]
+  //           case "B": return [(Object.values(cellType.queryValues.unstimulated).flat()), (Object.values(cellType.queryValues.stimulated).flat())]
+  //         }
+  //       })
+  //   )
+  // }
+
+    /**
+   * 
+   * @param cell CellTypeInfo
+   * @param want "S" | "U" | "B" The query value(s) wanted
+   * @returns array of strings or string arrays. If values are within a nested array, they need to be unioned.
+   */
+  const extractQueryValues = (cell: CellTypeInfo, want: "S" | "U" | "B"): (string[]) => {
+    switch (want) {
+      case "U": return [...Object.values(cell.queryValues.unstimulated).flat()]
+      case "S": return [...Object.values(cell.queryValues.stimulated).flat()]
+      //is this working correctly? Shouldn't be used probably
+      case "B": return Object.values(cell.queryValues.unstimulated).flat().concat((Object.values(cell.queryValues.stimulated).flat()))
+    }
   }
 
-  const generateGroups = (toFetch: string[][]) => {
-    let queryGroups: {intersect?: string[], exclude?: string[], union?: string[], name: string}[] = []
-    toFetch.length > 0 && queryGroups.push({union: toFetch.flat(), name: 'unionAll'}) //For cCREs active in all selected cells
+  /**
+   * 
+   * @param cellsToFetch
+   * @returns array of objects with info needed for UpSet plot
+   */
+  const generateQueryGroups = (cellsToFetch: CellTypeInfo[]) => {
+    //Out of cellsToFetch extract relevant information, and create two entries for cells with "B" stimulation to iterate through more easily later
+    let cells: {displayName: string, queryVals: string[]}[] = [];
+    cellsToFetch.forEach(cell => {
+      if (cell.stimulated == "B") {
+        cells.push({displayName: cell.displayName, queryVals: extractQueryValues(cell, "U")})
+        cells.push({displayName: cell.displayName, queryVals: extractQueryValues(cell, "S")})
+      } else cells.push({displayName: cell.displayName, queryVals: extractQueryValues(cell, cell.stimulated)})
+    })
+
+    //intersect and exclude can have nested string arrays to represent cell values that need to be unioned first before being used in calculation
+    type QueryGroup = {intersect?: (string | string[])[], exclude?: (string | string[])[], union?: string[], name: string}
+    let queryGroups: QueryGroup[] = []
     
-    toFetch.forEach((cell, i) => {
-      queryGroups.push({union: cell, name: `count_${cell[0].replace('-', '_')}`}) //For individual downloads
+    //Union of all cells
+    if (cellsToFetch.length > 0) {
+      queryGroups.push({union: cellsToFetch.map(cell => extractQueryValues(cell, cell.stimulated)).flat(2), name: 'Union_All'})
+    }
+    
+    //Individual counts for each selected cell. Union all available query values for the cells
+    cellsToFetch.forEach((cell, i) => {
+      if (cell.stimulated === "S" || cell.stimulated === "U"){
+        let queryVals = extractQueryValues(cell, cell.stimulated)
+        queryGroups.push({union: queryVals, name: `${cell.id.replace('-', '_')}`}) 
+      } else if (cell.stimulated === "B") {
+        let queryValsS = extractQueryValues(cell, "S")
+        let queryValsU = extractQueryValues(cell, "U")
+        queryGroups.push({union: queryValsS, name: `${cell.id.replace('-', '_')}`}) 
+        queryGroups.push({union: queryValsU, name: `${cell.id.replace('-', '_')}`}) 
+      }
     })
     
     /**
@@ -613,46 +657,59 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
      * 1 1 -> intersect A and B, exclude none
      * 
      */
-    const n = toFetch.length
+    let n = cells.length
     let binStrArray: string[] = []
     for (let i = 1; i < (2 ** n); i++){
       binStrArray.push(i.toString(2).padStart(n, '0')) //Create array of binary strings
     }
-    console.log(binStrArray)
-    binStrArray.forEach((binString, i) => {
-      let query: {intersect: string[], exclude: string[], name: string} = {intersect: [], exclude: [], name: `upset${binString}`}
+
+    binStrArray.forEach((binString) => {
+      let query: QueryGroup = {intersect: [], exclude: [], name: `UpSet_${binString}`}
       for (let i = 0; i < binString.length; i++) {
         if (binString.charAt(i) === '1') {
-          query.intersect.push(toFetch[i][0]) //IGNORING SECONDARY/TERTIERY CELL QUERY VALUES FOR NOW
-        } else query.exclude.push(toFetch[i][0]) //IGNORING SECONDARY/TERTIERY CELL QUERY VALUES FOR NOW
+          //If more than one query value for the cell exists, push as array to mark as needing to be unioned first. Else push only entry as string
+          query.intersect.push(cells[i].queryVals.length > 1 ? cells[i].queryVals : cells[i].queryVals[0])
+        } else query.exclude.push(cells[i].queryVals.length > 1 ? cells[i].queryVals : cells[i].queryVals[0])
       }
       queryGroups.push(query)
     })
     
-    console.log(queryGroups)
     return queryGroups
   }
 
-  const generateQuery = (groups: { intersect?: string[], exclude?: string[], union?: string[], name: string }[]) => {
-    let queryStrings: string[] = [];
-    groups.forEach((group, i) => {
-      queryStrings.push(
-        `${group.name}: iCREsCountQuery(
-          ${group?.union ? `celltypes: [\"${group.union.join('\", \"')}\"]` : '' }
-          ${group?.intersect ? `allcelltypes: [\"${group.intersect.join('\", \"')}\"]` : '' }
-          ${group?.exclude ? `excludecelltypes: [\"${group.exclude.join('\", \"')}\"]` : '' }
-        )`
-      )
+  //This is only meant to work in the context of the UpSet plot. Would need to be built out more to support things like subtracting from unions
+  const generateQuery = (groups: {intersect?: (string | string[])[], exclude?: (string | string[])[], union?: string[], name: string}[]) => {
+    let queries: {query: string, name: string}[] = [];
+    // groups.forEach((group, i) => {
+    //   queryStrings.push(
+    //     `${group.name}: iCREsCountQuery(
+    //       ${group?.union ? `celltypes: [\"${group.union.join('\", \"')}\"]` : '' }
+    //       ${group?.intersect ? `allcelltypes: [\"${group.intersect.join('\", \"')}\"]` : '' }
+    //       ${group?.exclude ? `excludecelltypes: [\"${group.exclude.join('\", \"')}\"]` : '' }
+    //     )`
+    //   )
+    // })
+    // console.log(`query {${queryStrings.join('\n')}}`)
+    // return (gql(`query {${queryStrings.join('\n')}}`))
+    groups.forEach(group => {
+      if (group.union){
+        queries.push({query: group.union.join(" union "), name: group.name})
+      } else if (group.intersect && !group.union){
+        //NOT PUTTING INTERSECTIONS IN PARENTHESES, IS L -> R ORDER PRESERVED? How can I optimize this to make calculation faster in backend
+        const intersections: string[] = group.intersect.map(cell => typeof cell === "object" ? "( " + cell.join(" union ") + " )" : cell)
+        const exclusions: string[] = group?.exclude.map(cell => typeof cell === "object" ? "( " + cell.join(" union ") + " )" : cell)
+        queries.push({query: intersections.join(" intersect ") + (exclusions.length !== 0 ? " exclude " + exclusions.join(" exclude ") : ""), name: group.name})
+      } else if ((!group.intersect && !group.union) || (group.intersect && group.union)) {
+        throw new Error("Something went wrong generating query groups")
+      }
     })
-    console.log(`query {${queryStrings.join('\n')}}`)
-    return (gql(`query {${queryStrings.join('\n')}}`))
+    console.log(queries)
   }
 
   const QUERY = useMemo(() => {
-    if (toFetch.length > 0) {
-      console.log("hit")
+    if (cellsToFetch.length > 0) {
       return (
-        generateQuery(generateGroups(toFetch))
+        generateQuery(generateQueryGroups(cellsToFetch))
       )
     } else return (
       gql`
@@ -666,20 +723,51 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
       }
       `
     )
-  }, [toFetch])
+  }, [cellsToFetch])
 
   const { data: data_count, loading: loading_count, error: error_count, refetch } = useQuery(
-    QUERY,
+    gql`
+      query count{
+        a: iCREsCountQuery(
+          celltypes: ["Bcell"]
+        )
+        b: iCREsCountQuery(
+          celltypes: ["Bulk_B-U"]
+        )
+      }
+      `,
     {
       client,
-      skip: !QUERY || toFetch.length === 0
+      skip: true
     }
   )
 
-  /**
-   * 
-   * @param x 
-   */
+  //Triggered when button pressed, filter cellTypeState and mark to fetch
+  const handleFetch = () => {
+    setCellsToFetch(Object.values(cellTypeState).filter((x: CellTypeInfo) => x.selected))
+  }
+
+  useEffect(() => {
+    // if (cellsToFetch?.length > 0) refetch();
+  }, [cellsToFetch, refetch])
+
+
+  //Wrap in useMemo to stop rerender of tree when cursor changes here
+  const cellTypeTree = useMemo(() => {
+    return (
+      <CellTypeTree
+        width={1000}
+        height={1300}
+        orientation="vertical"
+        cellTypeState={cellTypeState}
+        setCellTypeState={setCellTypeState}
+        stimulateMode={stimulateMode}
+        setStimulateMode={setStimulateMode}
+        setCursor={setCursor}
+      />
+    )
+  }, [cellTypeState, setCellTypeState, stimulateMode, setCursor])
+
   const handleStimulateAll = (mode: "U" | "S" | "B") => {
     let newObj = { ...cellTypeState }
     for (let cellName in newObj) {
@@ -701,37 +789,12 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
     setCursor(!stimulateMode ? 'cell' : 'auto')
   }
 
-  const handleFetch = () => {
-    setToFetch(extractCellNames(cellTypeState));
-  };
-
-  useEffect(() => {
-    if (toFetch?.length > 0) refetch();
-  }, [toFetch, refetch])
-
-
-  //Wrap in useMemo to stop rerender of tree when cursor changes here
-  const cellTypeTree = useMemo(() => {
-    return (
-      <CellTypeTree
-        width={1000}
-        height={1300}
-        orientation="vertical"
-        cellTypeState={cellTypeState}
-        setCellTypeState={setCellTypeState}
-        stimulateMode={stimulateMode}
-        setStimulateMode={setStimulateMode}
-        setCursor={setCursor}
-      />
-    )
-  }, [cellTypeState, setCellTypeState, stimulateMode, setCursor])
-
   return (
     <Grid2 container mt={3} spacing={2} sx={{ cursor }} >
-      <Grid2 xs={12} lg={8} zIndex={10}>
+      <Grid2 xs={12} zIndex={10}>
         {cellTypeTree}
       </Grid2>
-      <Grid2 xs={12} lg={4}>
+      <Grid2 xs={12}>
         <Tooltip title="Note: Not all cells are stimulable">
           <Button variant="outlined" onClick={() => handleStimulateAll("S")}>Stimulate All</Button>
         </Tooltip>
@@ -744,33 +807,37 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
         </Tooltip>
         <Button variant="outlined" onClick={() => handleSelectAll(false)}>Unselect All</Button>
         <Button variant="outlined" onClick={handleFetch}>Fetch cCREs</Button>
-        {/* {loading_count ?
+        {loading_count ?
           <CircularProgress />
           :
           <DataTable
             columns={[
               {
-                header: "Accession",
-                value: (row: cCRECellTypeData) => row.accession
+                header: "Cell",
+                value: (row: any) => row.name
               },
               {
-                header: "Class",
-                value: (row: cCRECellTypeData) => row.group
+                header: "Count",
+                value: (row: any) => row.count
               }
             ]}
-            rows={data_count?.iCREQuery || []}
+            rows={data_count ? Object.entries(data_count).map((x) => { return ({ name: x[0], count: x[1] }) }).filter(x => !x.name.includes('upset')) : []}
             searchable
             emptyText="Please Select a Cell Type to see results"
-            tableTitle={toFetch?.length > 0 ? "iCREs active in: " + toFetch.join() : ''}
+            // tableTitle={toFetch?.length > 0 ? "iCREs active in: " + toFetch.join() : ''}
           />
-        } */}
+        }
         <Typography></Typography>
       </Grid2>
       <Grid2 xs={12}>
+        {loading_count && <CircularProgress />}
         {UpSetPlot({
           width: 500,
           height: 500,
-          data: data_count ? Object.entries(data_count).map((x) => { return ({ name: x[0], count: x[1] }) }).filter(x => x.name.includes('upset')) as any : [],
+          data: data_count ?
+            Object.entries(data_count).map((x) => { return ({ name: x[0], count: x[1] }) }).filter(x => x.name.includes('upset')) as any
+            :
+            [],
           events: true
         })}
       </Grid2>
