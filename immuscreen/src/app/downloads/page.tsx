@@ -610,9 +610,9 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
   /**
    * 
    * @param cellsToFetch
-   * @returns array of objects with info needed for UpSet plot
+   * @returns gql query for UpSet plot
    */
-  const generateQueryGroups = (cellsToFetch: CellTypeInfo[]) => {
+  const generateQuery = (cellsToFetch: CellTypeInfo[]) => {
     //Out of cellsToFetch extract relevant information, and create two entries for cells with "B" stimulation to iterate through more easily later
     let cells: {displayName: string, queryVals: string[]}[] = [];
     cellsToFetch.forEach(cell => {
@@ -673,25 +673,10 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
       }
       queryGroups.push(query)
     })
-    
-    return queryGroups
-  }
 
-  //This is only meant to work in the context of the UpSet plot. Would need to be built out more to support things like subtracting from unions
-  const generateQuery = (groups: {intersect?: (string | string[])[], exclude?: (string | string[])[], union?: string[], name: string}[]) => {
     let queries: {query: string, name: string}[] = [];
-    // groups.forEach((group, i) => {
-    //   queryStrings.push(
-    //     `${group.name}: iCREsCountQuery(
-    //       ${group?.union ? `celltypes: [\"${group.union.join('\", \"')}\"]` : '' }
-    //       ${group?.intersect ? `allcelltypes: [\"${group.intersect.join('\", \"')}\"]` : '' }
-    //       ${group?.exclude ? `excludecelltypes: [\"${group.exclude.join('\", \"')}\"]` : '' }
-    //     )`
-    //   )
-    // })
-    // console.log(`query {${queryStrings.join('\n')}}`)
-    // return (gql(`query {${queryStrings.join('\n')}}`))
-    groups.forEach(group => {
+
+    queryGroups.forEach(group => {
       if (group.union){
         queries.push({query: group.union.join(" union "), name: group.name})
       } else if (group.intersect && !group.union){
@@ -704,12 +689,15 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
       }
     })
     console.log(queries)
+
+    // return ...
+
   }
 
   const QUERY = useMemo(() => {
     if (cellsToFetch.length > 0) {
       return (
-        generateQuery(generateQueryGroups(cellsToFetch))
+        generateQuery(cellsToFetch)
       )
     } else return (
       gql`
@@ -807,37 +795,16 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
         </Tooltip>
         <Button variant="outlined" onClick={() => handleSelectAll(false)}>Unselect All</Button>
         <Button variant="outlined" onClick={handleFetch}>Fetch cCREs</Button>
-        {loading_count ?
-          <CircularProgress />
-          :
-          <DataTable
-            columns={[
-              {
-                header: "Cell",
-                value: (row: any) => row.name
-              },
-              {
-                header: "Count",
-                value: (row: any) => row.count
-              }
-            ]}
-            rows={data_count ? Object.entries(data_count).map((x) => { return ({ name: x[0], count: x[1] }) }).filter(x => !x.name.includes('upset')) : []}
-            searchable
-            emptyText="Please Select a Cell Type to see results"
-            // tableTitle={toFetch?.length > 0 ? "iCREs active in: " + toFetch.join() : ''}
-          />
-        }
-        <Typography></Typography>
       </Grid2>
       <Grid2 xs={12}>
         {loading_count && <CircularProgress />}
         {UpSetPlot({
           width: 500,
           height: 500,
-          data: data_count ?
-            Object.entries(data_count).map((x) => { return ({ name: x[0], count: x[1] }) }).filter(x => x.name.includes('upset')) as any
-            :
-            [],
+          // data: data_count ?
+          //   Object.entries(data_count).map((x) => { return ({ name: x[0], count: x[1] }) }).filter(x => x.name.includes('upset')) as any
+          //   :
+          //   [],
           events: true
         })}
       </Grid2>
