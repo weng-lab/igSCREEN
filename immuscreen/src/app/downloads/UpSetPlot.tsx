@@ -70,9 +70,13 @@ const mockData = {
     },
   ],
   counts: [
+    // {
+    //   name: 'All',
+    //   count: 243217
+    // },
     {
-      name: 'All',
-      count: 243217
+      name: 'Naive_B-U',
+      count: 120624
     },
     {
       name: 'HSC',
@@ -85,11 +89,7 @@ const mockData = {
     {
       name: 'Bulk_B-S',
       count: 124969
-    },
-    {
-      name: 'Naive_B-U',
-      count: 120624
-    },
+    }
   ],
   order: ['HSC', 'Bulk_B-U', 'Bulk_B-S', 'Naive_B-U']
 }
@@ -98,63 +98,131 @@ const mockData = {
 export type BarsProps = {
   width: number;
   height: number;
-  data?: {intersections: {name: string, count: number}[], counts: {name: string, count: number}[], order: string[]}
+  data?: { intersections: { name: string, count: number }[], counts: { name: string, count: number }[], order: string[] }
   events?: boolean;
 };
 
-export default function UpSetPlot({ width, height, data = mockData, events = false }: BarsProps) {
-  const sortedData = data.intersections.sort((a, b) => b.count - a.count)
-  
+export default function UpSetPlot({ width, height, data, events = false }: BarsProps) {
+  const intersectionData = data.intersections.sort((a, b) => b.count - a.count)
+  const setSizeData = data.counts.sort((a, b) => data.order.findIndex((x) => x === a.name) - data.order.findIndex((x) => x === b.name))
+
   // end dimensions of the plot
   const totalWidth = width
   const totalHeight = height
 
-  //based on total dimensions set widths of intersection and set size charts
-  const setSizePlotWidth = totalWidth * 0.3
+  // based on total dimensions set widths of intersection and set size charts
+  const setSizePlotTotalWidth = totalWidth * 0.35
+  const spaceForCellName = 100
+  const spaceForCellCounts = 80
+  const setSizePlotBarsWidth = setSizePlotTotalWidth - spaceForCellName - spaceForCellCounts
   const spaceForTextRight = 15
-  const intersectionPlotWidth = totalWidth - setSizePlotWidth - spaceForTextRight
+  const intersectionPlotWidth = totalWidth - setSizePlotTotalWidth - spaceForTextRight
 
-  //Intersection plot width scale based on width available to it
+  // Intersection plot width scale based on width available to it
   const intersectionPlotWidthScale = useMemo(
     () =>
       scaleBand<string>({
         range: [0, intersectionPlotWidth],
         round: true,
-        domain: sortedData.map((x) => x.name),
+        domain: intersectionData.map((x) => x.name),
         padding: 0.4,
       }),
-    [intersectionPlotWidth, sortedData],
+    [intersectionPlotWidth, intersectionData],
   );
 
-  // calculate amount of vertical space needed by the set size/circles chart, set height of intersection plot to be what's left
-  const setSizePlotHeight = intersectionPlotWidthScale.bandwidth() * 1.5 * sortedData[0].name.length //Circle diameter = intersectionPlotWidthScale.bandwidth(). Height = diameter * 1.5 * number of sets
+  const spaceForBottomAxis = 40
+  //convoluted, but calculates the needed height based on how much room is taken up by the circles
+  const setSizePlotBarsHeight = (((intersectionPlotWidthScale.bandwidth() * 1.5) * (intersectionData[0].name.length)) + (intersectionPlotWidthScale.bandwidth() * 0.5))
+  const setSizePlotTotalHeight = setSizePlotBarsHeight + spaceForBottomAxis
   const spaceForTextTop = 60
-  const intersectionPlotHeight = totalHeight - setSizePlotHeight - spaceForTextTop
+  const intersectionPlotBarsHeight = totalHeight - setSizePlotTotalHeight - spaceForTextTop
+  const intersectionPlotTotalHeight = intersectionPlotBarsHeight + spaceForTextTop
 
   const intersectionPlotHeightScale = useMemo(
     () =>
       scaleLinear<number>({
-        range: [intersectionPlotHeight, 0],
+        range: [intersectionPlotBarsHeight, 0],
         round: true,
-        domain: [0, Math.max(...sortedData.map(x => x.count))],
+        domain: [0, Math.max(...intersectionData.map(x => x.count))],
       }),
-    [intersectionPlotHeight, sortedData],
+    [intersectionPlotBarsHeight, intersectionData],
   );
-  
-  //Probably need two more scales here for other bar plot
+
+  const setSizePlotWidthScale = useMemo(
+    () =>
+      scaleLinear<number>({
+        range: [setSizePlotBarsWidth, 0],
+        round: true,
+        domain: [0, Math.max(...setSizeData.map(x => x.count))],
+      }),
+    [setSizePlotBarsWidth, setSizeData],
+  )
+
+  const setSizePlotHeightScale = useMemo(
+    () =>
+      scaleBand<string>({
+        range: [0, setSizePlotBarsHeight],
+        round: true,
+        domain: setSizeData.map((x) => x.name),
+        padding: 0.4,
+      }),
+    [setSizePlotBarsHeight, setSizeData],
+  );
 
   return totalWidth < 10 ? null : (
     <svg id='UpSet-Plot' width={totalWidth} height={totalHeight}>
       <rect width={totalWidth} height={totalHeight} fill='none' stroke='black' fillOpacity={0.5} rx={14} />
-      {/* Is 50 a good number in all scenarios */}
-      <Group left={setSizePlotWidth} top={spaceForTextTop}>
-        <AxisLeft scale={intersectionPlotHeightScale} />
-        <GridRows scale={intersectionPlotHeightScale} width={intersectionPlotWidth} height={intersectionPlotHeight} stroke="#e0e0e0" />
-        {sortedData.map((d) => {
+      {/* The set size plot */}
+      <Group left={0} top={intersectionPlotTotalHeight}>
+        <AxisBottom left={spaceForCellCounts} top={setSizePlotBarsHeight} scale={setSizePlotWidthScale} label='Set Size' numTicks={2} />
+        {/* Width/Height might be messed up */}
+        <GridColumns left={spaceForCellCounts} top={0} scale={setSizePlotWidthScale} height={setSizePlotBarsHeight} numTicks={2} stroke="#e0e0e0" />
+        {setSizeData.map((d, i) => {
+          const barWidth = setSizePlotBarsWidth - (setSizePlotWidthScale(d.count) ?? 0);
+          const barHeight = setSizePlotHeightScale.bandwidth();
+          const barX = (setSizePlotWidthScale(d.count) ?? 0) + spaceForCellCounts;
+          const barY = setSizePlotHeightScale(d.name);
+          return (
+            <Group key={`Group-${d.name}`}>
+              {i % 2 === 1 &&
+                <Bar
+                  y={barY - (0.5 * ((1 - setSizePlotHeightScale.padding()) * barHeight))}
+                  x={spaceForTextRight}
+                  width={totalWidth - 2 * spaceForTextRight}
+                  height={barHeight + ((1 - setSizePlotHeightScale.padding()) * barHeight)}
+                  fill="#eeeeee"
+                  z={-100}
+                />
+              }
+              <Text textAnchor='end' x={barX} dx={-4} y={barY} dy={15} angle={0}>
+                {d.count}
+              </Text>
+              <Bar
+                x={barX}
+                y={barY}
+                width={barWidth}
+                height={barHeight}
+                fill="black"
+                onClick={() => {
+                  if (events) alert(`clicked: ${JSON.stringify(Object.values(d))}`);
+                }}
+              />
+              <Text textAnchor='end' x={setSizePlotTotalWidth} y={barY} dy={15} angle={0}>
+                {d.name.length > 13 ? d.name.substring(0, 10) + '...' : d.name}
+              </Text>
+            </Group>
+          );
+        })}
+      </Group>
+      {/* The intersection plot and circles */}
+      <Group left={setSizePlotTotalWidth} top={spaceForTextTop}>
+        <AxisLeft label='Intersection Size' scale={intersectionPlotHeightScale} />
+        <GridRows scale={intersectionPlotHeightScale} width={intersectionPlotWidth} height={intersectionPlotBarsHeight} stroke="#e0e0e0" />
+        {intersectionData.map((d) => {
           const barWidth = intersectionPlotWidthScale.bandwidth();
-          const barHeight = intersectionPlotHeight - (intersectionPlotHeightScale(d.count) ?? 0);
+          const barHeight = intersectionPlotBarsHeight - (intersectionPlotHeightScale(d.count) ?? 0);
           const barX = intersectionPlotWidthScale(d.name);
-          const barY = intersectionPlotHeight - barHeight;
+          const barY = (intersectionPlotHeightScale(d.count) ?? 0);
           const halfBarWidth = barWidth / 2
           const circleRadius = halfBarWidth
           const connectingBarWidth = barWidth / 8
@@ -177,24 +245,23 @@ export default function UpSetPlot({ width, height, data = mockData, events = fal
                 <Circle
                   key={`circle-${index}`}
                   cx={barX + (circleRadius)}
-                  // intersectionPlotHeight is bottom of bars, add 1/2 radius gap. Each circle after the first is bumped down by 3 radii
-                  cy={intersectionPlotHeight + (0.5 * circleRadius) + (circleRadius) + (index * (3 * circleRadius))}
+                  // intersectionPlotHeight is bottom of bar. Move first circle down by one diameter (such that gap is r). Each circle after the first is bumped down by 3 r such that the gap is 1 r
+                  cy={intersectionPlotBarsHeight + (2 * circleRadius) + (index * (3 * circleRadius))}
                   r={circleRadius}
-                  fill={char ==='1' ? 'black': 'lightgray'}
+                  fill={char === '1' ? '#000000' : '#bbbbbb'}
                 />
               ))}
               {/* If intersecting multiple cells, generate bar between first and last filled in circles */}
               {d.name.indexOf('1') !== d.name.lastIndexOf('1') && d.name.indexOf('1') !== -1 &&
                 <Bar
                   x={barX + (halfBarWidth) - (connectingBarWidth / 2)}
-                  y={intersectionPlotHeight + (0.5 * circleRadius) + (circleRadius) + (d.name.indexOf('1') * (3 * circleRadius))}
+                  y={intersectionPlotBarsHeight + (2 * circleRadius) + (d.name.indexOf('1') * (3 * circleRadius))}
                   width={connectingBarWidth}
                   height={(3 * circleRadius) * (d.name.lastIndexOf('1') - d.name.indexOf('1'))}
                   fill='black'
                 />
               }
             </Group>
-            
           );
         })}
       </Group>
