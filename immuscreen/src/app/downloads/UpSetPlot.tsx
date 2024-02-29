@@ -12,10 +12,10 @@ export type BarsProps = {
   height: number;
   data: { intersections: { name: string, count: number }[], counts: { name: string, count: number }[], order: string[] }
   setCursor:  React.Dispatch<React.SetStateAction<"auto" | "pointer" | "cell" | "not-allowed">>
-  events?: boolean;
+  handleDownload: (downloadKey: string) => void;
 };
 
-export default function UpSetPlot({ width, height, data, setCursor, events = false }: BarsProps) {
+export default function UpSetPlot({ width, height, data, setCursor, handleDownload }: BarsProps) {
   const intersectionData = data.intersections.sort((a, b) => b.count - a.count)
   const setSizeData = data.counts.sort((a, b) => {
     const indexA = data.order.findIndex((x) => x === a.name)
@@ -121,9 +121,7 @@ export default function UpSetPlot({ width, height, data, setCursor, events = fal
                 width={barWidth}
                 height={barHeight}
                 fill="black"
-                onClick={() => {
-                  if (events) alert(`clicked: ${JSON.stringify(Object.values(d))}`);
-                }}
+                onClick={() => handleDownload(d.name)}
                 onMouseEnter={() => setCursor("pointer")}
                 onMouseLeave={() => setCursor("auto")}
               />
@@ -157,9 +155,7 @@ export default function UpSetPlot({ width, height, data, setCursor, events = fal
                 width={barWidth}
                 height={barHeight}
                 fill="black"
-                onClick={() => {
-                  if (events) alert(`clicked: ${JSON.stringify(Object.values(d))}`);
-                }}
+                onClick={() => handleDownload(d.name)}
                 onMouseEnter={() => setCursor("pointer")}
                 onMouseLeave={() => setCursor("auto")}
               />

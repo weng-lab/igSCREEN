@@ -4,7 +4,7 @@ import CellTypeTree from "../../common/components/cellTypeTree"
 import { useEffect, useMemo, useState } from "react"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import { Box, Button, CircularProgress, Tooltip, Typography } from "@mui/material";
-import { QueryResult, gql, useQuery } from "@apollo/client";
+import { QueryResult, gql, useLazyQuery, useQuery } from "@apollo/client";
 import { DataTable } from "@weng-lab/psychscreen-ui-components";
 import { client } from "../../common/utils";
 import UpSetPlot from "./UpSetPlot";
@@ -601,6 +601,41 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
   //Used to store groupings needed to generate files when clicking on a bar in UpSet plot
   const [upSetQueryGroups, setUpSetQueryGroups] = useState<{ [key: string]: QueryGroup }>(null)
 
+  const handleUpsetDownload = async (downloadKey: string) => {
+    try {
+      const cellGroupings = upSetQueryGroups[downloadKey]
+      console.log("trying to fetch: ", cellGroupings)
+      const res = await getiCREFileURL({
+        variables: {
+          uuid: uuidv4(),
+          celltypes: cellGroupings?.union ? [[...cellGroupings.union]] : cellGroupings.intersect,
+          excludecelltypes: cellGroupings?.exclude?.length > 0 ? cellGroupings.exclude : undefined
+        }
+      })
+      fetch(res.data.createicresFilesQuery)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.blob(); // Get the response body as a Blob
+        })
+        .then(blob => {
+          const a = document.createElement('a');
+          const blobUrl = URL.createObjectURL(blob);
+          a.href = blobUrl;
+          a.download = `${cellGroupings.name}.bed`; // Change the filename as needed
+          a.click();
+          URL.revokeObjectURL(blobUrl);
+        })
+        .catch(error => {
+          console.error('Error fetching the file:', error);
+        });
+
+    } catch (error) {
+      console.log("Something went wrong when attempting to download:\n" + error)
+    }
+  }
+
   /**
    * 
    * @param cell CellTypeInfo
@@ -672,8 +707,18 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
       queryGroups.push(grouping)
     })
 
-    // Store query groups used to generate plot
-    setUpSetQueryGroups(Object.fromEntries(queryGroups.map(group => [group.name, group])))
+    // Store query groups used to generate plot. Set keys to match data used by UpSet plot
+    setUpSetQueryGroups(Object.fromEntries(queryGroups.map(group => {
+      let key: string;
+      if (group.name === "Union_All") {
+        key = "Union_All"
+      } else if (group.name.includes("UpSet_")) {
+        key = group.name.slice(6) // Ex: UpSet_0101 --> 0101
+      } else if (group.name[0] === '_') {
+        key = group.name.slice(2) //Ex: _01Bulk_B_U -> Bulk_B_U
+      } else throw new Error("Error parsing queryGroups in setUpSetQueryGroups")
+      return([key, group])
+    })))
 
     const iCREQuery = `{
       ${queryGroups.map(group => `${group.name}: iCREsCountQuery(
@@ -686,7 +731,11 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
     return (gql(iCREQuery))
   }
 
+
   /**
+   * @todo This is a garbage way of doing this, need to change it. Should be utilizing Directives to dynamically construct query
+   * See https://graphql.org/learn/queries/#directives
+   * and https://stackoverflow.com/questions/51322346/graphql-dynamic-query-building
    * 
    * @param queryGroup
    * @param uuid needed if using query for createicresFilesQuery
@@ -697,20 +746,20 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
       return (
         //All passed as one nested array to get union of all
         `celltypes: [[\"${queryGroup.union.join('\", \"')}\"]]`
-        + `${uuid ?? ''}`
+        + `${uuid ? '\nuuid: "' + uuid + '"': ''}`
       )
     } else if (queryGroup.intersect && !queryGroup.union) {
       return (
         `celltypes: [${queryGroup.intersect.map((vals: string[]) => `["${vals.join('", "')}"]`).join(', ')}]`
         + `${queryGroup?.exclude.length > 0 ? `\nexcludecelltypes: [${queryGroup.exclude.map((vals: string[]) => `["${vals.join('", "')}"]`).join(', ')}]` : '' }`
-        + `${uuid ?? ''}`
+        + `${uuid ? '\nuuid: "' + uuid + '"': ''}`
       )
     } else if ((!queryGroup.intersect && !queryGroup.union) || (queryGroup.intersect && queryGroup.union)) {
       throw new Error("Something went wrong generating query groups")
     }
   }
 
-  const QUERY = useMemo(() => {
+  const COUNT_QUERY = useMemo(() => {
     if (cellsToFetch.length > 0) {
       return (
         generateQuery(cellsToFetch)
@@ -727,11 +776,28 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
     )
   }, [cellsToFetch])
 
-  const { data: data_count, loading: loading_count, error: error_count, refetch } = useQuery(
-    QUERY,
+  const [getCountData, { data: data_count, loading: loading_count, error: error_count }] = useLazyQuery(
+    COUNT_QUERY, { client }
+  )
+
+  const GET_ICRE_FILE = gql`
+    query getFile(
+      $celltypes: [[String]]
+      $excludecelltypes: [[String]]
+      $uuid: String!
+    ) {
+      createicresFilesQuery(
+        uuid: $uuid
+        celltypes: $celltypes
+        excludecelltypes: $excludecelltypes
+      )
+    }
+  `
+
+  const [getiCREFileURL, { data: data_download_url, loading: loading_download_url, error: error_download_url }] = useLazyQuery(
+    GET_ICRE_FILE,
     {
       client,
-      skip: cellsToFetch?.length === 0
     }
   )
 
@@ -768,8 +834,8 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
   }
 
   useEffect(() => {
-    if (cellsToFetch?.length > 0) refetch();
-  }, [cellsToFetch, refetch])
+    if (cellsToFetch?.length > 0) getCountData();
+  }, [cellsToFetch])
 
 
   //Wrap in useMemo to stop rerender of tree when cursor changes here
@@ -795,7 +861,7 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
     height={500}
     data={transformtoUpSet(data_count)}
     setCursor={setCursor}
-    events={true}
+    handleDownload={handleUpsetDownload}
   />)} else return <></>
   }, [data_count])
 
@@ -821,6 +887,8 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
     setStimulateMode(!stimulateMode)
     setCursor(!stimulateMode ? 'cell' : 'auto')
   }
+
+ 
 
   return (
     <Grid2 container mt={3} spacing={2} sx={{ cursor }} >
