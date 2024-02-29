@@ -6,105 +6,25 @@ import { Text } from '@visx/text'
 import { AxisLeft, AxisBottom } from '@visx/axis'
 import { GridRows, GridColumns } from '@visx/grid';
 
-const mockData = {
-  intersections: [
-    {
-      name: '0001',
-      count: 6757
-    },
-    {
-      name: '0010',
-      count: 11042
-    },
-    {
-      name: '0011',
-      count: 1774
-    },
-    {
-      name: '0100',
-      count: 14610
-    },
-    {
-      name: '0101',
-      count: 9168
-    },
-    {
-      name: '0110',
-      count: 5173
-    },
-    {
-      name: '0111',
-      count: 21110
-    },
-    {
-      name: '1000',
-      count: 76161
-    },
-    {
-      name: '1001',
-      count: 1740
-    },
-    {
-      name: '1010',
-      count: 5847
-    },
-    {
-      name: '1011',
-      count: 1758
-    },
-    {
-      name: '1100',
-      count: 5464
-    },
-    {
-      name: '1101',
-      count: 4348
-    },
-    {
-      name: '1110',
-      count: 4296
-    },
-    {
-      name: '1111',
-      count: 73969
-    },
-  ],
-  counts: [
-    // {
-    //   name: 'All',
-    //   count: 243217
-    // },
-    {
-      name: 'Naive_B-U',
-      count: 120624
-    },
-    {
-      name: 'HSC',
-      count: 173583
-    },
-    {
-      name: 'Bulk_B-U',
-      count: 138138
-    },
-    {
-      name: 'Bulk_B-S',
-      count: 124969
-    }
-  ],
-  order: ['HSC', 'Bulk_B-U', 'Bulk_B-S', 'Naive_B-U']
-}
-
 
 export type BarsProps = {
   width: number;
   height: number;
-  data?: { intersections: { name: string, count: number }[], counts: { name: string, count: number }[], order: string[] }
+  data: { intersections: { name: string, count: number }[], counts: { name: string, count: number }[], order: string[] }
+  setCursor:  React.Dispatch<React.SetStateAction<"auto" | "pointer" | "cell" | "not-allowed">>
   events?: boolean;
 };
 
-export default function UpSetPlot({ width, height, data, events = false }: BarsProps) {
+export default function UpSetPlot({ width, height, data, setCursor, events = false }: BarsProps) {
   const intersectionData = data.intersections.sort((a, b) => b.count - a.count)
-  const setSizeData = data.counts.sort((a, b) => data.order.findIndex((x) => x === a.name) - data.order.findIndex((x) => x === b.name))
+  const setSizeData = data.counts.sort((a, b) => {
+    const indexA = data.order.findIndex((x) => x === a.name)
+    const indexB = data.order.findIndex((x) => x === b.name)
+    if (indexA === -1 || indexB === -1) {
+      throw new Error("Couldn't match given ordered cell names to individual counts, check cell names in order and counts")
+    }
+    return (indexA - indexB)
+  })
 
   // end dimensions of the plot
   const totalWidth = width
@@ -112,7 +32,7 @@ export default function UpSetPlot({ width, height, data, events = false }: BarsP
 
   // based on total dimensions set widths of intersection and set size charts
   const setSizePlotTotalWidth = totalWidth * 0.35
-  const spaceForCellName = 100
+  const spaceForCellName = 120
   const spaceForCellCounts = 80
   const setSizePlotBarsWidth = setSizePlotTotalWidth - spaceForCellName - spaceForCellCounts
   const spaceForTextRight = 15
@@ -174,9 +94,8 @@ export default function UpSetPlot({ width, height, data, events = false }: BarsP
       <rect width={totalWidth} height={totalHeight} fill='none' stroke='black' fillOpacity={0.5} rx={14} />
       {/* The set size plot */}
       <Group left={0} top={intersectionPlotTotalHeight}>
-        <AxisBottom left={spaceForCellCounts} top={setSizePlotBarsHeight} scale={setSizePlotWidthScale} label='Set Size' numTicks={2} />
-        {/* Width/Height might be messed up */}
-        <GridColumns left={spaceForCellCounts} top={0} scale={setSizePlotWidthScale} height={setSizePlotBarsHeight} numTicks={2} stroke="#e0e0e0" />
+        <AxisBottom left={spaceForCellCounts} top={setSizePlotBarsHeight} scale={setSizePlotWidthScale} label='Set Size' tickValues={[0, 100000]} />
+        <GridColumns left={spaceForCellCounts} top={0} scale={setSizePlotWidthScale} height={setSizePlotBarsHeight} tickValues={[0, 100000]} stroke="#e0e0e0" />
         {setSizeData.map((d, i) => {
           const barWidth = setSizePlotBarsWidth - (setSizePlotWidthScale(d.count) ?? 0);
           const barHeight = setSizePlotHeightScale.bandwidth();
@@ -191,7 +110,6 @@ export default function UpSetPlot({ width, height, data, events = false }: BarsP
                   width={totalWidth - 2 * spaceForTextRight}
                   height={barHeight + ((1 - setSizePlotHeightScale.padding()) * barHeight)}
                   fill="#eeeeee"
-                  z={-100}
                 />
               }
               <Text textAnchor='end' x={barX} dx={-4} y={barY} dy={15} angle={0}>
@@ -206,9 +124,11 @@ export default function UpSetPlot({ width, height, data, events = false }: BarsP
                 onClick={() => {
                   if (events) alert(`clicked: ${JSON.stringify(Object.values(d))}`);
                 }}
+                onMouseEnter={() => setCursor("pointer")}
+                onMouseLeave={() => setCursor("auto")}
               />
               <Text textAnchor='end' x={setSizePlotTotalWidth} y={barY} dy={15} angle={0}>
-                {d.name.length > 13 ? d.name.substring(0, 10) + '...' : d.name}
+                {d.name.length > 13 ? d.name.substring(0, 10).replaceAll('_', ' ') + '...' : d.name.replaceAll('_', ' ')}
               </Text>
             </Group>
           );
@@ -240,6 +160,8 @@ export default function UpSetPlot({ width, height, data, events = false }: BarsP
                 onClick={() => {
                   if (events) alert(`clicked: ${JSON.stringify(Object.values(d))}`);
                 }}
+                onMouseEnter={() => setCursor("pointer")}
+                onMouseLeave={() => setCursor("auto")}
               />
               {Array.from(d.name).map((char, index) => (
                 <Circle
