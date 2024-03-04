@@ -575,6 +575,7 @@ const GET_FILE = gql(`
 //Need way to match each node with it's query to handle the onClick()
 
 interface cCRECellTypeData {
+type cCRECellTypeData = {
   celltypes: string[];
   accession: string;
   coordinates: {
@@ -586,7 +587,7 @@ interface cCRECellTypeData {
   rdhs: string;
 }
 
-interface QueryGroup {
+type QueryGroup = {
   intersect?: string[][],
   exclude?: string[][],
   union?: string[],
@@ -600,10 +601,12 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
   const [cellsToFetch, setCellsToFetch] = useState<CellTypeInfo[]>([])
   //Used to store groupings needed to generate files when clicking on a bar in UpSet plot
   const [upSetQueryGroups, setUpSetQueryGroups] = useState<{ [key: string]: QueryGroup }>(null)
+  const [downloading, setDownloading] = useState<boolean>(false)
 
   const handleUpsetDownload = async (downloadKey: string) => {
     try {
-      const cellGroupings = upSetQueryGroups[downloadKey]
+      setDownloading(true)
+      const cellGroupings: QueryGroup = upSetQueryGroups[downloadKey]
       console.log("trying to fetch: ", cellGroupings)
       const res = await getiCREFileURL({
         variables: {
@@ -623,16 +626,17 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
           const a = document.createElement('a');
           const blobUrl = URL.createObjectURL(blob);
           a.href = blobUrl;
-          a.download = `${cellGroupings.name}.bed`; // Change the filename as needed
+          a.download = `${(downloadKey[0] === '0' || downloadKey[0] === '1') ? `Intersect(${cellGroupings.intersect.map(vals => vals[0]).flat().join(',')})${cellGroupings.exclude.length > 0 ? `Except(${cellGroupings.exclude.map(vals => vals[0]).flat().join(',')})` : ''}` : downloadKey}.bed`
           a.click();
           URL.revokeObjectURL(blobUrl);
         })
         .catch(error => {
           console.error('Error fetching the file:', error);
         });
-
+      setDownloading(false)
     } catch (error) {
       console.log("Something went wrong when attempting to download:\n" + error)
+      setDownloading(false)
     }
   }
 
@@ -664,7 +668,7 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
       if (cell.stimulated == "B") {
         cells.push({displayName: cell.id.replace('-', '_') + '_U', queryVals: extractQueryValues(cell, "U")})
         cells.push({displayName: cell.id.replace('-', '_') + '_S', queryVals: extractQueryValues(cell, "S")})
-      } else cells.push({displayName: cell.id.replace('-', '_'), queryVals: extractQueryValues(cell, cell.stimulated)})
+      } else cells.push({displayName: cell.id.replace('-', '_') + '_' + cell.stimulated, queryVals: extractQueryValues(cell, cell.stimulated)})
     })
     let queryGroups: QueryGroup[] = []
     
@@ -727,15 +731,14 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
     }`
 
     //Join query strings and parse into query document
-    console.log(iCREQuery)
     return (gql(iCREQuery))
   }
 
 
   /**
-   * @todo This is a garbage way of doing this, need to change it. Should be utilizing Directives to dynamically construct query
+   * @todo This is a suboptimal way of doing this, need to change it. Should be utilizing Directives to dynamically construct query
    * See https://graphql.org/learn/queries/#directives
-   * and https://stackoverflow.com/questions/51322346/graphql-dynamic-query-building
+   * and https://www.apollographql.com/blog/batching-client-graphql-queries#can-batching-be-done-manually
    * 
    * @param queryGroup
    * @param uuid needed if using query for createicresFilesQuery
@@ -811,18 +814,22 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
 
     Object.entries(data).forEach((x: [string, number]) => {
       if (x[0] === "Union_All") {
-        //Do something if putting donwload all in UpSet plot
+        const calculated = Object.entries(data)
+          .filter(y => { return !(y[0] === "Union_All" || y[0].charAt(0) === "_") })
+          .reduce((accumulator, element) => accumulator + element[1], 0)
+        if (x[1] !== calculated) {
+          throw new Error("Expected total union size doesn't match calculated total" + "Expected: " + x[1] + " Calculated: " + calculated)
+        }
       } else if (x[0].charAt(0) === "_") { //If character is '_' it's the query for individual counts
         returnData.counts.push({name: x[0].slice(2), count: x[1]}) //push cell name stripped of number and counts
         returnData.order.push(x[0].slice(1)) //For order, push cell stripped of leading underscore. Keep number for sorting
-      } else if (x[0].includes("UpSet_")){
+      } else if (x[0].includes("UpSet_")) {
         returnData.intersections.push({name: x[0].slice(6), count: x[1]})
-      } else throw new Error("Error parsing gql return data to UpSet data")
+      } else throw new Error("Error parsing gql return data to UpSet data: Unknown key")
     })
     
     returnData.order = returnData.order.sort((a, b) => +a.charAt[0] - +b.charAt[0]).map(x => x.slice(1)) //sort returnData.order based on leading number, then strip leading numbers
 
-    console.log(returnData)
     return (
       returnData
     )
@@ -856,14 +863,14 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
 
   const upSet = useMemo(() => {
     if (data_count) {return( <UpSetPlot
-    key={data_count}
     width={700}
     height={500}
     data={transformtoUpSet(data_count)}
     setCursor={setCursor}
     handleDownload={handleUpsetDownload}
+    loading={downloading}
   />)} else return <></>
-  }, [data_count])
+  }, [data_count, downloading])
 
 
 

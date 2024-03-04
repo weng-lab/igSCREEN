@@ -5,17 +5,18 @@ import { scaleBand, scaleLinear } from '@visx/scale';
 import { Text } from '@visx/text'
 import { AxisLeft, AxisBottom } from '@visx/axis'
 import { GridRows, GridColumns } from '@visx/grid';
-
+import { JoinFull } from '@mui/icons-material';
 
 export type BarsProps = {
   width: number;
   height: number;
   data: { intersections: { name: string, count: number }[], counts: { name: string, count: number }[], order: string[] }
   setCursor:  React.Dispatch<React.SetStateAction<"auto" | "pointer" | "cell" | "not-allowed">>
-  handleDownload: (downloadKey: string) => void;
+  handleDownload: (downloadKey: string) => Promise<void>
+  loading?: boolean
 };
 
-export default function UpSetPlot({ width, height, data, setCursor, handleDownload }: BarsProps) {
+export default function UpSetPlot({ width, height, data, setCursor, handleDownload, loading = false }: BarsProps) {
   const intersectionData = data.intersections.sort((a, b) => b.count - a.count)
   const setSizeData = data.counts.sort((a, b) => {
     const indexA = data.order.findIndex((x) => x === a.name)
@@ -92,6 +93,31 @@ export default function UpSetPlot({ width, height, data, setCursor, handleDownlo
   return totalWidth < 10 ? null : (
     <svg id='UpSet-Plot' width={totalWidth} height={totalHeight}>
       <rect width={totalWidth} height={totalHeight} fill='none' stroke='black' fillOpacity={0.5} rx={14} />
+      <Group
+        top={5}
+        left={10}
+        onClick={() => handleDownload("Union_All")}
+        onMouseEnter={() => setCursor("pointer")}
+        onMouseLeave={() => setCursor("auto")}
+      >
+        <JoinFull inheritViewBox />
+        <text>
+          <tspan x={25} y={17}>
+            Total Union Size:
+          </tspan>
+          <tspan x={25} y={17} dy={16}>
+            {data.intersections.map((x) => x.count).reduce((accumulator, element) => accumulator + element, 0)}
+          </tspan>
+        </text>
+      </Group>
+      {loading &&
+        <Group
+          top={25}
+          left={totalWidth - 10}
+        >
+          <Text textAnchor='end'>Downloading...</Text>
+        </Group>
+      }
       {/* The set size plot */}
       <Group left={0} top={intersectionPlotTotalHeight}>
         <AxisBottom left={spaceForCellCounts} top={setSizePlotBarsHeight} scale={setSizePlotWidthScale} label='Set Size' tickValues={[0, 100000]} />
@@ -112,22 +138,29 @@ export default function UpSetPlot({ width, height, data, setCursor, handleDownlo
                   fill="#eeeeee"
                 />
               }
-              <Text textAnchor='end' x={barX} dx={-4} y={barY} dy={15} angle={0}>
-                {d.count}
-              </Text>
-              <Bar
-                x={barX}
-                y={barY}
-                width={barWidth}
-                height={barHeight}
-                fill="black"
+              <Group
                 onClick={() => handleDownload(d.name)}
                 onMouseEnter={() => setCursor("pointer")}
                 onMouseLeave={() => setCursor("auto")}
-              />
-              <Text textAnchor='end' x={setSizePlotTotalWidth} y={barY} dy={15} angle={0}>
-                {d.name.length > 13 ? d.name.substring(0, 10).replaceAll('_', ' ') + '...' : d.name.replaceAll('_', ' ')}
-              </Text>
+              >
+                <Text textAnchor='end' x={barX} dx={-4} y={barY} dy={15} angle={0}>
+                  {d.count}
+                </Text>
+                <Bar
+                  x={barX}
+                  y={barY}
+                  width={barWidth}
+                  height={barHeight}
+                  fill="black"
+                  onClick={() => handleDownload(d.name)}
+                  onMouseEnter={() => setCursor("pointer")}
+                  onMouseLeave={() => setCursor("auto")}
+                />
+                <Text textAnchor='end' x={setSizePlotTotalWidth} y={barY} dy={15} angle={0}>
+                  {d.name.length > 13 ? d.name.substring(0, 10).replaceAll('_', ' ') + '...' : d.name.replaceAll('_', ' ')}
+                </Text>
+                <rect x={spaceForTextRight} y={barY} width={setSizePlotTotalWidth} height={barHeight} fill="rgba(0, 0, 0, 0)"/>
+              </Group>
             </Group>
           );
         })}
@@ -145,20 +178,26 @@ export default function UpSetPlot({ width, height, data, setCursor, handleDownlo
           const circleRadius = halfBarWidth
           const connectingBarWidth = barWidth / 8
           return (
-            <Group key={`Group-${d.name}`}>
-              <Text x={barX + (halfBarWidth)} y={barY - 5} angle={315}>
-                {d.count}
-              </Text>
-              <Bar
-                x={barX}
-                y={barY}
-                width={barWidth}
-                height={barHeight}
-                fill="black"
-                onClick={() => handleDownload(d.name)}
-                onMouseEnter={() => setCursor("pointer")}
-                onMouseLeave={() => setCursor("auto")}
-              />
+            <Group
+              key={`Group-${d.name}`}
+              onClick={() => handleDownload(d.name)}
+              onMouseEnter={() => setCursor("pointer")}
+              onMouseLeave={() => setCursor("auto")}
+            >
+              
+              <Group>
+                <Text x={barX + (halfBarWidth)} y={barY - 5} angle={315}>
+                  {d.count}
+                </Text>
+                <Bar
+                  x={barX}
+                  y={barY}
+                  width={barWidth}
+                  height={barHeight}
+                  fill="black"
+                />
+              </Group>
+              <rect x={barX} y={barY} width={barWidth} height={barHeight + setSizePlotBarsHeight} fill="rgba(0, 0, 0, 0)"/>
               {Array.from(d.name).map((char, index) => (
                 <Circle
                   key={`circle-${index}`}
