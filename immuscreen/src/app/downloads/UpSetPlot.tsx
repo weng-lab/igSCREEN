@@ -27,12 +27,28 @@ export default function UpSetPlot({ width, height, data, setCursor, handleDownlo
     return (indexA - indexB)
   })
 
+  const fontSize = 14
+
   // end dimensions of the plot
   const totalWidth = width
   const totalHeight = height
 
+  const n = intersectionData.length
+
+  // 0.35 good for 4 & 5, 6 good for 3, 7 good for 2
+
+  //Nothing works for 5, since text gets too squished. Need to give less vertcial room for intersection plot
+
   // based on total dimensions set widths of intersection and set size charts
-  const setSizePlotTotalWidth = totalWidth * 0.35
+  // const setSizePlotTotalWidth = totalWidth * 0.5
+  let setSizePlotTotalWidth: number;
+  switch(data.counts.length){
+    case (1): setSizePlotTotalWidth = totalWidth * 0.45; break;
+    case (2): setSizePlotTotalWidth = totalWidth * 0.45; break;
+    case (3): setSizePlotTotalWidth = totalWidth * 0.45; break;
+    case (4): setSizePlotTotalWidth = totalWidth * 0.375; break;
+    case (5): setSizePlotTotalWidth = totalWidth * 0.325; break;
+  }
   const spaceForCellName = 120
   const spaceForCellCounts = 80
   const setSizePlotBarsWidth = setSizePlotTotalWidth - spaceForCellName - spaceForCellCounts
@@ -53,7 +69,10 @@ export default function UpSetPlot({ width, height, data, setCursor, handleDownlo
 
   const spaceForBottomAxis = 40
   //convoluted, but calculates the needed height based on how much room is taken up by the circles
-  const setSizePlotBarsHeight = (((intersectionPlotWidthScale.bandwidth() * 1.5) * (intersectionData[0].name.length)) + (intersectionPlotWidthScale.bandwidth() * 0.5))
+  // const setSizePlotBarsHeight = (((intersectionPlotWidthScale.bandwidth() * 1.5) * (intersectionData[0].name.length)) + (intersectionPlotWidthScale.bandwidth() * 0.5))
+  const setSizePlotBarsHeight = fontSize * 1.5 * data.counts.length
+
+  //The issue is that the height of the set size plot is determined based on on the size on intersection bars, which on an n=5 plot is very small, so not enough room is being given to it. Need to make the gap between circles constant not variable, leaving enough room in between for text
   const setSizePlotTotalHeight = setSizePlotBarsHeight + spaceForBottomAxis
   const spaceForTextTop = 60
   const intersectionPlotBarsHeight = totalHeight - setSizePlotTotalHeight - spaceForTextTop
@@ -85,13 +104,14 @@ export default function UpSetPlot({ width, height, data, setCursor, handleDownlo
         range: [0, setSizePlotBarsHeight],
         round: true,
         domain: setSizeData.map((x) => x.name),
-        padding: 0.4,
+        paddingInner: 0.4,
+        paddingOuter: 0.2
       }),
     [setSizePlotBarsHeight, setSizeData],
   );
 
   return totalWidth < 10 ? null : (
-    <svg id='UpSet-Plot' width={totalWidth} height={totalHeight}>
+    <svg fontSize={fontSize} id='UpSet-Plot' width={totalWidth} height={totalHeight}>
       <rect width={totalWidth} height={totalHeight} fill='none' stroke='black' fillOpacity={0.5} rx={14} />
       <Group
         top={5}
@@ -143,7 +163,7 @@ export default function UpSetPlot({ width, height, data, setCursor, handleDownlo
                 onMouseEnter={() => setCursor("pointer")}
                 onMouseLeave={() => setCursor("auto")}
               >
-                <Text textAnchor='end' x={barX} dx={-4} y={barY} dy={15} angle={0}>
+                <Text textAnchor='end' verticalAnchor='middle' x={barX} dx={-4} y={barY} dy={0.5 * barHeight}>
                   {d.count}
                 </Text>
                 <Bar
@@ -156,10 +176,11 @@ export default function UpSetPlot({ width, height, data, setCursor, handleDownlo
                   onMouseEnter={() => setCursor("pointer")}
                   onMouseLeave={() => setCursor("auto")}
                 />
-                <Text textAnchor='end' x={setSizePlotTotalWidth} y={barY} dy={15} angle={0}>
+                <Text textAnchor='end' verticalAnchor='middle' x={setSizePlotTotalWidth} y={barY} dy={0.5 * barHeight}>
                   {d.name.length > 13 ? d.name.substring(0, 10).replaceAll('_', ' ') + '...' : d.name.replaceAll('_', ' ')}
                 </Text>
-                <rect x={spaceForTextRight} y={barY} width={setSizePlotTotalWidth} height={barHeight} fill="rgba(0, 0, 0, 0)"/>
+                {/* FIX */}
+                {/* <rect x={spaceForTextRight} y={barY} width={setSizePlotTotalWidth} height={barHeight} fill="rgba(0, 0, 0, 0)"/> */}
               </Group>
             </Group>
           );
@@ -175,8 +196,9 @@ export default function UpSetPlot({ width, height, data, setCursor, handleDownlo
           const barX = intersectionPlotWidthScale(d.name);
           const barY = (intersectionPlotHeightScale(d.count) ?? 0);
           const halfBarWidth = barWidth / 2
-          const circleRadius = halfBarWidth
-          const connectingBarWidth = barWidth / 8
+          const circleRadius = Math.min(halfBarWidth, fontSize * 0.6)
+          console.log(circleRadius)
+          const connectingBarWidth = circleRadius/3
           return (
             <Group
               key={`Group-${d.name}`}
@@ -197,13 +219,13 @@ export default function UpSetPlot({ width, height, data, setCursor, handleDownlo
                   fill="black"
                 />
               </Group>
-              <rect x={barX} y={barY} width={barWidth} height={barHeight + setSizePlotBarsHeight} fill="rgba(0, 0, 0, 0)"/>
+              {/* FIX */}
+              {/* <rect x={barX} y={barY} width={barWidth} height={barHeight + setSizePlotBarsHeight} fill="rgba(0, 0, 0, 0)"/> */}
               {Array.from(d.name).map((char, index) => (
                 <Circle
                   key={`circle-${index}`}
-                  cx={barX + (circleRadius)}
-                  // intersectionPlotHeight is bottom of bar. Move first circle down by one diameter (such that gap is r). Each circle after the first is bumped down by 3 r such that the gap is 1 r
-                  cy={intersectionPlotBarsHeight + (2 * circleRadius) + (index * (3 * circleRadius))}
+                  cx={barX + halfBarWidth}
+                  cy={intersectionPlotBarsHeight + (index * fontSize * 1.5) + (0.5 * fontSize * 1.5)}
                   r={circleRadius}
                   fill={char === '1' ? '#000000' : '#bbbbbb'}
                 />
@@ -212,9 +234,11 @@ export default function UpSetPlot({ width, height, data, setCursor, handleDownlo
               {d.name.indexOf('1') !== d.name.lastIndexOf('1') && d.name.indexOf('1') !== -1 &&
                 <Bar
                   x={barX + (halfBarWidth) - (connectingBarWidth / 2)}
-                  y={intersectionPlotBarsHeight + (2 * circleRadius) + (d.name.indexOf('1') * (3 * circleRadius))}
+                  //Set to begin at first intersection
+                  y={intersectionPlotBarsHeight + (d.name.indexOf('1') * 1.5 * fontSize) + (0.5 * 1.5 * fontSize)}
                   width={connectingBarWidth}
-                  height={(3 * circleRadius) * (d.name.lastIndexOf('1') - d.name.indexOf('1'))}
+                  //height set to reach last intersection
+                  height={(1.5 * fontSize) * (d.name.lastIndexOf('1') - d.name.indexOf('1'))}
                   fill='black'
                 />
               }

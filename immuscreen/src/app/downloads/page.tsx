@@ -574,7 +574,6 @@ const GET_FILE = gql(`
 //Maybe I should generate the insides of every query, store that, and then use the inside to populate each query.
 //Need way to match each node with it's query to handle the onClick()
 
-interface cCRECellTypeData {
 type cCRECellTypeData = {
   celltypes: string[];
   accession: string;
@@ -864,7 +863,7 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
   const upSet = useMemo(() => {
     if (data_count) {return( <UpSetPlot
     width={700}
-    height={500}
+    height={400}
     data={transformtoUpSet(data_count)}
     setCursor={setCursor}
     handleDownload={handleUpsetDownload}
