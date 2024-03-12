@@ -3,12 +3,11 @@ import * as React from "react"
 import CellTypeTree from "../../common/components/cellTypeTree"
 import { useEffect, useMemo, useState } from "react"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
-import { Box, Button, CircularProgress, Tooltip, Typography } from "@mui/material";
-import { QueryResult, gql, useLazyQuery, useQuery } from "@apollo/client";
-import { DataTable } from "@weng-lab/psychscreen-ui-components";
+import { Box, Button, Checkbox, CircularProgress, FormControlLabel, Tooltip } from "@mui/material";
+import { gql, useLazyQuery } from "@apollo/client";
 import { client } from "../../common/utils";
 import UpSetPlot from "./UpSetPlot";
-import {v4 as uuidv4} from 'uuid'
+import { v4 as uuidv4 } from 'uuid'
 
 /**
  * @todo add hover info on cells (how many cCREs active)
@@ -26,8 +25,8 @@ export interface CellTypeInfo {
   readonly selectable: boolean;
   readonly stimulable: boolean;
   readonly queryValues?: {
-    readonly unstimulated: {Calderon?: string | string[], Corces?: string | string[]};
-    readonly stimulated?: {Calderon: string | string[]}
+    readonly unstimulated: { Calderon?: string | string[], Corces?: string | string[] };
+    readonly stimulated?: { Calderon: string | string[] }
   }
 }
 
@@ -90,8 +89,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Monocytes-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: {Calderon: 'Monocytes-U', Corces: 'Mono'},
-      stimulated: {Calderon: 'Monocytes-S'}
+      unstimulated: { Calderon: 'Monocytes-U', Corces: 'Mono' },
+      stimulated: { Calderon: 'Monocytes-S' }
     },
   },
   Myeloid_DCs: {
@@ -103,7 +102,7 @@ const cellTypeInitialState: CellTypes = {
     unstimImagePath: '/cellTypes/Myeloid_DCs-U.png',
     stimulable: false,
     queryValues: {
-      unstimulated: {Calderon: "Myeloid_DCs-U"}
+      unstimulated: { Calderon: "Myeloid_DCs-U" }
     },
   },
   pDCs: {
@@ -115,7 +114,7 @@ const cellTypeInitialState: CellTypes = {
     unstimImagePath: '/cellTypes/pDCs-U.png',
     stimulable: false,
     queryValues: {
-      unstimulated: {Calderon: 'pDCs-U'}
+      unstimulated: { Calderon: 'pDCs-U' }
     },
   },
   Bulk_B: {
@@ -128,8 +127,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Bulk_B-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: {Calderon: 'Bulk_B-U', Corces: "Bcell"},
-      stimulated: {Calderon: 'Bulk_B-S'}
+      unstimulated: { Calderon: 'Bulk_B-U', Corces: "Bcell" },
+      stimulated: { Calderon: 'Bulk_B-S' }
     },
   },
   Naive_B: {
@@ -142,8 +141,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Naive_B-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: {Calderon: 'Naive_B-U'},
-      stimulated: {Calderon: 'Naive_B-S'}
+      unstimulated: { Calderon: 'Naive_B-U' },
+      stimulated: { Calderon: 'Naive_B-S' }
     },
   },
   Mem_B: {
@@ -156,8 +155,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Mem_B-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: {Calderon: 'Mem_B-U'},
-      stimulated: {Calderon: 'Mem_B-S'}
+      unstimulated: { Calderon: 'Mem_B-U' },
+      stimulated: { Calderon: 'Mem_B-S' }
     },
   },
   Plasmablasts: {
@@ -169,7 +168,7 @@ const cellTypeInitialState: CellTypes = {
     unstimImagePath: '/cellTypes/Plasmablasts-U.png',
     stimulable: false,
     queryValues: {
-      unstimulated: {Calderon: 'Plasmablasts-U'}
+      unstimulated: { Calderon: 'Plasmablasts-U' }
     },
   },
   Regulatory_T: {
@@ -182,8 +181,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Regulatory_T-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: {Calderon: 'Regulatory_T-U'},
-      stimulated: {Calderon: 'Regulatory_T-S'}
+      unstimulated: { Calderon: 'Regulatory_T-U' },
+      stimulated: { Calderon: 'Regulatory_T-S' }
     },
   },
   Naive_Tregs: {
@@ -196,8 +195,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Naive_Tregs-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: {Calderon: 'Naive_Tregs-U'},
-      stimulated: {Calderon: 'Naive_Tregs-S'}
+      unstimulated: { Calderon: 'Naive_Tregs-U' },
+      stimulated: { Calderon: 'Naive_Tregs-S' }
     },
   },
   Memory_Tregs: {
@@ -210,8 +209,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Memory_Tregs-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: {Calderon: 'Memory_Tregs-U'},
-      stimulated: {Calderon: 'Memory_Tregs-S'}
+      unstimulated: { Calderon: 'Memory_Tregs-U' },
+      stimulated: { Calderon: 'Memory_Tregs-S' }
     },
   },
   Effector_CD4pos_T: {
@@ -224,8 +223,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Effector_CD4pos_T-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: {Calderon: 'Effector_CD4pos_T-U'},
-      stimulated: {Calderon: 'Effector_CD4pos_T-S'}
+      unstimulated: { Calderon: 'Effector_CD4pos_T-U' },
+      stimulated: { Calderon: 'Effector_CD4pos_T-S' }
     },
   },
   Naive_Teffs: {
@@ -238,8 +237,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Naive_teffs-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: {Calderon: 'Naive_Teffs-U'},
-      stimulated: {Calderon: 'Naive_Teffs-S'}
+      unstimulated: { Calderon: 'Naive_Teffs-U' },
+      stimulated: { Calderon: 'Naive_Teffs-S' }
     },
   },
   Memory_Teffs: {
@@ -252,8 +251,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Memory_Teffs-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: {Calderon: 'Memory_Teffs-U'},
-      stimulated: {Calderon: 'Memory_Teffs-S'}
+      unstimulated: { Calderon: 'Memory_Teffs-U' },
+      stimulated: { Calderon: 'Memory_Teffs-S' }
     },
   },
   Th1_precursors: {
@@ -266,8 +265,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Th1_precursors-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: {Calderon: 'Th1_precursors-U'},
-      stimulated: {Calderon: 'Th1_precursors-S'}
+      unstimulated: { Calderon: 'Th1_precursors-U' },
+      stimulated: { Calderon: 'Th1_precursors-S' }
     },
   },
   Th2_precursors: {
@@ -280,8 +279,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Th2_precursors-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: {Calderon: 'Th2_precursors-U'},
-      stimulated: {Calderon: 'Th2_precursors-S'}
+      unstimulated: { Calderon: 'Th2_precursors-U' },
+      stimulated: { Calderon: 'Th2_precursors-S' }
     },
   },
   Th17_precursors: {
@@ -294,8 +293,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Th17_precursors-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: {Calderon: 'Th17_precursors-U'},
-      stimulated: {Calderon: 'Th17_precursors-S'}
+      unstimulated: { Calderon: 'Th17_precursors-U' },
+      stimulated: { Calderon: 'Th17_precursors-S' }
     },
   },
   Follicular_T_Helper: {
@@ -308,8 +307,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Follicular_T_helper-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: {Calderon: 'Follicular_T_Helper-U'},
-      stimulated: {Calderon: 'Follicular_T_Helper-S'}
+      unstimulated: { Calderon: 'Follicular_T_Helper-U' },
+      stimulated: { Calderon: 'Follicular_T_Helper-S' }
     },
   },
   CD8pos_T: {
@@ -322,8 +321,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/CD8pos_T-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: {Calderon: 'CD8pos_T-U', Corces: "CD8Tcell"},
-      stimulated: {Calderon: 'CD8pos_T-S'}
+      unstimulated: { Calderon: 'CD8pos_T-U', Corces: "CD8Tcell" },
+      stimulated: { Calderon: 'CD8pos_T-S' }
     },
   },
   Naive_CD8_T: {
@@ -336,8 +335,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Naive_CD8_T-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: {Calderon: 'Naive_CD8_T-U'},
-      stimulated: {Calderon: 'Naive_CD8_T-S'}
+      unstimulated: { Calderon: 'Naive_CD8_T-U' },
+      stimulated: { Calderon: 'Naive_CD8_T-S' }
     },
   },
   Central_memory_CD8pos_T: {
@@ -350,8 +349,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Central_Memory_CD8pos_T-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: {Calderon: 'Central_memory_CD8pos_T-U'},
-      stimulated: {Calderon: 'Central_memory_CD8pos_T-S'}
+      unstimulated: { Calderon: 'Central_memory_CD8pos_T-U' },
+      stimulated: { Calderon: 'Central_memory_CD8pos_T-S' }
     },
   },
   Effector_memory_CD8pos_T: {
@@ -364,8 +363,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Effector_memory_CD8pos_T-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: {Calderon: 'Effector_memory_CD8pos_T-U'},
-      stimulated: {Calderon: 'Effector_memory_CD8pos_T-S'}
+      unstimulated: { Calderon: 'Effector_memory_CD8pos_T-U' },
+      stimulated: { Calderon: 'Effector_memory_CD8pos_T-S' }
     },
   },
   Gamma_delta_T: {
@@ -378,8 +377,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Gamma_delta_T-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: {Calderon: 'Gamma_delta_T-U'},
-      stimulated: {Calderon: 'Gamma_delta_T-S'}
+      unstimulated: { Calderon: 'Gamma_delta_T-U' },
+      stimulated: { Calderon: 'Gamma_delta_T-S' }
     },
   },
   Immature_NK: {
@@ -391,7 +390,7 @@ const cellTypeInitialState: CellTypes = {
     unstimImagePath: '/cellTypes/Immature_NK-U.png',
     stimulable: false,
     queryValues: {
-      unstimulated: {Calderon: 'Immature_NK-U'}
+      unstimulated: { Calderon: 'Immature_NK-U' }
     },
   },
   Mature_NK: {
@@ -404,8 +403,8 @@ const cellTypeInitialState: CellTypes = {
     stimImagePath: '/cellTypes/Mature_NK-S.png',
     stimulable: true,
     queryValues: {
-      unstimulated: {Calderon: 'Mature_NK-U'},
-      stimulated: {Calderon: 'Mature_NK-S'}
+      unstimulated: { Calderon: 'Mature_NK-U' },
+      stimulated: { Calderon: 'Mature_NK-S' }
     },
   },
   Memory_NK: {
@@ -417,7 +416,7 @@ const cellTypeInitialState: CellTypes = {
     unstimImagePath: '/cellTypes/Memory_NK-U.png',
     stimulable: false,
     queryValues: {
-      unstimulated: {Calderon: 'Memory_NK-U'}
+      unstimulated: { Calderon: 'Memory_NK-U' }
     },
   },
   HSC: {
@@ -429,7 +428,7 @@ const cellTypeInitialState: CellTypes = {
     unstimImagePath: '/cellTypes/HSC.png',
     stimulable: false,
     queryValues: {
-      unstimulated: {Corces: ["HSC", "CD34_Cord_Blood", "CD34_Bone_Marrow"]}
+      unstimulated: { Corces: ["HSC", "CD34_Cord_Blood", "CD34_Bone_Marrow"] }
     },
   },
   MPP: {
@@ -441,7 +440,7 @@ const cellTypeInitialState: CellTypes = {
     unstimImagePath: '/cellTypes/MPP.png',
     stimulable: false,
     queryValues: {
-      unstimulated: {Corces: "MPP"}
+      unstimulated: { Corces: "MPP" }
     },
   },
   CMP: {
@@ -453,7 +452,7 @@ const cellTypeInitialState: CellTypes = {
     unstimImagePath: '/cellTypes/CMP.png',
     stimulable: false,
     queryValues: {
-      unstimulated: {Corces: "CMP"}
+      unstimulated: { Corces: "CMP" }
     },
   },
   MEP: {
@@ -465,7 +464,7 @@ const cellTypeInitialState: CellTypes = {
     unstimImagePath: '/cellTypes/MEP.png',
     stimulable: false,
     queryValues: {
-      unstimulated: {Corces: "MEP"}
+      unstimulated: { Corces: "MEP" }
     },
   },
   Ery: {
@@ -477,7 +476,7 @@ const cellTypeInitialState: CellTypes = {
     unstimImagePath: '/cellTypes/Erythrocyte.png',
     stimulable: false,
     queryValues: {
-      unstimulated: {Corces: "Ery"}
+      unstimulated: { Corces: "Ery" }
     },
   },
   GMP: {
@@ -489,7 +488,7 @@ const cellTypeInitialState: CellTypes = {
     unstimImagePath: '/cellTypes/GMP.png',
     stimulable: false,
     queryValues: {
-      unstimulated: {Corces: "GMP"}
+      unstimulated: { Corces: "GMP" }
     },
   },
   LPMP: {
@@ -501,7 +500,7 @@ const cellTypeInitialState: CellTypes = {
     unstimImagePath: '/cellTypes/LMP.png',
     stimulable: false,
     queryValues: {
-      unstimulated: {Corces: "LMPP"}
+      unstimulated: { Corces: "LMPP" }
     },
   },
   CLP: {
@@ -513,7 +512,7 @@ const cellTypeInitialState: CellTypes = {
     unstimImagePath: '/cellTypes/CLP.png',
     stimulable: false,
     queryValues: {
-      unstimulated: {Corces: "CLP"}
+      unstimulated: { Corces: "CLP" }
     },
   },
   CD4Tcell: {
@@ -525,7 +524,7 @@ const cellTypeInitialState: CellTypes = {
     unstimImagePath: '/cellTypes/CD4posT.png',
     stimulable: false,
     queryValues: {
-      unstimulated: {Corces: "CD4Tcell"}
+      unstimulated: { Corces: "CD4Tcell" }
     },
   },
   Nkcell: {
@@ -537,38 +536,41 @@ const cellTypeInitialState: CellTypes = {
     unstimImagePath: '/cellTypes/Nkcell.png',
     stimulable: false,
     queryValues: {
-      unstimulated: {Corces: "NKcell"}
+      unstimulated: { Corces: "NKcell" }
     },
   }
 }
 
-const ICRE_COUNT = gql(`
-  query iCRECount(
-    $unionCellTypes: [[String!]]
-    $intersectCellTypes: [[String!]]
-    $excludeCellTypes: [[String!]]
-  ) {
-    iCREsCountQuery(
-      celltypes: $unionCellTypes
-      allcelltypes: $intersectCellTypes
-      excludecelltypes: $excludeCellTypes
-    )
-  }
-`)
+// Generating this query on the fly
+// const ICRE_COUNT = gql(`
+//   query iCRECount(
+//     $unionCellTypes: [[String!]]
+//     $intersectCellTypes: [[String!]]
+//     $excludeCellTypes: [[String!]]
+//   ) {
+//     iCREsCountQuery(
+//       celltypes: $unionCellTypes
+//       allcelltypes: $intersectCellTypes
+//       excludecelltypes: $excludeCellTypes
+//     )
+//   }
+// `)
 
-const GET_FILE = gql(`
-  query iCRECount(
-    $unionCellTypes: [[String!]]
-    $intersectCellTypes: [[String!]]
-    $excludeCellTypes: [[String!]]
-  ) {
-    iCREsCountQuery(
-      celltypes: $unionCellTypes
-      allcelltypes: $intersectCellTypes
-      excludecelltypes: $excludeCellTypes
-    )
-  }
-`)
+const GET_ICRE_FILE = gql`
+query getFile(
+  $celltypes: [[String]]
+  $excludecelltypes: [[String]]
+  $uuid: String!
+  $group: [String!]
+) {
+  createicresFilesQuery(
+    uuid: $uuid
+    celltypes: $celltypes
+    excludecelltypes: $excludecelltypes
+    group: $group
+  )
+}
+`
 
 //So I need the same info as the other query, add UUID, and just with a different query name.
 //Maybe I should generate the insides of every query, store that, and then use the inside to populate each query.
@@ -593,15 +595,40 @@ type QueryGroup = {
   name: string
 }
 
+export type CCRE_CLASS = "CA-CTCF" | "CA-TF" | "CA-H3K4me3" | "TF" | "CA" | "pELS" | "dELS" | "PLS"
+
+const classDisplaynames: { [key in CCRE_CLASS]: string } = {
+  "CA-CTCF": "Chromatin Accessible with CTCF",
+  "CA-TF": "Chromatin Accessible with TF",
+  "CA-H3K4me3": "Chromatin Accessible with H3K4me3",
+  "TF": "TF",
+  "CA": "Chromatin Accessible Only",
+  "pELS": "Proximal Enhancer-Like Signature",
+  "dELS": "Distal Enhancer-Like Signature",
+  "PLS": "Promoter-Like Signature"
+}
+
 export default function Downloads({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
   const [cellTypeState, setCellTypeState] = useState<CellTypes>(cellTypeInitialState)
   const [stimulateMode, setStimulateMode] = useState<boolean>(false)
   const [cursor, setCursor] = useState<'auto' | 'pointer' | 'cell' | 'not-allowed'>('auto')
-  const [cellsToFetch, setCellsToFetch] = useState<CellTypeInfo[]>([])
+  const [upSetCells, setUpSetCells] = useState<CellTypeInfo[]>([])
   //Used to store groupings needed to generate files when clicking on a bar in UpSet plot
   const [upSetQueryGroups, setUpSetQueryGroups] = useState<{ [key: string]: QueryGroup }>(null)
   const [downloading, setDownloading] = useState<boolean>(false)
+  const [checkboxClasses, setCheckboxClasses] = useState<{ [key in CCRE_CLASS]: boolean }>({
+    "CA-CTCF": true,
+    "CA-TF": true,
+    "CA-H3K4me3": true,
+    "TF": true,
+    "CA": true,
+    "pELS": true,
+    "dELS": true,
+    "PLS": true
+  })
+  const [upSetClasses, setUpSetClasses] = useState<CCRE_CLASS[]>(null)
 
+  //This needs to not use any state variables
   const handleUpsetDownload = async (downloadKey: string) => {
     try {
       setDownloading(true)
@@ -611,7 +638,8 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
         variables: {
           uuid: uuidv4(),
           celltypes: cellGroupings?.union ? [[...cellGroupings.union]] : cellGroupings.intersect,
-          excludecelltypes: cellGroupings?.exclude?.length > 0 ? cellGroupings.exclude : undefined
+          excludecelltypes: cellGroupings?.exclude?.length > 0 ? cellGroupings.exclude : undefined,
+          group: upSetClasses
         }
       })
       fetch(res.data.createicresFilesQuery)
@@ -659,27 +687,27 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
    * @param cellsToFetch
    * @returns gql query for UpSet plot
    */
-  const generateQuery = (cellsToFetch: CellTypeInfo[]) => {
+  const generateQuery = (selectedCells: CellTypeInfo[], classes: CCRE_CLASS[]) => {
     //Out of cellsToFetch extract relevant information, and create two entries for cells with "B" stimulation to iterate through more easily later
-    let cells: {displayName: string, queryVals: string[]}[] = [];
+    let cells: { displayName: string, queryVals: string[] }[] = [];
     //This order
-    cellsToFetch.forEach(cell => {
+    selectedCells.forEach(cell => {
       if (cell.stimulated == "B") {
-        cells.push({displayName: cell.id.replace('-', '_') + '_U', queryVals: extractQueryValues(cell, "U")})
-        cells.push({displayName: cell.id.replace('-', '_') + '_S', queryVals: extractQueryValues(cell, "S")})
-      } else cells.push({displayName: cell.id.replace('-', '_') + '_' + cell.stimulated, queryVals: extractQueryValues(cell, cell.stimulated)})
+        cells.push({ displayName: cell.id.replace('-', '_') + '_U', queryVals: extractQueryValues(cell, "U") })
+        cells.push({ displayName: cell.id.replace('-', '_') + '_S', queryVals: extractQueryValues(cell, "S") })
+      } else cells.push({ displayName: cell.id.replace('-', '_') + '_' + cell.stimulated, queryVals: extractQueryValues(cell, cell.stimulated) })
     })
     let queryGroups: QueryGroup[] = []
-    
+
     //Union of all cells
-    if (cellsToFetch.length > 0) {
-      queryGroups.push({union: cellsToFetch.map(cell => extractQueryValues(cell, cell.stimulated)).flat(2), name: 'Union_All'})
+    if (selectedCells.length > 0) {
+      queryGroups.push({ union: selectedCells.map(cell => extractQueryValues(cell, cell.stimulated)).flat(2), name: 'Union_All' })
     }
 
     cells.forEach((cell, i) => {
-      queryGroups.push({union: cell.queryVals, name: '_' + i.toString() + cell.displayName})
+      queryGroups.push({ union: cell.queryVals, name: '_' + i.toString() + cell.displayName })
     })
-    
+
     /**
      * Using binary strings to represent unique intersection/subtraction combinations for UpSet plot.
      * Binary strings from 1 to (2^n - 1) generated, and each celltype is mapped to an index/place 
@@ -695,13 +723,13 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
      */
     let n = cells.length
     let binaryStrings: string[] = []
-    for (let i = 1; i < (2 ** n); i++){
+    for (let i = 1; i < (2 ** n); i++) {
       binaryStrings.push(i.toString(2).padStart(n, '0')) //Create array of binary strings
     }
 
     //For each binary string, assign each cell to be intersected or excluded based on 1/0 in string
     binaryStrings.forEach((str) => {
-      let grouping: QueryGroup = {intersect: [], exclude: [], name: `UpSet_${str}`}
+      let grouping: QueryGroup = { intersect: [], exclude: [], name: `UpSet_${str}` }
       for (let i = 0; i < str.length; i++) {
         if (str.charAt(i) === '1') {
           grouping.intersect.push(cells[i].queryVals)
@@ -720,12 +748,12 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
       } else if (group.name[0] === '_') {
         key = group.name.slice(2) //Ex: _01Bulk_B_U -> Bulk_B_U
       } else throw new Error("Error parsing queryGroups in setUpSetQueryGroups")
-      return([key, group])
+      return ([key, group])
     })))
 
     const iCREQuery = `{
       ${queryGroups.map(group => `${group.name}: iCREsCountQuery(
-        ${generateQueryBody(group)}
+        ${generateQueryBody(group, classes)}
       )`).join('\n\n')}
     }`
 
@@ -735,80 +763,38 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
 
 
   /**
-   * @todo This is a suboptimal way of doing this, need to change it. Should be utilizing Directives to dynamically construct query
+   * @todo This is maybe a suboptimal way of doing this. Might be better to be utilizing Directives to dynamically construct query
    * See https://graphql.org/learn/queries/#directives
    * and https://www.apollographql.com/blog/batching-client-graphql-queries#can-batching-be-done-manually
    * 
    * @param queryGroup
-   * @param uuid needed if using query for createicresFilesQuery
+   * @param groups
    * @returns inside part of query to be used in iCREsCountQuery or createicresFilesQuery
    */
-  const generateQueryBody = (queryGroup: QueryGroup, uuid?: string): string => {
+  const generateQueryBody = (queryGroup: QueryGroup, classes: CCRE_CLASS[]): string => {
     if (queryGroup.union) {
       return (
         //All passed as one nested array to get union of all
         `celltypes: [[\"${queryGroup.union.join('\", \"')}\"]]`
-        + `${uuid ? '\nuuid: "' + uuid + '"': ''}`
+        + `group: [\"${classes.join('\", \"')}\"]`
       )
     } else if (queryGroup.intersect && !queryGroup.union) {
       return (
         `celltypes: [${queryGroup.intersect.map((vals: string[]) => `["${vals.join('", "')}"]`).join(', ')}]`
-        + `${queryGroup?.exclude.length > 0 ? `\nexcludecelltypes: [${queryGroup.exclude.map((vals: string[]) => `["${vals.join('", "')}"]`).join(', ')}]` : '' }`
-        + `${uuid ? '\nuuid: "' + uuid + '"': ''}`
+        + `${queryGroup?.exclude.length > 0 ? `\nexcludecelltypes: [${queryGroup.exclude.map((vals: string[]) => `["${vals.join('", "')}"]`).join(', ')}]` : ''}`
+        + `group: [\"${classes.join('\", \"')}\"]`
       )
     } else if ((!queryGroup.intersect && !queryGroup.union) || (queryGroup.intersect && queryGroup.union)) {
       throw new Error("Something went wrong generating query groups")
     }
   }
 
-  const COUNT_QUERY = useMemo(() => {
-    if (cellsToFetch.length > 0) {
-      return (
-        generateQuery(cellsToFetch)
-      )
-    } 
-    else return (
-      gql`
-      query count{
-        iCREsCountQuery(
-          celltypes: [[]]
-        )
-      }
-      `
-    )
-  }, [cellsToFetch])
-
-  const [getCountData, { data: data_count, loading: loading_count, error: error_count }] = useLazyQuery(
-    COUNT_QUERY, { client }
-  )
-
-  const GET_ICRE_FILE = gql`
-    query getFile(
-      $celltypes: [[String]]
-      $excludecelltypes: [[String]]
-      $uuid: String!
-    ) {
-      createicresFilesQuery(
-        uuid: $uuid
-        celltypes: $celltypes
-        excludecelltypes: $excludecelltypes
-      )
-    }
-  `
-
-  const [getiCREFileURL, { data: data_download_url, loading: loading_download_url, error: error_download_url }] = useLazyQuery(
-    GET_ICRE_FILE,
-    {
-      client,
-    }
-  )
-
   /**
    * 
    * @param data return data from gql
    * @returns 
    */
-  const transformtoUpSet = (data: {[key: string]: number}): { intersections: { name: string, count: number }[], counts: { name: string, count: number }[], order: string[] } => {
+  const transformtoUpSet = (data: { [key: string]: number }): { intersections: { name: string, count: number }[], counts: { name: string, count: number }[], order: string[] } => {
     let returnData: { intersections: { name: string, count: number }[], counts: { name: string, count: number }[], order: string[] } = { intersections: [], counts: [], order: [] }
 
     Object.entries(data).forEach((x: [string, number]) => {
@@ -820,13 +806,13 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
           throw new Error("Expected total union size doesn't match calculated total" + "Expected: " + x[1] + " Calculated: " + calculated)
         }
       } else if (x[0].charAt(0) === "_") { //If character is '_' it's the query for individual counts
-        returnData.counts.push({name: x[0].slice(2), count: x[1]}) //push cell name stripped of number and counts
+        returnData.counts.push({ name: x[0].slice(2), count: x[1] }) //push cell name stripped of number and counts
         returnData.order.push(x[0].slice(1)) //For order, push cell stripped of leading underscore. Keep number for sorting
       } else if (x[0].includes("UpSet_")) {
-        returnData.intersections.push({name: x[0].slice(6), count: x[1]})
+        returnData.intersections.push({ name: x[0].slice(6), count: x[1] })
       } else throw new Error("Error parsing gql return data to UpSet data: Unknown key")
     })
-    
+
     returnData.order = returnData.order.sort((a, b) => +a.charAt[0] - +b.charAt[0]).map(x => x.slice(1)) //sort returnData.order based on leading number, then strip leading numbers
 
     return (
@@ -835,14 +821,45 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
   }
 
   //Triggered when button pressed, filter cellTypeState and mark to fetch
-  const handleFetch = () => {
-    setCellsToFetch(Object.values(cellTypeState).filter((x: CellTypeInfo) => x.selected))
+  const generateUpSet = () => {
+    setUpSetCells(Object.values(cellTypeState).filter((x: CellTypeInfo) => x.selected))
+    setUpSetClasses(Object.entries(checkboxClasses).filter((x: [string, boolean]) => x[1]).map((y: [string, boolean]) => y[0] as CCRE_CLASS))
+    getCountData()
   }
 
-  useEffect(() => {
-    if (cellsToFetch?.length > 0) getCountData();
-  }, [cellsToFetch])
+  //Trigger refetch when 
+  // useEffect(() => {
+  //   if (upSetCells?.length > 0) getCountData();
+  // }, [upSetCells])
 
+  const COUNT_QUERY = useMemo(() => {
+    if (upSetCells.length > 0) {
+      return (
+        generateQuery(upSetCells, upSetClasses)
+      )
+    }
+    else return (
+      gql`
+      query count{
+        iCREsCountQuery(
+          celltypes: [[]]
+        )
+      }
+      `
+    )
+  }, [upSetCells, upSetClasses])
+
+  //Does this query actually get recalculated
+  const [getCountData, { data: data_count, loading: loading_count, error: error_count }] = useLazyQuery(
+    COUNT_QUERY, { client }
+  )
+
+  const [getiCREFileURL, { data: data_download_url, loading: loading_download_url, error: error_download_url }] = useLazyQuery(
+    GET_ICRE_FILE,
+    {
+      client,
+    }
+  )
 
   //Wrap in useMemo to stop rerender of tree when cursor changes here
   const cellTypeTree = useMemo(() => {
@@ -861,14 +878,16 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
   }, [cellTypeState, setCellTypeState, stimulateMode, setCursor])
 
   const upSet = useMemo(() => {
-    if (data_count) {return( <UpSetPlot
-    width={700}
-    height={400}
-    data={transformtoUpSet(data_count)}
-    setCursor={setCursor}
-    handleDownload={handleUpsetDownload}
-    loading={downloading}
-  />)} else return <></>
+    if (data_count) {
+      return (<UpSetPlot
+        width={700}
+        height={400}
+        data={transformtoUpSet(data_count)}
+        setCursor={setCursor}
+        handleDownload={handleUpsetDownload}
+        loading={downloading}
+      />)
+    } else return <></>
   }, [data_count, downloading])
 
 
@@ -894,7 +913,18 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
     setCursor(!stimulateMode ? 'cell' : 'auto')
   }
 
- 
+  const groupCheckbox = (group: CCRE_CLASS) => {
+    return (<FormControlLabel
+      label={group}
+      control={
+        <Checkbox
+          checked={checkboxClasses[group]}
+          onChange={(_, checked) => setCheckboxClasses({ ...checkboxClasses, [group]: checked })}
+        />
+      }
+    />)
+  }
+
 
   return (
     <Grid2 container mt={3} spacing={2} sx={{ cursor }} >
@@ -913,10 +943,34 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
           <Button variant="outlined" onClick={() => handleSelectAll(true)}>Select All</Button>
         </Tooltip>
         <Button variant="outlined" onClick={() => handleSelectAll(false)}>Unselect All</Button>
-        <Button variant="outlined" onClick={handleFetch}>Generate UpSet</Button>
+        <Button variant="outlined" onClick={generateUpSet}>Generate UpSet</Button>
+        <div>
+          <FormControlLabel
+            label="All Classes"
+            control={
+              <Checkbox
+                checked={Object.values(checkboxClasses).every(val => val === true)}
+                indeterminate={!Object.values(checkboxClasses).every(val => val === checkboxClasses.CA)}
+                onChange={(_, checked) => setCheckboxClasses({
+                  "CA-CTCF": checked,
+                  "CA-TF": checked,
+                  "CA-H3K4me3": checked,
+                  "TF": checked,
+                  "CA": checked,
+                  "pELS": checked,
+                  "dELS": checked,
+                  "PLS": checked,
+                })}
+              />
+            }
+          />
+          <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }}>
+            {Object.keys(checkboxClasses).map((group: CCRE_CLASS) => groupCheckbox(group))}
+          </Box>
+        </div>
         {loading_count && <CircularProgress />}
         <Box mt={2}>
-        {upSet}
+          {upSet}
         </Box>
       </Grid2>
     </Grid2>
