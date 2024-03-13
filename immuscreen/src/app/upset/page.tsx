@@ -3,7 +3,7 @@ import * as React from "react"
 import CellTypeTree from "../../common/components/cellTypeTree"
 import { useEffect, useMemo, useState } from "react"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
-import { Box, Button, Checkbox, CircularProgress, FormControlLabel, Tooltip } from "@mui/material";
+import { Box, Button, Checkbox, CircularProgress, FormControlLabel, Tooltip, Typography } from "@mui/material";
 import { gql, useLazyQuery } from "@apollo/client";
 import { client } from "../../common/utils";
 import UpSetPlot from "./UpSetPlot";
@@ -628,6 +628,8 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
   })
   const [upSetClasses, setUpSetClasses] = useState<CCRE_CLASS[]>(null)
 
+  const selectionLimit = 6
+
   //This needs to not use any state variables
   const handleUpsetDownload = async (downloadKey: string) => {
     try {
@@ -880,8 +882,8 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
   const upSet = useMemo(() => {
     if (data_count) {
       return (<UpSetPlot
-        width={700}
-        height={400}
+        width={800}
+        height={500}
         data={transformtoUpSet(data_count)}
         setCursor={setCursor}
         handleDownload={handleUpsetDownload}
@@ -928,6 +930,14 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
 
   return (
     <Grid2 container mt={3} spacing={2} sx={{ cursor }} >
+      <Grid2 xs={12}>
+        <Typography variant="h4">UpSet Generator</Typography>
+        <Typography variant="body1">
+          Select Up to 6 cells to generate an UpSet plot. By default, all cells are unstimulated. To
+        
+        </Typography>
+        <Typography variant="caption"></Typography>
+      </Grid2>
       <Grid2 xs={12} lg={7} zIndex={10}>
         {cellTypeTree}
       </Grid2>
