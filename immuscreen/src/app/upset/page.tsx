@@ -233,8 +233,8 @@ const cellTypeInitialState: CellTypes = {
     stimulated: "U",
     selectable: true,
     displayName: "Naïve T/effector cell",
-    unstimImagePath: '/cellTypes/Naive_teffs-U.png',
-    stimImagePath: '/cellTypes/Naive_teffs-S.png',
+    unstimImagePath: '/cellTypes/Naive_Teffs-U.png',
+    stimImagePath: '/cellTypes/Naive_Teffs-S.png',
     stimulable: true,
     queryValues: {
       unstimulated: { Calderon: 'Naive_Teffs-U' },
@@ -345,8 +345,8 @@ const cellTypeInitialState: CellTypes = {
     stimulated: "U",
     selectable: true,
     displayName: "Central/memory/CD8+ T cell",
-    unstimImagePath: '/cellTypes/Central_Memory_CD8pos_T-U.png',
-    stimImagePath: '/cellTypes/Central_Memory_CD8pos_T-S.png',
+    unstimImagePath: '/cellTypes/Central_memory_CD8pos_T-U.png',
+    stimImagePath: '/cellTypes/Central_memory_CD8pos_T-S.png',
     stimulable: true,
     queryValues: {
       unstimulated: { Calderon: 'Central_memory_CD8pos_T-U' },
@@ -359,7 +359,7 @@ const cellTypeInitialState: CellTypes = {
     stimulated: "U",
     selectable: true,
     displayName: "Effector/memory/CD8+ T cell",
-    unstimImagePath: '/cellTypes/Effector_memory_CD8pos_T-U.png',
+    unstimImagePath: '/cellTypes/Effector_Memory_CD8pos_T-U.png',
     stimImagePath: '/cellTypes/Effector_memory_CD8pos_T-S.png',
     stimulable: true,
     queryValues: {
