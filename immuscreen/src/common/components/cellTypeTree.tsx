@@ -3,7 +3,7 @@ import { Group } from '@visx/group';
 import { Tree, hierarchy } from '@visx/hierarchy';
 import { HierarchyPointNode, HierarchyPointLink } from '@visx/hierarchy/lib/types';
 import { LinkHorizontal, LinkVertical } from '@visx/shape';
-import { CellTypeInfo, CellTypes } from '../../app/downloads/page';
+import { CellTypeInfo, CellTypes } from '../../app/upset/page';
 
 const linkStroke = '#000000';
 const background = 'transparent';

@@ -24,8 +24,8 @@ const pageLinks = [
     ],
   },
   {
-    pageName: "Downloads",
-    link: "/downloads",
+    pageName: "UpSet Generator",
+    link: "/upset",
   },
   {
     pageName: "Test",
