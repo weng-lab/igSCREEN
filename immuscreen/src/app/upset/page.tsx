@@ -930,14 +930,13 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
 
   return (
     <Grid2 container mt={3} spacing={2} sx={{ cursor }} >
-      <Grid2 xs={12}>
+      {/* <Grid2 xs={12}>
         <Typography variant="h4">UpSet Generator</Typography>
         <Typography variant="body1">
-          Select Up to 6 cells to generate an UpSet plot. By default, all cells are unstimulated. To
-        
+          Select Up to 6 cells to generate an UpSet plot. By default, all cells are unstimulated.
         </Typography>
         <Typography variant="caption"></Typography>
-      </Grid2>
+      </Grid2> */}
       <Grid2 xs={12} lg={7} zIndex={10}>
         {cellTypeTree}
       </Grid2>

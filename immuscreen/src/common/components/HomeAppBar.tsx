@@ -26,11 +26,7 @@ const pageLinks = [
   {
     pageName: "UpSet Generator",
     link: "/upset",
-  },
-  {
-    pageName: "Test",
-    link: "/test",
-  },
+  }
 ]
 
 /**
