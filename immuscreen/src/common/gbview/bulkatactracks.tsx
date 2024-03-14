@@ -58,6 +58,7 @@ export const COLOR_MAP: Map<string, string> = new Map([
   ["PsychSCREEN aggregated non-sorted ATAC-seq", "#1c8099"],
 ]);
 
+
 export const tracks = (assembly: string, pos: GenomicRange) =>
   TRACK_ORDER.map((x) => ({
     chr1: pos.chromosome!,

@@ -16,7 +16,7 @@ import {CcreAutoComplete} from  "../common/components/mainsearch/CcreAutocomplet
   const handleChange = (event: SelectChangeEvent) => {
     setSelectedPortal(event.target.value);
   };
-
+  
   return (
     <main>
       {/* May need to rethink where these margins are set. Which element should be setting content width? */}
@@ -42,7 +42,6 @@ import {CcreAutoComplete} from  "../common/components/mainsearch/CcreAutocomplet
           {selectedPortal==="Genes" ? <GeneAutoComplete textColor={"black"} assembly={"GRCh38"} /> : selectedPortal==="SNPs" ?
            <SnpAutoComplete textColor={"black"} assembly={"GRCh38"} /> : <CcreAutoComplete textColor={"black"} assembly={"GRCh38"}/> }
         </Grid2>
-       
       </Grid2>
     </main>
   )

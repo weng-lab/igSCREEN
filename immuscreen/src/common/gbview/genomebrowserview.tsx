@@ -150,9 +150,9 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (props) => {
               oncCREMousedOut={() => setHighlight(null)}
             />}
             <BulkAtacTracks
-          assembly="GRCh38"
-          domain={coordinates}
-        />
+            assembly="GRCh38"
+            domain={coordinates}
+          />
         <ChromBPNetAtacTracks 
           domain={coordinates}/>
           </GenomeBrowser>

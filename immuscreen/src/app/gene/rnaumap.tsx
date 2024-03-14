@@ -39,7 +39,7 @@ query rnaUmapQuery($gene_id: String!)
 `
 
 export const RNAUMAP = (gene) => {
-    console.log(gene)
+    
     const [tooltip, setTooltip] = useState(-1);
     const chartRef = React.useRef<SVGSVGElement>(null);
     const { loading: loading, data: data } = useQuery(RNA_UMAP_QUERY, {
@@ -52,9 +52,9 @@ export const RNAUMAP = (gene) => {
         client,
       })
       const maxValue = data && Math.max(...data.calderonRnaUmapQuery.map(a=>a.value))
-      console.log(data && Math.max(...data.calderonRnaUmapQuery.map(a=>a.value)))
+      //console.log(data && Math.max(...data.calderonRnaUmapQuery.map(a=>a.value)))
     
-      console.log(data)
+    //  console.log(data)
       const gradient = data && linearTransform(
         { start: 0, end: maxValue },
         { start: 215, end: 0 }
