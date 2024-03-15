@@ -3,16 +3,12 @@ import * as React from "react"
 import CellTypeTree from "../../common/components/cellTypeTree"
 import { useEffect, useMemo, useState } from "react"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
-import { Box, Button, Checkbox, CircularProgress, FormControlLabel, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Checkbox, CircularProgress, FormControlLabel, Snackbar, Tooltip, Typography } from "@mui/material";
 import { gql, useLazyQuery } from "@apollo/client";
 import { client } from "../../common/utils";
 import UpSetPlot from "./UpSetPlot";
 import { v4 as uuidv4 } from 'uuid'
 
-/**
- * @todo add hover info on cells (how many cCREs active)
- * @todo add error handling when more than 5 cell types selected
- */
 
 
 export interface CellTypeInfo {
@@ -28,6 +24,8 @@ export interface CellTypeInfo {
     readonly unstimulated: { Calderon?: string | string[], Corces?: string | string[] };
     readonly stimulated?: { Calderon: string | string[] }
   }
+  readonly unstimCount: number
+  readonly stimCount?: number
 }
 
 export interface CellTypes {
@@ -92,6 +90,7 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Monocytes-U', Corces: 'Mono' },
       stimulated: { Calderon: 'Monocytes-S' }
     },
+    unstimCount: 123456
   },
   Myeloid_DCs: {
     id: 'Myeloid_DCs',
@@ -104,6 +103,7 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: { Calderon: "Myeloid_DCs-U" }
     },
+    unstimCount: 123456
   },
   pDCs: {
     id: 'pDCs',
@@ -116,6 +116,7 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: { Calderon: 'pDCs-U' }
     },
+    unstimCount: 123456
   },
   Bulk_B: {
     id: 'Bulk_B',
@@ -130,6 +131,7 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Bulk_B-U', Corces: "Bcell" },
       stimulated: { Calderon: 'Bulk_B-S' }
     },
+    unstimCount: 123456
   },
   Naive_B: {
     id: 'Naive_B',
@@ -144,6 +146,7 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Naive_B-U' },
       stimulated: { Calderon: 'Naive_B-S' }
     },
+    unstimCount: 123456
   },
   Mem_B: {
     id: 'Mem_B',
@@ -158,6 +161,7 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Mem_B-U' },
       stimulated: { Calderon: 'Mem_B-S' }
     },
+    unstimCount: 123456
   },
   Plasmablasts: {
     id: 'Plasmablasts',
@@ -170,6 +174,7 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: { Calderon: 'Plasmablasts-U' }
     },
+    unstimCount: 123456
   },
   Regulatory_T: {
     id: 'Regulatory_T',
@@ -184,6 +189,7 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Regulatory_T-U' },
       stimulated: { Calderon: 'Regulatory_T-S' }
     },
+    unstimCount: 123456
   },
   Naive_Tregs: {
     id: 'Naive_Tregs',
@@ -198,6 +204,7 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Naive_Tregs-U' },
       stimulated: { Calderon: 'Naive_Tregs-S' }
     },
+    unstimCount: 123456
   },
   Memory_Tregs: {
     id: 'Memory_Tregs',
@@ -212,6 +219,7 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Memory_Tregs-U' },
       stimulated: { Calderon: 'Memory_Tregs-S' }
     },
+    unstimCount: 123456
   },
   Effector_CD4pos_T: {
     id: 'Effector_CD4pos_T',
@@ -226,6 +234,7 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Effector_CD4pos_T-U' },
       stimulated: { Calderon: 'Effector_CD4pos_T-S' }
     },
+    unstimCount: 123456
   },
   Naive_Teffs: {
     id: 'Naive_Teffs',
@@ -240,6 +249,7 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Naive_Teffs-U' },
       stimulated: { Calderon: 'Naive_Teffs-S' }
     },
+    unstimCount: 123456
   },
   Memory_Teffs: {
     id: 'Memory_Teffs',
@@ -254,6 +264,7 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Memory_Teffs-U' },
       stimulated: { Calderon: 'Memory_Teffs-S' }
     },
+    unstimCount: 123456
   },
   Th1_precursors: {
     id: 'Th1_precursors',
@@ -268,6 +279,7 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Th1_precursors-U' },
       stimulated: { Calderon: 'Th1_precursors-S' }
     },
+    unstimCount: 123456
   },
   Th2_precursors: {
     id: 'Th2_precursors',
@@ -282,6 +294,7 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Th2_precursors-U' },
       stimulated: { Calderon: 'Th2_precursors-S' }
     },
+    unstimCount: 123456
   },
   Th17_precursors: {
     id: 'Th17_precursors',
@@ -296,6 +309,7 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Th17_precursors-U' },
       stimulated: { Calderon: 'Th17_precursors-S' }
     },
+    unstimCount: 123456
   },
   Follicular_T_Helper: {
     id: 'Follicular_T_Helper',
@@ -310,6 +324,7 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Follicular_T_Helper-U' },
       stimulated: { Calderon: 'Follicular_T_Helper-S' }
     },
+    unstimCount: 123456
   },
   CD8pos_T: {
     id: 'CD8pos_T',
@@ -324,6 +339,7 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'CD8pos_T-U', Corces: "CD8Tcell" },
       stimulated: { Calderon: 'CD8pos_T-S' }
     },
+    unstimCount: 123456
   },
   Naive_CD8_T: {
     id: 'Naive_CD8_T',
@@ -338,6 +354,7 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Naive_CD8_T-U' },
       stimulated: { Calderon: 'Naive_CD8_T-S' }
     },
+    unstimCount: 123456
   },
   Central_memory_CD8pos_T: {
     id: 'Central_memory_CD8pos_T',
@@ -352,6 +369,7 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Central_memory_CD8pos_T-U' },
       stimulated: { Calderon: 'Central_memory_CD8pos_T-S' }
     },
+    unstimCount: 123456
   },
   Effector_memory_CD8pos_T: {
     id: 'Effector_memory_CD8pos_T',
@@ -366,6 +384,7 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Effector_memory_CD8pos_T-U' },
       stimulated: { Calderon: 'Effector_memory_CD8pos_T-S' }
     },
+    unstimCount: 123456
   },
   Gamma_delta_T: {
     id: 'Gamma_delta_T',
@@ -380,6 +399,7 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Gamma_delta_T-U' },
       stimulated: { Calderon: 'Gamma_delta_T-S' }
     },
+    unstimCount: 123456
   },
   Immature_NK: {
     id: 'Immature_NK',
@@ -392,6 +412,7 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: { Calderon: 'Immature_NK-U' }
     },
+    unstimCount: 123456
   },
   Mature_NK: {
     id: 'Mature_NK',
@@ -406,6 +427,7 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Mature_NK-U' },
       stimulated: { Calderon: 'Mature_NK-S' }
     },
+    unstimCount: 123456
   },
   Memory_NK: {
     id: 'Memory_NK',
@@ -418,6 +440,7 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: { Calderon: 'Memory_NK-U' }
     },
+    unstimCount: 123456
   },
   HSC: {
     id: 'HSC',
@@ -430,6 +453,7 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: { Corces: ["HSC", "CD34_Cord_Blood", "CD34_Bone_Marrow"] }
     },
+    unstimCount: 123456
   },
   MPP: {
     id: "MPP",
@@ -442,6 +466,7 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: { Corces: "MPP" }
     },
+    unstimCount: 123456
   },
   CMP: {
     id: "CMP",
@@ -454,6 +479,7 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: { Corces: "CMP" }
     },
+    unstimCount: 123456
   },
   MEP: {
     id: "MEP",
@@ -466,6 +492,7 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: { Corces: "MEP" }
     },
+    unstimCount: 123456
   },
   Ery: {
     id: "Ery",
@@ -478,6 +505,7 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: { Corces: "Ery" }
     },
+    unstimCount: 123456
   },
   GMP: {
     id: "GMP",
@@ -490,6 +518,7 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: { Corces: "GMP" }
     },
+    unstimCount: 123456
   },
   LPMP: {
     id: "LPMP",
@@ -502,6 +531,7 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: { Corces: "LMPP" }
     },
+    unstimCount: 123456
   },
   CLP: {
     id: "CLP",
@@ -514,6 +544,7 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: { Corces: "CLP" }
     },
+    unstimCount: 123456
   },
   CD4Tcell: {
     id: "CD4Tcell",
@@ -526,6 +557,7 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: { Corces: "CD4Tcell" }
     },
+    unstimCount: 123456
   },
   Nkcell: {
     id: "Nkcell",
@@ -538,43 +570,9 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: { Corces: "NKcell" }
     },
+    unstimCount: 123456
   }
 }
-
-// Generating this query on the fly
-// const ICRE_COUNT = gql(`
-//   query iCRECount(
-//     $unionCellTypes: [[String!]]
-//     $intersectCellTypes: [[String!]]
-//     $excludeCellTypes: [[String!]]
-//   ) {
-//     iCREsCountQuery(
-//       celltypes: $unionCellTypes
-//       allcelltypes: $intersectCellTypes
-//       excludecelltypes: $excludeCellTypes
-//     )
-//   }
-// `)
-
-const GET_ICRE_FILE = gql`
-query getFile(
-  $celltypes: [[String]]
-  $excludecelltypes: [[String]]
-  $uuid: String!
-  $group: [String!]
-) {
-  createicresFilesQuery(
-    uuid: $uuid
-    celltypes: $celltypes
-    excludecelltypes: $excludecelltypes
-    group: $group
-  )
-}
-`
-
-//So I need the same info as the other query, add UUID, and just with a different query name.
-//Maybe I should generate the insides of every query, store that, and then use the inside to populate each query.
-//Need way to match each node with it's query to handle the onClick()
 
 type cCRECellTypeData = {
   celltypes: string[];
@@ -608,7 +606,23 @@ const classDisplaynames: { [key in CCRE_CLASS]: string } = {
   "PLS": "Promoter-Like Signature"
 }
 
-export default function Downloads({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
+const GET_ICRE_FILE = gql`
+query getFile(
+  $celltypes: [[String]]
+  $excludecelltypes: [[String]]
+  $uuid: String!
+  $group: [String!]
+) {
+  createicresFilesQuery(
+    uuid: $uuid
+    celltypes: $celltypes
+    excludecelltypes: $excludecelltypes
+    group: $group
+  )
+}
+`
+
+export default function UpSet({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
   const [cellTypeState, setCellTypeState] = useState<CellTypes>(cellTypeInitialState)
   const [stimulateMode, setStimulateMode] = useState<boolean>(false)
   const [cursor, setCursor] = useState<'auto' | 'pointer' | 'cell' | 'not-allowed'>('auto')
@@ -627,8 +641,21 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
     "PLS": true
   })
   const [upSetClasses, setUpSetClasses] = useState<CCRE_CLASS[]>(null)
+  const [openSnackbar, setOpenSnackbar] = useState(false)
 
-  const selectionLimit = 6
+
+  const handleOpenSnackbar = () => {
+    setOpenSnackbar(true);
+  };
+
+
+  const handleCloseSnackbar = (event: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenSnackbar(false);
+  };
 
   //This needs to not use any state variables
   const handleUpsetDownload = async (downloadKey: string) => {
@@ -865,6 +892,7 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
 
   //Wrap in useMemo to stop rerender of tree when cursor changes here
   const cellTypeTree = useMemo(() => {
+    console.log("cellTypeTree useMemo running")
     return (
       <CellTypeTree
         width={900}
@@ -875,14 +903,18 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
         stimulateMode={stimulateMode}
         setStimulateMode={setStimulateMode}
         setCursor={setCursor}
+        selectionLimit={6}
+        triggerLimitAlert={handleOpenSnackbar}
       />
     )
   }, [cellTypeState, setCellTypeState, stimulateMode, setCursor])
 
+  const upSetWidth = 800
+
   const upSet = useMemo(() => {
     if (data_count) {
       return (<UpSetPlot
-        width={800}
+        width={upSetWidth}
         height={500}
         data={transformtoUpSet(data_count)}
         setCursor={setCursor}
@@ -915,73 +947,83 @@ export default function Downloads({ searchParams }: { searchParams: { [key: stri
     setCursor(!stimulateMode ? 'cell' : 'auto')
   }
 
-  const groupCheckbox = (group: CCRE_CLASS) => {
-    return (<FormControlLabel
-      label={group}
-      control={
-        <Checkbox
-          checked={checkboxClasses[group]}
-          onChange={(_, checked) => setCheckboxClasses({ ...checkboxClasses, [group]: checked })}
-        />
-      }
-    />)
+  const groupCheckbox = (group: CCRE_CLASS, key: number) => {
+    return (
+      <FormControlLabel
+        key={key}
+        label={group}
+        control={
+          <Checkbox
+            checked={checkboxClasses[group]}
+            onChange={(_, checked) => setCheckboxClasses({ ...checkboxClasses, [group]: checked })}
+          />
+        }
+      />)
   }
 
 
   return (
-    <Grid2 container mt={3} spacing={2} sx={{ cursor }} >
-      {/* <Grid2 xs={12}>
+    <>
+      <Grid2 container mt={3} spacing={2} sx={{ cursor }} >
+        {/* <Grid2 xs={12}>
         <Typography variant="h4">UpSet Generator</Typography>
         <Typography variant="body1">
           Select Up to 6 cells to generate an UpSet plot. By default, all cells are unstimulated.
         </Typography>
         <Typography variant="caption"></Typography>
       </Grid2> */}
-      <Grid2 xs={12} lg={7} zIndex={10}>
-        {cellTypeTree}
-      </Grid2>
-      <Grid2 xs={12} lg={5}>
-        <Tooltip title="Note: Not all cells are stimulable">
-          <Button variant="outlined" onClick={() => handleStimulateAll("S")}>Stimulate All</Button>
-        </Tooltip>
-        <Button variant="outlined" onClick={() => handleStimulateAll("U")}>Unstimulate All</Button>
-        <Tooltip title="Tip: Holding Option/Command (MacOS) or Alt/Windows (Windows) will enter stimulate mode">
-          <Button variant="outlined" onClick={handleToggleStimulateMode}>{stimulateMode ? 'Exit Stimulate Mode' : 'Enter Stimulate Mode'}</Button>
-        </Tooltip>
-        <Tooltip title="Note: Not all cells are selectable">
-          <Button variant="outlined" onClick={() => handleSelectAll(true)}>Select All</Button>
-        </Tooltip>
-        <Button variant="outlined" onClick={() => handleSelectAll(false)}>Unselect All</Button>
-        <Button variant="outlined" onClick={generateUpSet}>Generate UpSet</Button>
-        <div>
-          <FormControlLabel
-            label="All Classes"
-            control={
-              <Checkbox
-                checked={Object.values(checkboxClasses).every(val => val === true)}
-                indeterminate={!Object.values(checkboxClasses).every(val => val === checkboxClasses.CA)}
-                onChange={(_, checked) => setCheckboxClasses({
-                  "CA-CTCF": checked,
-                  "CA-TF": checked,
-                  "CA-H3K4me3": checked,
-                  "TF": checked,
-                  "CA": checked,
-                  "pELS": checked,
-                  "dELS": checked,
-                  "PLS": checked,
-                })}
-              />
-            }
-          />
-          <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }}>
-            {Object.keys(checkboxClasses).map((group: CCRE_CLASS) => groupCheckbox(group))}
+        <Grid2 xs={12}>
+          {cellTypeTree}
+        </Grid2>
+        <Grid2 xs={12} lg={5}>
+          <Tooltip title="Note: Not all cells are stimulable">
+            <Button variant="outlined" onClick={() => handleStimulateAll("S")}>Stimulate All</Button>
+          </Tooltip>
+          <Button variant="outlined" onClick={() => handleStimulateAll("U")}>Unstimulate All</Button>
+          <Tooltip title="Tip: Holding Option/Command (MacOS) or Alt/Windows (Windows) will enter stimulate mode">
+            <Button variant="outlined" onClick={handleToggleStimulateMode}>{stimulateMode ? 'Exit Stimulate Mode' : 'Enter Stimulate Mode'}</Button>
+          </Tooltip>
+          <Button variant="outlined" onClick={() => handleSelectAll(false)}>Unselect All</Button>
+          <Button variant="outlined" onClick={generateUpSet}>Generate UpSet</Button>
+          <div>
+            <FormControlLabel
+              label="All Classes"
+              control={
+                <Checkbox
+                  checked={Object.values(checkboxClasses).every(val => val === true)}
+                  indeterminate={!Object.values(checkboxClasses).every(val => val === checkboxClasses.CA)}
+                  onChange={(_, checked) => setCheckboxClasses({
+                    "CA-CTCF": checked,
+                    "CA-TF": checked,
+                    "CA-H3K4me3": checked,
+                    "TF": checked,
+                    "CA": checked,
+                    "pELS": checked,
+                    "dELS": checked,
+                    "PLS": checked,
+                  })}
+                />
+              }
+            />
+            <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }}>
+              {Object.keys(checkboxClasses).map((group: CCRE_CLASS, i) => groupCheckbox(group, i))}
+            </Box>
+          </div>
+          {loading_count && <CircularProgress />}
+          <Box mt={2}>
+            {upSet}
           </Box>
-        </div>
-        {loading_count && <CircularProgress />}
-        <Box mt={2}>
-          {upSet}
-        </Box>
+        </Grid2>
       </Grid2>
-    </Grid2>
+      <Snackbar
+        sx={{ "& .MuiSnackbarContent-message": { margin: "auto" } }}
+        open={openSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        autoHideDuration={2000}
+        onClose={handleCloseSnackbar}
+        message="Maximum cell selection reached (6)"
+      />
+    </>
+
   )
 }

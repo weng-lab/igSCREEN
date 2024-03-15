@@ -4,6 +4,8 @@ import { Tree, hierarchy } from '@visx/hierarchy';
 import { HierarchyPointNode, HierarchyPointLink } from '@visx/hierarchy/lib/types';
 import { LinkHorizontal, LinkVertical } from '@visx/shape';
 import { CellTypeInfo, CellTypes } from '../../app/upset/page';
+import { withTooltip, Tooltip, defaultStyles as defaultTooltipStyles, Portal, useTooltip } from '@visx/tooltip';
+import { WithTooltipProvidedProps } from '@visx/tooltip/lib/enhancers/withTooltip';
 
 const linkStroke = '#000000';
 const background = 'transparent';
@@ -22,9 +24,16 @@ const uninteractiveNode = {
   selectable: false,
   stimulated: "U" as "U" | "S" | "B",
   stimulable: false,
+  unstimCount: 0
 }
 
-export type CellTypeTreeProps = {
+interface TooltipData {
+  name: string;
+  unstimCount: number;
+  stimCount?: number;
+}
+
+type CellTypeTreeProps = {
   width: number
   height: number
   cellTypeState: CellTypes
@@ -33,9 +42,13 @@ export type CellTypeTreeProps = {
   setStimulateMode: React.Dispatch<React.SetStateAction<boolean>>
   setCursor: React.Dispatch<React.SetStateAction<"auto" | "pointer" | "cell" | "not-allowed">>
   orientation: "vertical" | "horizontal"
+  selectionLimit?: number
+  triggerLimitAlert: () => void
 }
 
-export default function CellTypeTree({ width: totalWidth, height: totalHeight, orientation, cellTypeState, setCellTypeState, stimulateMode, setStimulateMode, setCursor}: CellTypeTreeProps) {
+export default function CellTypeTree({ width: totalWidth, height: totalHeight, orientation, cellTypeState, setCellTypeState, stimulateMode, setStimulateMode, setCursor, selectionLimit, triggerLimitAlert }: CellTypeTreeProps) {
+
+  const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip } = useTooltip<TooltipData>();
 
   let sizeWidth: number;
   let sizeHeight: number;
@@ -45,7 +58,7 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
   let innerMarginRight: number;
   let innerWidth: number;
   let innerHeight: number;
-  
+
   if (orientation === 'vertical') {
     innerMarginTop = 70;
     innerMarginBottom = 25;
@@ -57,17 +70,17 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
     innerMarginLeft = 40;
     innerMarginRight = 40;
   }
-  
+
   innerWidth = totalWidth - innerMarginLeft - innerMarginRight;
   innerHeight = totalHeight - innerMarginTop - innerMarginBottom;
   sizeWidth = orientation === 'vertical' ? innerWidth : innerHeight;
   sizeHeight = orientation === 'vertical' ? innerHeight : innerWidth;
-  
+
   /**
    * Rotates the stimulation between U/S/B in that order
    */
   const toggleStimulation = (current: "U" | "S" | "B") => {
-    switch (current){
+    switch (current) {
       case ("U"): return "S"
       case ("S"): return "B"
       case ("B"): return "U"
@@ -282,7 +295,7 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
     const height = 60;
     const centerX = -width / 2;
     const centerY = -height / 2;
-    
+
     let top: number;
     let left: number;
     if (orientation === 'vertical') {
@@ -308,7 +321,7 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
         >
           {node.data.displayName.split('/').map((str, i) => {
             return (
-                <tspan key={i} x="0" dy={fontSize + 2}>{str}</tspan>
+              <tspan key={i} x="0" dy={fontSize + 2}>{str}</tspan>
             )
           })}
           <tspan x="0" dy={fontSize + 2}>
@@ -318,6 +331,7 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
         <Group
           opacity={(node.data.selected || Object.values(cellTypeState).every(cellType => cellType.selected === false)) ? 1 : fadedCellOpacity}
           onClick={() => {
+            console.log("clicked")
             if (stimulateMode) {
               if (node.data.stimulable) {
                 setCellTypeState({
@@ -329,14 +343,19 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
                 })
               }
             } else if (node.data.selectable) {
-              setCellTypeState({
-                ...cellTypeState,
-                [node.data.id]: { ...cellTypeState[node.data.id], selected: !cellTypeState[node.data.id].selected }
-              })
+              const numberSelected = Object.values(cellTypeState).reduce((count, cellInfo: CellTypeInfo) => count + +cellInfo.selected, 0)
+              console.log(numberSelected)
+              if ((numberSelected < selectionLimit) || node.data.selected) {
+                setCellTypeState({
+                  ...cellTypeState,
+                  [node.data.id]: { ...cellTypeState[node.data.id], selected: !cellTypeState[node.data.id].selected }
+                })
+              } else triggerLimitAlert()
             }
           }}
           onMouseEnter={
             (event: React.MouseEvent<SVGImageElement, MouseEvent>) => {
+              console.log("enter")
               if (node.data.selectable) {
                 if (stimulateMode && !node.data.stimulable) {
                   setCursor("not-allowed")
@@ -345,11 +364,22 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
                   event.currentTarget.setAttribute('opacity', '1')
                   !stimulateMode && setCursor('pointer')
                 }
+                //I think this is messing the scale transform up since calling it modifies the tooltip state
+                showTooltip({
+                  tooltipTop: top,
+                  tooltipLeft: left,
+                  tooltipData: {
+                    name: node.data.displayName,
+                    unstimCount: node.data.unstimCount,
+                    stimCount: node.data?.stimCount
+                  }
+                })
               }
             }
           }
           onMouseLeave={
             (event: React.MouseEvent<SVGImageElement, MouseEvent>) => {
+              console.log("leave")
               if (node.data.selectable) {
                 if (stimulateMode && !node.data.stimulable) {
                   !node.data.stimulable && setCursor("cell")
@@ -358,6 +388,7 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
                   event.currentTarget.setAttribute('opacity', (node.data.selected || Object.values(cellTypeState).every(cellType => cellType.selected === false)) ? '1' : String(fadedCellOpacity))
                   !stimulateMode && setCursor('auto')
                 }
+                hideTooltip()
               }
             }
           }>
@@ -403,40 +434,62 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
   }
 
   return totalWidth < 10 ? null : (
-    <svg width={totalWidth} height={totalHeight}>
-      <rect width={totalWidth} height={totalHeight} fill={background} />
-      {/* This is too large */}
-      <Tree<CellNode> root={data} size={[sizeWidth, sizeHeight]}>
-        {(tree) => (
-          <Group top={innerMarginTop} left={innerMarginLeft}>
-            {tree.links().map((link, i) => (
-              orientation === "vertical" ?
-                <LinkVertical<HierarchyPointLink<CellNode>, HierarchyPointNode<CellNode>>
-                  key={`cluster-link-${i}`}
-                  data={link}
-                  stroke={linkStroke}
-                  //Bold if descendant selected
-                  strokeWidth={link.target.descendants().find((childNode) => childNode.data.selected) !== undefined ? 3 : 0.75}
-                  strokeOpacity={0.4}
-                  fill="none"
-                />
-                :
-                <LinkHorizontal<HierarchyPointLink<CellNode>, HierarchyPointNode<CellNode>>
-                  key={`cluster-link-${i}`}
-                  data={link}
-                  stroke={linkStroke}
-                  //Bold if descendant selected
-                  strokeWidth={link.target.descendants().find((childNode) => childNode.data.selected) !== undefined ? 3 : 0.75}
-                  strokeOpacity={0.4}
-                  fill="none"
-                />
-            ))}
-            {tree.descendants().map((node, i) => (
-              <Node key={`cluster-node-${i}`} node={node} />
-            ))}
-          </Group>
-        )}
-      </Tree>
-    </svg>
+    <div>
+      <svg width={totalWidth} height={totalHeight}>
+        <rect width={totalWidth} height={totalHeight} fill={background} />
+        {/* This is too large */}
+        <Tree<CellNode> root={data} size={[sizeWidth, sizeHeight]}>
+          {(tree) => (
+            <Group top={innerMarginTop} left={innerMarginLeft}>
+              {tree.links().map((link, i) => (
+                orientation === "vertical" ?
+                  <LinkVertical<HierarchyPointLink<CellNode>, HierarchyPointNode<CellNode>>
+                    key={`cluster-link-${i}`}
+                    data={link}
+                    stroke={linkStroke}
+                    //Bold if descendant selected
+                    strokeWidth={link.target.descendants().find((childNode) => childNode.data.selected) !== undefined ? 3 : 0.75}
+                    strokeOpacity={0.4}
+                    fill="none"
+                  />
+                  :
+                  <LinkHorizontal<HierarchyPointLink<CellNode>, HierarchyPointNode<CellNode>>
+                    key={`cluster-link-${i}`}
+                    data={link}
+                    stroke={linkStroke}
+                    //Bold if descendant selected
+                    strokeWidth={link.target.descendants().find((childNode) => childNode.data.selected) !== undefined ? 3 : 0.75}
+                    strokeOpacity={0.4}
+                    fill="none"
+                  />
+              ))}
+              {tree.descendants().map((node, i) => (
+                <Node key={`cluster-node-${i}`} node={node} />
+              ))}
+            </Group>
+          )}
+        </Tree>
+      </svg>
+      {tooltipOpen && tooltipData && (
+        <Tooltip
+          top={tooltipTop + innerMarginTop}
+          left={tooltipLeft}
+          style={{ ...defaultTooltipStyles, backgroundColor: '#283238', color: 'white' }}
+        >
+          <div>
+            <strong>{tooltipData.name.replace('/', '\u00A0').replace(' ', '\u00A0').replace('-', '\u2011')}</strong>
+          </div>
+          <div>
+            <p>{'Active\u00A0iCREs:'}</p>
+          </div>
+          <div>
+            <p>Unstim: {tooltipData.unstimCount}</p>
+          </div>
+          <div>
+            {tooltipData.stimCount && <strong>Unstim: {tooltipData.stimCount && tooltipData.unstimCount}</strong>}
+          </div>
+        </Tooltip>
+      )}
+    </div>
   );
 }

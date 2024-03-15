@@ -49,7 +49,6 @@ export default function UpSetPlot({ width, height, data, setCursor, handleDownlo
     case (4): setSizePlotTotalWidth = totalWidth * 0.375; break;
     case (5): setSizePlotTotalWidth = totalWidth * 0.325; break;
     case (6): setSizePlotTotalWidth = totalWidth * 0.275; break;
-    case (7): setSizePlotTotalWidth = totalWidth * 0.25; break;
   }
   const spaceForCellName = 120
   const spaceForCellCounts = 80
