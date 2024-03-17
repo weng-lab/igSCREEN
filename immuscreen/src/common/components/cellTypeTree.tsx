@@ -1,11 +1,10 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Group } from '@visx/group';
 import { Tree, hierarchy } from '@visx/hierarchy';
 import { HierarchyPointNode, HierarchyPointLink } from '@visx/hierarchy/lib/types';
 import { LinkHorizontal, LinkVertical } from '@visx/shape';
 import { CellTypeInfo, CellTypes } from '../../app/upset/page';
-import { withTooltip, Tooltip, defaultStyles as defaultTooltipStyles, Portal, useTooltip } from '@visx/tooltip';
-import { WithTooltipProvidedProps } from '@visx/tooltip/lib/enhancers/withTooltip';
+import { defaultStyles as defaultTooltipStyles, useTooltip, TooltipWithBounds } from '@visx/tooltip';
 
 const linkStroke = '#000000';
 const background = 'transparent';
@@ -48,7 +47,7 @@ type CellTypeTreeProps = {
 
 export default function CellTypeTree({ width: totalWidth, height: totalHeight, orientation, cellTypeState, setCellTypeState, stimulateMode, setStimulateMode, setCursor, selectionLimit, triggerLimitAlert }: CellTypeTreeProps) {
 
-  const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip } = useTooltip<TooltipData>();
+  const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip, updateTooltip } = useTooltip<TooltipData>();
 
   let sizeWidth: number;
   let sizeHeight: number;
@@ -288,7 +287,7 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
     )
   }, [cellTypeState])
 
-  const data = useMemo(() => hierarchy<CellNode>(clusterData), [clusterData]);
+  const data = useMemo(() => { console.log("data memo"); return hierarchy<CellNode>(clusterData) }, [clusterData]);
 
   function Node({ node }: { node: HierarchyPointNode<CellNode> }) {
     const width = 60;
@@ -305,6 +304,8 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
       top = node.x;
       left = node.y;
     }
+
+    if (node.data.displayName === "Plasmablast") { console.log("rerendering nodes") }
 
 
     return (
@@ -364,7 +365,6 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
                   event.currentTarget.setAttribute('opacity', '1')
                   !stimulateMode && setCursor('pointer')
                 }
-                //I think this is messing the scale transform up since calling it modifies the tooltip state
                 showTooltip({
                   tooltipTop: top,
                   tooltipLeft: left,
@@ -377,7 +377,7 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
               }
             }
           }
-          onMouseLeave={
+          onMouseOut={
             (event: React.MouseEvent<SVGImageElement, MouseEvent>) => {
               console.log("leave")
               if (node.data.selectable) {
@@ -391,7 +391,8 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
                 hideTooltip()
               }
             }
-          }>
+          }
+        >
           {node.data.stimulated === "U" &&
             <image
               href={node.data.unstimImagePath}
@@ -433,46 +434,49 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
     );
   }
 
+  const TreeMemo = useMemo(() =>
+    <Tree<CellNode> root={data} size={[sizeWidth, sizeHeight]}>
+      {(tree) => (
+        <Group top={innerMarginTop} left={innerMarginLeft}>
+          {tree.links().map((link, i) => (
+            orientation === "vertical" ?
+              <LinkVertical<HierarchyPointLink<CellNode>, HierarchyPointNode<CellNode>>
+                key={`cluster-link-${i}`}
+                data={link}
+                stroke={linkStroke}
+                //Bold if descendant selected
+                strokeWidth={link.target.descendants().find((childNode) => childNode.data.selected) !== undefined ? 3 : 0.75}
+                strokeOpacity={0.4}
+                fill="none"
+              />
+              :
+              <LinkHorizontal<HierarchyPointLink<CellNode>, HierarchyPointNode<CellNode>>
+                key={`cluster-link-${i}`}
+                data={link}
+                stroke={linkStroke}
+                //Bold if descendant selected
+                strokeWidth={link.target.descendants().find((childNode) => childNode.data.selected) !== undefined ? 3 : 0.75}
+                strokeOpacity={0.4}
+                fill="none"
+              />
+          ))}
+          {tree.descendants().map((node, i) => (
+            <Node key={`cluster-node-${i}`} node={node} />
+          ))}
+        </Group>
+      )}
+    </Tree>
+    , [data])
+
   return totalWidth < 10 ? null : (
-    <div>
+    <div style={{ position: "relative" }}>
       <svg width={totalWidth} height={totalHeight}>
         <rect width={totalWidth} height={totalHeight} fill={background} />
-        {/* This is too large */}
-        <Tree<CellNode> root={data} size={[sizeWidth, sizeHeight]}>
-          {(tree) => (
-            <Group top={innerMarginTop} left={innerMarginLeft}>
-              {tree.links().map((link, i) => (
-                orientation === "vertical" ?
-                  <LinkVertical<HierarchyPointLink<CellNode>, HierarchyPointNode<CellNode>>
-                    key={`cluster-link-${i}`}
-                    data={link}
-                    stroke={linkStroke}
-                    //Bold if descendant selected
-                    strokeWidth={link.target.descendants().find((childNode) => childNode.data.selected) !== undefined ? 3 : 0.75}
-                    strokeOpacity={0.4}
-                    fill="none"
-                  />
-                  :
-                  <LinkHorizontal<HierarchyPointLink<CellNode>, HierarchyPointNode<CellNode>>
-                    key={`cluster-link-${i}`}
-                    data={link}
-                    stroke={linkStroke}
-                    //Bold if descendant selected
-                    strokeWidth={link.target.descendants().find((childNode) => childNode.data.selected) !== undefined ? 3 : 0.75}
-                    strokeOpacity={0.4}
-                    fill="none"
-                  />
-              ))}
-              {tree.descendants().map((node, i) => (
-                <Node key={`cluster-node-${i}`} node={node} />
-              ))}
-            </Group>
-          )}
-        </Tree>
+        {TreeMemo}
       </svg>
       {tooltipOpen && tooltipData && (
-        <Tooltip
-          top={tooltipTop + innerMarginTop}
+        <TooltipWithBounds
+          top={tooltipTop}
           left={tooltipLeft}
           style={{ ...defaultTooltipStyles, backgroundColor: '#283238', color: 'white' }}
         >
@@ -488,7 +492,7 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
           <div>
             {tooltipData.stimCount && <strong>Unstim: {tooltipData.stimCount && tooltipData.unstimCount}</strong>}
           </div>
-        </Tooltip>
+        </TooltipWithBounds>
       )}
     </div>
   );
