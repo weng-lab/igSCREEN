@@ -79,24 +79,41 @@ export const AtacBarPlot: React.FC<{plottitle?: string,  byct?: boolean, study: 
     const margin =  { top: 40, right: 8, bottom: 40, left: 60 };    
     const xMax = width - margin.left - margin.right;
     const yMax = height - margin.top - margin.bottom;   
-  
 
-    const xScale = props && props.barplotdata && scaleBand<string>({
-      domain: props.barplotdata.map((d) => d.name),
+    function floorToHalf(value) {
+      return Math.floor(value * 2) / 2;
+    }
+
+    //Find Minimum active value in dataset
+    const yMinActive = Math.min(...props.barplotdata?.map((d) => d.value).filter(x => x !== -10))
+
+    //Transform all -10 values to yMinActive - 1 rounded down to nearest whole number
+    const transformedData = props.barplotdata?.map(x => x.value === -10 ? {...x, value: floorToHalf(yMinActive - 0.5)} : x)
+
+    const maxVal = Math.max(...transformedData.map((d) => d.value ))
+
+    const xScale = transformedData && scaleBand<string>({
+      domain: transformedData.map((d) => d.name),
       round: true,
-      range: [0,xMax]    
+      range: [0,xMax],
+      padding: 0.1   
     });
 
-    const yScale = props && props.barplotdata &&  scaleLinear<number>({
+    const yScale = transformedData &&  scaleLinear<number>({
       domain: [
-        Math.min(
-          ...props.barplotdata.map((d) => d.value)
-        ) - 0.5,
-        Math.max(...props.barplotdata.map((d) => d.value )) + 0.5
+        floorToHalf(yMinActive - 0.5),
+        maxVal + 0.5
       ],
       range:[yMax, 0]
-
     });
+
+    let ticks: number[] = []
+    for (let index = floorToHalf(yMinActive - 0.5); index < (Math.max(...transformedData.map((d) => d.value )) + 0.5); index += 0.5) {
+      ticks.push(index);
+    }
+
+    const yScaleTickFormat = (v: number, index: number, ticks: { value: number; index: number }[]) =>
+    index === 0 ? 'No Signal' : `${v}`
     
 
     const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip } =  useTooltip<TooltipData>();
@@ -104,10 +121,10 @@ export const AtacBarPlot: React.FC<{plottitle?: string,  byct?: boolean, study: 
     const { containerRef, TooltipInPortal } = useTooltipInPortal({scroll: true});
     
 
-    let uniqcelltypes: string[] =  [...new Set(props.barplotdata.map(c=>c.celltype))] as string[]
+    let uniqcelltypes: string[] =  [...new Set(transformedData.map(c=>c.celltype))] as string[]
     if(props.byct)
     {
-        uniqcelltypes =  [...new Set(props.barplotdata.map(c=>COLOR_MAP.get(c.celltype) ? c.celltype : c.description))] as string[]
+        uniqcelltypes =  [...new Set(transformedData.map(c=>COLOR_MAP.get(c.celltype) ? c.celltype : c.description))] as string[]
         
     }
     let ordinalColorScale =  uniqcelltypes && scaleOrdinal({ 
@@ -122,13 +139,13 @@ export const AtacBarPlot: React.FC<{plottitle?: string,  byct?: boolean, study: 
       range: ["#ff0000"]
     });
 
-   
+    console.log(transformedData)
     return(
     <div style={{ position: 'relative' }}>
       <svg width={width} height={height} ref={containerRef}>    
         <Group top={margin.top} left={margin.left}>
           <BarGroup
-            data={props.barplotdata}
+            data={transformedData}
             keys={['value']}
             height={yMax}
             x0={(d) => d.name}
@@ -144,7 +161,7 @@ export const AtacBarPlot: React.FC<{plottitle?: string,  byct?: boolean, study: 
                   key={`bar-group-${barGroup.index}-${barGroup.x0}`}
                   left={barGroup.x0}
                 >
-                  {barGroup.bars.map((bar) => (
+                  {barGroup.bars.map((bar, i) => (
                     <>
                     <rect
                       key={`bar-group-bar-${barGroup.index}-${bar.index}-${bar.value}-${bar.key}`}
@@ -157,7 +174,8 @@ export const AtacBarPlot: React.FC<{plottitle?: string,  byct?: boolean, study: 
                             ? yScale(Math.max(0, minTemp))
                             : yScale(0))
                       )}
-                      fill={props.barplotdata[barGroup.index].color}
+                      opacity={bar.value === yScale.domain()[0] ? 0.20 : 1}
+                      fill={transformedData[barGroup.index].color}
                       rx={4}
                       onMouseLeave={() => {hideTooltip();}}
                       onMouseMove={(event) => {
@@ -166,7 +184,7 @@ export const AtacBarPlot: React.FC<{plottitle?: string,  byct?: boolean, study: 
                         showTooltip({
                           tooltipData: {
                             ...bar,
-                            bardata: props.barplotdata[barGroup.index]
+                            bardata: transformedData[barGroup.index]
                           },
                           tooltipTop: eventSvgCoords?.y,
                           tooltipLeft: left,
@@ -188,6 +206,7 @@ export const AtacBarPlot: React.FC<{plottitle?: string,  byct?: boolean, study: 
             x2={xMax}
             stroke="#000000"
           />
+          
         </Group>
         <AxisBottom
           left={margin.left}
@@ -197,7 +216,7 @@ export const AtacBarPlot: React.FC<{plottitle?: string,  byct?: boolean, study: 
           tickStroke={"#000000"}
           hideTicks
           tickComponent={() => null}
-          numTicks={props.barplotdata.length}
+          numTicks={transformedData.length}
           tickLabelProps={(value) => { 
             return {
               fill: "#000000",
@@ -218,7 +237,32 @@ export const AtacBarPlot: React.FC<{plottitle?: string,  byct?: boolean, study: 
             fontSize: 11,
             textAnchor: "end"          
           }}
+          tickFormat={yScaleTickFormat}
+          tickValues={ticks}
         />
+        <Group top={margin.top} left={margin.left}>
+          {/* Axis Break */}
+          {/* points attribute specifies the coordinates of the vertices of the parallelogram in the format "x1,y1 x2,y2 x3,y3 ...". */}
+          {/* The first two pairs of coordinates create the top horizontal line, and the last two pairs create the bottom horizontal line. */}
+          <polygon
+            points={`-10,${yScale(yScale.domain()[0]) - 25} 10,${yScale(yScale.domain()[0]) - 35} 10,${yScale(yScale.domain()[0]) - 30} -10,${yScale(yScale.domain()[0]) - 20}`}
+            fill="#FFFFFF"
+          />
+          <line
+            y2={yScale(yScale.domain()[0]) - 35}
+            y1={yScale(yScale.domain()[0]) - 25}
+            x1={-10}
+            x2={10}
+            stroke="#000000"
+          />
+          <line
+            y2={yScale(yScale.domain()[0]) - 30}
+            y1={yScale(yScale.domain()[0]) - 20}
+            x1={-10}
+            x2={10}
+            stroke="#000000"
+          />
+        </Group>
       </svg>
       <div className="legends">    
         <CellTypesLegends title={`${props.study} immune cell types`} plottitle={props.plottitle}>
@@ -226,7 +270,7 @@ export const AtacBarPlot: React.FC<{plottitle?: string,  byct?: boolean, study: 
             {(labels) => (
               <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '10px' }}>
                 {labels.map((label, i) => { 
-                    
+                  console.log(label)
                   return (                  
                   <LegendItem
                     key={`legend-quantile-${i}`}
@@ -237,7 +281,9 @@ export const AtacBarPlot: React.FC<{plottitle?: string,  byct?: boolean, study: 
                       <rect fill={label.value} width={legendGlyphSize} height={legendGlyphSize} />
                     </svg>
                     <LegendLabel align="left" margin="0 0 0 4px" color={"#ff0000"}>
-                      <span className={"labelcolor"}>{props.barplotdata.find(b=>b.celltype===label.text)?.ct_description || (props.barplotdata.find(b=>b.celltype===label.text) ? props.barplotdata.find(b=>b.celltype===label.text).description : label.text)}</span>
+                      <text className={"labelcolor"}>
+                        {transformedData.find(b => b.celltype === label.text)?.ct_description || (transformedData.find(b => b.celltype === label.text) ? transformedData.find(b => b.celltype === label.text).description : label.text)}
+                      </text>
                     </LegendLabel>
                   </LegendItem>
                   
@@ -270,9 +316,8 @@ export const AtacBarPlot: React.FC<{plottitle?: string,  byct?: boolean, study: 
             <br/>
             <div>{"Cell Type: "+(tooltipData.bardata.ct_description || tooltipData.bardata.description)}</div>
             <div>{"Class: "+tooltipData.bardata.class}</div>
-            <div>{"SubClass: "+tooltipData.bardata.subclass}</div>       
-            
-            <div>{tooltipData.bardata.value.toFixed(2)}</div>
+            <div>{"SubClass: "+tooltipData.bardata.subclass}</div>
+            <div>{tooltipData.bardata.value === yScale.domain()[0] ? "No Signal" : tooltipData.bardata.value.toFixed(2)}</div>
         </TooltipInPortal>
       )}  
     </div>
