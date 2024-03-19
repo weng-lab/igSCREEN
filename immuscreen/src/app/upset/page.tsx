@@ -914,7 +914,9 @@ export default function UpSet({ searchParams }: { searchParams: { [key: string]:
     }
   )
 
-  const cellTypeTreeWidth = 850
+  const cellTypeTreeWidth = 830
+
+  const upSetWidth = 700
 
   //Wrap in useMemo to stop rerender of tree when cursor changes here
   const cellTypeTree = useMemo(() => {
@@ -934,8 +936,6 @@ export default function UpSet({ searchParams }: { searchParams: { [key: string]:
       />
     )
   }, [cellTypeState, setCellTypeState, stimulateMode, setCursor])
-
-  const upSetWidth = 700
 
   const upSet = useMemo(() => {
     if (data_count) {
@@ -1031,7 +1031,7 @@ export default function UpSet({ searchParams }: { searchParams: { [key: string]:
             </Typography>
             <Box>
               {checkboxes}
-              <LoadingButton loading={loading_count} loadingPosition="end" disabled={noneSelected} endIcon={<BarChartOutlinedIcon />} sx={{ textTransform: "none", mt: 1 }} variant="contained" onClick={generateUpSet}>
+              <LoadingButton loading={loading_count} loadingPosition="end" disabled={noneSelected} endIcon={<BarChartOutlinedIcon />} sx={{ textTransform: "none", m: 1 }} variant="contained" onClick={generateUpSet}>
                 <span>{loading_count ? "Generating" : "Generate UpSet"}</span>
               </LoadingButton>
               <Box>
