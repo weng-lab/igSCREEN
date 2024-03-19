@@ -42,10 +42,10 @@ type CellTypeTreeProps = {
   setCursor: React.Dispatch<React.SetStateAction<"auto" | "pointer" | "cell" | "not-allowed">>
   orientation: "vertical" | "horizontal"
   selectionLimit?: number
-  triggerLimitAlert: () => void
+  triggerAlert: (message: string) => void
 }
 
-export default function CellTypeTree({ width: totalWidth, height: totalHeight, orientation, cellTypeState, setCellTypeState, stimulateMode, setStimulateMode, setCursor, selectionLimit, triggerLimitAlert }: CellTypeTreeProps) {
+export default function CellTypeTree({ width: totalWidth, height: totalHeight, orientation, cellTypeState, setCellTypeState, stimulateMode, setStimulateMode, setCursor, selectionLimit, triggerAlert }: CellTypeTreeProps) {
 
   const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip, updateTooltip } = useTooltip<TooltipData>();
 
@@ -78,10 +78,10 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
   /**
    * Rotates the stimulation between U/S/B in that order
    */
-  const toggleStimulation = (current: "U" | "S" | "B") => {
+  const toggleStimulation = (current: "U" | "S" | "B", numberSelected: number, selectionLimit: number): "U" | "S" | "B"  => {
     switch (current) {
-      case ("U"): return "S"
-      case ("S"): return "B"
+      case ("U"): {if (numberSelected === selectionLimit){return "S"} else {return "S"}}
+      case ("S"): {if (numberSelected === selectionLimit){return "U"} else {return "B"}}
       case ("B"): return "U"
     }
   }
@@ -127,10 +127,10 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
                   {
                     ...cellTypeState.GMP,
                     children: [
-                      {
-                        displayName: 'Neutrophil',
-                        ...uninteractiveNode,
-                      },
+                      // {
+                      //   displayName: 'Neutrophil',
+                      //   ...uninteractiveNode,
+                      // },
                       {
                         ...cellTypeState.pDCs
                       },
@@ -332,31 +332,29 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
         <Group
           opacity={(node.data.selected || Object.values(cellTypeState).every(cellType => cellType.selected === false)) ? 1 : fadedCellOpacity}
           onClick={() => {
-            console.log("clicked")
+            const numberSelected = Object.values(cellTypeState).reduce((count, cellInfo: CellTypeInfo) => cellInfo.selected ? cellInfo.stimulated === "B" ? count + 2 : count + 1 : count, 0)
             if (stimulateMode) {
               if (node.data.stimulable) {
                 setCellTypeState({
                   ...cellTypeState,
                   [node.data.id]: {
                     ...cellTypeState[node.data.id],
-                    stimulated: toggleStimulation(cellTypeState[node.data.id].stimulated)
+                    stimulated: toggleStimulation(cellTypeState[node.data.id].stimulated, numberSelected, selectionLimit)
                   }
                 })
               }
             } else if (node.data.selectable) {
-              const numberSelected = Object.values(cellTypeState).reduce((count, cellInfo: CellTypeInfo) => count + +cellInfo.selected, 0)
-              console.log(numberSelected)
-              if ((numberSelected < selectionLimit) || node.data.selected) {
+              //If there is room for selection, select it. Or always allow deselection
+              if (((node.data.stimulated === "B" ? numberSelected + 2 : numberSelected + 1) <= selectionLimit) || node.data.selected) {
                 setCellTypeState({
                   ...cellTypeState,
                   [node.data.id]: { ...cellTypeState[node.data.id], selected: !cellTypeState[node.data.id].selected }
                 })
-              } else triggerLimitAlert()
+              } else triggerAlert("Maximum cell selection reached (6)")
             }
           }}
           onMouseEnter={
             (event: React.MouseEvent<SVGImageElement, MouseEvent>) => {
-              console.log("enter")
               if (node.data.selectable) {
                 if (stimulateMode && !node.data.stimulable) {
                   setCursor("not-allowed")
@@ -379,7 +377,6 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
           }
           onMouseOut={
             (event: React.MouseEvent<SVGImageElement, MouseEvent>) => {
-              console.log("leave")
               if (node.data.selectable) {
                 if (stimulateMode && !node.data.stimulable) {
                   !node.data.stimulable && setCursor("cell")

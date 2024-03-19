@@ -33,14 +33,6 @@ export default function UpSetPlot({ width, height, data, setCursor, handleDownlo
   const totalWidth = width
   const totalHeight = height
 
-  const n = intersectionData.length
-
-  // 0.35 good for 4 & 5, 6 good for 3, 7 good for 2
-
-  //Nothing works for 5, since text gets too squished. Need to give less vertcial room for intersection plot
-
-  // based on total dimensions set widths of intersection and set size charts
-  // const setSizePlotTotalWidth = totalWidth * 0.5
   let setSizePlotTotalWidth: number;
   switch(data.counts.length){
     case (1): setSizePlotTotalWidth = totalWidth * 0.45; break;
@@ -50,7 +42,7 @@ export default function UpSetPlot({ width, height, data, setCursor, handleDownlo
     case (5): setSizePlotTotalWidth = totalWidth * 0.325; break;
     case (6): setSizePlotTotalWidth = totalWidth * 0.275; break;
   }
-  const spaceForCellName = 120
+  const spaceForCellName = 100
   const spaceForCellCounts = 80
   const setSizePlotBarsWidth = setSizePlotTotalWidth - spaceForCellName - spaceForCellCounts
   const spaceForTextRight = 15
@@ -69,11 +61,8 @@ export default function UpSetPlot({ width, height, data, setCursor, handleDownlo
   );
 
   const spaceForBottomAxis = 40
-  //convoluted, but calculates the needed height based on how much room is taken up by the circles
-  // const setSizePlotBarsHeight = (((intersectionPlotWidthScale.bandwidth() * 1.5) * (intersectionData[0].name.length)) + (intersectionPlotWidthScale.bandwidth() * 0.5))
   const setSizePlotBarsHeight = fontSize * 1.5 * data.counts.length
 
-  //The issue is that the height of the set size plot is determined based on on the size on intersection bars, which on an n=5 plot is very small, so not enough room is being given to it. Need to make the gap between circles constant not variable, leaving enough room in between for text
   const setSizePlotTotalHeight = setSizePlotBarsHeight + spaceForBottomAxis
   const spaceForTextTop = 60
   const intersectionPlotBarsHeight = totalHeight - setSizePlotTotalHeight - spaceForTextTop

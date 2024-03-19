@@ -13,8 +13,9 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import BarChartOutlinedIcon from '@mui/icons-material/BarChartOutlined';
 import FlashOnOutlinedIcon from '@mui/icons-material/FlashOnOutlined';
 import FlashOffOutlinedIcon from '@mui/icons-material/FlashOffOutlined';
+import FlashAutoIcon from '@mui/icons-material/FlashAuto';
 import UndoOutlinedIcon from '@mui/icons-material/UndoOutlined';
-
+import LoadingButton from '@mui/lab/LoadingButton';
 
 
 export interface CellTypeInfo {
@@ -668,9 +669,11 @@ export default function UpSet({ searchParams }: { searchParams: { [key: string]:
   })
   const [upSetClasses, setUpSetClasses] = useState<CCRE_CLASS[]>(null)
   const [openSnackbar, setOpenSnackbar] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState(null)
 
 
-  const handleOpenSnackbar = () => {
+  const handleOpenSnackbar = (message: string) => {
+    setSnackbarMessage(message)
     setOpenSnackbar(true);
   };
 
@@ -882,11 +885,6 @@ export default function UpSet({ searchParams }: { searchParams: { [key: string]:
     getCountData()
   }
 
-  //Trigger refetch when 
-  // useEffect(() => {
-  //   if (upSetCells?.length > 0) getCountData();
-  // }, [upSetCells])
-
   const COUNT_QUERY = useMemo(() => {
     if (upSetCells.length > 0) {
       return (
@@ -916,12 +914,14 @@ export default function UpSet({ searchParams }: { searchParams: { [key: string]:
     }
   )
 
+  const cellTypeTreeWidth = 850
+
   //Wrap in useMemo to stop rerender of tree when cursor changes here
   const cellTypeTree = useMemo(() => {
     console.log("cellTypeTree useMemo running")
     return (
       <CellTypeTree
-        width={900}
+        width={cellTypeTreeWidth}
         height={1100}
         orientation="vertical"
         cellTypeState={cellTypeState}
@@ -930,12 +930,12 @@ export default function UpSet({ searchParams }: { searchParams: { [key: string]:
         setStimulateMode={setStimulateMode}
         setCursor={setCursor}
         selectionLimit={6}
-        triggerLimitAlert={handleOpenSnackbar}
+        triggerAlert={handleOpenSnackbar}
       />
     )
   }, [cellTypeState, setCellTypeState, stimulateMode, setCursor])
 
-  const upSetWidth = 800
+  const upSetWidth = 700
 
   const upSet = useMemo(() => {
     if (data_count) {
@@ -978,7 +978,7 @@ export default function UpSet({ searchParams }: { searchParams: { [key: string]:
       <FormControlLabel
         key={key}
         label={classDisplaynames[group]}
-        slotProps={{typography: {maxWidth: "10rem"}}}
+        slotProps={{ typography: { maxWidth: "10rem" } }}
         control={
           <Checkbox
             checked={checkboxClasses[group]}
@@ -993,11 +993,61 @@ export default function UpSet({ searchParams }: { searchParams: { [key: string]:
   const allStimulated = Object.values(cellTypeState).filter(x => x.stimulable).map(x => x.stimulated).every(x => x === "S")
   const allBothStimulated = Object.values(cellTypeState).filter(x => x.stimulable).map(x => x.stimulated).every(x => x === "B")
 
+  const checkboxes =
+    <>
+      <FormControlLabel
+        label="All Classes"
+        control={
+          <Checkbox
+            checked={Object.values(checkboxClasses).every(val => val === true)}
+            indeterminate={!Object.values(checkboxClasses).every(val => val === checkboxClasses.CA)}
+            onChange={(_, checked) => setCheckboxClasses({
+              "CA-CTCF": checked,
+              "CA-TF": checked,
+              "CA-H3K4me3": checked,
+              "TF": checked,
+              "CA": checked,
+              "pELS": checked,
+              "dELS": checked,
+              "PLS": checked,
+            })}
+          />
+        }
+      />
+      <Box sx={{ display: 'flex', flexWrap: "wrap", flexDirection: 'column', ml: 3, maxHeight: "15rem", gap: "1rem" }}>
+        {Object.keys(checkboxClasses).map((group: CCRE_CLASS, i) => groupCheckbox(group, i))}
+      </Box>
+    </>
+  
+
   return (
     <>
       <Grid2 container mt={3} spacing={2} sx={{ cursor }} >
-        <Grid2 xs={12} container>
+        <Grid2 xs={12} xl={5} container justifyContent={"center"}>
+          <Box display={{xl: "block", xs: "none"}}>
+            <Typography variant="h5">UpSet Generator</Typography>
+            <Typography variant="body1" paragraph maxWidth={upSetWidth}>
+              Select Up to 6 cells to generate an UpSet plot. Hold Option/Command (MacOS) or Alt/Windows (Windows) and click to stimulate cell. By default, all cells are unstimulated. Cells can be unstimulated, stimulated, or both (counts as two selections). The more cells types that are selected, the longer it will take to generate.
+            </Typography>
+            <Box>
+              {checkboxes}
+              <LoadingButton loading={loading_count} loadingPosition="end" disabled={noneSelected} endIcon={<BarChartOutlinedIcon />} sx={{ textTransform: "none", mt: 1 }} variant="contained" onClick={generateUpSet}>
+                <span>{loading_count ? "Generating" : "Generate UpSet"}</span>
+              </LoadingButton>
+              <Box>
+                 {upSet}
+              </Box>
+            </Box>
+          </Box>
+        </Grid2>
+        <Grid2 xs={12} xl={7} container justifyContent={"center"}>
           <Box>
+            <Box display={{xs: "block", xl: "none"}}>
+              <Typography variant="h5">UpSet Generator</Typography>
+              <Typography variant="body1" paragraph maxWidth={cellTypeTreeWidth}>
+                Select Up to 6 cells to generate an UpSet plot. Hold Option/Command (MacOS) or Alt/Windows (Windows) and click to stimulate cell. By default, all cells are unstimulated. Cells can be unstimulated, stimulated, or both (counts as two selections). The more cells types that are selected, the longer it will take to generate.
+              </Typography>
+            </Box>
             <Stack spacing={1} direction="row" mb={3}>
               <Tooltip title="Tip: Holding Option/Command (MacOS) or Alt/Windows (Windows) will enter stimulate mode">
                 <Button endIcon={stimulateMode ? <CancelOutlinedIcon /> : <AddBoxOutlinedIcon />} sx={{ textTransform: "none" }} variant="outlined" onClick={handleToggleStimulateMode}>{stimulateMode ? 'Exit Stimulate Mode' : 'Enter Stimulate Mode'}</Button>
@@ -1007,45 +1057,19 @@ export default function UpSet({ searchParams }: { searchParams: { [key: string]:
               </Tooltip>
               <Button disabled={noneStimulated} endIcon={<FlashOffOutlinedIcon />} sx={{ textTransform: "none" }} variant="outlined" onClick={() => handleStimulateAll("U")}>Unstimulate All</Button>
               <Tooltip title="Note: Not all cells are stimulable">
-                <Button disabled={allBothStimulated} endIcon={<FlashOnOutlinedIcon />} sx={{ textTransform: "none" }} variant="outlined" onClick={() => handleStimulateAll("B")}>Stim + Unstim All</Button>
+                <Button disabled={allBothStimulated} endIcon={<FlashAutoIcon />} sx={{ textTransform: "none" }} variant="outlined" onClick={() => handleStimulateAll("B")}>Stim + Unstim All</Button>
               </Tooltip>
               <Button disabled={noneSelected} endIcon={<UndoOutlinedIcon />} sx={{ textTransform: "none" }} variant="outlined" onClick={() => handleSelectAll(false)}>Unselect All</Button>
             </Stack>
             {cellTypeTree}
-          </Box>
-          <Box flexShrink={1}>
-            <Typography variant="h5">UpSet Generator</Typography>
-            <Typography variant="body1" paragraph maxWidth={"30rem"}>
-              Select Up to 6 cells to generate an UpSet plot. Hold Option/Command (MacOS) or Alt/Windows (Windows) and click to stimulate cell. By default, all cells are unstimulated. Cells can be unstimulated, stimulated, or both. The more cells types that are selected, the longer it will take to generate.
-            </Typography>
-            <Button disabled={noneSelected} endIcon={<BarChartOutlinedIcon />} sx={{ textTransform: "none" }} variant="contained" onClick={generateUpSet}>Generate UpSet</Button>
-            <Box>
-              <FormControlLabel
-                label="All Classes"
-                control={
-                  <Checkbox
-                    checked={Object.values(checkboxClasses).every(val => val === true)}
-                    indeterminate={!Object.values(checkboxClasses).every(val => val === checkboxClasses.CA)}
-                    onChange={(_, checked) => setCheckboxClasses({
-                      "CA-CTCF": checked,
-                      "CA-TF": checked,
-                      "CA-H3K4me3": checked,
-                      "TF": checked,
-                      "CA": checked,
-                      "pELS": checked,
-                      "dELS": checked,
-                      "PLS": checked,
-                    })}
-                  />
-                }
-              />
-              <Box sx={{ display: 'flex', flexWrap: "wrap", flexDirection: 'column', ml: 3, maxHeight: "15rem", gap: "1rem" }}>
-                {Object.keys(checkboxClasses).map((group: CCRE_CLASS, i) => groupCheckbox(group, i))}
+            <Box display={{xl: "none"}}>
+              {checkboxes}
+              <LoadingButton loading={loading_count} loadingPosition="end" disabled={noneSelected} endIcon={<BarChartOutlinedIcon />} sx={{ textTransform: "none", mt: 1 }} variant="contained" onClick={generateUpSet}>
+                <span>{loading_count ? "Generating" : "Generate UpSet"}</span>
+              </LoadingButton>
+              <Box>
+                 {upSet}
               </Box>
-            </Box>
-            {loading_count && <CircularProgress />}
-            <Box mt={2}>
-              {upSet}
             </Box>
           </Box>
         </Grid2>
@@ -1056,7 +1080,7 @@ export default function UpSet({ searchParams }: { searchParams: { [key: string]:
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         autoHideDuration={2000}
         onClose={handleCloseSnackbar}
-        message="Maximum cell selection reached (6)"
+        message={snackbarMessage}
       />
     </>
   )
