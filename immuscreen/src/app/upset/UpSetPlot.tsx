@@ -28,6 +28,7 @@ export default function UpSetPlot({ width, height, data, setCursor, handleDownlo
   })
 
   const fontSize = 14
+  let intersectionCountsFontSize = 14;
 
   // end dimensions of the plot
   const totalWidth = width
@@ -40,7 +41,7 @@ export default function UpSetPlot({ width, height, data, setCursor, handleDownlo
     case (3): setSizePlotTotalWidth = totalWidth * 0.45; break;
     case (4): setSizePlotTotalWidth = totalWidth * 0.375; break;
     case (5): setSizePlotTotalWidth = totalWidth * 0.325; break;
-    case (6): setSizePlotTotalWidth = totalWidth * 0.275; break;
+    case (6): setSizePlotTotalWidth = totalWidth * 0.275; intersectionCountsFontSize = 7; break;
   }
   const spaceForCellName = 100
   const spaceForCellCounts = 80
@@ -198,7 +199,7 @@ export default function UpSetPlot({ width, height, data, setCursor, handleDownlo
             >
               
               <Group>
-                <Text x={barX + (halfBarWidth)} y={barY - 5} angle={315}>
+                <Text x={barX + (halfBarWidth)} y={barY - 5} angle={315} fontSize={intersectionCountsFontSize}>
                   {d.count}
                 </Text>
                 <Bar
