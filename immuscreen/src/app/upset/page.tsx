@@ -1064,7 +1064,7 @@ export default function UpSet({ searchParams }: { searchParams: { [key: string]:
             {cellTypeTree}
             <Box display={{xl: "none"}}>
               {checkboxes}
-              <LoadingButton loading={loading_count} loadingPosition="end" disabled={noneSelected} endIcon={<BarChartOutlinedIcon />} sx={{ textTransform: "none", mt: 1 }} variant="contained" onClick={generateUpSet}>
+              <LoadingButton loading={loading_count} loadingPosition="end" disabled={noneSelected} endIcon={<BarChartOutlinedIcon />} sx={{ textTransform: "none", m: 1 }} variant="contained" onClick={generateUpSet}>
                 <span>{loading_count ? "Generating" : "Generate UpSet"}</span>
               </LoadingButton>
               <Box>
