@@ -1,14 +1,13 @@
 "use client"
 import React, {useState} from "react"
 import { useRouter } from "next/navigation"
-
 import { StyledTab } from "../../common/utils"
 import { client } from "../../common/utils"
 import SearchIcon from "@mui/icons-material/Search"
 import { Typography } from "@mui/material"
 import { Tabs } from "@mui/material"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
-import { TextField, IconButton, InputAdornment,  createTheme } from "@mui/material"
+import { TextField, IconButton, InputAdornment } from "@mui/material"
 import { FormControl, MenuItem } from "@mui/material"
 import { useQuery } from "@apollo/client"
 import { gql } from "@apollo/client"
@@ -18,11 +17,11 @@ import { GenomeBrowserView } from "../../common/gbview/genomebrowserview"
 import { CcreAutoComplete } from "../../common/components/mainsearch/CcreAutocomplete"
 import { DataTable } from "@weng-lab/psychscreen-ui-components"
 import { ATACUMAP } from "./atacumap"
-
+import {IcresByRegion} from "./icresbyregion"
 const ICRES_QUERY = gql`
-query iCREQuery($coordinates: [GenomicRangeInput!]) 
+query iCREQuery($coordinates: [GenomicRangeInput!], $accession: [String!]) 
   {
-    iCREQuery(coordinates:$coordinates) {
+    iCREQuery(coordinates:$coordinates, accession:$accession) {
       rdhs
       accession
       celltypes
@@ -70,19 +69,17 @@ export default function Icres() {
   const handleSelectedPortal = (event: SelectChangeEvent) => {
     setSelectedPortal(event.target.value);
   };
-  const { loading: loading, data: data } = useQuery(ICRES_QUERY, {
+
+  const { loading: aloading, data: adata } = useQuery(ICRES_QUERY, {
     variables: {
-      coordinates : {
-        chromosome : searchParams.get("chromosome"),
-        start : +searchParams.get("start"),
-        end : +searchParams.get("end")
-      }
+      accession: searchParams.get('accession')
     },
-    skip: !searchParams.get("chromosome"),
+    skip: !searchParams.get("accession"),
     fetchPolicy: "cache-and-network",
     nextFetchPolicy: "cache-first",
     client,
   })
+  console.log(aloading,adata)
 
   const {loading: ebiloading, data: ebidata} = useQuery(EBI_ASSO_QUERY,{
     variables: {
@@ -93,7 +90,7 @@ export default function Icres() {
     nextFetchPolicy: "cache-first",
     client,
   })
-  console.log(ebiloading,ebidata)
+  
   const handleChange = (_, newValue: number) => {
     setValue(newValue)
   }
@@ -116,7 +113,7 @@ export default function Icres() {
     router.push(`/icres?chromosome=${chromosome}&start=${start}&end=${end}`)
   }
 
-
+console.log("coordinates", adata && adata.iCREQuery[0].coordinates)
   return !searchParams.get('accession') && !searchParams.get('chromosome') ?  (
   <main>
     <Grid2 container spacing={6} sx={{ mr: "auto", ml: "auto", mt: "3rem" }}>
@@ -166,64 +163,7 @@ export default function Icres() {
  
 </Grid2>
 </main>): searchParams.get('chromosome') ? (
-    <main>
-      <Grid2 container  sx={{ maxWidth: "80%", mr: "auto", ml: "auto", mt: "1rem" }}>
-   
-            <Grid2 container sx={{  ml:"0.5em", mt: "4rem", mb: "2rem" }}>
-            <Grid2 xs={12} lg={12}>
-            {searchParams.get("chromosome") && <Typography variant="h5">{`Showing immune Candidate cis-Regulatory Elements (cCREs) in the region ${searchParams.get('chromosome')}:${searchParams.get('start')}-${searchParams.get('end')}`}</Typography>}
-            </Grid2>
-            <Grid2 xs={12} lg={12}>
-                <Tabs aria-label="icres_region_tabs" value={value} onChange={handleChange}>
-                    <StyledTab label="Table View" />
-                    
-                </Tabs>
-                </Grid2>
-            </Grid2>
-           
-            {value===0 && !loading &&<DataTable
-                              columns={[
-                                
-                                {
-                                  header: "Accession",
-                                  value: (row) => row.accession ,
-                                  
-                                },
-                                {
-                                  header: "rDHS",
-                                  value: (row) => row.rdhs,
-                                },
-                                
-                              {
-                                header: "Chromosome",
-                                value: (row) => row.coordinates.chromosome || "",
-                                
-                              },
-                              {
-                                header: "Start",
-                                value: (row) => row.coordinates.start || "",
-                                
-                              },
-                              {
-                                header: "End",
-                                value: (row) => row.coordinates.end || "",
-                                
-                              },
-                              {
-                                header: "Celltypes",
-                                value: (row) => row.celltypes.join(","),
-                              }
-                              ]}
-                        tableTitle={`iCREs`}
-                        rows={(data.iCREQuery) || []}
-                        
-                        sortColumn={3}
-                        itemsPerPage={10}
-                      />}
-        </Grid2>
-       
-      
-    </main>
+   <IcresByRegion/>
   ) :  (
     <main>
       <Grid2 container  sx={{ maxWidth: "80%", mr: "auto", ml: "auto", mt: "3rem" }}>
@@ -242,12 +182,19 @@ export default function Icres() {
                   </Grid2>
               </Grid2>
            
-            {value===0 && 
+            {value===0 && adata &&
             <Grid2 xs={12} lg={12}>
             <GenomeBrowserView                
-                
+                accession={
+                  {
+                    name: adata.iCREQuery[0].accession,
+                    start: adata.iCREQuery[0].coordinates.start, 
+                    end: adata.iCREQuery[0].coordinates.end,
+                  }
+                }
                 assembly={"GRCh38"}
-                coordinates={{ start: 520000, end: 580000, chromosome:"chr11" }}
+                coordinates={{ start: adata.iCREQuery[0].coordinates.start, end: adata.iCREQuery[0].coordinates.end, chromosome: adata.iCREQuery[0].coordinates.chromosome }}
+                defaultcelltypes={adata.iCREQuery[0].celltypes}
               />
               </Grid2>
               }

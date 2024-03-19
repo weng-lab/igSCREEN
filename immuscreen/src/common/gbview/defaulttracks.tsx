@@ -21,6 +21,12 @@ type DefaultTracksProps = {
   onSettingsClick?: () => void
 }
 
+const CCRETooltip = (props) => {
+console.log(props,"icretoltip")
+  return (<>
+  </>)
+}
+
 export const TitledTrack: React.FC<{
   data: BigResponseData
   assembly: string
@@ -66,7 +72,6 @@ export const TitledTrack: React.FC<{
           transform="translate(0,40)"
           data={data as BigBedData[]}
           svgRef={svgRef}
-          
           onMouseOver={(x) => oncCREMousedOver && x.name && oncCREMousedOver(cCRECoordinateMap.get(x.name))}
           onMouseOut={oncCREMousedOut}
         />
@@ -89,7 +94,7 @@ export const TitledTrack: React.FC<{
 const DefaultTracks: React.FC<DefaultTracksProps> = (props) => {
   const [cTracks, setTracks] = useState<[string, string][]>(
    [
-          ["All iCREs", "https://downloads.wenglab.org/iCREs_combined.bigBed"],
+          ["All iCREs", "https://downloads.wenglab.org/Calderon-Corces_activeCREs_iSCREEN.bigBed"],
         ]
       
   )

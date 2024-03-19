@@ -10,6 +10,7 @@ import React, {
   import TitledImportanceTrack from "./titledimportancetrack";
   import { BigBedData } from "bigwig-reader";
   import ChromBPNetAtacModal from "./chrombpnetatacmodal"
+import { CalderonBigWigTracksMetadata, CalderonCellTypesMetadata } from "./consts";
   export type GenomicRange = {
     chromosome?: string;
     start: number;
@@ -24,29 +25,32 @@ import React, {
     onSettingsClicked?: () => void;
     onImportantRegionsLoaded?: (regions: BigBedData[]) => void;
     defaultTrackset?: string;
+    defaultcelltypes?: string[]
   };
   
-  const TRACKSETS:[string, string][] = 
-    [
+  const TRACKSETS = (r) =>  {
+    return r && r.length>0 ? r.map(t=>{
+      return [t.description,`https://downloads.wenglab.org/chrombpnetbulkatac/${t.name}.bigWig`]
+    })  : [
       
       [
-        "1010-Monocytes-S",
+        "Monocytes, stimulated with 1 µg/ml LPS for 24 hours, in donor 1010",
         "https://downloads.wenglab.org/chrombpnetbulkatac/1010-Monocytes-S.bigWig",
       ],
       [
-          "1010-Naive_Tregs-S",
+          "Naïve T regulatory cells, stimulated with 1:1 CD3/CD28 coated beads and 300 U/ml IL-2 for 24 hours, in donor 1010",
           "https://downloads.wenglab.org/chrombpnetbulkatac/1010-Naive_Tregs-S.bigWig",
         ],
         [
-          "1010-Plasmablasts-U",
+          "Plasmablasts in donor 1010",
           "https://downloads.wenglab.org/chrombpnetbulkatac/1010-Plasmablasts-U.bigWig",
         ],
         [
-          "1011-Naive_Teffs-S",
+          "Effector CD4 T cell, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1011",
           "https://downloads.wenglab.org/chrombpnetbulkatac/1011-Naive_Teffs-S.bigWig",
         ]
         
-    ];
+]};
   
   
   const ChromBPNetAtacTracks: React.FC<ChromBPNetBulkAtacTrackProps> = ({
@@ -55,16 +59,21 @@ import React, {
     onSettingsClicked,
     onImportantRegionsLoaded,
     defaultTrackset,
+    defaultcelltypes
   }) => {
+
+    const r = defaultcelltypes && CalderonBigWigTracksMetadata.filter(c=>defaultcelltypes.includes(c.celltype_name))
+
+    
     // manage displayed tracks, compute height, and pass height back to parent
-    const [displayedTracks, setDisplayedTracks] = useState<[string, string][]>(TRACKSETS);
+    const [displayedTracks, setDisplayedTracks] = useState<[string, string][]>(TRACKSETS(r));
     const height = useMemo(
       () =>
         130 +
         (displayedTracks.length * 130) - 130,
       [displayedTracks, domain]
     );
-    //console.log(domain, "domain")
+    
     useEffect(() => {
       onHeightChanged && onHeightChanged(height);
     }, [onHeightChanged, height]);
@@ -73,7 +82,7 @@ import React, {
     const [settingsMousedOver, setSettingsMousedOver] = useState(false);
     const [settingsModalShown, setSettingsModalShown] = useState(false);
   
-    //console.log("displayedTracks",displayedTracks)
+    
   
     return (
       <>
@@ -97,8 +106,8 @@ import React, {
               title={x[0]}
               height={130}
               width={1400}
-              signalURL={`https://downloads.wenglab.org/chrombpnetbulkatac/${x[0]}.profile_scores.bw`}
-              imputedSignalURL={x[1]}
+              signalURL={`${x[1].replace('bigWig','profile_scores.bw')}`}
+              imputedSignalURL={`${x[1].replace('bigWig','profile_scores.bw')}`}
               domain={domain}            
               neutralRegions={[]}
             />

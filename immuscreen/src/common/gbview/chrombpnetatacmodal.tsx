@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { Modal, Accordion, Box } from "@mui/material";
 import { Typography, Button } from "@weng-lab/psychscreen-ui-components";
+import { CalderonBigWigTracks } from "./consts";
 import {
   AccordionDetails,
   AccordionSummary,
@@ -34,66 +35,16 @@ const style = {
   borderRadius: "20px",
 };
 
-const TRACKS = {
-    
-  "ChromBPNet Atac Tracks": [
-    [
-        "1010-Monocytes-S",
-        "https://downloads.wenglab.org/chrombpnetbulkatac/1010-Monocytes-S.bigWig",
-      ],
-      [
-          "1010-Naive_Tregs-S",
-          "https://downloads.wenglab.org/chrombpnetbulkatac/1010-Naive_Tregs-S.bigWig",
-        ],
-        [
-          "1010-Plasmablasts-U",
-          "https://downloads.wenglab.org/chrombpnetbulkatac/1010-Plasmablasts-U.bigWig",
-        ],
-        [
-          "1011-Naive_Teffs-S",
-          "https://downloads.wenglab.org/chrombpnetbulkatac/1011-Naive_Teffs-S.bigWig",
-        ],
-        [ 
-            "1010-Mem_B-S",
-            "https://downloads.wenglab.org/chrombpnetbulkatac/1010-Mem_B-S.bigWig",
-        ],
-        ["1004-Mem_B-U","https://downloads.wenglab.org/chrombpnetbulkatac/.bigWig"],
-        ["1004-Memory_NK-U","https://downloads.wenglab.org/chrombpnetbulkatac/1004-Memory_NK-U.bigWig"],
-        ["1004-Memory_Teffs-S","https://downloads.wenglab.org/chrombpnetbulkatac/1004-Memory_Teffs-S.bigWig"],
-        ["1004-Memory_Teffs-U","https://downloads.wenglab.org/chrombpnetbulkatac/1004-Memory_Teffs-U.bigWig"],
-        ["1004-Memory_Tregs-S","https://downloads.wenglab.org/chrombpnetbulkatac/1004-Memory_Tregs-S.bigWig"],
-        ["1004-Memory_Tregs-U","https://downloads.wenglab.org/chrombpnetbulkatac/1004-Memory_Tregs-U.bigWig"],
-        ["1004-Monocytes-S","https://downloads.wenglab.org/chrombpnetbulkatac/1004-Monocytes-S.bigWig"],
-        ["1004-Monocytes-U","https://downloads.wenglab.org/chrombpnetbulkatac/1004-Monocytes-U.bigWig"],
-        ["1004-Naive_B-U","https://downloads.wenglab.org/chrombpnetbulkatac/1004-Naive_B-U.bigWig"],
-        ["1004-Naive_CD8_T-S","https://downloads.wenglab.org/chrombpnetbulkatac/1004-Naive_CD8_T-S.bigWig"],
-        ["1004-Naive_CD8_T-U","https://downloads.wenglab.org/chrombpnetbulkatac/1004-Naive_CD8_T-U.bigWig"],
-        ["1004-Naive_Teffs-S","https://downloads.wenglab.org/chrombpnetbulkatac/1004-Naive_Teffs-S.bigWig"],
-        ["1004-Naive_Teffs-U","https://downloads.wenglab.org/chrombpnetbulkatac/1004-Naive_Teffs-U.bigWig"],
-        ["1004-Naive_Tregs-S","https://downloads.wenglab.org/chrombpnetbulkatac/1004-Naive_Tregs-S.bigWig"],
-        ["1004-Naive_Tregs-U","https://downloads.wenglab.org/chrombpnetbulkatac/1004-Naive_Tregs-U.bigWig"],
-        ["1004-Regulatory_T-S","https://downloads.wenglab.org/chrombpnetbulkatac/1004-Regulatory_T-S.bigWig"],
-        ["1004-Regulatory_T-U","https://downloads.wenglab.org/chrombpnetbulkatac/1004-Regulatory_T-U.bigWig"],
-        ["1004-Th17_precursors-S","https://downloads.wenglab.org/chrombpnetbulkatac/1004-Th17_precursors-S.bigWig"],
-        ["1004-Th17_precursors-U","https://downloads.wenglab.org/chrombpnetbulkatac/1004-Th17_precursors-U.bigWig"],
-        ["1004-Th1_precursors-S","https://downloads.wenglab.org/chrombpnetbulkatac/1004-Th1_precursors-S.bigWig"],
-        ["1004-Th1_precursors-U","https://downloads.wenglab.org/chrombpnetbulkatac/1004-Th1_precursors-U.bigWig"],
-        ["1004-Th2_precursors-S","https://downloads.wenglab.org/chrombpnetbulkatac/1004-Th2_precursors-S.bigWig"],
-        ["1004-Th2_precursors-U","https://downloads.wenglab.org/chrombpnetbulkatac/1004-Th2_precursors-U.bigWig"],
-        ["1008-Immature_NK-U","https://downloads.wenglab.org/chrombpnetbulkatac/1008-Immature_NK-U.bigWig"],
-        ["1008-Mature_NK-S","https://downloads.wenglab.org/chrombpnetbulkatac/1008-Mature_NK-S.bigWig"],
-        ["1008-Mature_NK-U","https://downloads.wenglab.org/chrombpnetbulkatac/1008-Mature_NK-U.bigWig"],
-        ["1008-Memory_NK-U","https://downloads.wenglab.org/chrombpnetbulkatac/1008-Memory_NK-U.bigWig"],
-        ["1008-Monocytes-S","https://downloads.wenglab.org/chrombpnetbulkatac/1008-Monocytes-S.bigWig"],
-        ["1008-Myeloid_DCs-U","https://downloads.wenglab.org/chrombpnetbulkatac/1008-Myeloid_DCs-U.bigWig"],
-        ["1008-Naive_Tregs-U","https://downloads.wenglab.org/chrombpnetbulkatac/1008-Naive_Tregs-U.bigWig"],
-        ["1008-pDCs-U","https://downloads.wenglab.org/chrombpnetbulkatac/1008-pDCs-U.bigWig"],
-        ["1010-Follicular_T_Helper-U","https://downloads.wenglab.org/chrombpnetbulkatac/1010-Follicular_T_Helper-U.bigWig"],
-        ["1010-Mature_NK-S","https://downloads.wenglab.org/chrombpnetbulkatac/1010-Mature_NK-S.bigWig"],
-        ["1010-Memory_NK-U","https://downloads.wenglab.org/chrombpnetbulkatac/1010-Mature_NK-U.bigWig"]
-        
-        
+
+let calderonexpTracks = CalderonBigWigTracks.map(c=>{
+  return [
+    c[2],`https://downloads.wenglab.org/chrombpnetbulkatac/${c[0]}.bigWig`
   ]
+})
+
+
+const TRACKS = {    
+  "ChromBPNet Atac Tracks": calderonexpTracks
 };
 
 const ChromBPNetAtacModal: React.FC<ChromBPNetAtacModalProps> = (props) => {
