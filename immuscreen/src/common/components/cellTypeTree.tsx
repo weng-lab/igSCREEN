@@ -4,7 +4,7 @@ import { Tree, hierarchy } from '@visx/hierarchy';
 import { HierarchyPointNode, HierarchyPointLink } from '@visx/hierarchy/lib/types';
 import { LinkHorizontal, LinkVertical } from '@visx/shape';
 import { CellTypeInfo, CellTypes } from '../../app/upset/page';
-import { defaultStyles as defaultTooltipStyles, useTooltip, TooltipWithBounds } from '@visx/tooltip';
+import { defaultStyles as defaultTooltipStyles, useTooltip, TooltipWithBounds, Portal } from '@visx/tooltip';
 
 const linkStroke = '#000000';
 const background = 'transparent';
@@ -466,7 +466,7 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
         </Group>
       )}
     </Tree>
-    , [data])
+    , [data, stimulateMode])
 
   return totalWidth < 10 ? null : (
     <div style={{ position: "relative" }}>
@@ -475,7 +475,7 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
         {TreeMemo}
       </svg>
       {tooltipOpen && tooltipData && (
-        <TooltipWithBounds
+          <TooltipWithBounds
           top={tooltipTop}
           left={tooltipLeft}
           style={{ ...defaultTooltipStyles, backgroundColor: '#283238', color: 'white' }}
@@ -487,12 +487,12 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
             <p>{'Active\u00A0iCREs:'}</p>
           </div>
           <div>
-            <p>Unstim: {tooltipData.unstimCount}</p>
+            <p>Unstimulated: {tooltipData.unstimCount}</p>
           </div>
-          <div>
-            {tooltipData.stimCount && <strong>Unstim: {tooltipData.stimCount && tooltipData.unstimCount}</strong>}
-          </div>
-        </TooltipWithBounds>
+          {tooltipData.stimCount && <div>
+            <p>Stimulated: {tooltipData.stimCount}</p>
+          </div>}
+        </TooltipWithBounds>       
       )}
     </div>
   );

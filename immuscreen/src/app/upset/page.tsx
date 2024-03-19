@@ -3,11 +3,17 @@ import * as React from "react"
 import CellTypeTree from "../../common/components/cellTypeTree"
 import { useEffect, useMemo, useState } from "react"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
-import { Box, Button, Checkbox, CircularProgress, FormControlLabel, Snackbar, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Checkbox, CircularProgress, FormControlLabel, Snackbar, Stack, Tooltip, Typography } from "@mui/material";
 import { gql, useLazyQuery } from "@apollo/client";
 import { client } from "../../common/utils";
 import UpSetPlot from "./UpSetPlot";
 import { v4 as uuidv4 } from 'uuid'
+import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import BarChartOutlinedIcon from '@mui/icons-material/BarChartOutlined';
+import FlashOnOutlinedIcon from '@mui/icons-material/FlashOnOutlined';
+import FlashOffOutlinedIcon from '@mui/icons-material/FlashOffOutlined';
+import UndoOutlinedIcon from '@mui/icons-material/UndoOutlined';
 
 
 
@@ -90,7 +96,8 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Monocytes-U', Corces: 'Mono' },
       stimulated: { Calderon: 'Monocytes-S' }
     },
-    unstimCount: 123456
+    unstimCount: 130780,
+    stimCount: 100461
   },
   Myeloid_DCs: {
     id: 'Myeloid_DCs',
@@ -103,7 +110,7 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: { Calderon: "Myeloid_DCs-U" }
     },
-    unstimCount: 123456
+    unstimCount: 173394
   },
   pDCs: {
     id: 'pDCs',
@@ -116,7 +123,7 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: { Calderon: 'pDCs-U' }
     },
-    unstimCount: 123456
+    unstimCount: 146515
   },
   Bulk_B: {
     id: 'Bulk_B',
@@ -131,7 +138,8 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Bulk_B-U', Corces: "Bcell" },
       stimulated: { Calderon: 'Bulk_B-S' }
     },
-    unstimCount: 123456
+    unstimCount: 138138,
+    stimCount: 124969
   },
   Naive_B: {
     id: 'Naive_B',
@@ -146,7 +154,8 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Naive_B-U' },
       stimulated: { Calderon: 'Naive_B-S' }
     },
-    unstimCount: 123456
+    unstimCount: 120624,
+    stimCount: 128979
   },
   Mem_B: {
     id: 'Mem_B',
@@ -161,7 +170,8 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Mem_B-U' },
       stimulated: { Calderon: 'Mem_B-S' }
     },
-    unstimCount: 123456
+    unstimCount: 122662,
+    stimCount: 129491
   },
   Plasmablasts: {
     id: 'Plasmablasts',
@@ -174,7 +184,7 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: { Calderon: 'Plasmablasts-U' }
     },
-    unstimCount: 123456
+    unstimCount: 123042
   },
   Regulatory_T: {
     id: 'Regulatory_T',
@@ -189,7 +199,8 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Regulatory_T-U' },
       stimulated: { Calderon: 'Regulatory_T-S' }
     },
-    unstimCount: 123456
+    unstimCount: 124481,
+    stimCount: 126696
   },
   Naive_Tregs: {
     id: 'Naive_Tregs',
@@ -204,7 +215,8 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Naive_Tregs-U' },
       stimulated: { Calderon: 'Naive_Tregs-S' }
     },
-    unstimCount: 123456
+    unstimCount: 95731,
+    stimCount: 100068
   },
   Memory_Tregs: {
     id: 'Memory_Tregs',
@@ -219,7 +231,8 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Memory_Tregs-U' },
       stimulated: { Calderon: 'Memory_Tregs-S' }
     },
-    unstimCount: 123456
+    unstimCount: 125459,
+    stimCount: 121029
   },
   Effector_CD4pos_T: {
     id: 'Effector_CD4pos_T',
@@ -234,7 +247,8 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Effector_CD4pos_T-U' },
       stimulated: { Calderon: 'Effector_CD4pos_T-S' }
     },
-    unstimCount: 123456
+    unstimCount: 123382,
+    stimCount: 137982
   },
   Naive_Teffs: {
     id: 'Naive_Teffs',
@@ -249,7 +263,8 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Naive_Teffs-U' },
       stimulated: { Calderon: 'Naive_Teffs-S' }
     },
-    unstimCount: 123456
+    unstimCount: 117212,
+    stimCount: 137523
   },
   Memory_Teffs: {
     id: 'Memory_Teffs',
@@ -264,7 +279,8 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Memory_Teffs-U' },
       stimulated: { Calderon: 'Memory_Teffs-S' }
     },
-    unstimCount: 123456
+    unstimCount: 137523,
+    stimCount: 148833
   },
   Th1_precursors: {
     id: 'Th1_precursors',
@@ -279,7 +295,8 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Th1_precursors-U' },
       stimulated: { Calderon: 'Th1_precursors-S' }
     },
-    unstimCount: 123456
+    unstimCount: 121879,
+    stimCount: 145297
   },
   Th2_precursors: {
     id: 'Th2_precursors',
@@ -294,7 +311,8 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Th2_precursors-U' },
       stimulated: { Calderon: 'Th2_precursors-S' }
     },
-    unstimCount: 123456
+    unstimCount: 122826,
+    stimCount: 141664
   },
   Th17_precursors: {
     id: 'Th17_precursors',
@@ -309,7 +327,8 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Th17_precursors-U' },
       stimulated: { Calderon: 'Th17_precursors-S' }
     },
-    unstimCount: 123456
+    unstimCount: 128606,
+    stimCount: 147883
   },
   Follicular_T_Helper: {
     id: 'Follicular_T_Helper',
@@ -324,7 +343,8 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Follicular_T_Helper-U' },
       stimulated: { Calderon: 'Follicular_T_Helper-S' }
     },
-    unstimCount: 123456
+    unstimCount: 122084,
+    stimCount: 136992
   },
   CD8pos_T: {
     id: 'CD8pos_T',
@@ -339,7 +359,8 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'CD8pos_T-U', Corces: "CD8Tcell" },
       stimulated: { Calderon: 'CD8pos_T-S' }
     },
-    unstimCount: 123456
+    unstimCount: 151004,
+    stimCount: 127042
   },
   Naive_CD8_T: {
     id: 'Naive_CD8_T',
@@ -354,7 +375,8 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Naive_CD8_T-U' },
       stimulated: { Calderon: 'Naive_CD8_T-S' }
     },
-    unstimCount: 123456
+    unstimCount: 100250,
+    stimCount: 113028
   },
   Central_memory_CD8pos_T: {
     id: 'Central_memory_CD8pos_T',
@@ -369,7 +391,8 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Central_memory_CD8pos_T-U' },
       stimulated: { Calderon: 'Central_memory_CD8pos_T-S' }
     },
-    unstimCount: 123456
+    unstimCount: 125778,
+    stimCount: 136023
   },
   Effector_memory_CD8pos_T: {
     id: 'Effector_memory_CD8pos_T',
@@ -384,7 +407,8 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Effector_memory_CD8pos_T-U' },
       stimulated: { Calderon: 'Effector_memory_CD8pos_T-S' }
     },
-    unstimCount: 123456
+    unstimCount: 145641,
+    stimCount: 132761
   },
   Gamma_delta_T: {
     id: 'Gamma_delta_T',
@@ -399,7 +423,8 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Gamma_delta_T-U' },
       stimulated: { Calderon: 'Gamma_delta_T-S' }
     },
-    unstimCount: 123456
+    unstimCount: 133605,
+    stimCount: 116220
   },
   Immature_NK: {
     id: 'Immature_NK',
@@ -412,7 +437,7 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: { Calderon: 'Immature_NK-U' }
     },
-    unstimCount: 123456
+    unstimCount: 130554
   },
   Mature_NK: {
     id: 'Mature_NK',
@@ -427,7 +452,8 @@ const cellTypeInitialState: CellTypes = {
       unstimulated: { Calderon: 'Mature_NK-U' },
       stimulated: { Calderon: 'Mature_NK-S' }
     },
-    unstimCount: 123456
+    unstimCount: 119958,
+    stimCount: 110082
   },
   Memory_NK: {
     id: 'Memory_NK',
@@ -440,7 +466,7 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: { Calderon: 'Memory_NK-U' }
     },
-    unstimCount: 123456
+    unstimCount: 135352
   },
   HSC: {
     id: 'HSC',
@@ -453,7 +479,7 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: { Corces: ["HSC", "CD34_Cord_Blood", "CD34_Bone_Marrow"] }
     },
-    unstimCount: 123456
+    unstimCount: 173583
   },
   MPP: {
     id: "MPP",
@@ -466,7 +492,7 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: { Corces: "MPP" }
     },
-    unstimCount: 123456
+    unstimCount: 158945
   },
   CMP: {
     id: "CMP",
@@ -479,7 +505,7 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: { Corces: "CMP" }
     },
-    unstimCount: 123456
+    unstimCount: 159706
   },
   MEP: {
     id: "MEP",
@@ -492,7 +518,7 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: { Corces: "MEP" }
     },
-    unstimCount: 123456
+    unstimCount: 152044
   },
   Ery: {
     id: "Ery",
@@ -505,7 +531,7 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: { Corces: "Ery" }
     },
-    unstimCount: 123456
+    unstimCount: 56267
   },
   GMP: {
     id: "GMP",
@@ -518,7 +544,7 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: { Corces: "GMP" }
     },
-    unstimCount: 123456
+    unstimCount: 158558
   },
   LPMP: {
     id: "LPMP",
@@ -531,7 +557,7 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: { Corces: "LMPP" }
     },
-    unstimCount: 123456
+    unstimCount: 128494
   },
   CLP: {
     id: "CLP",
@@ -544,7 +570,7 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: { Corces: "CLP" }
     },
-    unstimCount: 123456
+    unstimCount: 93170
   },
   CD4Tcell: {
     id: "CD4Tcell",
@@ -557,7 +583,7 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: { Corces: "CD4Tcell" }
     },
-    unstimCount: 123456
+    unstimCount: 121034
   },
   Nkcell: {
     id: "Nkcell",
@@ -570,7 +596,7 @@ const cellTypeInitialState: CellTypes = {
     queryValues: {
       unstimulated: { Corces: "NKcell" }
     },
-    unstimCount: 123456
+    unstimCount: 116626
   }
 }
 
@@ -951,7 +977,8 @@ export default function UpSet({ searchParams }: { searchParams: { [key: string]:
     return (
       <FormControlLabel
         key={key}
-        label={group}
+        label={classDisplaynames[group]}
+        slotProps={{typography: {maxWidth: "10rem"}}}
         control={
           <Checkbox
             checked={checkboxClasses[group]}
@@ -961,57 +988,65 @@ export default function UpSet({ searchParams }: { searchParams: { [key: string]:
       />)
   }
 
+  const noneSelected = !Object.values(cellTypeState).map(x => x.selected).find(x => x)
+  const noneStimulated = Object.values(cellTypeState).filter(x => x.stimulable).map(x => x.stimulated).every(x => x === "U")
+  const allStimulated = Object.values(cellTypeState).filter(x => x.stimulable).map(x => x.stimulated).every(x => x === "S")
+  const allBothStimulated = Object.values(cellTypeState).filter(x => x.stimulable).map(x => x.stimulated).every(x => x === "B")
 
   return (
     <>
       <Grid2 container mt={3} spacing={2} sx={{ cursor }} >
-        {/* <Grid2 xs={12}>
-        <Typography variant="h4">UpSet Generator</Typography>
-        <Typography variant="body1">
-          Select Up to 6 cells to generate an UpSet plot. By default, all cells are unstimulated.
-        </Typography>
-        <Typography variant="caption"></Typography>
-      </Grid2> */}
-        <Grid2 xs={12}>
-          {cellTypeTree}
-        </Grid2>
-        <Grid2 xs={12} lg={5}>
-          <Tooltip title="Note: Not all cells are stimulable">
-            <Button variant="outlined" onClick={() => handleStimulateAll("S")}>Stimulate All</Button>
-          </Tooltip>
-          <Button variant="outlined" onClick={() => handleStimulateAll("U")}>Unstimulate All</Button>
-          <Tooltip title="Tip: Holding Option/Command (MacOS) or Alt/Windows (Windows) will enter stimulate mode">
-            <Button variant="outlined" onClick={handleToggleStimulateMode}>{stimulateMode ? 'Exit Stimulate Mode' : 'Enter Stimulate Mode'}</Button>
-          </Tooltip>
-          <Button variant="outlined" onClick={() => handleSelectAll(false)}>Unselect All</Button>
-          <Button variant="outlined" onClick={generateUpSet}>Generate UpSet</Button>
-          <div>
-            <FormControlLabel
-              label="All Classes"
-              control={
-                <Checkbox
-                  checked={Object.values(checkboxClasses).every(val => val === true)}
-                  indeterminate={!Object.values(checkboxClasses).every(val => val === checkboxClasses.CA)}
-                  onChange={(_, checked) => setCheckboxClasses({
-                    "CA-CTCF": checked,
-                    "CA-TF": checked,
-                    "CA-H3K4me3": checked,
-                    "TF": checked,
-                    "CA": checked,
-                    "pELS": checked,
-                    "dELS": checked,
-                    "PLS": checked,
-                  })}
-                />
-              }
-            />
-            <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }}>
-              {Object.keys(checkboxClasses).map((group: CCRE_CLASS, i) => groupCheckbox(group, i))}
+        <Grid2 xs={12} container>
+          <Box>
+            <Stack spacing={1} direction="row" mb={3}>
+              <Tooltip title="Tip: Holding Option/Command (MacOS) or Alt/Windows (Windows) will enter stimulate mode">
+                <Button endIcon={stimulateMode ? <CancelOutlinedIcon /> : <AddBoxOutlinedIcon />} sx={{ textTransform: "none" }} variant="outlined" onClick={handleToggleStimulateMode}>{stimulateMode ? 'Exit Stimulate Mode' : 'Enter Stimulate Mode'}</Button>
+              </Tooltip>
+              <Tooltip title="Note: Not all cells are stimulable">
+                <Button disabled={allStimulated} endIcon={<FlashOnOutlinedIcon />} sx={{ textTransform: "none" }} variant="outlined" onClick={() => handleStimulateAll("S")}>Stimulate All</Button>
+              </Tooltip>
+              <Button disabled={noneStimulated} endIcon={<FlashOffOutlinedIcon />} sx={{ textTransform: "none" }} variant="outlined" onClick={() => handleStimulateAll("U")}>Unstimulate All</Button>
+              <Tooltip title="Note: Not all cells are stimulable">
+                <Button disabled={allBothStimulated} endIcon={<FlashOnOutlinedIcon />} sx={{ textTransform: "none" }} variant="outlined" onClick={() => handleStimulateAll("B")}>Stim + Unstim All</Button>
+              </Tooltip>
+              <Button disabled={noneSelected} endIcon={<UndoOutlinedIcon />} sx={{ textTransform: "none" }} variant="outlined" onClick={() => handleSelectAll(false)}>Unselect All</Button>
+            </Stack>
+            {cellTypeTree}
+          </Box>
+          <Box flexShrink={1}>
+            <Typography variant="h5">UpSet Generator</Typography>
+            <Typography variant="body1" paragraph maxWidth={"30rem"}>
+              Select Up to 6 cells to generate an UpSet plot. Hold Option/Command (MacOS) or Alt/Windows (Windows) and click to stimulate cell. By default, all cells are unstimulated. Cells can be unstimulated, stimulated, or both. The more cells types that are selected, the longer it will take to generate.
+            </Typography>
+            <Button disabled={noneSelected} endIcon={<BarChartOutlinedIcon />} sx={{ textTransform: "none" }} variant="contained" onClick={generateUpSet}>Generate UpSet</Button>
+            <Box>
+              <FormControlLabel
+                label="All Classes"
+                control={
+                  <Checkbox
+                    checked={Object.values(checkboxClasses).every(val => val === true)}
+                    indeterminate={!Object.values(checkboxClasses).every(val => val === checkboxClasses.CA)}
+                    onChange={(_, checked) => setCheckboxClasses({
+                      "CA-CTCF": checked,
+                      "CA-TF": checked,
+                      "CA-H3K4me3": checked,
+                      "TF": checked,
+                      "CA": checked,
+                      "pELS": checked,
+                      "dELS": checked,
+                      "PLS": checked,
+                    })}
+                  />
+                }
+              />
+              <Box sx={{ display: 'flex', flexWrap: "wrap", flexDirection: 'column', ml: 3, maxHeight: "15rem", gap: "1rem" }}>
+                {Object.keys(checkboxClasses).map((group: CCRE_CLASS, i) => groupCheckbox(group, i))}
+              </Box>
             </Box>
-          </div>
-          {loading_count && <CircularProgress />}
-          <Box mt={2}>
-            {upSet}
+            {loading_count && <CircularProgress />}
+            <Box mt={2}>
+              {upSet}
+            </Box>
           </Box>
         </Grid2>
       </Grid2>
@@ -1024,6 +1059,5 @@ export default function UpSet({ searchParams }: { searchParams: { [key: string]:
         message="Maximum cell selection reached (6)"
       />
     </>
-
   )
 }
