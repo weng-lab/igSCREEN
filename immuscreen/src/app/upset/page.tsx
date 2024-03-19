@@ -37,10 +37,8 @@ export interface CellTypeInfo {
 
 export interface CellTypes {
   //Calderon
-  // Monocytes: CellTypeInfo,
   Myeloid_DCs: CellTypeInfo,
   pDCs: CellTypeInfo,
-  // Bulk_B: CellTypeInfo,
   Naive_B: CellTypeInfo,
   Mem_B: CellTypeInfo,
   Plasmablasts: CellTypeInfo,
@@ -62,9 +60,6 @@ export interface CellTypes {
   Immature_NK: CellTypeInfo,
   Mature_NK: CellTypeInfo,
   Memory_NK: CellTypeInfo,
-  //Corces
-  // CD34_Cord_Blood: CellTypeInfo, //Hematopoetic Stem Cell - How do I handle three versions of same node on tree? Excluded for now
-  // CD34_Bone_Marrow: CellTypeInfo, //Hematopoetic Stem Cell
   HSC: CellTypeInfo, //Hematopoetic Stem Cell
   MPP: CellTypeInfo, //Multipotent Progenitor
   CMP: CellTypeInfo, //Common Myeloid Progenitor
@@ -915,8 +910,8 @@ export default function UpSet({ searchParams }: { searchParams: { [key: string]:
   )
 
   const cellTypeTreeWidth = 830
-
   const upSetWidth = 700
+  const cellTreeSelectionLimit = 6
 
   //Wrap in useMemo to stop rerender of tree when cursor changes here
   const cellTypeTree = useMemo(() => {
@@ -931,7 +926,7 @@ export default function UpSet({ searchParams }: { searchParams: { [key: string]:
         stimulateMode={stimulateMode}
         setStimulateMode={setStimulateMode}
         setCursor={setCursor}
-        selectionLimit={6}
+        selectionLimit={cellTreeSelectionLimit}
         triggerAlert={handleOpenSnackbar}
       />
     )
@@ -953,11 +948,18 @@ export default function UpSet({ searchParams }: { searchParams: { [key: string]:
 
 
   const handleStimulateAll = (mode: "U" | "S" | "B") => {
-    let newObj = { ...cellTypeState }
-    for (let cellName in newObj) {
-      newObj[cellName].stimulable && (newObj[cellName].stimulated = mode)
+    const currentlySelected = Object.values(cellTypeState)
+      .filter((x: CellTypeInfo) => x.selected)
+      .reduce((accumulator, current: CellTypeInfo) => current.stimulated === "B" ? accumulator + 2 : accumulator + 1, 0)
+    if (mode === "B" && (currentlySelected * 2) > cellTreeSelectionLimit) {
+      handleOpenSnackbar("Unable to apply \"Both\" stimulation status due to selection limit (6)")
+    } else {
+      let newObj = { ...cellTypeState }
+      for (let cellName in newObj) {
+        newObj[cellName].stimulable && (newObj[cellName].stimulated = mode)
+      }
+      setCellTypeState(newObj)
     }
-    setCellTypeState(newObj)
   }
 
   const handleSelectAll = (x: boolean) => {
@@ -1014,21 +1016,25 @@ export default function UpSet({ searchParams }: { searchParams: { [key: string]:
           />
         }
       />
-      <Box sx={{ display: 'flex', flexWrap: "wrap", flexDirection: 'column', ml: 3, maxHeight: "15rem", gap: "1rem" }}>
+      <Box sx={{ display: 'flex', flexWrap: "wrap", flexDirection: 'column', ml: 3, maxHeight: "12rem", gap: "1rem", alignContent: "flex-start" }}>
         {Object.keys(checkboxClasses).map((group: CCRE_CLASS, i) => groupCheckbox(group, i))}
       </Box>
     </>
   
+  const headerAbout =
+    <>
+      <Typography variant="h5">UpSet Generator</Typography>
+      <Typography variant="body1" paragraph maxWidth={cellTypeTreeWidth}>
+        Select Up to 6 cells to generate an UpSet plot. Hold Option/Command (MacOS) or Alt/Windows (Windows) and click to stimulate cell. By default, all cells are unstimulated. Cells can be unstimulated, stimulated, or both (counts as two selections). The more cells types that are selected, the longer it will take to generate. Click any bar/count in UpSet to download set (.BED)
+      </Typography>
+    </>
 
   return (
     <>
       <Grid2 container mt={3} spacing={2} sx={{ cursor }} >
         <Grid2 xs={12} xl={5} container justifyContent={"center"}>
           <Box display={{xl: "block", xs: "none"}}>
-            <Typography variant="h5">UpSet Generator</Typography>
-            <Typography variant="body1" paragraph maxWidth={upSetWidth}>
-              Select Up to 6 cells to generate an UpSet plot. Hold Option/Command (MacOS) or Alt/Windows (Windows) and click to stimulate cell. By default, all cells are unstimulated. Cells can be unstimulated, stimulated, or both (counts as two selections). The more cells types that are selected, the longer it will take to generate.
-            </Typography>
+            {headerAbout}
             <Box>
               {checkboxes}
               <LoadingButton loading={loading_count} loadingPosition="end" disabled={noneSelected} endIcon={<BarChartOutlinedIcon />} sx={{ textTransform: "none", m: 1 }} variant="contained" onClick={generateUpSet}>
@@ -1043,10 +1049,7 @@ export default function UpSet({ searchParams }: { searchParams: { [key: string]:
         <Grid2 xs={12} xl={7} container justifyContent={"center"}>
           <Box>
             <Box display={{xs: "block", xl: "none"}}>
-              <Typography variant="h5">UpSet Generator</Typography>
-              <Typography variant="body1" paragraph maxWidth={cellTypeTreeWidth}>
-                Select Up to 6 cells to generate an UpSet plot. Hold Option/Command (MacOS) or Alt/Windows (Windows) and click to stimulate cell. By default, all cells are unstimulated. Cells can be unstimulated, stimulated, or both (counts as two selections). The more cells types that are selected, the longer it will take to generate.
-              </Typography>
+              {headerAbout}
             </Box>
             <Stack spacing={1} direction="row" mb={3}>
               <Tooltip title="Tip: Holding Option/Command (MacOS) or Alt/Windows (Windows) will enter stimulate mode">
