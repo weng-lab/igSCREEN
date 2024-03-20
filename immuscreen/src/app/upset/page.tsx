@@ -17,7 +17,7 @@ import FlashAutoIcon from '@mui/icons-material/FlashAuto';
 import UndoOutlinedIcon from '@mui/icons-material/UndoOutlined';
 import LoadingButton from '@mui/lab/LoadingButton';
 
-
+//Info for each cell type
 export interface CellTypeInfo {
   readonly id: string; // used to set state of correct celltype afer its content is spread (...) into tree data and stripped of key name. Needs to match key exactly
   readonly displayName: string;
@@ -31,12 +31,12 @@ export interface CellTypeInfo {
     readonly unstimulated: { Calderon?: string | string[], Corces?: string | string[] };
     readonly stimulated?: { Calderon: string | string[] }
   }
+  //Counts are currently hardcoded below.
   readonly unstimCount: number
   readonly stimCount?: number
 }
 
 export interface CellTypes {
-  //Calderon
   Myeloid_DCs: CellTypeInfo,
   pDCs: CellTypeInfo,
   Naive_B: CellTypeInfo,
@@ -52,7 +52,6 @@ export interface CellTypes {
   Th2_precursors: CellTypeInfo,
   Th17_precursors: CellTypeInfo,
   Follicular_T_Helper: CellTypeInfo,
-
   Naive_CD8_T: CellTypeInfo,
   Central_memory_CD8pos_T: CellTypeInfo,
   Effector_memory_CD8pos_T: CellTypeInfo,
@@ -70,14 +69,38 @@ export interface CellTypes {
   CLP: CellTypeInfo, //Common Lymphoid Progenitor
   CD4Tcell: CellTypeInfo, //CD4+ Tcell
   Nkcell: CellTypeInfo, //NK cell
-  //Shared
-  Monocytes: CellTypeInfo, //Using Calderon "name". Also using Calderon's Stimulated/Unstimulated. In Corces it is "Mono", and no stimulation info
-  Bulk_B: CellTypeInfo, //Using Calderon "name". Also using Calderon's Stimulated/Unstimulated. In Corces it is "Bcell", and no stimulation info
-  CD8pos_T: CellTypeInfo, //Using Calderon "name". Also using Calderon's Stimulated/Unstimulated. In Corces it is "CD8Tcell", and no stimulation info
+  //These are the cells which have data from both Calderon and Corces
+  Monocytes: CellTypeInfo, //Using Calderon "name". Using Calderon's Stimulated/Unstimulated. In Corces it is "Mono", and no stimulation info
+  Bulk_B: CellTypeInfo, //Using Calderon "name". Using Calderon's Stimulated/Unstimulated. In Corces it is "Bcell", and no stimulation info
+  CD8pos_T: CellTypeInfo, //Using Calderon "name". Using Calderon's Stimulated/Unstimulated. In Corces it is "CD8Tcell", and no stimulation info
 }
 
-//Initial configuration of the cell type tree
-//To break displayName into multiple lines, use '/'
+type QueryGroup = {
+  intersect?: string[][],
+  exclude?: string[][],
+  union?: string[],
+  name: string
+}
+
+export type CCRE_CLASS = "CA-CTCF" | "CA-TF" | "CA-H3K4me3" | "TF" | "CA" | "pELS" | "dELS" | "PLS"
+
+const classDisplaynames: { [key in CCRE_CLASS]: string } = {
+  "CA-CTCF": "Chromatin Accessible with CTCF",
+  "CA-TF": "Chromatin Accessible with TF",
+  "CA-H3K4me3": "Chromatin Accessible with H3K4me3",
+  "TF": "TF",
+  "CA": "Chromatin Accessible Only",
+  "pELS": "Proximal Enhancer-Like Signature",
+  "dELS": "Distal Enhancer-Like Signature",
+  "PLS": "Promoter-Like Signature"
+}
+
+
+
+/**
+ * Initial configuration of the cell type tree
+ * To break displayName into multiple lines in the tree, use '/' instead of a space
+ */
 const cellTypeInitialState: CellTypes = {
   Monocytes: {
     id: 'Monocytes',
@@ -596,61 +619,14 @@ const cellTypeInitialState: CellTypes = {
   }
 }
 
-type cCRECellTypeData = {
-  celltypes: string[];
-  accession: string;
-  coordinates: {
-    start: number;
-    end: number;
-    chromosome: string;
-  };
-  group: string;
-  rdhs: string;
-}
-
-type QueryGroup = {
-  intersect?: string[][],
-  exclude?: string[][],
-  union?: string[],
-  name: string
-}
-
-export type CCRE_CLASS = "CA-CTCF" | "CA-TF" | "CA-H3K4me3" | "TF" | "CA" | "pELS" | "dELS" | "PLS"
-
-const classDisplaynames: { [key in CCRE_CLASS]: string } = {
-  "CA-CTCF": "Chromatin Accessible with CTCF",
-  "CA-TF": "Chromatin Accessible with TF",
-  "CA-H3K4me3": "Chromatin Accessible with H3K4me3",
-  "TF": "TF",
-  "CA": "Chromatin Accessible Only",
-  "pELS": "Proximal Enhancer-Like Signature",
-  "dELS": "Distal Enhancer-Like Signature",
-  "PLS": "Promoter-Like Signature"
-}
-
-const GET_ICRE_FILE = gql`
-query getFile(
-  $celltypes: [[String]]
-  $excludecelltypes: [[String]]
-  $uuid: String!
-  $group: [String!]
-) {
-  createicresFilesQuery(
-    uuid: $uuid
-    celltypes: $celltypes
-    excludecelltypes: $excludecelltypes
-    group: $group
-  )
-}
-`
-
-export default function UpSet({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
-  const [cellTypeState, setCellTypeState] = useState<CellTypes>(cellTypeInitialState)
-  const [stimulateMode, setStimulateMode] = useState<boolean>(false)
-  const [cursor, setCursor] = useState<'auto' | 'pointer' | 'cell' | 'not-allowed'>('auto')
-  const [upSetCells, setUpSetCells] = useState<CellTypeInfo[]>([])
-  //Used to store groupings needed to generate files when clicking on a bar in UpSet plot
-  const [upSetQueryGroups, setUpSetQueryGroups] = useState<{ [key: string]: QueryGroup }>(null)
+export default function UpSet() {
+  const [cellTypeState, setCellTypeState] = useState<CellTypes>(cellTypeInitialState) //state of tree
+  const [stimulateMode, setStimulateMode] = useState<boolean>(false) //determines whether a click on the tree selects or stimulates cell
+  const [cursor, setCursor] = useState<'auto' | 'pointer' | 'cell' | 'not-allowed'>('auto') //cursor changes with stimulateMode and hovering
+  //Modifications to tree and checkboxes wipe needed info for download, so store when generating:
+  const [upSetCells, setUpSetCells] = useState<CellTypeInfo[]>([]) //stores array of selected cells when generating
+  const [upSetClasses, setUpSetClasses] = useState<CCRE_CLASS[]>(null) //stores array of selected classes when generating
+  const [upSetQueryGroups, setUpSetQueryGroups] = useState<{ [key: string]: QueryGroup }>(null) //stores groupings used to generate query (for DL)
   const [downloading, setDownloading] = useState<boolean>(false)
   const [checkboxClasses, setCheckboxClasses] = useState<{ [key in CCRE_CLASS]: boolean }>({
     "CA-CTCF": true,
@@ -662,31 +638,83 @@ export default function UpSet({ searchParams }: { searchParams: { [key: string]:
     "dELS": true,
     "PLS": true
   })
-  const [upSetClasses, setUpSetClasses] = useState<CCRE_CLASS[]>(null)
-  const [openSnackbar, setOpenSnackbar] = useState(false)
+  const [openSnackbar, setOpenSnackbar] = useState(false) //Snackbar is the popup alert component
   const [snackbarMessage, setSnackbarMessage] = useState(null)
 
 
+  /**
+   * Opens the snackbar (alert) with the passed message
+   * @param message message to display on snackbar
+   */
   const handleOpenSnackbar = (message: string) => {
     setSnackbarMessage(message)
     setOpenSnackbar(true);
   };
 
 
+  /**
+   * Closes the Snackbar (alert)
+   * @param event 
+   * @param reason 
+   */
   const handleCloseSnackbar = (event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
       return;
     }
-
     setOpenSnackbar(false);
   };
 
-  //This needs to not use any state variables
+  /**
+   * Applies the given stimulation status to all cells (If it doesn't exceed selection limit)
+   * @param mode "U" | "S" | "B" the stimulation mode to apply to all cells
+   */
+  const handleStimulateAll = (mode: "U" | "S" | "B") => {
+    const currentlySelected = Object.values(cellTypeState)
+      .filter((x: CellTypeInfo) => x.selected)
+      .reduce((accumulator, current: CellTypeInfo) => current.stimulated === "B" ? accumulator + 2 : accumulator + 1, 0)
+    //If applying "B" stimulation status would exceed selection limit, stop and send alert to user.
+    if (mode === "B" && (currentlySelected * 2) > cellTreeSelectionLimit) {
+      handleOpenSnackbar("Unable to apply \"Both\" stimulation status due to selection limit (6)")
+    } else {
+      let newObj = { ...cellTypeState }
+      for (let cellName in newObj) {
+        newObj[cellName].stimulable && (newObj[cellName].stimulated = mode)
+      }
+      setCellTypeState(newObj)
+    }
+  }
+
+  /**
+   * Unselects all cells
+   */
+  const handleUnselectAll = () => {
+    let newObj = { ...cellTypeState }
+    for (let cellName in newObj) {
+      newObj[cellName].selectable && (newObj[cellName].selected = false)
+    }
+    setCellTypeState(newObj)
+  }
+
+  /**
+   * Toggles stimulation mode between true/false and sets the cursor to needed value
+   */
+  const handleToggleStimulateMode = () => {
+    setStimulateMode(!stimulateMode)
+    setCursor(!stimulateMode ? 'cell' : 'auto')
+  }
+
+  
+
+  /**
+   * Downloads the set of iCREs with the passed downloadKey. 
+   * Download key is used to select a given QueryGroup from the upSetQueryGroups object state variable.
+   * The key is either "Union_All", a cell name, or a combination of 1's and 0's for an intersection.
+   * @param downloadKey 
+   */
   const handleUpsetDownload = async (downloadKey: string) => {
     try {
       setDownloading(true)
       const cellGroupings: QueryGroup = upSetQueryGroups[downloadKey]
-      console.log("trying to fetch: ", cellGroupings)
       const res = await getiCREFileURL({
         variables: {
           uuid: uuidv4(),
@@ -730,26 +758,29 @@ export default function UpSet({ searchParams }: { searchParams: { [key: string]:
     switch (want) {
       case "U": return [...Object.values(cell.queryValues.unstimulated).flat()]
       case "S": return [...Object.values(cell.queryValues.stimulated).flat()]
-      //is this working correctly? Shouldn't be used probably
       case "B": return Object.values(cell.queryValues.unstimulated).flat().concat((Object.values(cell.queryValues.stimulated).flat()))
     }
   }
 
   /**
-   * 
-   * @param cellsToFetch
-   * @returns gql query for UpSet plot
+   * Programmatically generates a gql document node with the needed queries for generating the UpSet plot
+   * @param selectedCells
+   * @param classes the selected cCRE classes
+   * @returns gql query string for UpSet plot
    */
   const generateQuery = (selectedCells: CellTypeInfo[], classes: CCRE_CLASS[]) => {
-    //Out of cellsToFetch extract relevant information, and create two entries for cells with "B" stimulation to iterate through more easily later
+    //stores extracted relevant information from selectedCells
     let cells: { displayName: string, queryVals: string[] }[] = [];
-    //This order
+
+    //Out of selectedCells, extract relevant information. Create two entries for cells with "B" stimulation to iterate through more easily later
     selectedCells.forEach(cell => {
       if (cell.stimulated == "B") {
         cells.push({ displayName: cell.id.replace('-', '_') + '_U', queryVals: extractQueryValues(cell, "U") })
         cells.push({ displayName: cell.id.replace('-', '_') + '_S', queryVals: extractQueryValues(cell, "S") })
       } else cells.push({ displayName: cell.id.replace('-', '_') + '_' + cell.stimulated, queryVals: extractQueryValues(cell, cell.stimulated) })
     })
+
+    //Holds the combination of union/intersection/exlude and name for each query
     let queryGroups: QueryGroup[] = []
 
     //Union of all cells
@@ -757,7 +788,9 @@ export default function UpSet({ searchParams }: { searchParams: { [key: string]:
       queryGroups.push({ union: selectedCells.map(cell => extractQueryValues(cell, cell.stimulated)).flat(2), name: 'Union_All' })
     }
 
+    //Individual counts
     cells.forEach((cell, i) => {
+      //Need to pad name with underscore since GQL alias cannot start with number. Index attached to alias to preserve order
       queryGroups.push({ union: cell.queryVals, name: '_' + i.toString() + cell.displayName })
     })
 
@@ -816,7 +849,7 @@ export default function UpSet({ searchParams }: { searchParams: { [key: string]:
 
 
   /**
-   * @todo This is maybe a suboptimal way of doing this. Might be better to be utilizing Directives to dynamically construct query
+   * @todo This is maybe a suboptimal way of generating queries. Maybe Directives would be better versus constructing these manually.
    * See https://graphql.org/learn/queries/#directives
    * and https://www.apollographql.com/blog/batching-client-graphql-queries#can-batching-be-done-manually
    * 
@@ -838,19 +871,21 @@ export default function UpSet({ searchParams }: { searchParams: { [key: string]:
         + `group: [\"${classes.join('\", \"')}\"]`
       )
     } else if ((!queryGroup.intersect && !queryGroup.union) || (queryGroup.intersect && queryGroup.union)) {
-      throw new Error("Something went wrong generating query groups")
+      throw new Error("Something went wrong generating query groups, check: " + JSON.stringify(queryGroup))
     }
   }
 
   /**
-   * 
+   * Transforms return data into the format used by UpSet plot
    * @param data return data from gql
-   * @returns 
+   * @returns data for use in making the UpSet plot
    */
   const transformtoUpSet = (data: { [key: string]: number }): { intersections: { name: string, count: number }[], counts: { name: string, count: number }[], order: string[] } => {
     let returnData: { intersections: { name: string, count: number }[], counts: { name: string, count: number }[], order: string[] } = { intersections: [], counts: [], order: [] }
 
+    //Iterate through each query's return data
     Object.entries(data).forEach((x: [string, number]) => {
+      //Union_All return data is not actually used to make the Plot, union size is just calculated. This checks to make sure that calculation is correct by comparing to expected value.
       if (x[0] === "Union_All") {
         const calculated = Object.entries(data)
           .filter(y => { return !(y[0] === "Union_All" || y[0].charAt(0) === "_") })
@@ -873,8 +908,10 @@ export default function UpSet({ searchParams }: { searchParams: { [key: string]:
     )
   }
 
-  //Triggered when button pressed, filter cellTypeState and mark to fetch
-  const generateUpSet = () => {
+  /**
+   * Stores selected cells and classes, and begins the fetch
+   */
+  const handleGenerateUpSet = () => {
     setUpSetCells(Object.values(cellTypeState).filter((x: CellTypeInfo) => x.selected))
     setUpSetClasses(Object.entries(checkboxClasses).filter((x: [string, boolean]) => x[1]).map((y: [string, boolean]) => y[0] as CCRE_CLASS))
     getCountData()
@@ -886,28 +923,41 @@ export default function UpSet({ searchParams }: { searchParams: { [key: string]:
         generateQuery(upSetCells, upSetClasses)
       )
     }
+    //This is just a placeholder for when there is no valid query (no cells are selected). Never used. Seems suboptimal, probably a better way than this
     else return (
       gql`
-      query count{
-        iCREsCountQuery(
-          celltypes: [[]]
-        )
-      }
-      `
+        query count{
+          iCREsCountQuery(
+            celltypes: [[]]
+          )
+        }
+        `
     )
   }, [upSetCells, upSetClasses])
 
-  //Does this query actually get recalculated
-  const [getCountData, { data: data_count, loading: loading_count, error: error_count }] = useLazyQuery(
-    COUNT_QUERY, { client }
-  )
+  //Query for counts used to make UpSet
+  const [getCountData, { data: data_count, loading: loading_count, error: error_count }] = useLazyQuery(COUNT_QUERY, { client })
 
-  const [getiCREFileURL, { data: data_download_url, loading: loading_download_url, error: error_download_url }] = useLazyQuery(
-    GET_ICRE_FILE,
-    {
-      client,
+
+  const GET_ICRE_FILE = gql`
+    query getFile(
+      $celltypes: [[String]]
+      $excludecelltypes: [[String]]
+      $uuid: String!
+      $group: [String!]
+    ) {
+      createicresFilesQuery(
+        uuid: $uuid
+        celltypes: $celltypes
+        excludecelltypes: $excludecelltypes
+        group: $group
+      )
     }
-  )
+  `
+  //Query for downloading set of iCREs. Fetches URL that is downloaded from
+  const [getiCREFileURL, { data: data_download_url, loading: loading_download_url, error: error_download_url }] = useLazyQuery(GET_ICRE_FILE, { client, })
+
+
 
   const cellTypeTreeWidth = 830
   const upSetWidth = 700
@@ -943,37 +993,13 @@ export default function UpSet({ searchParams }: { searchParams: { [key: string]:
         loading={downloading}
       />)
     } else return <></>
-  }, [data_count, downloading])
+  }, [data_count, downloading, upSetWidth])
 
-
-
-  const handleStimulateAll = (mode: "U" | "S" | "B") => {
-    const currentlySelected = Object.values(cellTypeState)
-      .filter((x: CellTypeInfo) => x.selected)
-      .reduce((accumulator, current: CellTypeInfo) => current.stimulated === "B" ? accumulator + 2 : accumulator + 1, 0)
-    if (mode === "B" && (currentlySelected * 2) > cellTreeSelectionLimit) {
-      handleOpenSnackbar("Unable to apply \"Both\" stimulation status due to selection limit (6)")
-    } else {
-      let newObj = { ...cellTypeState }
-      for (let cellName in newObj) {
-        newObj[cellName].stimulable && (newObj[cellName].stimulated = mode)
-      }
-      setCellTypeState(newObj)
-    }
-  }
-
-  const handleSelectAll = (x: boolean) => {
-    let newObj = { ...cellTypeState }
-    for (let cellName in newObj) {
-      newObj[cellName].selectable && (newObj[cellName].selected = x)
-    }
-    setCellTypeState(newObj)
-  }
-
-  const handleToggleStimulateMode = () => {
-    setStimulateMode(!stimulateMode)
-    setCursor(!stimulateMode ? 'cell' : 'auto')
-  }
+  //These boolean values are used to disable buttons in certain situaions
+  const noneSelected = !Object.values(cellTypeState).map(x => x.selected).find(x => x)
+  const noneStimulated = Object.values(cellTypeState).filter(x => x.stimulable).map(x => x.stimulated).every(x => x === "U")
+  const allStimulated = Object.values(cellTypeState).filter(x => x.stimulable).map(x => x.stimulated).every(x => x === "S")
+  const allBothStimulated = Object.values(cellTypeState).filter(x => x.stimulable).map(x => x.stimulated).every(x => x === "B")
 
   const groupCheckbox = (group: CCRE_CLASS, key: number) => {
     return (
@@ -990,12 +1016,7 @@ export default function UpSet({ searchParams }: { searchParams: { [key: string]:
       />)
   }
 
-  const noneSelected = !Object.values(cellTypeState).map(x => x.selected).find(x => x)
-  const noneStimulated = Object.values(cellTypeState).filter(x => x.stimulable).map(x => x.stimulated).every(x => x === "U")
-  const allStimulated = Object.values(cellTypeState).filter(x => x.stimulable).map(x => x.stimulated).every(x => x === "S")
-  const allBothStimulated = Object.values(cellTypeState).filter(x => x.stimulable).map(x => x.stimulated).every(x => x === "B")
-
-  const checkboxes =
+  const Checkboxes = () =>
     <>
       <FormControlLabel
         label="All Classes"
@@ -1020,8 +1041,8 @@ export default function UpSet({ searchParams }: { searchParams: { [key: string]:
         {Object.keys(checkboxClasses).map((group: CCRE_CLASS, i) => groupCheckbox(group, i))}
       </Box>
     </>
-  
-  const headerAbout =
+
+  const HeaderAbout = () =>
     <>
       <Typography variant="h5">UpSet Generator</Typography>
       <Typography variant="body1" paragraph maxWidth={cellTypeTreeWidth}>
@@ -1029,27 +1050,32 @@ export default function UpSet({ searchParams }: { searchParams: { [key: string]:
       </Typography>
     </>
 
+  const GenerateUpsetButton = () =>
+    <LoadingButton loading={loading_count} loadingPosition="end" disabled={noneSelected} endIcon={<BarChartOutlinedIcon />} sx={{ textTransform: "none", m: 1 }} variant="contained" onClick={handleGenerateUpSet}>
+      <span>{loading_count ? "Generating" : "Generate UpSet"}</span>
+    </LoadingButton>
+
   return (
     <>
       <Grid2 container mt={3} spacing={2} sx={{ cursor }} >
         <Grid2 xs={12} xl={5} container justifyContent={"center"}>
-          <Box display={{xl: "block", xs: "none"}}>
-            {headerAbout}
+          {/* Display header, checkboxes and UpSet on left on big screen */}
+          <Box display={{ xs: "none", xl: "block" }}>
+            <HeaderAbout />
             <Box>
-              {checkboxes}
-              <LoadingButton loading={loading_count} loadingPosition="end" disabled={noneSelected} endIcon={<BarChartOutlinedIcon />} sx={{ textTransform: "none", m: 1 }} variant="contained" onClick={generateUpSet}>
-                <span>{loading_count ? "Generating" : "Generate UpSet"}</span>
-              </LoadingButton>
+              <Checkboxes />
+              <GenerateUpsetButton />
               <Box>
-                 {upSet}
+                {upSet}
               </Box>
             </Box>
           </Box>
         </Grid2>
         <Grid2 xs={12} xl={7} container justifyContent={"center"}>
           <Box>
-            <Box display={{xs: "block", xl: "none"}}>
-              {headerAbout}
+            {/* On smaller screen display header on top */}
+            <Box display={{ xs: "block", xl: "none" }}>
+              <HeaderAbout />
             </Box>
             <Stack spacing={1} direction="row" mb={3}>
               <Tooltip title="Tip: Holding Option/Command (MacOS) or Alt/Windows (Windows) will enter stimulate mode">
@@ -1062,16 +1088,15 @@ export default function UpSet({ searchParams }: { searchParams: { [key: string]:
               <Tooltip title="Note: Not all cells are stimulable">
                 <Button disabled={allBothStimulated} endIcon={<FlashAutoIcon />} sx={{ textTransform: "none" }} variant="outlined" onClick={() => handleStimulateAll("B")}>Stim + Unstim All</Button>
               </Tooltip>
-              <Button disabled={noneSelected} endIcon={<UndoOutlinedIcon />} sx={{ textTransform: "none" }} variant="outlined" onClick={() => handleSelectAll(false)}>Unselect All</Button>
+              <Button disabled={noneSelected} endIcon={<UndoOutlinedIcon />} sx={{ textTransform: "none" }} variant="outlined" onClick={handleUnselectAll}>Unselect All</Button>
             </Stack>
             {cellTypeTree}
-            <Box display={{xl: "none"}}>
-              {checkboxes}
-              <LoadingButton loading={loading_count} loadingPosition="end" disabled={noneSelected} endIcon={<BarChartOutlinedIcon />} sx={{ textTransform: "none", m: 1 }} variant="contained" onClick={generateUpSet}>
-                <span>{loading_count ? "Generating" : "Generate UpSet"}</span>
-              </LoadingButton>
+            {/* On smaller screen display checkboxes and UpSet plot on bottom of tree */}
+            <Box display={{ xs: "block", xl: "none" }}>
+              <Checkboxes />
+              <GenerateUpsetButton />
               <Box>
-                 {upSet}
+                {upSet}
               </Box>
             </Box>
           </Box>
