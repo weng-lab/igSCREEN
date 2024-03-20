@@ -255,7 +255,7 @@ const TitledImportanceTrack: React.FC<TitledImportanceTrackProps> = (props) => {
     positiveRegionURL,
     onImportantRegionsLoaded,
   } = props;
-console.log("domain",signalURL, props.domain)
+
   
   useEffect(
     () => props.onHeightChanged && props.onHeightChanged(height),

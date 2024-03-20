@@ -9,7 +9,7 @@ import {
 import { ValuedPoint } from "umms-gb/dist/utils/types";
 import { client } from "../utils"
 import BulkAtacTrackModal from "./bulkatacmodal";
-
+import { BulkAtacCelltypeTrack, CalderonCellTypesMetadata } from "./consts";
 export const DEFAULT_TRACKS = (
   assembly: string
 ): Map<string, { url: string }> =>
@@ -112,6 +112,7 @@ type BulkAtacTrackProps = {
   oncCREMousedOver?: (coordinates?: GenomicRange) => void;
   oncCREMousedOut?: () => void;
   onSettingsClick?: () => void;
+  defaultcelltypes?: string[]
 };
 
 export const TitledTrack: React.FC<{
@@ -176,7 +177,18 @@ export const TitledTrack: React.FC<{
 };
 
 const BulkAtacTracks: React.FC<BulkAtacTrackProps> = (props) => {
-  const [cTracks, setTracks] = useState<[string, string][]>([
+
+  const s = props.defaultcelltypes && BulkAtacCelltypeTrack.filter(b=>props.defaultcelltypes?.includes(b))
+
+  
+
+  let r = s && s.map(st=>{
+    let ct = CalderonCellTypesMetadata.find(c=>c.name===st).description
+    return [ ct,`https://downloads.wenglab.org/${st}.bigWig`] as [string,string]
+    
+  })
+  
+  const [cTracks, setTracks] = useState<[string, string][]>(r && r.length>0 ?  r : [
     [
         "Bulk B Stimulated",
         "https://downloads.wenglab.org/Bulk_B-S.bigWig",
