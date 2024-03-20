@@ -39,7 +39,7 @@ query rnaUmapQuery($gene_id: String!)
 `
 
 export const RNAUMAP = (gene) => {
-    console.log(gene)
+    
     const [tooltip, setTooltip] = useState(-1);
     const chartRef = React.useRef<SVGSVGElement>(null);
     const { loading: loading, data: data } = useQuery(RNA_UMAP_QUERY, {
@@ -52,9 +52,9 @@ export const RNAUMAP = (gene) => {
         client,
       })
       const maxValue = data && Math.max(...data.calderonRnaUmapQuery.map(a=>a.value))
-      console.log(data && Math.max(...data.calderonRnaUmapQuery.map(a=>a.value)))
+      
     
-      console.log(data)
+      
       const gradient = data && linearTransform(
         { start: 0, end: maxValue },
         { start: 215, end: 0 }
@@ -67,6 +67,7 @@ export const RNAUMAP = (gene) => {
             data: x.celltype,
             stimulation: x.stimulation,
             class: x.class,
+            name: x.name,
             val: x.value,
             svgProps: {
               fill: `rgb(255,${gradient(
@@ -81,7 +82,7 @@ export const RNAUMAP = (gene) => {
           })),
         [data,loading]
       );
-      console.log(data, points)
+      
       const domain = useMemo(
         () =>
           points && points.length > 0
@@ -99,7 +100,7 @@ export const RNAUMAP = (gene) => {
         [points]
       );
 
-    
+    let tooltipTimeout
     return (
         <>
         {points && maxValue && <Chart
@@ -121,11 +122,15 @@ export const RNAUMAP = (gene) => {
         <Scatter
           data={points}
           onPointMouseOver={(i: number) => {
+            if (tooltipTimeout) clearTimeout(tooltipTimeout);
            setTooltip(i);
             //setHighlighted(points[i]?.data);
           }}
           onPointMouseOut={() => {
-            setTooltip(-1);
+            (tooltipTimeout = setTimeout(() => {
+              setTooltip(-1);
+            }, 300))
+            
            // setHighlighted("");
           }}
         />
@@ -159,7 +164,7 @@ export const RNAUMAP = (gene) => {
                           fontSize={0.5}
                           textAnchor="middle"
                         >
-                          {points[tooltip].class.replace(/_/g, " ")}
+                          {points[tooltip].name.replace(/_/g, " ")}
                         </text>
                       )}
                         

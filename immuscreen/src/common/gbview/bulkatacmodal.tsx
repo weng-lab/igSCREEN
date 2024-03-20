@@ -37,7 +37,7 @@ const style = {
 const TRACKS = {
     
   "Bulk Atac Tracks": [
-        [
+      [
         "Bulk B Stimulated",
         "https://downloads.wenglab.org/Bulk_B-S.bigWig",
       ],
