@@ -1,9 +1,9 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { Group } from '@visx/group';
 import { Tree, hierarchy } from '@visx/hierarchy';
 import { HierarchyPointNode, HierarchyPointLink } from '@visx/hierarchy/lib/types';
 import { LinkHorizontal, LinkVertical } from '@visx/shape';
-import { CellTypeInfo, CellTypes } from '../../app/upset/page';
+import { CellTypeInfo, CellTypes } from '../../app/celltype/page';
 import { defaultStyles as defaultTooltipStyles, useTooltip, TooltipWithBounds } from '@visx/tooltip';
 
 const linkStroke = '#000000';
@@ -111,7 +111,7 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
       document.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('keyup', handleKeyUp);
     };
-  }, []); // Empty dependency array ensures that the effect runs only once
+  }, [setStimulateMode, setCursor])
 
   const clusterData: CellNode = useMemo(() => {
     return (
@@ -289,7 +289,7 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
 
   const data = useMemo(() => { console.log("data memo"); return hierarchy<CellNode>(clusterData) }, [clusterData]);
 
-  function Node({ node }: { node: HierarchyPointNode<CellNode> }) {
+  const Node = useCallback(({ node }: { node: HierarchyPointNode<CellNode> }) => {
     const width = 60;
     const height = 60;
     const centerX = -width / 2;
@@ -429,7 +429,7 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
         </Group>
       </Group>
     );
-  }
+  }, [cellTypeState, hideTooltip, orientation, selectionLimit, setCellTypeState, setCursor, showTooltip, stimulateMode, triggerAlert])
 
   const TreeMemo = useMemo(() =>
     <Tree<CellNode> root={data} size={[sizeWidth, sizeHeight]}>
@@ -463,7 +463,7 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
         </Group>
       )}
     </Tree>
-    , [data, stimulateMode])
+    , [data, Node, innerMarginLeft, innerMarginTop, orientation, sizeHeight, sizeWidth])
 
   return totalWidth < 10 ? null : (
     <div style={{ position: "relative" }}>
@@ -481,13 +481,10 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
             <strong>{tooltipData.name.replace('/', '\u00A0').replace(' ', '\u00A0').replace('-', '\u2011')}</strong>
           </div>
           <div>
-            <p>{'Active\u00A0iCREs:'}</p>
-          </div>
-          <div>
-            <p>Unstimulated: {tooltipData.unstimCount}</p>
+            <p>Unstimulated Active iCREs: {tooltipData.unstimCount.toLocaleString()}</p>
           </div>
           {tooltipData.stimCount && <div>
-            <p>Stimulated: {tooltipData.stimCount}</p>
+            <p>Stimulated Active iCREs: {tooltipData.stimCount.toLocaleString()}</p>
           </div>}
         </TooltipWithBounds>       
       )}

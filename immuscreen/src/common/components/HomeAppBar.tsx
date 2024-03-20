@@ -21,11 +21,8 @@ const pageLinks = [
       { pageName: "Gene", link: "/gene" },
       { pageName: "SNP", link: "/snp" },
       { pageName: "iCREs", link: "/icres" },
+      { pageName: "Cell Type", link: "/celltype"}
     ],
-  },
-  {
-    pageName: "UpSet Generator",
-    link: "/upset",
   }
 ]
 

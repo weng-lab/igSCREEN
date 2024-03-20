@@ -1,7 +1,7 @@
 'use client'
 import * as React from "react"
 import CellTypeTree from "../../common/components/cellTypeTree"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import { Box, Button, Checkbox, CircularProgress, FormControlLabel, Snackbar, Stack, Tooltip, Typography } from "@mui/material";
 import { gql, useLazyQuery } from "@apollo/client";
@@ -703,6 +703,23 @@ export default function UpSet() {
     setCursor(!stimulateMode ? 'cell' : 'auto')
   }
 
+  const GET_ICRE_FILE = gql`
+    query getFile(
+      $celltypes: [[String]]
+      $excludecelltypes: [[String]]
+      $uuid: String!
+      $group: [String!]
+    ) {
+      createicresFilesQuery(
+        uuid: $uuid
+        celltypes: $celltypes
+        excludecelltypes: $excludecelltypes
+        group: $group
+      )
+    }
+  `
+  //Query for downloading set of iCREs. Fetches URL that is downloaded from
+  const [getiCREFileURL, { data: data_download_url, loading: loading_download_url, error: error_download_url }] = useLazyQuery(GET_ICRE_FILE, { client })
   
 
   /**
@@ -711,7 +728,7 @@ export default function UpSet() {
    * The key is either "Union_All", a cell name, or a combination of 1's and 0's for an intersection.
    * @param downloadKey 
    */
-  const handleUpsetDownload = async (downloadKey: string) => {
+  const handleUpsetDownload = useCallback(async (downloadKey: string) => {
     try {
       setDownloading(true)
       const cellGroupings: QueryGroup = upSetQueryGroups[downloadKey]
@@ -746,7 +763,7 @@ export default function UpSet() {
       console.log("Something went wrong when attempting to download:\n" + error)
       setDownloading(false)
     }
-  }
+  }, [setDownloading, upSetQueryGroups, upSetClasses, getiCREFileURL]);
 
   /**
    * 
@@ -768,7 +785,7 @@ export default function UpSet() {
    * @param classes the selected cCRE classes
    * @returns gql query string for UpSet plot
    */
-  const generateQuery = (selectedCells: CellTypeInfo[], classes: CCRE_CLASS[]) => {
+  const generateQuery = useCallback((selectedCells: CellTypeInfo[], classes: CCRE_CLASS[]) => {
     //stores extracted relevant information from selectedCells
     let cells: { displayName: string, queryVals: string[] }[] = [];
 
@@ -845,7 +862,7 @@ export default function UpSet() {
 
     //Join query strings and parse into query document
     return (gql(iCREQuery))
-  }
+  }, [])
 
 
   /**
@@ -933,31 +950,10 @@ export default function UpSet() {
         }
         `
     )
-  }, [upSetCells, upSetClasses])
+  }, [upSetCells, upSetClasses, generateQuery])
 
   //Query for counts used to make UpSet
   const [getCountData, { data: data_count, loading: loading_count, error: error_count }] = useLazyQuery(COUNT_QUERY, { client })
-
-
-  const GET_ICRE_FILE = gql`
-    query getFile(
-      $celltypes: [[String]]
-      $excludecelltypes: [[String]]
-      $uuid: String!
-      $group: [String!]
-    ) {
-      createicresFilesQuery(
-        uuid: $uuid
-        celltypes: $celltypes
-        excludecelltypes: $excludecelltypes
-        group: $group
-      )
-    }
-  `
-  //Query for downloading set of iCREs. Fetches URL that is downloaded from
-  const [getiCREFileURL, { data: data_download_url, loading: loading_download_url, error: error_download_url }] = useLazyQuery(GET_ICRE_FILE, { client, })
-
-
 
   const cellTypeTreeWidth = 830
   const upSetWidth = 700
@@ -993,7 +989,7 @@ export default function UpSet() {
         loading={downloading}
       />)
     } else return <></>
-  }, [data_count, downloading, upSetWidth])
+  }, [data_count, downloading, upSetWidth, handleUpsetDownload])
 
   //These boolean values are used to disable buttons in certain situaions
   const noneSelected = !Object.values(cellTypeState).map(x => x.selected).find(x => x)
@@ -1046,18 +1042,21 @@ export default function UpSet() {
     <>
       <Typography variant="h5">UpSet Generator</Typography>
       <Typography variant="body1" paragraph maxWidth={cellTypeTreeWidth}>
-        Select Up to 6 cells to generate an UpSet plot. Hold Option/Command (MacOS) or Alt/Windows (Windows) and click to stimulate cell. By default, all cells are unstimulated. Cells can be unstimulated, stimulated, or both (counts as two selections). The more cells types that are selected, the longer it will take to generate. Click any bar/count in UpSet to download set (.BED)
+        Select Up to 6 cells to generate an UpSet plot. For stimulable cells, hold Option/Command (MacOS) or Alt/Windows (Windows) and click to stimulate cell. By default, all cells are unstimulated. Stimulable cells can be unstimulated, stimulated, or both (counts as two selections). Stimulating a cell does not automatically select it. The more cells types that are selected, the longer it will take to generate. Click any bar/count in UpSet plot to download set (.BED)
       </Typography>
     </>
 
   const GenerateUpsetButton = () =>
     <LoadingButton loading={loading_count} loadingPosition="end" disabled={noneSelected} endIcon={<BarChartOutlinedIcon />} sx={{ textTransform: "none", m: 1 }} variant="contained" onClick={handleGenerateUpSet}>
-      <span>{loading_count ? "Generating" : "Generate UpSet"}</span>
+      <span>{loading_count ? "Generating" : noneSelected ? "Select Cells to Generate UpSet" : "Generate UpSet"}</span>
     </LoadingButton>
 
+  const StimulationWarning = () => 
+    <Typography>Tip: Stimulating a cell does not automatically select it! Exit Stimulation Mode and click to select.</Typography>
+  
   return (
     <>
-      <Grid2 container mt={3} spacing={2} sx={{ cursor }} >
+      <Grid2 container mt={3} sx={{ cursor }} >
         <Grid2 xs={12} xl={5} container justifyContent={"center"}>
           {/* Display header, checkboxes and UpSet on left on big screen */}
           <Box display={{ xs: "none", xl: "block" }}>
@@ -1065,6 +1064,7 @@ export default function UpSet() {
             <Box>
               <Checkboxes />
               <GenerateUpsetButton />
+              {noneSelected && !noneStimulated && <StimulationWarning />}
               <Box>
                 {upSet}
               </Box>
@@ -1078,7 +1078,7 @@ export default function UpSet() {
               <HeaderAbout />
             </Box>
             <Stack spacing={1} direction="row" mb={3}>
-              <Tooltip title="Tip: Holding Option/Command (MacOS) or Alt/Windows (Windows) will enter stimulate mode">
+              <Tooltip title="Tip: Holding Option/Command (MacOS) or Alt/Windows (Windows) will enter stimulate mode. Stimulating a cell does NOT select it.">
                 <Button endIcon={stimulateMode ? <CancelOutlinedIcon /> : <AddBoxOutlinedIcon />} sx={{ textTransform: "none" }} variant="outlined" onClick={handleToggleStimulateMode}>{stimulateMode ? 'Exit Stimulate Mode' : 'Enter Stimulate Mode'}</Button>
               </Tooltip>
               <Tooltip title="Note: Not all cells are stimulable">
@@ -1095,6 +1095,7 @@ export default function UpSet() {
             <Box display={{ xs: "block", xl: "none" }}>
               <Checkboxes />
               <GenerateUpsetButton />
+              {noneSelected && !noneStimulated && <StimulationWarning />}
               <Box>
                 {upSet}
               </Box>

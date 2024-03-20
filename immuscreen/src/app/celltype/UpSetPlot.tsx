@@ -140,7 +140,7 @@ export default function UpSetPlot({ width, height, data, setCursor, handleDownlo
               Total Union Size:
             </tspan>
             <tspan x={25} y={17} dy={16}>
-              {data.intersections.map((x) => x.count).reduce((accumulator, element) => accumulator + element, 0)}
+              {data.intersections.map((x) => x.count).reduce((accumulator, element) => accumulator + element, 0).toLocaleString()}
             </tspan>
           </text>
         </Group>
@@ -192,7 +192,7 @@ export default function UpSetPlot({ width, height, data, setCursor, handleDownlo
                   }}
                 >
                   <Text textAnchor='end' verticalAnchor='middle' x={barX} dx={-4} y={barY} dy={0.5 * barHeight}>
-                    {d.count}
+                    {d.count.toLocaleString()}
                   </Text>
                   <Bar
                     x={barX}
@@ -243,7 +243,7 @@ export default function UpSetPlot({ width, height, data, setCursor, handleDownlo
                     tooltipTop: event.pageY,
                     tooltipLeft: event.pageX,
                     tooltipData: {
-                      message: `${"Intersecting " + intersecting.join(', ')} ${excluding.length > 0 ? " Exluding " + excluding.join(', ') : ''}`,
+                      message: `${"Intersecting " + intersecting.join(', ')} ${excluding.length > 0 ? "\nExcluding " + excluding.join(', ') : ''}`,
                       count: d.count
                     }
                   })
@@ -256,7 +256,7 @@ export default function UpSetPlot({ width, height, data, setCursor, handleDownlo
 
                 <Group>
                   <Text x={barX + (halfBarWidth)} y={barY - 5} angle={315} fontSize={intersectionCountsFontSize}>
-                    {d.count}
+                    {d.count.toLocaleString()}
                   </Text>
                   <Bar
                     x={barX}
@@ -300,11 +300,17 @@ export default function UpSetPlot({ width, height, data, setCursor, handleDownlo
           left={tooltipLeft}
           style={{ ...defaultTooltipStyles, backgroundColor: '#283238', color: 'white' }}
         >
+          {
+            tooltipData.message.split('\n').map((line, i) => {
+              return (
+                <div key={i}>
+                  <p >{line}</p>
+                </div>
+              )
+            })
+          }
           <div>
-            <p>{tooltipData.message}</p>
-          </div>
-          <div>
-            <p>Count: {tooltipData.count}</p>
+            <p>Count: {tooltipData.count.toLocaleString()}</p>
           </div>
           <div>
             <p>Click to download set (.BED)</p>
