@@ -38,9 +38,9 @@ query calderoncorcebyctszscoreAtacQuery($accession: [String], $study: [String]) 
 `
 
 export const ICRES_QUERY = gql`
-query iCREQuery($coordinates: [GenomicRangeInput!]) 
+query iCREQuery($coordinates: [GenomicRangeInput!],$accession: [String!]) 
   {
-    iCREQuery(coordinates:$coordinates) {
+    iCREQuery(coordinates:$coordinates, accession: $accession) {
       rdhs
       accession
       celltypes

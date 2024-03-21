@@ -23,6 +23,10 @@ import { ICRES_CT_ZSCORES_QUERY, ICRES_BYCT_ZSCORES_QUERY, ICRES_QUERY, EBI_ASSO
 import { COLOR_MAP } from "./consts";
 //EH38E3951288
 
+import {IcresByRegion} from "./icresbyregion"
+
+
+//Need better text styling
 
 export default function Icres() {
 
@@ -57,19 +61,18 @@ export default function Icres() {
     nextFetchPolicy: "cache-first",
     client,
   })
-  const { loading: loading, data: data } = useQuery(ICRES_QUERY, {
+ 
+
+  const { loading: aloading, data: adata } = useQuery(ICRES_QUERY, {
     variables: {
-      coordinates : {
-        chromosome : searchParams.get("chromosome"),
-        start : +searchParams.get("start"),
-        end : +searchParams.get("end")
-      }
+      accession: searchParams.get('accession')
     },
-    skip: !searchParams.get("chromosome"),
+    skip: !(searchParams && searchParams.get("accession")),
     fetchPolicy: "cache-and-network",
     nextFetchPolicy: "cache-first",
     client,
   })
+  console.log(aloading,adata)
 
 
 let barplotdata = icrezscoredata && icrezscoredata.calderoncorcesAtacQuery.map(ic=>{
@@ -100,9 +103,9 @@ const {data: ebidata} = useQuery(EBI_ASSO_QUERY,{
     fetchPolicy: "cache-and-network",
     nextFetchPolicy: "cache-first",
     client,
-})
+  })
   
-const handleChange = (_, newValue: number) => {
+  const handleChange = (_, newValue: number) => {
     setValue(newValue)
 }
 const handleZscoreChange = (_, newValue: number) => {
@@ -125,8 +128,8 @@ function handleSubmit() {
     router.push(`/icres?chromosome=${chromosome}&start=${start}&end=${end}`)
 }
 
-
-return !searchParams.get('accession') && !searchParams.get('chromosome') ?  (
+console.log("coordinates", adata && adata.iCREQuery[0].coordinates)
+  return !searchParams.get('accession') && !searchParams.get('chromosome') ?  (
   <main>
     <Grid2 container spacing={6} sx={{ mr: "auto", ml: "auto", mt: "3rem" }}>
       <Grid2 xs={6} sx={{ mt: "5em", ml:"2em"}}>
@@ -176,64 +179,7 @@ return !searchParams.get('accession') && !searchParams.get('chromosome') ?  (
       </Grid2> 
     </Grid2>
 </main>): searchParams.get('chromosome') ? (
-    <main>
-      <Grid2 container  sx={{ maxWidth: "80%", mr: "auto", ml: "auto", mt: "1rem" }}>
-   
-            <Grid2 container sx={{  ml:"0.5em", mt: "4rem", mb: "2rem" }}>
-            <Grid2 xs={12} lg={12}>
-            {searchParams.get("chromosome") && <Typography variant="h5">{`Showing immune Candidate cis-Regulatory Elements (cCREs) in the region ${searchParams.get('chromosome')}:${searchParams.get('start')}-${searchParams.get('end')}`}</Typography>}
-            </Grid2>
-            <Grid2 xs={12} lg={12}>
-                <Tabs aria-label="icres_region_tabs" value={value} onChange={handleChange}>
-                    <StyledTab label="Table View" />
-                    
-                </Tabs>
-                </Grid2>
-            </Grid2>
-           
-            {value===0 && !loading &&<DataTable
-                              columns={[
-                                
-                                {
-                                  header: "Accession",
-                                  value: (row) => row.accession ,
-                                  
-                                },
-                                {
-                                  header: "rDHS",
-                                  value: (row) => row.rdhs,
-                                },
-                                
-                              {
-                                header: "Chromosome",
-                                value: (row) => row.coordinates.chromosome || "",
-                                
-                              },
-                              {
-                                header: "Start",
-                                value: (row) => row.coordinates.start || "",
-                                
-                              },
-                              {
-                                header: "End",
-                                value: (row) => row.coordinates.end || "",
-                                
-                              },
-                              {
-                                header: "Celltypes",
-                                value: (row) => row.celltypes.join(","),
-                              }
-                              ]}
-                        tableTitle={`iCREs`}
-                        rows={(data.iCREQuery) || []}
-                        
-                        sortColumn={3}
-                        itemsPerPage={10}
-                      />}
-        </Grid2>
-       
-      
-    </main>
+   <IcresByRegion/>
   ) :  (
     <main>
       <Grid2 container  sx={{ maxWidth: "80%", mr: "auto", ml: "auto", mt: "3rem" }}>   
@@ -252,12 +198,19 @@ return !searchParams.get('accession') && !searchParams.get('chromosome') ?  (
               </Grid2>
             </Grid2>
            
-            { value===0 && 
-              <Grid2 xs={12} lg={12}>
+            {value===0 && adata &&
+            <Grid2 xs={12} lg={12}>
             <GenomeBrowserView                
-                
+                accession={
+                  {
+                    name: adata.iCREQuery[0].accession,
+                    start: adata.iCREQuery[0].coordinates.start, 
+                    end: adata.iCREQuery[0].coordinates.end,
+                  }
+                }
                 assembly={"GRCh38"}
-                coordinates={{ start: 520000, end: 580000, chromosome:"chr11" }}
+                coordinates={{ start: adata.iCREQuery[0].coordinates.start, end: adata.iCREQuery[0].coordinates.end, chromosome: adata.iCREQuery[0].coordinates.chromosome }}
+                defaultcelltypes={adata.iCREQuery[0].celltypes}
               />
               </Grid2>
             }              
