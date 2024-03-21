@@ -1,0 +1,28 @@
+
+export const COLOR_MAP: Map<string, string> = new Map([
+    ["Bulk_B",	"#ff0000"],
+    ["CD8pos_T",	"#ff9900"],
+    ["Central_memory_CD8pos_T",	"#e69138"],
+    ["Effector_CD4pos_T",	"#990000"],
+    ["Effector_memory_CD8pos_T",	"#f1c232"],
+    ["Follicular_T_Helper",	"#6c4141"],
+    ["Gamma_delta_T",	"#dc5e5e"],
+    ["Immature_NK",	"#5e957b"],
+    ["Mature_NK",	"#008000"],
+    ["Mem_B",	"#1155cc"],
+    ["Memory_NK",	"#93c47d"],
+    ["Memory_Teffs",	"#cc4125"],
+    ["Memory_Tregs",	"#770000"],
+    ["Monocytes",	"	#684fda"],
+    ["Myeloid_DCs",	"#a64d79"],
+    ["Naive_B",	"	#073763"],
+    ["Naive_CD8_T",	"#f6b26b"],
+    ["Naive_Teffs",	"#ea9999"],
+    ["Naive_Tregs",	"	#e06666"],
+    ["Plasmablasts",	"#b7b7b7"],
+    ["Regulatory_T",	"#cc0000"],
+    ["Th17_precursors",	"#ba1818"],
+    ["Th1_precursors",	"#ff3535"],
+    ["Th2_precursors",	"#c93232"],
+    ["pDCs",	"#741b47"]
+  ]);
