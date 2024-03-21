@@ -51,9 +51,9 @@ export const ATACUMAP = (accession) => {
         client,
       })
       const maxValue = data && Math.max(...data.calderonAtacUmapQuery.map(a=>a.value))
-      console.log(data && Math.max(...data.calderonAtacUmapQuery.map(a=>a.value)))
+      
     
-      console.log(data)
+      
       const gradient = data && linearTransform(
         { start: 0, end: maxValue },
         { start: 215, end: 0 }
@@ -80,7 +80,7 @@ export const ATACUMAP = (accession) => {
           })),
         [data,loading]
       );
-      console.log(data, points)
+      //console.log(data, points)
       const domain = useMemo(
         () =>
           points && points.length > 0
