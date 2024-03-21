@@ -19,6 +19,12 @@ type GenomeBrowserViewProps = {
   }
   biosample?: string
   gene?: string
+  defaultcelltypes?: string[]
+  accession?: {
+    name: string,
+    start: number,
+    end: number
+  },
   assembly: string
 }
 const GENE_QUERY = gql`
@@ -104,7 +110,7 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (props) => {
   )
   const l = useCallback((c) => ((c - coordinates.start) * 1400) / (coordinates.end - coordinates.start), [coordinates])
 
-
+console.log("coords gb", coordinates)
   return (
     <>
       <Grid2 container spacing={3} sx={{ mt: "1rem", mb: "1rem" }}>
@@ -136,7 +142,11 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (props) => {
             {highlight && (
               <rect fill="#8ec7d1" fillOpacity={0.5} height={1000} x={l(highlight.start)} width={l(highlight.end) - l(highlight.start)} />
             )}
+             
+            
+            
             <RulerTrack domain={coordinates} height={30} width={1400} />
+            {props.accession && false && <rect key={props.accession?.name} fill="#FAA4A4" fillOpacity={0.5} height={900} x={l(props.accession?.start)} width={l(props.accession?.end) - l(props.accession?.start)} />}
             {props.gene && <EGeneTracks
               genes={groupedTranscripts || []}
               expandedCoordinates={coordinates}
@@ -150,11 +160,14 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (props) => {
               oncCREMousedOut={() => setHighlight(null)}
             />}
             <BulkAtacTracks
-            assembly="GRCh38"
-            domain={coordinates}
-          />
+          assembly="GRCh38"
+          domain={coordinates}
+          defaultcelltypes={props.defaultcelltypes}
+        />
         <ChromBPNetAtacTracks 
-          domain={coordinates}/>
+          domain={coordinates}
+          defaultcelltypes={props.defaultcelltypes}
+          />
           </GenomeBrowser>
         </Grid2>
       </Grid2>
