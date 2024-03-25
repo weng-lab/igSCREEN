@@ -12,8 +12,8 @@ export type BarsProps = {
   width: number;
   height: number;
   data: { intersections: { name: string, count: number }[], counts: { name: string, count: number }[], order: string[] }
-  setCursor: React.Dispatch<React.SetStateAction<"auto" | "pointer" | "cell" | "not-allowed">>
   handleDownload: (downloadKey: string) => Promise<void>
+  reference?: any
   loading?: boolean
 };
 
@@ -22,7 +22,7 @@ interface TooltipData {
   count: number
 }
 
-export default function UpSetPlot({ width, height, data, setCursor, handleDownload, loading = false }: BarsProps) {
+export default function UpSetPlot({ width, height, data, handleDownload, reference = null, loading = false }: BarsProps) {
 
   const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip, updateTooltip } = useTooltip<TooltipData>();
 
@@ -49,7 +49,7 @@ export default function UpSetPlot({ width, height, data, setCursor, handleDownlo
     case (2): setSizePlotTotalWidth = totalWidth * 0.45; break;
     case (3): setSizePlotTotalWidth = totalWidth * 0.45; break;
     case (4): setSizePlotTotalWidth = totalWidth * 0.375; break;
-    case (5): setSizePlotTotalWidth = totalWidth * 0.325; break;
+    case (5): setSizePlotTotalWidth = totalWidth * 0.325; intersectionCountsFontSize = 12;break;
     case (6): setSizePlotTotalWidth = totalWidth * 0.275; intersectionCountsFontSize = 7; break;
   }
   const spaceForCellName = 100
@@ -112,14 +112,14 @@ export default function UpSetPlot({ width, height, data, setCursor, handleDownlo
 
   return totalWidth < 10 ? null : (
     <div>
-      <svg fontSize={fontSize} id='UpSet-Plot' width={totalWidth} height={totalHeight}>
-        <rect width={totalWidth} height={totalHeight} fill='none' stroke='black' fillOpacity={0.5} rx={14} />
+      <svg fontSize={fontSize} id='UpSet-Plot' width={totalWidth} height={totalHeight} ref={reference}>
+        <rect width={totalWidth} height={totalHeight} fill='none' stroke='black' fillOpacity={0.5} rx={8} />
         <Group
           top={30}
           left={30}
+          cursor="pointer"
           onClick={() => handleDownload("Union_All")}
           onMouseMove={(event) => {
-            setCursor("pointer")
             showTooltip({
               tooltipTop: event.pageY,
               tooltipLeft: event.pageX,
@@ -130,7 +130,6 @@ export default function UpSetPlot({ width, height, data, setCursor, handleDownlo
             })
           }}
           onMouseLeave={() => {
-            setCursor("auto")
             hideTooltip()
           }}
         >
@@ -176,7 +175,6 @@ export default function UpSetPlot({ width, height, data, setCursor, handleDownlo
                 <Group
                   onClick={() => handleDownload(d.name)}
                   onMouseMove={(event) => {
-                    setCursor("pointer")
                     showTooltip({
                       tooltipTop: event.pageY,
                       tooltipLeft: event.pageX,
@@ -187,9 +185,9 @@ export default function UpSetPlot({ width, height, data, setCursor, handleDownlo
                     })
                   }}
                   onMouseLeave={() => {
-                    setCursor("auto")
                     hideTooltip()
                   }}
+                  cursor="pointer"
                 >
                   <Text textAnchor='end' verticalAnchor='middle' x={barX} dx={-4} y={barY} dy={0.5 * barHeight}>
                     {d.count.toLocaleString()}
@@ -201,8 +199,7 @@ export default function UpSetPlot({ width, height, data, setCursor, handleDownlo
                     height={barHeight}
                     fill="black"
                     onClick={() => handleDownload(d.name)}
-                    onMouseEnter={() => setCursor("pointer")}
-                    onMouseLeave={() => setCursor("auto")}
+                    cursor="pointer"
                   />
                   <Text textAnchor='end' verticalAnchor='middle' x={setSizePlotTotalWidth} y={barY} dy={0.5 * barHeight}>
                     {d.name.length > 12 ? d.name.substring(0, 9).replaceAll('_', ' ') + '...' : d.name.replaceAll('_', ' ')}
@@ -225,14 +222,13 @@ export default function UpSetPlot({ width, height, data, setCursor, handleDownlo
             const barY = (intersectionPlotHeightScale(d.count) ?? 0);
             const halfBarWidth = barWidth / 2
             const circleRadius = Math.min(halfBarWidth, fontSize * 0.6)
-            console.log(circleRadius)
             const connectingBarWidth = circleRadius / 3
             return (
               <Group
                 key={`Group-${d.name}`}
                 onClick={() => handleDownload(d.name)}
+                cursor="pointer"
                 onMouseMove={(event) => {
-                  setCursor("pointer")
                   let intersecting: string[] = []
                   let excluding: string[] = []
                   for (let i = 0; i < d.name.length; i++) {
@@ -249,7 +245,6 @@ export default function UpSetPlot({ width, height, data, setCursor, handleDownlo
                   })
                 }}
                 onMouseLeave={() => {
-                  setCursor("auto")
                   hideTooltip()
                 }}
               >
