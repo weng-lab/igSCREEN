@@ -100,7 +100,7 @@ const HomeAppBar = () => {
                 textDecoration: "none",
               }}
             >
-              immuSCREEN
+              igSCREEN
             </Typography>
             
             <Box sx={{ flexGrow: 0, display: { xs: "inline", md: "none" } }}>

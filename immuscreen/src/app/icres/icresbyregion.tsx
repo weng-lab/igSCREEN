@@ -1,11 +1,10 @@
 
 import { client } from "../../common/utils"
 import { DataTable } from "@weng-lab/psychscreen-ui-components"
-import React, {useMemo, useState} from "react"
+import React, { useState}  from "react"
 import { useQuery } from "@apollo/client"
 import { gql } from "@apollo/client"
-import { Chart, linearTransform, Scatter } from "jubilant-carnival";
-import { ReadonlyURLSearchParams, useSearchParams} from "next/navigation"
+import { ReadonlyURLSearchParams, useSearchParams, useRouter} from "next/navigation"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { StyledTab } from "../../common/utils"
 import { Typography } from "@mui/material"
@@ -29,6 +28,7 @@ query iCREQuery($coordinates: [GenomicRangeInput!], $accession: [String!])
 export const IcresByRegion = (props) => {
     const searchParams: ReadonlyURLSearchParams = useSearchParams()!
     const [value, setValue] = useState(0)
+    const router = useRouter()
     const handleChange = (_, newValue: number) => {
         setValue(newValue)
       }
@@ -95,7 +95,10 @@ export const IcresByRegion = (props) => {
                                 ]}
                           tableTitle={`iCREs`}
                           rows={(data.iCREQuery) || []}
-                          
+                          onRowClick={(row) => {
+                            router.push(`/icres?accession=${row.accession}`)
+
+                        }}
                           sortColumn={3}
                           itemsPerPage={10}
                         />}

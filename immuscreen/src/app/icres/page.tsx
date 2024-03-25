@@ -21,7 +21,7 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { stringToColour } from "./utils";
 import { ICRES_CT_ZSCORES_QUERY, ICRES_BYCT_ZSCORES_QUERY, ICRES_QUERY, EBI_ASSO_QUERY } from "./queries";
 import { COLOR_MAP } from "./consts";
-//EH38E3951288
+
 
 import {IcresByRegion} from "./icresbyregion"
 
