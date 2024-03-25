@@ -3,7 +3,7 @@ import { Group } from '@visx/group';
 import { Tree, hierarchy } from '@visx/hierarchy';
 import { HierarchyPointNode, HierarchyPointLink } from '@visx/hierarchy/lib/types';
 import { LinkHorizontal, LinkVertical } from '@visx/shape';
-import { CellTypeInfo, CellTypes } from '../../app/celltype/page';
+import { CellTypeInfo, CellTypes } from '../../app/celllineage/page';
 import { defaultStyles as defaultTooltipStyles, useTooltip, TooltipWithBounds } from '@visx/tooltip';
 
 const linkStroke = '#000000';
@@ -39,13 +39,14 @@ type CellTypeTreeProps = {
   setCellTypeState: React.Dispatch<React.SetStateAction<CellTypes>>
   stimulateMode: boolean
   setStimulateMode: React.Dispatch<React.SetStateAction<boolean>>
-  setCursor: React.Dispatch<React.SetStateAction<"auto" | "pointer" | "cell" | "not-allowed">>
   orientation: "vertical" | "horizontal"
   selectionLimit?: number
   triggerAlert: (message: string) => void
 }
 
-export default function CellTypeTree({ width: totalWidth, height: totalHeight, orientation, cellTypeState, setCellTypeState, stimulateMode, setStimulateMode, setCursor, selectionLimit, triggerAlert }: CellTypeTreeProps) {
+const stimulateCursor = "url(/stimulateCursor.png) 5 30, cell"
+
+export default function CellTypeTree({ width: totalWidth, height: totalHeight, orientation, cellTypeState, setCellTypeState, stimulateMode, setStimulateMode, selectionLimit, triggerAlert }: CellTypeTreeProps) {
 
   const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip, updateTooltip } = useTooltip<TooltipData>();
 
@@ -91,14 +92,12 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Alt" || event.key === "Meta") {
         setStimulateMode(true);
-        setCursor("cell")
       }
     };
 
     const handleKeyUp = (event: KeyboardEvent) => {
-      if (event.key === "Alt" || event.key === "Meta") {
+      if (event.key === "Alt" || event.key === "Meta" || event.key === "Escape") {
         setStimulateMode(false);
-        setCursor("auto")
       }
     };
 
@@ -111,7 +110,7 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
       document.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('keyup', handleKeyUp);
     };
-  }, [setStimulateMode, setCursor])
+  }, [setStimulateMode])
 
   const clusterData: CellNode = useMemo(() => {
     return (
@@ -287,7 +286,7 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
     )
   }, [cellTypeState])
 
-  const data = useMemo(() => { console.log("data memo"); return hierarchy<CellNode>(clusterData) }, [clusterData]);
+  const data = useMemo(() => { return hierarchy<CellNode>(clusterData) }, [clusterData]);
 
   const Node = useCallback(({ node }: { node: HierarchyPointNode<CellNode> }) => {
     const width = 60;
@@ -304,9 +303,6 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
       top = node.x;
       left = node.y;
     }
-
-    if (node.data.displayName === "Plasmablast") { console.log("rerendering nodes") }
-
 
     return (
       <Group
@@ -330,6 +326,7 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
           </tspan>
         </text>
         <Group
+          cursor={stimulateMode ? node.data.stimulable ? stimulateCursor : "not-allowed" : "pointer"}
           opacity={(node.data.selected || Object.values(cellTypeState).every(cellType => cellType.selected === false)) ? 1 : fadedCellOpacity}
           onClick={() => {
             const numberSelected = Object.values(cellTypeState).reduce((count, cellInfo: CellTypeInfo) => cellInfo.selected ? cellInfo.stimulated === "B" ? count + 2 : count + 1 : count, 0)
@@ -356,12 +353,9 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
           onMouseEnter={
             (event: React.MouseEvent<SVGImageElement, MouseEvent>) => {
               if (node.data.selectable) {
-                if (stimulateMode && !node.data.stimulable) {
-                  setCursor("not-allowed")
-                } else {
+                if (!stimulateMode || node.data.stimulable) {
                   event.currentTarget.setAttribute('transform', 'scale(1.1)')
                   event.currentTarget.setAttribute('opacity', '1')
-                  !stimulateMode && setCursor('pointer')
                 }
                 showTooltip({
                   tooltipTop: top,
@@ -378,12 +372,9 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
           onMouseOut={
             (event: React.MouseEvent<SVGImageElement, MouseEvent>) => {
               if (node.data.selectable) {
-                if (stimulateMode && !node.data.stimulable) {
-                  !node.data.stimulable && setCursor("cell")
-                } else {
+                if (!stimulateMode || node.data.stimulable) {
                   event.currentTarget.setAttribute('transform', 'scale(1)')
                   event.currentTarget.setAttribute('opacity', (node.data.selected || Object.values(cellTypeState).every(cellType => cellType.selected === false)) ? '1' : String(fadedCellOpacity))
-                  !stimulateMode && setCursor('auto')
                 }
                 hideTooltip()
               }
@@ -429,7 +420,7 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
         </Group>
       </Group>
     );
-  }, [cellTypeState, hideTooltip, orientation, selectionLimit, setCellTypeState, setCursor, showTooltip, stimulateMode, triggerAlert])
+  }, [cellTypeState, hideTooltip, orientation, selectionLimit, setCellTypeState, showTooltip, stimulateMode, triggerAlert])
 
   const TreeMemo = useMemo(() =>
     <Tree<CellNode> root={data} size={[sizeWidth, sizeHeight]}>
@@ -467,7 +458,7 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
 
   return totalWidth < 10 ? null : (
     <div style={{ position: "relative" }}>
-      <svg width={totalWidth} height={totalHeight}>
+      <svg width={totalWidth} height={totalHeight} cursor={stimulateMode ? stimulateCursor : "auto"}>
         <rect width={totalWidth} height={totalHeight} fill={background} />
         {TreeMemo}
       </svg>

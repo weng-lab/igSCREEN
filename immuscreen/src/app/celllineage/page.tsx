@@ -1,7 +1,7 @@
 'use client'
 import * as React from "react"
 import CellTypeTree from "../../common/components/cellTypeTree"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { Ref, forwardRef, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import { Box, Button, Checkbox, CircularProgress, FormControlLabel, Snackbar, Stack, Tooltip, Typography } from "@mui/material";
 import { gql, useLazyQuery } from "@apollo/client";
@@ -16,6 +16,7 @@ import FlashOffOutlinedIcon from '@mui/icons-material/FlashOffOutlined';
 import FlashAutoIcon from '@mui/icons-material/FlashAuto';
 import UndoOutlinedIcon from '@mui/icons-material/UndoOutlined';
 import LoadingButton from '@mui/lab/LoadingButton';
+import { Download, Sync } from "@mui/icons-material";
 
 //Info for each cell type
 export interface CellTypeInfo {
@@ -622,7 +623,6 @@ const cellTypeInitialState: CellTypes = {
 export default function UpSet() {
   const [cellTypeState, setCellTypeState] = useState<CellTypes>(cellTypeInitialState) //state of tree
   const [stimulateMode, setStimulateMode] = useState<boolean>(false) //determines whether a click on the tree selects or stimulates cell
-  const [cursor, setCursor] = useState<'auto' | 'pointer' | 'cell' | 'not-allowed'>('auto') //cursor changes with stimulateMode and hovering
   //Modifications to tree and checkboxes wipe needed info for download, so store when generating:
   const [upSetCells, setUpSetCells] = useState<CellTypeInfo[]>([]) //stores array of selected cells when generating
   const [upSetClasses, setUpSetClasses] = useState<CCRE_CLASS[]>(null) //stores array of selected classes when generating
@@ -696,11 +696,10 @@ export default function UpSet() {
   }
 
   /**
-   * Toggles stimulation mode between true/false and sets the cursor to needed value
+   * Toggles stimulation mode between true/false
    */
   const handleToggleStimulateMode = () => {
     setStimulateMode(!stimulateMode)
-    setCursor(!stimulateMode ? 'cell' : 'auto')
   }
 
   const GET_ICRE_FILE = gql`
@@ -764,6 +763,33 @@ export default function UpSet() {
       setDownloading(false)
     }
   }, [setDownloading, upSetQueryGroups, upSetClasses, getiCREFileURL]);
+  
+  const svgRef = useRef<SVGSVGElement>(null)
+
+  const svgData = (_svg): string => {
+    let svg = _svg.cloneNode(true);
+    svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    let preface = '<?xml version="1.0" standalone="no"?>';
+    return preface + svg.outerHTML.replace(/\n/g, '').replace(/[ ]{8}/g, '');
+  };
+
+  const downloadData = (text: string, filename: string, type: string = 'text/plain') => {
+    const a = document.createElement('a');
+    document.body.appendChild(a);
+    a.setAttribute('style', 'display: none');
+    const blob = new Blob([text], { type });
+    const url = window.URL.createObjectURL(blob);
+    a.href = url;
+    a.download = filename;
+    a.click();
+    window.URL.revokeObjectURL(url);
+    a.remove();
+  };
+
+  const downloadSVG = (ref: React.MutableRefObject<SVGSVGElement>, filename: string) =>{
+    ref.current && downloadData(svgData(ref.current!), filename, 'image/svg;charset=utf-8');
+  }
+  
 
   /**
    * 
@@ -959,9 +985,7 @@ export default function UpSet() {
   const upSetWidth = 700
   const cellTreeSelectionLimit = 6
 
-  //Wrap in useMemo to stop rerender of tree when cursor changes here
   const cellTypeTree = useMemo(() => {
-    console.log("cellTypeTree useMemo running")
     return (
       <CellTypeTree
         width={cellTypeTreeWidth}
@@ -971,25 +995,48 @@ export default function UpSet() {
         setCellTypeState={setCellTypeState}
         stimulateMode={stimulateMode}
         setStimulateMode={setStimulateMode}
-        setCursor={setCursor}
         selectionLimit={cellTreeSelectionLimit}
         triggerAlert={handleOpenSnackbar}
       />
     )
-  }, [cellTypeState, setCellTypeState, stimulateMode, setCursor])
+  }, [cellTypeState, stimulateMode])
 
-  const upSet = useMemo(() => {
-    if (data_count) {
-      return (<UpSetPlot
-        width={upSetWidth}
-        height={500}
-        data={transformtoUpSet(data_count)}
-        setCursor={setCursor}
-        handleDownload={handleUpsetDownload}
-        loading={downloading}
-      />)
-    } else return <></>
-  }, [data_count, downloading, upSetWidth, handleUpsetDownload])
+  interface UpSetProps {
+    data_count: any; // Should type this by properly typing return data from GQL
+    upSetWidth: number;
+    handleUpsetDownload: (downloadKey: string) => Promise<void>;
+    downloading: boolean;
+  }
+
+
+  
+  const UpSetWithRef = forwardRef((
+    { data_count, upSetWidth, handleUpsetDownload, downloading }: UpSetProps,
+    ref: Ref<SVGSVGElement>
+  ) => {
+    const upSet = useMemo(() => {
+      if (data_count) {
+        return (
+          <UpSetPlot
+            width={upSetWidth}
+            height={500}
+            data={transformtoUpSet(data_count)}
+            handleDownload={handleUpsetDownload}
+            reference={ref}
+            loading={downloading}
+          />
+        );
+      } else {
+        return <></>;
+      }
+    }, [data_count, downloading, upSetWidth, handleUpsetDownload, ref]);
+  
+    return upSet;
+  });
+  //Needed to fix missing display name error. For some reason using forwardRef causes this issue
+  UpSetWithRef.displayName = "UpSetPlot"
+
+  
 
   //These boolean values are used to disable buttons in certain situaions
   const noneSelected = !Object.values(cellTypeState).map(x => x.selected).find(x => x)
@@ -1047,16 +1094,19 @@ export default function UpSet() {
     </>
 
   const GenerateUpsetButton = () =>
-    <LoadingButton loading={loading_count} loadingPosition="end" disabled={noneSelected} endIcon={<BarChartOutlinedIcon />} sx={{ textTransform: "none", m: 1 }} variant="contained" onClick={handleGenerateUpSet}>
+    <LoadingButton loading={loading_count} loadingPosition="end" disabled={noneSelected} endIcon={data_count ? <Sync /> : <BarChartOutlinedIcon />} sx={{ textTransform: "none", m: 1 }} variant="contained" onClick={handleGenerateUpSet}>
       <span>{loading_count ? "Generating" : noneSelected ? "Select Cells to Generate UpSet" : "Generate UpSet"}</span>
     </LoadingButton>
 
   const StimulationWarning = () => 
     <Typography>Tip: Stimulating a cell does not automatically select it! Exit Stimulation Mode and click to select.</Typography>
+
+  const DownloadUpsetButton = () =>
+    data_count && <Button variant="text" endIcon={<Download />} sx={{ textTransform: "none" }} onClick={() => downloadSVG(svgRef, "UpSet.svg")}>Download UpSet Plot</Button>
   
   return (
     <>
-      <Grid2 container mt={3} sx={{ cursor }} >
+      <Grid2 container mt={3}>
         <Grid2 xs={12} xl={5} container justifyContent={"center"}>
           {/* Display header, checkboxes and UpSet on left on big screen */}
           <Box display={{ xs: "none", xl: "block" }}>
@@ -1064,9 +1114,11 @@ export default function UpSet() {
             <Box>
               <Checkboxes />
               <GenerateUpsetButton />
+              <DownloadUpsetButton />
               {noneSelected && !noneStimulated && <StimulationWarning />}
               <Box>
-                {upSet}
+                {/* {upSet} */}
+                <UpSetWithRef data_count={data_count} upSetWidth={upSetWidth} handleUpsetDownload={handleUpsetDownload} downloading={downloading} ref={svgRef} />
               </Box>
             </Box>
           </Box>
@@ -1095,9 +1147,11 @@ export default function UpSet() {
             <Box display={{ xs: "block", xl: "none" }}>
               <Checkboxes />
               <GenerateUpsetButton />
+              <DownloadUpsetButton />
               {noneSelected && !noneStimulated && <StimulationWarning />}
               <Box>
-                {upSet}
+                {/* {upSet} */}
+                <UpSetWithRef data_count={data_count} upSetWidth={upSetWidth} handleUpsetDownload={handleUpsetDownload} downloading={downloading}  ref={svgRef} />
               </Box>
             </Box>
           </Box>
