@@ -98,7 +98,7 @@ export const ATACUMAP = (accession) => {
         [points]
       );
 
-    
+      let tooltipTimeout
     return (
         <>
         {points && maxValue && <Chart
@@ -120,12 +120,14 @@ export const ATACUMAP = (accession) => {
         <Scatter
           data={points}
           onPointMouseOver={(i: number) => {
-           setTooltip(i);
-            //setHighlighted(points[i]?.data);
+            if (tooltipTimeout) clearTimeout(tooltipTimeout);
+            setTooltip(i);
           }}
           onPointMouseOut={() => {
-            setTooltip(-1);
-           // setHighlighted("");
+            (tooltipTimeout = setTimeout(() => {
+              setTooltip(-1);
+            }, 300))
+           
           }}
         />
         <defs>

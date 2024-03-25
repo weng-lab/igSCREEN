@@ -22,7 +22,7 @@ import {CcreAutoComplete} from  "../common/components/mainsearch/CcreAutocomplet
       {/* May need to rethink where these margins are set. Which element should be setting content width? */}
       <Grid2 container spacing={6} sx={{ mr: "auto", ml: "auto", mt: "3rem" }}>
         <Grid2 xs={6} sx={{ mt: "5em", ml:"2em"}}>
-          <Typography variant="h3">immuSCREEN</Typography>
+          <Typography variant="h3">igSCREEN</Typography>
           <Typography variant="h5">Search immune Candidate cis-Regulatory Elements by ENCODE</Typography>
           <br/>
           <FormControl variant="standard">

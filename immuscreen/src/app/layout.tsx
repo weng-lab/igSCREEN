@@ -7,8 +7,8 @@ import { Suspense } from "react"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata = {
-  title: "immuSCREEN: Search Immune Candidate cis-Regulatory Elements by ENCODE",
-  description: "immuSCREEN: Search Immune Candidate cis-Regulatory Elements by ENCODE",
+  title: "igSCREEN: Search Immune Candidate cis-Regulatory Elements by ENCODE",
+  description: "igSCREEN: Search Immune Candidate cis-Regulatory Elements by ENCODE",
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
