@@ -1,6 +1,6 @@
 "use client"
 import { gql, useQuery } from "@apollo/client";
-import { Autocomplete, Box, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Slider, Stack, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, CircularProgress, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Slider, Stack, TextField, Typography } from "@mui/material";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import { useState } from "react";
 import { client } from "../../common/utils";
@@ -173,7 +173,11 @@ export default function Phenotype() {
         </Box>
       </Grid2>
       <Grid2 margin={"auto"}>
-        {rawData && <LDSCplot width={1200} height={600} data={rawData} pValCutoff={pValCutoff} stimView={stimView} />}
+        {loadingLDSC ?
+          <CircularProgress />
+          :
+          rawData && <LDSCplot width={1200} height={600} data={rawData} pValCutoff={pValCutoff} stimView={stimView} />
+        }
       </Grid2>
     </Grid2>
   )
