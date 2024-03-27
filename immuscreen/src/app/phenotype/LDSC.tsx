@@ -6,6 +6,7 @@ import { scaleLinear } from "@visx/scale";
 import { Group } from "@visx/group";
 import { experimentInfo, cellColors } from "../icres/consts"
 import { defaultStyles as defaultTooltipStyles, useTooltip, TooltipWithBounds } from '@visx/tooltip';
+import { Text } from '@visx/text';
 
 type Props = {
   width: number;
@@ -88,13 +89,14 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
                 <Polygon
                   key={`${point.study}-${i}`}
                   center={{x: xScale(i), y: yScale(point.enrichment)}}
-                  sides={4}
+                  sides={3}
                   size={6}
                   opacity={toBeShown ? 1 : 0.1} //Sharply decrease opacity if not to be shown
                   fill={cellColors[point.celltype.split('-')[1]] || "black"}
-                  rotate={0}
+                  rotate={90}
+                  style={{transformOrigin: `${xScale(i)}px ${yScale(point.enrichment)}px`}}
                   onMouseMove={(event) => {
-                    toBeShown && showTooltip({
+                    showTooltip({
                       tooltipTop: event.pageY,
                       tooltipLeft: event.pageX,
                       tooltipData: {
@@ -105,9 +107,13 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
                         percentageSNPs: point.snps
                       }
                     })
+                    event.currentTarget.setAttribute("stroke", "black")
+                    event.currentTarget.setAttribute("transform", "scale(1.5)")
                   }}
-                  onMouseLeave={() => {
-                    toBeShown && hideTooltip()
+                  onMouseLeave={(event) => {
+                    hideTooltip()
+                    event.currentTarget.setAttribute("stroke", "none")
+                    event.currentTarget.setAttribute("transform", "scale(1)")
                   }}
                 />
               )
@@ -120,8 +126,9 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
                   cx={xScale(i)}
                   cy={yScale(point.enrichment)}
                   fill={cellColors[point.celltype.split('-')[1]] || "black"}
+                  style={{transformOrigin: `${xScale(i)}px ${yScale(point.enrichment)}px`}}
                   onMouseMove={(event) => {
-                    toBeShown && showTooltip({
+                    showTooltip({
                       tooltipTop: event.pageY,
                       tooltipLeft: event.pageX,
                       tooltipData: {
@@ -132,15 +139,20 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
                         percentageSNPs: point.snps
                       }
                     })
+                    event.currentTarget.setAttribute("stroke", "black")
+                    event.currentTarget.setAttribute("transform", "scale(1.5)")
                   }}
-                  onMouseLeave={() => {
-                    toBeShown && hideTooltip()
+                  onMouseLeave={(event) => {
+                    hideTooltip()
+                    event.currentTarget.setAttribute("stroke", "none")
+                    event.currentTarget.setAttribute("transform", "scale(1)")
                   }}
                 />
               )
             }
           })}
         </Group>
+        <Text x={width - 10} y={height - 10} textAnchor="end" fontSize={12}>Colors represent cell type</Text>
       </svg>
       {tooltipOpen && tooltipData && (
         <TooltipWithBounds

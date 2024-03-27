@@ -4,8 +4,8 @@ import { Autocomplete, Box, FormControl, FormControlLabel, FormLabel, Radio, Rad
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import { useState } from "react";
 import { client } from "../../common/utils";
-import CircleIcon from '@mui/icons-material/Circle';
-import SquareIcon from '@mui/icons-material/Square';
+import ChangeHistoryTwoToneIcon from '@mui/icons-material/ChangeHistoryTwoTone';
+import CircleTwoToneIcon from '@mui/icons-material/CircleTwoTone';
 import LDSCplot from "./LDSC";
 
 export type LDSCDataPoint = {
@@ -138,13 +138,13 @@ export default function Phenotype() {
               onChange={(_, value: "B" | "U" | "S") => setStimView(value)}
             >
               <FormControlLabel
-                value="B" 
+                value="B"
                 control={<Radio />}
                 label={
                   <Stack direction={"row"} alignItems={"center"} spacing={0.5}>
                     <Typography>Unstimulated & Stimulated</Typography>
-                    <CircleIcon fontSize="small" color="primary" sx={{fontSize: 13, opacity: 0.6}} />
-                    <SquareIcon color="primary" sx={{rotate: "45deg", fontSize: 11, opacity: 0.6}} />
+                    <CircleTwoToneIcon fontSize="small" color="primary" sx={{ fontSize: 12 }} />
+                    <ChangeHistoryTwoToneIcon color="primary" sx={{ fontSize: 14 }} />
                   </Stack>
                 }
               />
@@ -154,20 +154,20 @@ export default function Phenotype() {
                 label={
                   <Stack direction={"row"} alignItems={"center"} spacing={0.5}>
                     <Typography>Unstimulated</Typography>
-                    <CircleIcon fontSize="small" color="primary" sx={{fontSize: 13, opacity: 0.6}} />
+                    <CircleTwoToneIcon fontSize="small" color="primary" sx={{ fontSize: 12 }} />
                   </Stack>
                 }
               />
-              <FormControlLabel 
-              value="S"
-               control={<Radio />} 
-               label={
-                <Stack direction={"row"} alignItems={"center"} spacing={0.5}>
-                  <Typography>Stimulated</Typography>
-                  <SquareIcon color="primary" sx={{rotate: "45deg", fontSize: 11, opacity: 0.6}} />
-                </Stack>
-              }
-               />
+              <FormControlLabel
+                value="S"
+                control={<Radio />}
+                label={
+                  <Stack direction={"row"} alignItems={"center"} spacing={0.5}>
+                    <Typography>Stimulated</Typography>
+                    <ChangeHistoryTwoToneIcon color="primary" sx={{ fontSize: 14 }} />
+                  </Stack>
+                }
+              />
             </RadioGroup>
           </FormControl>
         </Box>
