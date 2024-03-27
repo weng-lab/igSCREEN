@@ -1,14 +1,12 @@
 "use client"
-import { gql, useLazyQuery, useQuery } from "@apollo/client";
-import { Autocomplete, Box, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Slider, TextField, Typography } from "@mui/material";
+import { gql, useQuery } from "@apollo/client";
+import { Autocomplete, Box, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Slider, Stack, TextField, Typography } from "@mui/material";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { client } from "../../common/utils";
-import { scaleLinear } from "@visx/scale";
-import { AxisLeft } from "@visx/axis";
-import { Circle, Line } from "@visx/shape";
+import CircleIcon from '@mui/icons-material/Circle';
+import SquareIcon from '@mui/icons-material/Square';
 import LDSCplot from "./LDSC";
-import { experimentInfo } from "../icres/consts";
 
 export type LDSCDataPoint = {
   snps: number,
@@ -24,7 +22,7 @@ export type LDSCDataPoint = {
 }
 
 export default function Phenotype() {
-  const [selectedStudy, setSelectedStudy] = useState<string>(null)
+  const [selectedStudy, setSelectedStudy] = useState<string>("EBI_MultipleSclerosis_Sawcer2011")
   const [pValCutoff, setPValCutoff] = useState<number>(0.05)
   const [stimView, setStimView] = useState<"S" | "U" | "B">("B")
 
@@ -96,7 +94,7 @@ export default function Phenotype() {
     {
       value: 4,
       scaledValue: 1,
-      label: "None"
+      label: 1
     },
   ]
 
@@ -139,9 +137,37 @@ export default function Phenotype() {
               defaultValue={"B"}
               onChange={(_, value: "B" | "U" | "S") => setStimView(value)}
             >
-              <FormControlLabel value="B" control={<Radio />} label="Stimulated & Unstimulated" />
-              <FormControlLabel value="U" control={<Radio />} label="Unstimulated" />
-              <FormControlLabel value="S" control={<Radio />} label="Stimulated" />
+              <FormControlLabel
+                value="B" 
+                control={<Radio />}
+                label={
+                  <Stack direction={"row"} alignItems={"center"} spacing={0.5}>
+                    <Typography>Unstimulated & Stimulated</Typography>
+                    <CircleIcon fontSize="small" color="primary" sx={{fontSize: 13, opacity: 0.6}} />
+                    <SquareIcon color="primary" sx={{rotate: "45deg", fontSize: 11, opacity: 0.6}} />
+                  </Stack>
+                }
+              />
+              <FormControlLabel
+                value="U"
+                control={<Radio />}
+                label={
+                  <Stack direction={"row"} alignItems={"center"} spacing={0.5}>
+                    <Typography>Unstimulated</Typography>
+                    <CircleIcon fontSize="small" color="primary" sx={{fontSize: 13, opacity: 0.6}} />
+                  </Stack>
+                }
+              />
+              <FormControlLabel 
+              value="S"
+               control={<Radio />} 
+               label={
+                <Stack direction={"row"} alignItems={"center"} spacing={0.5}>
+                  <Typography>Stimulated</Typography>
+                  <SquareIcon color="primary" sx={{rotate: "45deg", fontSize: 11, opacity: 0.6}} />
+                </Stack>
+              }
+               />
             </RadioGroup>
           </FormControl>
         </Box>

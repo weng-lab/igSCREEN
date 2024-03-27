@@ -20,7 +20,7 @@ import InputLabel from "@mui/material/InputLabel";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { stringToColour } from "./utils";
 import { ICRES_CT_ZSCORES_QUERY, ICRES_BYCT_ZSCORES_QUERY, ICRES_QUERY, EBI_ASSO_QUERY } from "./queries";
-import { COLOR_MAP } from "./consts";
+import { cellColors } from "./consts";
 
 
 import {IcresByRegion} from "./icresbyregion"
@@ -78,7 +78,7 @@ export default function Icres() {
 let barplotdata = icrezscoredata && icrezscoredata.calderoncorcesAtacQuery.map(ic=>{
   return  {
     ...ic,
-    color: COLOR_MAP.get(ic.celltype) || stringToColour(ic.celltype),
+    color: cellColors[ic.celltype] || stringToColour(ic.celltype),
     value: ic.value
 
   }
@@ -86,7 +86,7 @@ let barplotdata = icrezscoredata && icrezscoredata.calderoncorcesAtacQuery.map(i
 let barplotbyctdata = icrebyctzscoredata && icrebyctzscoredata.calderoncorcesByCtAtacQuery.map(ic=>{
   return  {
     ...ic,
-    color: COLOR_MAP.get(ic.celltype) ||stringToColour(ic.celltype),
+    color: cellColors[ic.celltype] ||stringToColour(ic.celltype),
     value: ic.value
 
   }

@@ -1,33 +1,4 @@
-
-export const COLOR_MAP: Map<string, string> = new Map([
-  ["Bulk_B", "#ff0000"],
-  ["CD8pos_T", "#ff9900"],
-  ["Central_memory_CD8pos_T", "#e69138"],
-  ["Effector_CD4pos_T", "#990000"],
-  ["Effector_memory_CD8pos_T", "#f1c232"],
-  ["Follicular_T_Helper", "#6c4141"],
-  ["Gamma_delta_T", "#dc5e5e"],
-  ["Immature_NK", "#5e957b"],
-  ["Mature_NK", "#008000"],
-  ["Mem_B", "#1155cc"],
-  ["Memory_NK", "#93c47d"],
-  ["Memory_Teffs", "#cc4125"],
-  ["Memory_Tregs", "#770000"],
-  ["Monocytes", "	#684fda"],
-  ["Myeloid_DCs", "#a64d79"],
-  ["Naive_B", "	#073763"],
-  ["Naive_CD8_T", "#f6b26b"],
-  ["Naive_Teffs", "#ea9999"],
-  ["Naive_Tregs", "	#e06666"],
-  ["Plasmablasts", "#b7b7b7"],
-  ["Regulatory_T", "#cc0000"],
-  ["Th17_precursors", "#ba1818"],
-  ["Th1_precursors", "#ff3535"],
-  ["Th2_precursors", "#c93232"],
-  ["pDCs", "#741b47"]
-]);
-
-export const newColors = {
+export const cellColors = {
   Bulk_B: "#078fff",
   Bcell: "#078fff",
   CD8pos_T: "#ff9900",
@@ -73,9 +44,6 @@ export const newColors = {
   Blast: "#107263"
 }
 
-/**
- * It would probably be better to fetch this info?
- */
 export const experimentInfo = {
   '1020-CD34_Cord_Blood-SRX1427814': { order: 1, description: 'CD34+ Cord Blood in donor 1020', group: 'Progenitors', study: 'Corces et al', pmid: '27526324' },
   '7291-CD34_Bone_Marrow-SRX1427812': { order: 2, description: 'CD34+ Bone Marrow in donor 7291', group: 'Progenitors', study: 'Corces et al', pmid: '27526324' },

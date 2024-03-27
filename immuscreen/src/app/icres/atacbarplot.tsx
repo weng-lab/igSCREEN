@@ -9,7 +9,7 @@ import { LegendOrdinal, LegendItem, LegendLabel } from '@visx/legend';
 import { scaleOrdinal } from '@visx/scale';
 import { useTooltip, useTooltipInPortal, defaultStyles } from '@visx/tooltip';
 import { localPoint } from '@visx/event';
-import { COLOR_MAP } from "./consts";
+import { cellColors } from "./consts";
 
 type TooltipData = {
     bardata: { class: string, subclass: string, description: string , ct_description?: string, value: number }
@@ -124,12 +124,12 @@ export const AtacBarPlot: React.FC<{plottitle?: string,  byct?: boolean, study: 
     let uniqcelltypes: string[] =  [...new Set(transformedData.map(c=>c.celltype))] as string[]
     if(props.byct)
     {
-        uniqcelltypes =  [...new Set(transformedData.map(c=>COLOR_MAP.get(c.celltype) ? c.celltype : c.description))] as string[]
+        uniqcelltypes =  [...new Set(transformedData.map(c=> cellColors[c.celltype] ? c.celltype : c.description))] as string[]
         
     }
     let ordinalColorScale =  uniqcelltypes && scaleOrdinal({ 
       domain: uniqcelltypes, 
-      range: uniqcelltypes.map((c: string)=>COLOR_MAP.get(c) || stringToColour(c) )
+      range: uniqcelltypes.map((c: string)=> cellColors[c] || stringToColour(c) )
     })
 
     const minTemp = Math.min(...(yScale.domain() as number[]));

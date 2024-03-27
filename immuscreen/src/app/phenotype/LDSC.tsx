@@ -1,10 +1,10 @@
-import { Circle, Line } from "@visx/shape";
+import { Circle, Line, Polygon } from "@visx/shape";
 import { LDSCDataPoint } from "./page";
 import { AxisLeft } from "@visx/axis";
 import { useMemo } from "react";
 import { scaleLinear } from "@visx/scale";
 import { Group } from "@visx/group";
-import { experimentInfo, newColors } from "../icres/consts"
+import { experimentInfo, cellColors } from "../icres/consts"
 import { defaultStyles as defaultTooltipStyles, useTooltip, TooltipWithBounds } from '@visx/tooltip';
 
 type Props = {
@@ -19,6 +19,7 @@ interface TooltipData {
   cell: string,
   enrichment: number,
   enrichmentP: number,
+  enrichmentStdErr: number,
   percentageSNPs: number,
 }
 
@@ -28,7 +29,7 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
   const dataMin: number = Math.min(...data.map(x => x.enrichment))
   const dataMax: number = Math.max(...data.map(x => x.enrichment))
 
-  const orderedData = [... data]
+  const orderedData = [...data]
     .sort((a, b) => {
       if (experimentInfo[a.celltype] && experimentInfo[b.celltype]) {
         return (experimentInfo[a.celltype].order - experimentInfo[b.celltype].order)
@@ -37,7 +38,7 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
         return 0
       }
     })
-    // .filter(x => x.enrichment_p < pValCutoff)
+  // .filter(x => x.enrichment_p < pValCutoff)
 
   const spaceForAxis = 60
   const paddingRight = 20
@@ -45,13 +46,15 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
   const paddingBottom = 20
   const plotWidth = width - spaceForAxis - paddingRight
   const plotHeight = height - paddingTop - paddingBottom
+  const dataPaddingLeft = 20
+  const dataPaddingTopBottom = 15
 
   //Input to this will be the order of the celltype according to known order. Output is its position on the x axis
   const xScale = useMemo(
     () =>
       scaleLinear<number>({
         domain: [0, data.length],
-        range: [0, plotWidth],
+        range: [dataPaddingLeft, plotWidth], //Start at 20 to provide left side padding to data points
       }),
     [plotWidth, data],
   );
@@ -60,7 +63,7 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
   const yScale = useMemo(
     () =>
       scaleLinear<number>({
-        domain: [dataMin, dataMax],
+        domain: [dataMin - dataPaddingTopBottom, dataMax + dataPaddingTopBottom],
         range: [plotHeight, 0]
       }),
     [dataMin, dataMax, plotHeight],
@@ -71,49 +74,71 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
       <svg width={width} height={height}>
         <rect width={width} height={height} rx={14} fill="none" stroke="black" />
         <Group top={paddingTop} left={spaceForAxis}>
-          <Line stroke="black" from={{ x: 0, y: yScale(0) }} to={{ x: plotWidth, y: yScale(0) }} />
+          <Line stroke="black" opacity={0.3} from={{ x: 0, y: yScale(0) }} to={{ x: plotWidth, y: yScale(0) }} />
           <AxisLeft
             label="Heritability Enrichment"
             scale={yScale}
           />
           {orderedData.map((point, i) => {
             const stimulated = point.celltype.split("-")[point.celltype.split("-").length - 1] === "S"
-            return (
-              point.enrichment_p <= pValCutoff && (stimView === "S" && stimulated || stimView === "U" && !stimulated || stimView === "B") ?
-                <Circle
+            const toBeShown = point.enrichment_p <= pValCutoff && (stimView === "S" && stimulated || stimView === "U" && !stimulated || stimView === "B")
+
+            if (stimulated) { //If stimulated, represent as diamond
+              return (
+                <Polygon
                   key={`${point.study}-${i}`}
-                  stroke={stimulated ? "black" : "none"}
-                  strokeWidth={1.5}
-                  r={5}
-                  cx={xScale(i)}
-                  cy={yScale(point.enrichment)}
-                  fill={newColors[point.celltype.split('-')[1]] || "black"}
+                  center={{x: xScale(i), y: yScale(point.enrichment)}}
+                  sides={4}
+                  size={6}
+                  opacity={toBeShown ? 1 : 0.1} //Sharply decrease opacity if not to be shown
+                  fill={cellColors[point.celltype.split('-')[1]] || "black"}
+                  rotate={0}
                   onMouseMove={(event) => {
-                    showTooltip({
+                    toBeShown && showTooltip({
                       tooltipTop: event.pageY,
                       tooltipLeft: event.pageX,
                       tooltipData: {
                         cell: experimentInfo[point.celltype].description,
                         enrichment: point.enrichment,
                         enrichmentP: point.enrichment_p,
+                        enrichmentStdErr: point.enrichment_std_error,
                         percentageSNPs: point.snps
                       }
                     })
                   }}
                   onMouseLeave={() => {
-                    hideTooltip()
+                    toBeShown && hideTooltip()
                   }}
                 />
-                :
+              )
+            } else { //If unstimulated, represent as circle
+              return (
                 <Circle
                   key={`${point.study}-${i}`}
                   r={5}
+                  opacity={toBeShown ? 1 : 0.1} //Sharply decrease opacity if not to be shown
                   cx={xScale(i)}
                   cy={yScale(point.enrichment)}
-                  opacity={0.1}
-                  fill={newColors[point.celltype.split('-')[1]] || "black"}
+                  fill={cellColors[point.celltype.split('-')[1]] || "black"}
+                  onMouseMove={(event) => {
+                    toBeShown && showTooltip({
+                      tooltipTop: event.pageY,
+                      tooltipLeft: event.pageX,
+                      tooltipData: {
+                        cell: experimentInfo[point.celltype].description,
+                        enrichment: point.enrichment,
+                        enrichmentP: point.enrichment_p,
+                        enrichmentStdErr: point.enrichment_std_error,
+                        percentageSNPs: point.snps
+                      }
+                    })
+                  }}
+                  onMouseLeave={() => {
+                    toBeShown && hideTooltip()
+                  }}
                 />
-            )
+              )
+            }
           })}
         </Group>
       </svg>
@@ -123,7 +148,7 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
           left={tooltipLeft}
           style={{ ...defaultTooltipStyles, backgroundColor: '#283238', color: 'white' }}
         >
-          <div style={{maxWidth: "20rem"}}>
+          <div style={{ maxWidth: "20rem" }}>
             <p><b>Cell:</b> {tooltipData.cell}</p>
           </div>
           <br />
@@ -132,6 +157,9 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
           </div>
           <div>
             <p><b>Enrichment p-value:</b> {tooltipData.enrichmentP.toPrecision(2)}</p>
+          </div>
+          <div>
+            <p><b>Enrichment Std Error:</b> {tooltipData.enrichmentStdErr.toPrecision(2)}</p>
           </div>
           <div>
             <p><b>Percentage of SNPs:</b> {tooltipData.percentageSNPs.toPrecision(2)}</p>
