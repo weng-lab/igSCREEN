@@ -7,6 +7,7 @@ import { Group } from "@visx/group";
 import { experimentInfo, cellColors } from "../icres/consts"
 import { defaultStyles as defaultTooltipStyles, useTooltip, TooltipWithBounds } from '@visx/tooltip';
 import { Text } from '@visx/text';
+import { MouseEvent } from "react";
 
 type Props = {
   width: number;
@@ -29,6 +30,30 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
 
   const dataMin: number = Math.min(...data.map(x => x.enrichment))
   const dataMax: number = Math.max(...data.map(x => x.enrichment))
+
+  const handleMouseMove = (event: MouseEvent<SVGPolygonElement | SVGCircleElement, globalThis.MouseEvent>, point: LDSCDataPoint) => {
+    showTooltip({
+      tooltipTop: event.pageY,
+      tooltipLeft: event.pageX,
+      tooltipData: {
+        cell: experimentInfo[point.celltype].description,
+        enrichment: point.enrichment,
+        enrichmentP: point.enrichment_p,
+        enrichmentStdErr: point.enrichment_std_error,
+        percentageSNPs: point.snps
+      }
+    })
+    event.currentTarget.setAttribute("stroke", "black")
+    event.currentTarget.setAttribute("transform", "scale(1.5)")
+    document.getElementById(`stdErr-${point.celltype}`).setAttribute("stroke", "black")
+  }
+
+  const handleMouseLeave = (event: MouseEvent<SVGPolygonElement | SVGCircleElement, globalThis.MouseEvent>, point: LDSCDataPoint) => {
+    hideTooltip()
+    event.currentTarget.setAttribute("stroke", "none")
+    event.currentTarget.setAttribute("transform", "scale(1)")
+    document.getElementById(`stdErr-${point.celltype}`).setAttribute("stroke", "none")
+  }
 
   const orderedData = [...data]
     .sort((a, b) => {
@@ -84,72 +109,50 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
             const stimulated = point.celltype.split("-")[point.celltype.split("-").length - 1] === "S"
             const toBeShown = point.enrichment_p <= pValCutoff && (stimView === "S" && stimulated || stimView === "U" && !stimulated || stimView === "B")
 
-            if (stimulated) { //If stimulated, represent as diamond
-              return (
-                <Polygon
-                  key={`${point.study}-${i}`}
-                  center={{x: xScale(i), y: yScale(point.enrichment)}}
-                  sides={3}
-                  size={6}
-                  opacity={toBeShown ? 1 : 0.1} //Sharply decrease opacity if not to be shown
-                  fill={cellColors[point.celltype.split('-')[1]] || "black"}
-                  rotate={90}
-                  style={{transformOrigin: `${xScale(i)}px ${yScale(point.enrichment)}px`}}
-                  onMouseMove={(event) => {
-                    showTooltip({
-                      tooltipTop: event.pageY,
-                      tooltipLeft: event.pageX,
-                      tooltipData: {
-                        cell: experimentInfo[point.celltype].description,
-                        enrichment: point.enrichment,
-                        enrichmentP: point.enrichment_p,
-                        enrichmentStdErr: point.enrichment_std_error,
-                        percentageSNPs: point.snps
-                      }
-                    })
-                    event.currentTarget.setAttribute("stroke", "black")
-                    event.currentTarget.setAttribute("transform", "scale(1.5)")
-                  }}
-                  onMouseLeave={(event) => {
-                    hideTooltip()
-                    event.currentTarget.setAttribute("stroke", "none")
-                    event.currentTarget.setAttribute("transform", "scale(1)")
-                  }}
-                />
-              )
-            } else { //If unstimulated, represent as circle
-              return (
-                <Circle
-                  key={`${point.study}-${i}`}
-                  r={5}
-                  opacity={toBeShown ? 1 : 0.1} //Sharply decrease opacity if not to be shown
-                  cx={xScale(i)}
-                  cy={yScale(point.enrichment)}
-                  fill={cellColors[point.celltype.split('-')[1]] || "black"}
-                  style={{transformOrigin: `${xScale(i)}px ${yScale(point.enrichment)}px`}}
-                  onMouseMove={(event) => {
-                    showTooltip({
-                      tooltipTop: event.pageY,
-                      tooltipLeft: event.pageX,
-                      tooltipData: {
-                        cell: experimentInfo[point.celltype].description,
-                        enrichment: point.enrichment,
-                        enrichmentP: point.enrichment_p,
-                        enrichmentStdErr: point.enrichment_std_error,
-                        percentageSNPs: point.snps
-                      }
-                    })
-                    event.currentTarget.setAttribute("stroke", "black")
-                    event.currentTarget.setAttribute("transform", "scale(1.5)")
-                  }}
-                  onMouseLeave={(event) => {
-                    hideTooltip()
-                    event.currentTarget.setAttribute("stroke", "none")
-                    event.currentTarget.setAttribute("transform", "scale(1)")
-                  }}
-                />
-              )
+            const commonProps = {
+              opacity: toBeShown ? 1 : 0.1, //Sharply decrease opacity if not to be shown
+              fill: cellColors[point.celltype.split('-')[1]] || "black",
+              style: { transformOrigin: `${xScale(i)}px ${yScale(point.enrichment)}px` },
+              onMouseMove: (event) => handleMouseMove(event, point),
+              onMouseLeave: (event) => handleMouseLeave(event, point)
             }
+
+            return (
+              <Group key={`datapoint-${point.celltype}`}>
+                {/* Standard error */}
+                <Group id={`stdErr-${point.celltype}`}>
+                  <Line
+                    from={{ x: xScale(i), y: yScale(point.enrichment - point.enrichment_std_error) }}
+                    to={{ x: xScale(i), y: yScale(point.enrichment + point.enrichment_std_error) }}
+                  />
+                  <Line
+                    from={{ x: xScale(i - 2), y: yScale(point.enrichment - point.enrichment_std_error) }}
+                    to={{ x: xScale(i + 2), y: yScale(point.enrichment - point.enrichment_std_error) }}
+                  />
+                  <Line
+                    from={{ x: xScale(i - 2), y: yScale(point.enrichment + point.enrichment_std_error) }}
+                    to={{ x: xScale(i + 2), y: yScale(point.enrichment + point.enrichment_std_error) }}
+                  />
+                </Group>
+                {/* Datapoint */}
+                {stimulated ?
+                  <Polygon
+                    center={{ x: xScale(i), y: yScale(point.enrichment) }}
+                    sides={3}
+                    size={6}
+                    rotate={90}
+                    {...commonProps}
+                  />
+                  :
+                  <Circle
+                    r={5}
+                    cx={xScale(i)}
+                    cy={yScale(point.enrichment)}
+                    {...commonProps}
+                  />
+                }
+              </Group>
+            )
           })}
         </Group>
         <Text x={width - 10} y={height - 10} textAnchor="end" fontSize={12}>Colors represent cell type</Text>
@@ -171,7 +174,7 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
             <p><b>Enrichment p-value:</b> {tooltipData.enrichmentP.toPrecision(2)}</p>
           </div>
           <div>
-            <p><b>Enrichment Std Error:</b> {tooltipData.enrichmentStdErr.toPrecision(2)}</p>
+            <p><b>Enrichment Std Error:</b> {tooltipData.enrichmentStdErr.toFixed(2)}</p>
           </div>
           <div>
             <p><b>Percentage of SNPs:</b> {tooltipData.percentageSNPs.toPrecision(2)}</p>
