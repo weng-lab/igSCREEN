@@ -66,7 +66,7 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
     })
   // .filter(x => x.enrichment_p < pValCutoff)
 
-  const spaceForAxis = 60
+  const spaceForAxis = 70
   const paddingRight = 20
   const paddingTop = 20
   const paddingBottom = 20
@@ -103,7 +103,9 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
           <Line stroke="black" opacity={0.3} from={{ x: 0, y: yScale(0) }} to={{ x: plotWidth, y: yScale(0) }} />
           <AxisLeft
             label="Heritability Enrichment"
+            labelProps={{fontSize: 14}}
             scale={yScale}
+            
           />
           {orderedData.map((point, i) => {
             const stimulated = point.celltype.split("-")[point.celltype.split("-").length - 1] === "S"
@@ -155,7 +157,7 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
             )
           })}
         </Group>
-        <Text x={width - 10} y={height - 10} textAnchor="end" fontSize={12}>Colors represent cell type</Text>
+        <Text x={width - 10} y={20} textAnchor="end" fontSize={12}>Colors represent cell type</Text>
       </svg>
       {tooltipOpen && tooltipData && (
         <TooltipWithBounds
