@@ -9,7 +9,8 @@ import { LegendOrdinal, LegendItem, LegendLabel } from '@visx/legend';
 import { scaleOrdinal } from '@visx/scale';
 import { useTooltip, useTooltipInPortal, defaultStyles } from '@visx/tooltip';
 import { localPoint } from '@visx/event';
-import { cellColors } from "./consts";
+import { Text } from "@visx/text";
+import { experimentInfo, cellColors } from "./consts"
 
 type TooltipData = {
     bardata: { class: string, subclass: string, description: string , ct_description?: string, value: number }
@@ -88,7 +89,7 @@ export const AtacBarPlot: React.FC<{plottitle?: string,  byct?: boolean, study: 
     const yMinActive = Math.min(...props.barplotdata?.map((d) => d.value).filter(x => x !== -10))
 
     //Transform all -10 values to yMinActive - 1 rounded down to nearest whole number
-    const transformedData = props.barplotdata?.map(x => x.value === -10 ? {...x, value: floorToHalf(yMinActive - 0.5)} : x)
+    let transformedData = props.barplotdata?.map(x => x.value === -10 ? {...x, value: floorToHalf(yMinActive - 0.5)} : x)
 
     const maxVal = Math.max(...transformedData.map((d) => d.value ))
 
@@ -139,7 +140,6 @@ export const AtacBarPlot: React.FC<{plottitle?: string,  byct?: boolean, study: 
       range: ["#ff0000"]
     });
 
-    console.log(transformedData)
     return(
     <div style={{ position: 'relative' }}>
       <svg width={width} height={height} ref={containerRef}>    
@@ -162,7 +162,6 @@ export const AtacBarPlot: React.FC<{plottitle?: string,  byct?: boolean, study: 
                   left={barGroup.x0}
                 >
                   {barGroup.bars.map((bar, i) => (
-                    <>
                     <rect
                       key={`bar-group-bar-${barGroup.index}-${bar.index}-${bar.value}-${bar.key}`}
                       x={bar.x}
@@ -192,8 +191,6 @@ export const AtacBarPlot: React.FC<{plottitle?: string,  byct?: boolean, study: 
                       }}
                       
                     />
-                  
-                    </>
                   ))}
                 </Group>
               )})
@@ -266,11 +263,10 @@ export const AtacBarPlot: React.FC<{plottitle?: string,  byct?: boolean, study: 
       </svg>
       <div className="legends">    
         <CellTypesLegends title={`${props.study} immune cell types`} plottitle={props.plottitle}>
-          <LegendOrdinal  scale={ordinalColorScale} labelFormat={(label) => `${label}`}>
+          <LegendOrdinal scale={ordinalColorScale} labelFormat={(label) => `${label}`}>
             {(labels) => (
               <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '10px' }}>
                 {labels.map((label, i) => { 
-                  console.log(label)
                   return (                  
                   <LegendItem
                     key={`legend-quantile-${i}`}
@@ -281,9 +277,9 @@ export const AtacBarPlot: React.FC<{plottitle?: string,  byct?: boolean, study: 
                       <rect fill={label.value} width={legendGlyphSize} height={legendGlyphSize} />
                     </svg>
                     <LegendLabel align="left" margin="0 0 0 4px" color={"#ff0000"}>
-                      <text className={"labelcolor"}>
+                      <p className={"labelcolor"}>
                         {transformedData.find(b => b.celltype === label.text)?.ct_description || (transformedData.find(b => b.celltype === label.text) ? transformedData.find(b => b.celltype === label.text).description : label.text)}
-                      </text>
+                      </p>
                     </LegendLabel>
                   </LegendItem>
                   

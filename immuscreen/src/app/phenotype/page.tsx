@@ -27,7 +27,7 @@ export default function Phenotype() {
   const [stimView, setStimView] = useState<"S" | "U" | "B">("B")
 
   /**
-   * @todo type gql stuff https://www.apollographql.com/docs/react/development-testing/static-typing/
+   * @todo type gql queries and return data https://www.apollographql.com/docs/react/development-testing/static-typing/
    */
   const ICRE_STUDIES = gql`
     {
@@ -70,6 +70,7 @@ export default function Phenotype() {
 
   const rawData: LDSCDataPoint[] = dataLDSC && dataLDSC.iCRELdrQuery
 
+  // In the slider, the "value" is used to place marks equally on track. The scale function below is used to pull out the true value that we want
   const pValMarks = [
     {
       value: 0,
@@ -116,12 +117,12 @@ export default function Phenotype() {
           <Box>
             <FormLabel>P-value Cutoff</FormLabel>
             <Slider
-              min={0}
+              min={0} //Min/Max is 0/4 since that is the true value of the marks above
               max={4}
               defaultValue={3}
-              scale={scale}
+              scale={scale} //Allows the slider to access the scaled values which we want displayed
               aria-label="Restricted values"
-              onChange={(event: Event, value: number, activeThumb: number) => setPValCutoff(scale(value))}
+              onChange={(event: Event, value: number, activeThumb: number) => setPValCutoff(scale(value))} //Sets p value cutoff to scaled value
               getAriaValueText={(value: number, index: number) => value.toString()}
               step={null}
               valueLabelDisplay="auto"

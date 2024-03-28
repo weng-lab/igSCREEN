@@ -28,10 +28,7 @@ interface TooltipData {
 export default function LDSCplot({ width, height, data, pValCutoff, stimView }: Props) {
   const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip, updateTooltip } = useTooltip<TooltipData>();
 
-  const dataMin: number = Math.min(...data.map(x => x.enrichment))
-  const dataMax: number = Math.max(...data.map(x => x.enrichment))
-
-  const handleMouseMove = (event: MouseEvent<SVGPolygonElement | SVGCircleElement, globalThis.MouseEvent>, point: LDSCDataPoint) => {
+  const handleHover = (event: MouseEvent<SVGPolygonElement | SVGCircleElement, globalThis.MouseEvent>, point: LDSCDataPoint) => {
     showTooltip({
       tooltipTop: event.pageY,
       tooltipLeft: event.pageX,
@@ -43,12 +40,12 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
         percentageSNPs: point.snps
       }
     })
-    event.currentTarget.setAttribute("stroke", "black")
-    event.currentTarget.setAttribute("transform", "scale(1.5)")
-    document.getElementById(`stdErr-${point.celltype}`).setAttribute("stroke", "black")
+    event.currentTarget.setAttribute("stroke", "black") //Outline point
+    event.currentTarget.setAttribute("transform", "scale(1.5)") //Grow point
+    document.getElementById(`stdErr-${point.celltype}`).setAttribute("stroke", "black") //Show std error bars
   }
 
-  const handleMouseLeave = (event: MouseEvent<SVGPolygonElement | SVGCircleElement, globalThis.MouseEvent>, point: LDSCDataPoint) => {
+  const handleLeaveHover = (event: MouseEvent<SVGPolygonElement | SVGCircleElement, globalThis.MouseEvent>, point: LDSCDataPoint) => {
     hideTooltip()
     event.currentTarget.setAttribute("stroke", "none")
     event.currentTarget.setAttribute("transform", "scale(1)")
@@ -64,7 +61,6 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
         return 0
       }
     })
-  // .filter(x => x.enrichment_p < pValCutoff)
 
   const spaceForAxis = 70
   const paddingRight = 20
@@ -84,6 +80,9 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
       }),
     [plotWidth, data],
   );
+
+  const dataMin: number = Math.min(...data.map(x => x.enrichment))
+  const dataMax: number = Math.max(...data.map(x => x.enrichment))
 
   //Input to this is the enrichment value of a point. Output is its vertical position on the scale
   const yScale = useMemo(
@@ -109,14 +108,15 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
           />
           {orderedData.map((point, i) => {
             const stimulated = point.celltype.split("-")[point.celltype.split("-").length - 1] === "S"
+            // Passes p-val cutoff and is correct stimulation
             const toBeShown = point.enrichment_p <= pValCutoff && (stimView === "S" && stimulated || stimView === "U" && !stimulated || stimView === "B")
 
             const commonProps = {
               opacity: toBeShown ? 1 : 0.1, //Sharply decrease opacity if not to be shown
               fill: cellColors[point.celltype.split('-')[1]] || "black",
-              style: { transformOrigin: `${xScale(i)}px ${yScale(point.enrichment)}px` },
-              onMouseMove: (event) => handleMouseMove(event, point),
-              onMouseLeave: (event) => handleMouseLeave(event, point)
+              style: { transformOrigin: `${xScale(i)}px ${yScale(point.enrichment)}px` }, //Needed so that scale transforms are applied correctly
+              onMouseMove: (event) => handleHover(event, point),
+              onMouseLeave: (event) => handleLeaveHover(event, point)
             }
 
             return (
@@ -184,7 +184,5 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
         </TooltipWithBounds>
       )}
     </div>
-
   )
-
 }

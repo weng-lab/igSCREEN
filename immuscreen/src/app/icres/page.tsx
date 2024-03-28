@@ -72,7 +72,7 @@ export default function Icres() {
     nextFetchPolicy: "cache-first",
     client,
   })
-  console.log(aloading,adata)
+  // console.log(aloading,adata)
 
 
 let barplotdata = icrezscoredata && icrezscoredata.calderoncorcesAtacQuery.map(ic=>{
@@ -128,7 +128,7 @@ function handleSubmit() {
     router.push(`/icres?chromosome=${chromosome}&start=${start}&end=${end}`)
 }
 
-console.log("coordinates", adata && adata.iCREQuery[0].coordinates)
+// console.log("coordinates", adata && adata.iCREQuery[0].coordinates)
   return !searchParams.get('accession') && !searchParams.get('chromosome') ?  (
   <main>
     <Grid2 container spacing={6} sx={{ mr: "auto", ml: "auto", mt: "3rem" }}>
