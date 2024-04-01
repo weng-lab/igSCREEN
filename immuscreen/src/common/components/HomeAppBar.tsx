@@ -21,7 +21,8 @@ const pageLinks = [
       { pageName: "Gene", link: "/gene" },
       { pageName: "SNP", link: "/snp" },
       { pageName: "iCREs", link: "/icres" },
-      { pageName: "Cell Lineage", link: "/celllineage"}
+      { pageName: "Cell Lineage", link: "/celllineage"},
+      { pageName: "Phenotype", link: "/phenotype"}
     ],
   }
 ]
