@@ -6,6 +6,6 @@ export const client = new ApolloClient({
   cache: new InMemoryCache(),
 })
 
-export const StyledTab = styled(Tab)(() => ({
+export const StyledTab = styled(Tab)({
   textTransform: "none",
-}))
+})
