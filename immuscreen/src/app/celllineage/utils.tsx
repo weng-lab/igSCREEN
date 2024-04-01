@@ -451,7 +451,6 @@ export const cellLineageTreeStaticInfo: { [key in CellName]: StaticCellTypeInfo 
  * @returns array of strings or string arrays. If values are within a nested array, they need to be unioned.
  */
 export const extractQueryValues = (cell: StaticCellTypeInfo, want: "S" | "U" | "B"): (string[]) => {
-  console.log(cell)
   switch (want) {
     case "U": return cell.queryValues?.unstimulated ? [... Object.values(cell.queryValues.unstimulated).flat()] : []
     case "S": return cell.queryValues?.stimulated ? [... Object.values(cell.queryValues.stimulated).flat()] : []

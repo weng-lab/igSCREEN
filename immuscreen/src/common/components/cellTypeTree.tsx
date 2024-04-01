@@ -36,17 +36,20 @@ type CellTypeTreeProps = {
   width: number
   height: number
   cellTypeState: CellLineageTreeState
-  setCellTypeState: React.Dispatch<React.SetStateAction<CellLineageTreeState>>
-  stimulateMode: boolean
-  setStimulateMode: React.Dispatch<React.SetStateAction<boolean>>
+  setCellTypeState?: React.Dispatch<React.SetStateAction<CellLineageTreeState>>
+  stimulateMode?: boolean
+  setStimulateMode?: React.Dispatch<React.SetStateAction<boolean>>
   orientation: "vertical" | "horizontal"
-  selectionLimit?: number
-  triggerAlert: (message: string) => void
+  selectionLimit?: number | "none"
+  triggerAlert?: (message: string) => void
 }
 
 const stimulateCursor = "url(/stimulateCursor.png) 5 30, cell"
 
-export default function CellTypeTree({ width: totalWidth, height: totalHeight, orientation, cellTypeState, setCellTypeState, stimulateMode, setStimulateMode, selectionLimit, triggerAlert }: CellTypeTreeProps) {
+/**
+ * Cell Lineage Tree. Optional Props only optional if the tree isn't interactive (generateCellLineageTreeState called with param #2 set to false).
+ */
+export default function CellTypeTree({ width: totalWidth, height: totalHeight, orientation, cellTypeState, setCellTypeState, stimulateMode = false, setStimulateMode, selectionLimit = "none", triggerAlert }: CellTypeTreeProps) {
 
   const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip, updateTooltip } = useTooltip<TooltipData>();
 
@@ -79,10 +82,10 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
   /**
    * Rotates the stimulation between U/S/B in that order
    */
-  const toggleStimulation = (current: "U" | "S" | "B", numberSelected: number, selectionLimit: number): "U" | "S" | "B"  => {
+  const toggleStimulation = (current: "U" | "S" | "B", numberSelected: number, selectionLimit: number | "none"): "U" | "S" | "B"  => {
     switch (current) {
-      case ("U"): {if (numberSelected === selectionLimit){return "S"} else {return "S"}}
-      case ("S"): {if (numberSelected === selectionLimit){return "U"} else {return "B"}}
+      case ("U"): {if (selectionLimit === "none" || numberSelected === selectionLimit){return "S"} else {return "S"}}
+      case ("S"): {if (selectionLimit === "none" || numberSelected === selectionLimit){return "U"} else {return "B"}}
       case ("B"): return "U"
     }
   }
@@ -91,13 +94,13 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Alt" || event.key === "Meta") {
-        setStimulateMode(true);
+        setStimulateMode && setStimulateMode(true);
       }
     };
 
     const handleKeyUp = (event: KeyboardEvent) => {
       if (event.key === "Alt" || event.key === "Meta" || event.key === "Escape") {
-        setStimulateMode(false);
+        setStimulateMode && setStimulateMode(false);
       }
     };
 
@@ -367,7 +370,7 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
             const numberSelected = Object.values(cellTypeState).reduce((count, cellInfo: DynamicCellTypeInfo) => cellInfo.selected ? cellInfo.stimulated === "B" ? count + 2 : count + 1 : count, 0)
             if (stimulateMode) {
               if (node.data.stimulable) {
-                setCellTypeState({
+                setCellTypeState && setCellTypeState({
                   ...cellTypeState,
                   [node.data.id]: {
                     ...cellTypeState[node.data.id],
@@ -377,12 +380,12 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
               }
             } else if (node.data.selectable) {
               //If there is room for selection, select it. Or always allow deselection
-              if (((node.data.stimulated === "B" ? numberSelected + 2 : numberSelected + 1) <= selectionLimit) || node.data.selected) {
-                setCellTypeState({
+              if (selectionLimit === "none" || ((node.data.stimulated === "B" ? numberSelected + 2 : numberSelected + 1) <= selectionLimit) || node.data.selected) {
+                setCellTypeState && setCellTypeState({
                   ...cellTypeState,
                   [node.data.id]: { ...cellTypeState[node.data.id], selected: !cellTypeState[node.data.id].selected }
                 })
-              } else triggerAlert("Maximum cell selection reached (6)")
+              } else triggerAlert && triggerAlert("Maximum cell selection reached (6)")
             } 
           }}
           onMouseEnter={
