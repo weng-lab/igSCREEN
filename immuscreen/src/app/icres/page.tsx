@@ -128,7 +128,8 @@ function handleSubmit() {
     router.push(`/icres?chromosome=${chromosome}&start=${start}&end=${end}`)
 }
 
-console.log("coordinates", adata && adata.iCREQuery[0].coordinates)
+// console.log("coordinates", adata && adata.iCREQuery[0].coordinates)
+console.log("active cells: ", adata && adata.iCREQuery[0].celltypes)
   return !searchParams.get('accession') && !searchParams.get('chromosome') ?  (
   <main>
     <Grid2 container spacing={6} sx={{ mr: "auto", ml: "auto", mt: "3rem" }}>

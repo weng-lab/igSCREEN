@@ -3,8 +3,8 @@ import { Group } from '@visx/group';
 import { Tree, hierarchy } from '@visx/hierarchy';
 import { HierarchyPointNode, HierarchyPointLink } from '@visx/hierarchy/lib/types';
 import { LinkHorizontal, LinkVertical } from '@visx/shape';
-import { CellTypeInfo, CellTypes } from '../../app/celllineage/page';
 import { defaultStyles as defaultTooltipStyles, useTooltip, TooltipWithBounds } from '@visx/tooltip';
+import { CellLineageTreeState, DynamicCellTypeInfo, StaticCellTypeInfo, cellLineageTreeStaticInfo } from '../../app/celllineage/utils';
 
 const linkStroke = '#000000';
 const background = 'transparent';
@@ -12,7 +12,7 @@ const fontSize = 12
 
 const fadedCellOpacity = 0.3
 
-interface CellNode extends CellTypeInfo {
+interface CellNode extends StaticCellTypeInfo, DynamicCellTypeInfo {
   children?: CellNode[];
 }
 
@@ -35,8 +35,8 @@ interface TooltipData {
 type CellTypeTreeProps = {
   width: number
   height: number
-  cellTypeState: CellTypes
-  setCellTypeState: React.Dispatch<React.SetStateAction<CellTypes>>
+  cellTypeState: CellLineageTreeState
+  setCellTypeState: React.Dispatch<React.SetStateAction<CellLineageTreeState>>
   stimulateMode: boolean
   setStimulateMode: React.Dispatch<React.SetStateAction<boolean>>
   orientation: "vertical" | "horizontal"
@@ -116,28 +116,35 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
     return (
       {
         ...cellTypeState.HSC,
+        ...cellLineageTreeStaticInfo.HSC,
         children: [
           {
             ...cellTypeState.MPP,
+            ...cellLineageTreeStaticInfo.MPP,
             children: [
               {
                 ...cellTypeState.CMP,
+                ...cellLineageTreeStaticInfo.CMP,
                 children: [
                   {
                     ...cellTypeState.GMP,
+                    ...cellLineageTreeStaticInfo.GMP,
                     children: [
                       // {
                       //   displayName: 'Neutrophil',
                       //   ...uninteractiveNode,
                       // },
                       {
-                        ...cellTypeState.pDCs
+                        ...cellTypeState.pDCs,
+                        ...cellLineageTreeStaticInfo.pDCs,  
                       },
                       {
-                        ...cellTypeState.Myeloid_DCs
+                        ...cellTypeState.Myeloid_DCs,
+                        ...cellLineageTreeStaticInfo.Myeloid_DCs,
                       },
                       {
-                        ...cellTypeState.Monocytes
+                        ...cellTypeState.Monocytes,
+                        ...cellLineageTreeStaticInfo.Monocytes,
                       }
                     ]
                   }
@@ -145,17 +152,21 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
               },
               {
                 ...cellTypeState.MEP,
+                ...cellLineageTreeStaticInfo.MEP,
                 children: [
                   {
                     ...cellTypeState.Ery,
+                    ...cellLineageTreeStaticInfo.Ery,
                   }
                 ]
               },
               {
-                ...cellTypeState.LPMP,
+                ...cellTypeState.LMPP,
+                ...cellLineageTreeStaticInfo.LMPP,
                 children: [
                   {
                     ...cellTypeState.CLP,
+                    ...cellLineageTreeStaticInfo.CLP,
                     children: [
                       {
                         displayName: 'Double-negative cell',
@@ -163,15 +174,19 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
                         children: [
                           {
                             ...cellTypeState.Nkcell,
+                            ...cellLineageTreeStaticInfo.Nkcell,
                             children: [
                               {
                                 ...cellTypeState.Immature_NK,
+                                ...cellLineageTreeStaticInfo.Immature_NK,
                                 children: [
                                   {
                                     ...cellTypeState.Mature_NK,
+                                    ...cellLineageTreeStaticInfo.Mature_NK,
                                     children: [
                                       {
                                         ...cellTypeState.Memory_NK,
+                                        ...cellLineageTreeStaticInfo.Memory_NK,
                                       }
                                     ]
                                   }
@@ -181,6 +196,7 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
                           },
                           {
                             ...cellTypeState.Gamma_delta_T,
+                            ...cellLineageTreeStaticInfo.Gamma_delta_T,
                           },
                           {
                             displayName: 'CD4 immature/single-positive cell',
@@ -192,27 +208,35 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
                                 children: [
                                   {
                                     ...cellTypeState.CD4Tcell,
+                                    ...cellLineageTreeStaticInfo.CD4Tcell,
                                     children: [
                                       {
                                         ...cellTypeState.Effector_CD4pos_T,
+                                        ...cellLineageTreeStaticInfo.Effector_CD4pos_T,
                                         children: [
                                           {
                                             ...cellTypeState.Naive_Teffs,
+                                            ...cellLineageTreeStaticInfo.Naive_Teffs,
                                             children: [
                                               {
                                                 ...cellTypeState.Memory_Teffs,
+                                                ...cellLineageTreeStaticInfo.Memory_Teffs,
                                                 children: [
                                                   {
-                                                    ...cellTypeState.Th1_precursors
+                                                    ...cellTypeState.Th1_precursors,
+                                                    ...cellLineageTreeStaticInfo.Th1_precursors,
                                                   },
                                                   {
-                                                    ...cellTypeState.Th2_precursors
+                                                    ...cellTypeState.Th2_precursors,
+                                                    ...cellLineageTreeStaticInfo.Th2_precursors,
                                                   },
                                                   {
-                                                    ...cellTypeState.Th17_precursors
+                                                    ...cellTypeState.Th17_precursors,
+                                                    ...cellLineageTreeStaticInfo.Th17_precursors,
                                                   },
                                                   {
-                                                    ...cellTypeState.Follicular_T_Helper
+                                                    ...cellTypeState.Follicular_T_Helper,
+                                                    ...cellLineageTreeStaticInfo.Follicular_T_Helper,
                                                   }
                                                 ]
                                               }
@@ -222,12 +246,15 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
                                       },
                                       {
                                         ...cellTypeState.Regulatory_T,
+                                        ...cellLineageTreeStaticInfo.Regulatory_T,
                                         children: [
                                           {
                                             ...cellTypeState.Naive_Tregs,
+                                            ...cellLineageTreeStaticInfo.Naive_Tregs,
                                             children: [
                                               {
-                                                ...cellTypeState.Memory_Tregs
+                                                ...cellTypeState.Memory_Tregs,
+                                                ...cellLineageTreeStaticInfo.Memory_Tregs,
                                               }
                                             ]
                                           }
@@ -237,15 +264,19 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
                                   },
                                   {
                                     ...cellTypeState.CD8pos_T,
+                                    ...cellLineageTreeStaticInfo.CD8pos_T,
                                     children: [
                                       {
                                         ...cellTypeState.Naive_CD8_T,
+                                        ...cellLineageTreeStaticInfo.Naive_CD8_T,
                                         children: [
                                           {
-                                            ...cellTypeState.Central_memory_CD8pos_T
+                                            ...cellTypeState.Central_memory_CD8pos_T,
+                                            ...cellLineageTreeStaticInfo.Central_memory_CD8pos_T,
                                           },
                                           {
-                                            ...cellTypeState.Effector_memory_CD8pos_T
+                                            ...cellTypeState.Effector_memory_CD8pos_T,
+                                            ...cellLineageTreeStaticInfo.Effector_memory_CD8pos_T,
                                           }
                                         ]
                                       }
@@ -259,15 +290,19 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
                       },
                       {
                         ...cellTypeState.Bulk_B,
+                        ...cellLineageTreeStaticInfo.Bulk_B,
                         children: [
                           {
                             ...cellTypeState.Naive_B,
+                            ...cellLineageTreeStaticInfo.Naive_B,
                             children: [
                               {
                                 ...cellTypeState.Mem_B,
+                                ...cellLineageTreeStaticInfo.Mem_B,
                                 children: [
                                   {
-                                    ...cellTypeState.Plasmablasts
+                                    ...cellTypeState.Plasmablasts,
+                                    ...cellLineageTreeStaticInfo.Plasmablasts,
                                   }
                                 ]
                               }
@@ -326,10 +361,10 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
           </tspan>
         </text>
         <Group
-          cursor={stimulateMode ? node.data.stimulable ? stimulateCursor : "not-allowed" : "pointer"}
+          cursor={node.data.selectable ? (stimulateMode ? node.data.stimulable ? stimulateCursor : "not-allowed" : "pointer") : undefined}
           opacity={(node.data.selected || Object.values(cellTypeState).every(cellType => cellType.selected === false)) ? 1 : fadedCellOpacity}
           onClick={() => {
-            const numberSelected = Object.values(cellTypeState).reduce((count, cellInfo: CellTypeInfo) => cellInfo.selected ? cellInfo.stimulated === "B" ? count + 2 : count + 1 : count, 0)
+            const numberSelected = Object.values(cellTypeState).reduce((count, cellInfo: DynamicCellTypeInfo) => cellInfo.selected ? cellInfo.stimulated === "B" ? count + 2 : count + 1 : count, 0)
             if (stimulateMode) {
               if (node.data.stimulable) {
                 setCellTypeState({
@@ -348,7 +383,7 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
                   [node.data.id]: { ...cellTypeState[node.data.id], selected: !cellTypeState[node.data.id].selected }
                 })
               } else triggerAlert("Maximum cell selection reached (6)")
-            }
+            } 
           }}
           onMouseEnter={
             (event: React.MouseEvent<SVGImageElement, MouseEvent>) => {

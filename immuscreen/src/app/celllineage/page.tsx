@@ -17,64 +17,8 @@ import FlashAutoIcon from '@mui/icons-material/FlashAuto';
 import UndoOutlinedIcon from '@mui/icons-material/UndoOutlined';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { Download, Sync } from "@mui/icons-material";
+import { StaticCellTypeInfo, CellLineageTreeState, downloadSVG, extractQueryValues, generateCellLineageTreeState, DynamicCellTypeInfo, CellName, cellLineageTreeStaticInfo } from "./utils";
 
-//Info for each cell type
-export interface CellTypeInfo {
-  readonly id: string; // used to set state of correct celltype afer its content is spread (...) into tree data and stripped of key name. Needs to match key exactly
-  readonly displayName: string;
-  readonly unstimImagePath: string;
-  readonly stimImagePath?: string;
-  selected: boolean;
-  stimulated: "S" | "U" | "B";
-  readonly selectable: boolean;
-  readonly stimulable: boolean;
-  readonly queryValues?: {
-    readonly unstimulated: { Calderon?: string | string[], Corces?: string | string[] };
-    readonly stimulated?: { Calderon: string | string[] }
-  }
-  //Counts are currently hardcoded below.
-  readonly unstimCount: number
-  readonly stimCount?: number
-}
-
-export interface CellTypes {
-  Myeloid_DCs: CellTypeInfo,
-  pDCs: CellTypeInfo,
-  Naive_B: CellTypeInfo,
-  Mem_B: CellTypeInfo,
-  Plasmablasts: CellTypeInfo,
-  Regulatory_T: CellTypeInfo,
-  Naive_Tregs: CellTypeInfo,
-  Memory_Tregs: CellTypeInfo,
-  Effector_CD4pos_T: CellTypeInfo,
-  Naive_Teffs: CellTypeInfo,
-  Memory_Teffs: CellTypeInfo,
-  Th1_precursors: CellTypeInfo,
-  Th2_precursors: CellTypeInfo,
-  Th17_precursors: CellTypeInfo,
-  Follicular_T_Helper: CellTypeInfo,
-  Naive_CD8_T: CellTypeInfo,
-  Central_memory_CD8pos_T: CellTypeInfo,
-  Effector_memory_CD8pos_T: CellTypeInfo,
-  Gamma_delta_T: CellTypeInfo,
-  Immature_NK: CellTypeInfo,
-  Mature_NK: CellTypeInfo,
-  Memory_NK: CellTypeInfo,
-  HSC: CellTypeInfo, //Hematopoetic Stem Cell
-  MPP: CellTypeInfo, //Multipotent Progenitor
-  CMP: CellTypeInfo, //Common Myeloid Progenitor
-  MEP: CellTypeInfo, //Megakaryocyte Erythroid Progenitor
-  Ery: CellTypeInfo, //Erythrocyte
-  GMP: CellTypeInfo, //Granulocyte-Monocyte Progenitors
-  LPMP: CellTypeInfo, //Lymphocyte-Primed Multipotent Progenitor
-  CLP: CellTypeInfo, //Common Lymphoid Progenitor
-  CD4Tcell: CellTypeInfo, //CD4+ Tcell
-  Nkcell: CellTypeInfo, //NK cell
-  //These are the cells which have data from both Calderon and Corces
-  Monocytes: CellTypeInfo, //Using Calderon "name". Using Calderon's Stimulated/Unstimulated. In Corces it is "Mono", and no stimulation info
-  Bulk_B: CellTypeInfo, //Using Calderon "name". Using Calderon's Stimulated/Unstimulated. In Corces it is "Bcell", and no stimulation info
-  CD8pos_T: CellTypeInfo, //Using Calderon "name". Using Calderon's Stimulated/Unstimulated. In Corces it is "CD8Tcell", and no stimulation info
-}
 
 type QueryGroup = {
   intersect?: string[][],
@@ -96,535 +40,16 @@ const classDisplaynames: { [key in CCRE_CLASS]: string } = {
   "PLS": "Promoter-Like Signature"
 }
 
-
-
 /**
  * Initial configuration of the cell type tree
  * To break displayName into multiple lines in the tree, use '/' instead of a space
  */
-const cellTypeInitialState: CellTypes = {
-  Monocytes: {
-    id: 'Monocytes',
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "Monocyte",
-    unstimImagePath: '/cellTypes/Monocytes-U.png',
-    stimImagePath: '/cellTypes/Monocytes-S.png',
-    stimulable: true,
-    queryValues: {
-      unstimulated: { Calderon: 'Monocytes-U', Corces: 'Mono' },
-      stimulated: { Calderon: 'Monocytes-S' }
-    },
-    unstimCount: 130780,
-    stimCount: 100461
-  },
-  Myeloid_DCs: {
-    id: 'Myeloid_DCs',
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "Myeloid/dendritic cell",
-    unstimImagePath: '/cellTypes/Myeloid_DCs-U.png',
-    stimulable: false,
-    queryValues: {
-      unstimulated: { Calderon: "Myeloid_DCs-U" }
-    },
-    unstimCount: 173394
-  },
-  pDCs: {
-    id: 'pDCs',
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "Plasmacytoid/dendritic cell",
-    unstimImagePath: '/cellTypes/pDCs-U.png',
-    stimulable: false,
-    queryValues: {
-      unstimulated: { Calderon: 'pDCs-U' }
-    },
-    unstimCount: 146515
-  },
-  Bulk_B: {
-    id: 'Bulk_B',
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "Bulk/B cell",
-    unstimImagePath: '/cellTypes/Bulk_B-U.png',
-    stimImagePath: '/cellTypes/Bulk_B-S.png',
-    stimulable: true,
-    queryValues: {
-      unstimulated: { Calderon: 'Bulk_B-U', Corces: "Bcell" },
-      stimulated: { Calderon: 'Bulk_B-S' }
-    },
-    unstimCount: 138138,
-    stimCount: 124969
-  },
-  Naive_B: {
-    id: 'Naive_B',
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "Naïve/B cell",
-    unstimImagePath: '/cellTypes/Naive_B-U.png',
-    stimImagePath: '/cellTypes/Naive_B-S.png',
-    stimulable: true,
-    queryValues: {
-      unstimulated: { Calderon: 'Naive_B-U' },
-      stimulated: { Calderon: 'Naive_B-S' }
-    },
-    unstimCount: 120624,
-    stimCount: 128979
-  },
-  Mem_B: {
-    id: 'Mem_B',
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "Memory/B cell",
-    unstimImagePath: '/cellTypes/Mem_B-U.png',
-    stimImagePath: '/cellTypes/Mem_B-S.png',
-    stimulable: true,
-    queryValues: {
-      unstimulated: { Calderon: 'Mem_B-U' },
-      stimulated: { Calderon: 'Mem_B-S' }
-    },
-    unstimCount: 122662,
-    stimCount: 129491
-  },
-  Plasmablasts: {
-    id: 'Plasmablasts',
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "Plasmablast",
-    unstimImagePath: '/cellTypes/Plasmablasts-U.png',
-    stimulable: false,
-    queryValues: {
-      unstimulated: { Calderon: 'Plasmablasts-U' }
-    },
-    unstimCount: 123042
-  },
-  Regulatory_T: {
-    id: 'Regulatory_T',
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "Regulatory/CD4+ T cell",
-    unstimImagePath: '/cellTypes/Regulatory_T-U.png',
-    stimImagePath: '/cellTypes/Regulatory_T-S.png',
-    stimulable: true,
-    queryValues: {
-      unstimulated: { Calderon: 'Regulatory_T-U' },
-      stimulated: { Calderon: 'Regulatory_T-S' }
-    },
-    unstimCount: 124481,
-    stimCount: 126696
-  },
-  Naive_Tregs: {
-    id: 'Naive_Tregs',
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "Naïve T/regulatory cell",
-    unstimImagePath: '/cellTypes/Naive_Tregs-U.png',
-    stimImagePath: '/cellTypes/Naive_Tregs-S.png',
-    stimulable: true,
-    queryValues: {
-      unstimulated: { Calderon: 'Naive_Tregs-U' },
-      stimulated: { Calderon: 'Naive_Tregs-S' }
-    },
-    unstimCount: 95731,
-    stimCount: 100068
-  },
-  Memory_Tregs: {
-    id: 'Memory_Tregs',
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "Memory T/regulatory cell",
-    unstimImagePath: '/cellTypes/Memory_Tregs-U.png',
-    stimImagePath: '/cellTypes/Memory_Tregs-S.png',
-    stimulable: true,
-    queryValues: {
-      unstimulated: { Calderon: 'Memory_Tregs-U' },
-      stimulated: { Calderon: 'Memory_Tregs-S' }
-    },
-    unstimCount: 125459,
-    stimCount: 121029
-  },
-  Effector_CD4pos_T: {
-    id: 'Effector_CD4pos_T',
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "Effector/CD4+ T cell",
-    unstimImagePath: '/cellTypes/Effector_CD4pos_T-U.png',
-    stimImagePath: '/cellTypes/Effector_CD4pos_T-S.png',
-    stimulable: true,
-    queryValues: {
-      unstimulated: { Calderon: 'Effector_CD4pos_T-U' },
-      stimulated: { Calderon: 'Effector_CD4pos_T-S' }
-    },
-    unstimCount: 123382,
-    stimCount: 137982
-  },
-  Naive_Teffs: {
-    id: 'Naive_Teffs',
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "Naïve T/effector cell",
-    unstimImagePath: '/cellTypes/Naive_Teffs-U.png',
-    stimImagePath: '/cellTypes/Naive_Teffs-S.png',
-    stimulable: true,
-    queryValues: {
-      unstimulated: { Calderon: 'Naive_Teffs-U' },
-      stimulated: { Calderon: 'Naive_Teffs-S' }
-    },
-    unstimCount: 117212,
-    stimCount: 137523
-  },
-  Memory_Teffs: {
-    id: 'Memory_Teffs',
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "Memory T/effector cell",
-    unstimImagePath: '/cellTypes/Memory_Teffs-U.png',
-    stimImagePath: '/cellTypes/Memory_Teffs-S.png',
-    stimulable: true,
-    queryValues: {
-      unstimulated: { Calderon: 'Memory_Teffs-U' },
-      stimulated: { Calderon: 'Memory_Teffs-S' }
-    },
-    unstimCount: 137523,
-    stimCount: 148833
-  },
-  Th1_precursors: {
-    id: 'Th1_precursors',
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "Th1/precursor",
-    unstimImagePath: '/cellTypes/Th1_precursors-U.png',
-    stimImagePath: '/cellTypes/Th1_precursors-S.png',
-    stimulable: true,
-    queryValues: {
-      unstimulated: { Calderon: 'Th1_precursors-U' },
-      stimulated: { Calderon: 'Th1_precursors-S' }
-    },
-    unstimCount: 121879,
-    stimCount: 145297
-  },
-  Th2_precursors: {
-    id: 'Th2_precursors',
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "Th2/precursor",
-    unstimImagePath: '/cellTypes/Th2_precursors-U.png',
-    stimImagePath: '/cellTypes/Th2_precursors-S.png',
-    stimulable: true,
-    queryValues: {
-      unstimulated: { Calderon: 'Th2_precursors-U' },
-      stimulated: { Calderon: 'Th2_precursors-S' }
-    },
-    unstimCount: 122826,
-    stimCount: 141664
-  },
-  Th17_precursors: {
-    id: 'Th17_precursors',
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "Th17/precursor",
-    unstimImagePath: '/cellTypes/Th17_precursors-U.png',
-    stimImagePath: '/cellTypes/Th17_precursors-S.png',
-    stimulable: true,
-    queryValues: {
-      unstimulated: { Calderon: 'Th17_precursors-U' },
-      stimulated: { Calderon: 'Th17_precursors-S' }
-    },
-    unstimCount: 128606,
-    stimCount: 147883
-  },
-  Follicular_T_Helper: {
-    id: 'Follicular_T_Helper',
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "T follicular/helper cell",
-    unstimImagePath: '/cellTypes/Follicular_T_helper-U.png',
-    stimImagePath: '/cellTypes/Follicular_T_helper-S.png',
-    stimulable: true,
-    queryValues: {
-      unstimulated: { Calderon: 'Follicular_T_Helper-U' },
-      stimulated: { Calderon: 'Follicular_T_Helper-S' }
-    },
-    unstimCount: 122084,
-    stimCount: 136992
-  },
-  CD8pos_T: {
-    id: 'CD8pos_T',
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "CD8+ T cell",
-    unstimImagePath: '/cellTypes/CD8pos_T-U.png',
-    stimImagePath: '/cellTypes/CD8pos_T-S.png',
-    stimulable: true,
-    queryValues: {
-      unstimulated: { Calderon: 'CD8pos_T-U', Corces: "CD8Tcell" },
-      stimulated: { Calderon: 'CD8pos_T-S' }
-    },
-    unstimCount: 151004,
-    stimCount: 127042
-  },
-  Naive_CD8_T: {
-    id: 'Naive_CD8_T',
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "Naïve CD8+/T cell",
-    unstimImagePath: '/cellTypes/Naive_CD8_T-U.png',
-    stimImagePath: '/cellTypes/Naive_CD8_T-S.png',
-    stimulable: true,
-    queryValues: {
-      unstimulated: { Calderon: 'Naive_CD8_T-U' },
-      stimulated: { Calderon: 'Naive_CD8_T-S' }
-    },
-    unstimCount: 100250,
-    stimCount: 113028
-  },
-  Central_memory_CD8pos_T: {
-    id: 'Central_memory_CD8pos_T',
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "Central/memory/CD8+ T cell",
-    unstimImagePath: '/cellTypes/Central_memory_CD8pos_T-U.png',
-    stimImagePath: '/cellTypes/Central_memory_CD8pos_T-S.png',
-    stimulable: true,
-    queryValues: {
-      unstimulated: { Calderon: 'Central_memory_CD8pos_T-U' },
-      stimulated: { Calderon: 'Central_memory_CD8pos_T-S' }
-    },
-    unstimCount: 125778,
-    stimCount: 136023
-  },
-  Effector_memory_CD8pos_T: {
-    id: 'Effector_memory_CD8pos_T',
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "Effector/memory/CD8+ T cell",
-    unstimImagePath: '/cellTypes/Effector_Memory_CD8pos_T-U.png',
-    stimImagePath: '/cellTypes/Effector_memory_CD8pos_T-S.png',
-    stimulable: true,
-    queryValues: {
-      unstimulated: { Calderon: 'Effector_memory_CD8pos_T-U' },
-      stimulated: { Calderon: 'Effector_memory_CD8pos_T-S' }
-    },
-    unstimCount: 145641,
-    stimCount: 132761
-  },
-  Gamma_delta_T: {
-    id: 'Gamma_delta_T',
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "Gamma-delta/T cell",
-    unstimImagePath: '/cellTypes/Gamma_delta_T-U.png',
-    stimImagePath: '/cellTypes/Gamma_delta_T-S.png',
-    stimulable: true,
-    queryValues: {
-      unstimulated: { Calderon: 'Gamma_delta_T-U' },
-      stimulated: { Calderon: 'Gamma_delta_T-S' }
-    },
-    unstimCount: 133605,
-    stimCount: 116220
-  },
-  Immature_NK: {
-    id: 'Immature_NK',
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "Immature/NK cell",
-    unstimImagePath: '/cellTypes/Immature_NK-U.png',
-    stimulable: false,
-    queryValues: {
-      unstimulated: { Calderon: 'Immature_NK-U' }
-    },
-    unstimCount: 130554
-  },
-  Mature_NK: {
-    id: 'Mature_NK',
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "Mature/NK cell",
-    unstimImagePath: '/cellTypes/Mature_NK-U.png',
-    stimImagePath: '/cellTypes/Mature_NK-S.png',
-    stimulable: true,
-    queryValues: {
-      unstimulated: { Calderon: 'Mature_NK-U' },
-      stimulated: { Calderon: 'Mature_NK-S' }
-    },
-    unstimCount: 119958,
-    stimCount: 110082
-  },
-  Memory_NK: {
-    id: 'Memory_NK',
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "Memory/NK cell",
-    unstimImagePath: '/cellTypes/Memory_NK-U.png',
-    stimulable: false,
-    queryValues: {
-      unstimulated: { Calderon: 'Memory_NK-U' }
-    },
-    unstimCount: 135352
-  },
-  HSC: {
-    id: 'HSC',
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "Hematopoetic/stem cell",
-    unstimImagePath: '/cellTypes/HSC.png',
-    stimulable: false,
-    queryValues: {
-      unstimulated: { Corces: ["HSC", "CD34_Cord_Blood", "CD34_Bone_Marrow"] }
-    },
-    unstimCount: 173583
-  },
-  MPP: {
-    id: "MPP",
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "Multipotent/progenitor",
-    unstimImagePath: '/cellTypes/MPP.png',
-    stimulable: false,
-    queryValues: {
-      unstimulated: { Corces: "MPP" }
-    },
-    unstimCount: 158945
-  },
-  CMP: {
-    id: "CMP",
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "Common myeloid/progenitor",
-    unstimImagePath: '/cellTypes/CMP.png',
-    stimulable: false,
-    queryValues: {
-      unstimulated: { Corces: "CMP" }
-    },
-    unstimCount: 159706
-  },
-  MEP: {
-    id: "MEP",
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "Megakaryocyte-erythroid/progenitor",
-    unstimImagePath: '/cellTypes/MEP.png',
-    stimulable: false,
-    queryValues: {
-      unstimulated: { Corces: "MEP" }
-    },
-    unstimCount: 152044
-  },
-  Ery: {
-    id: "Ery",
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "Erythrocyte",
-    unstimImagePath: '/cellTypes/Erythrocyte.png',
-    stimulable: false,
-    queryValues: {
-      unstimulated: { Corces: "Ery" }
-    },
-    unstimCount: 56267
-  },
-  GMP: {
-    id: "GMP",
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "Granulocyte-monocyte/progenitors",
-    unstimImagePath: '/cellTypes/GMP.png',
-    stimulable: false,
-    queryValues: {
-      unstimulated: { Corces: "GMP" }
-    },
-    unstimCount: 158558
-  },
-  LPMP: {
-    id: "LPMP",
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "Lymphocyte-primed/multipotent progenitor",
-    unstimImagePath: '/cellTypes/LMP.png',
-    stimulable: false,
-    queryValues: {
-      unstimulated: { Corces: "LMPP" }
-    },
-    unstimCount: 128494
-  },
-  CLP: {
-    id: "CLP",
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "Common lymphoid/progenitor",
-    unstimImagePath: '/cellTypes/CLP.png',
-    stimulable: false,
-    queryValues: {
-      unstimulated: { Corces: "CLP" }
-    },
-    unstimCount: 93170
-  },
-  CD4Tcell: {
-    id: "CD4Tcell",
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "CD4+ T cell",
-    unstimImagePath: '/cellTypes/CD4posT.png',
-    stimulable: false,
-    queryValues: {
-      unstimulated: { Corces: "CD4Tcell" }
-    },
-    unstimCount: 121034
-  },
-  Nkcell: {
-    id: "Nkcell",
-    selected: false,
-    stimulated: "U",
-    selectable: true,
-    displayName: "NK cell",
-    unstimImagePath: '/cellTypes/Nkcell.png',
-    stimulable: false,
-    queryValues: {
-      unstimulated: { Corces: "NKcell" }
-    },
-    unstimCount: 116626
-  }
-}
 
 export default function UpSet() {
-  const [cellTypeState, setCellTypeState] = useState<CellTypes>(cellTypeInitialState) //state of tree
+  const [cellTypeState, setCellTypeState] = useState<CellLineageTreeState>(generateCellLineageTreeState([], true)) //state of tree
   const [stimulateMode, setStimulateMode] = useState<boolean>(false) //determines whether a click on the tree selects or stimulates cell
   //Modifications to tree and checkboxes wipe needed info for download, so store when generating:
-  const [upSetCells, setUpSetCells] = useState<CellTypeInfo[]>([]) //stores array of selected cells when generating
+  const [upSetCells, setUpSetCells] = useState<Partial<CellLineageTreeState>>({}) //stores array of selected cells when generating
   const [upSetClasses, setUpSetClasses] = useState<CCRE_CLASS[]>(null) //stores array of selected classes when generating
   const [upSetQueryGroups, setUpSetQueryGroups] = useState<{ [key: string]: QueryGroup }>(null) //stores groupings used to generate query (for DL)
   const [downloading, setDownloading] = useState<boolean>(false)
@@ -670,17 +95,14 @@ export default function UpSet() {
    */
   const handleStimulateAll = (mode: "U" | "S" | "B") => {
     const currentlySelected = Object.values(cellTypeState)
-      .filter((x: CellTypeInfo) => x.selected)
-      .reduce((accumulator, current: CellTypeInfo) => current.stimulated === "B" ? accumulator + 2 : accumulator + 1, 0)
+      .filter((x) => x.selected)
+      .reduce((accumulator, current) => current.stimulated === "B" ? accumulator + 2 : accumulator + 1, 0)
     //If applying "B" stimulation status would exceed selection limit, stop and send alert to user.
     if (mode === "B" && (currentlySelected * 2) > cellTreeSelectionLimit) {
       handleOpenSnackbar("Unable to apply \"Both\" stimulation status due to selection limit (6)")
     } else {
-      let newObj = { ...cellTypeState }
-      for (let cellName in newObj) {
-        newObj[cellName].stimulable && (newObj[cellName].stimulated = mode)
-      }
-      setCellTypeState(newObj)
+      const newState: CellLineageTreeState = Object.fromEntries(Object.entries(cellTypeState).map(([key, value]: [CellName, DynamicCellTypeInfo]) => cellLineageTreeStaticInfo[key].stimulable ? [key, {...value, stimulated: mode}] : [key, value])) as CellLineageTreeState
+      setCellTypeState(newState)
     }
   }
 
@@ -765,45 +187,7 @@ export default function UpSet() {
   }, [setDownloading, upSetQueryGroups, upSetClasses, getiCREFileURL]);
   
   const svgRef = useRef<SVGSVGElement>(null)
-
-  const svgData = (_svg): string => {
-    let svg = _svg.cloneNode(true);
-    svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-    let preface = '<?xml version="1.0" standalone="no"?>';
-    return preface + svg.outerHTML.replace(/\n/g, '').replace(/[ ]{8}/g, '');
-  };
-
-  const downloadData = (text: string, filename: string, type: string = 'text/plain') => {
-    const a = document.createElement('a');
-    document.body.appendChild(a);
-    a.setAttribute('style', 'display: none');
-    const blob = new Blob([text], { type });
-    const url = window.URL.createObjectURL(blob);
-    a.href = url;
-    a.download = filename;
-    a.click();
-    window.URL.revokeObjectURL(url);
-    a.remove();
-  };
-
-  const downloadSVG = (ref: React.MutableRefObject<SVGSVGElement>, filename: string) =>{
-    ref.current && downloadData(svgData(ref.current!), filename, 'image/svg;charset=utf-8');
-  }
   
-
-  /**
-   * 
-   * @param cell CellTypeInfo
-   * @param want "S" | "U" | "B" The query value(s) wanted
-   * @returns array of strings or string arrays. If values are within a nested array, they need to be unioned.
-   */
-  const extractQueryValues = (cell: CellTypeInfo, want: "S" | "U" | "B"): (string[]) => {
-    switch (want) {
-      case "U": return [...Object.values(cell.queryValues.unstimulated).flat()]
-      case "S": return [...Object.values(cell.queryValues.stimulated).flat()]
-      case "B": return Object.values(cell.queryValues.unstimulated).flat().concat((Object.values(cell.queryValues.stimulated).flat()))
-    }
-  }
 
   /**
    * Programmatically generates a gql document node with the needed queries for generating the UpSet plot
@@ -811,24 +195,24 @@ export default function UpSet() {
    * @param classes the selected cCRE classes
    * @returns gql query string for UpSet plot
    */
-  const generateQuery = useCallback((selectedCells: CellTypeInfo[], classes: CCRE_CLASS[]) => {
-    //stores extracted relevant information from selectedCells
+  const generateQuery = useCallback((selectedCellsState: Partial<CellLineageTreeState>, classes: CCRE_CLASS[]) => {
+    //stores extracted relevant information from selectedCells for easier access
     let cells: { displayName: string, queryVals: string[] }[] = [];
 
     //Out of selectedCells, extract relevant information. Create two entries for cells with "B" stimulation to iterate through more easily later
-    selectedCells.forEach(cell => {
-      if (cell.stimulated == "B") {
-        cells.push({ displayName: cell.id.replace('-', '_') + '_U', queryVals: extractQueryValues(cell, "U") })
-        cells.push({ displayName: cell.id.replace('-', '_') + '_S', queryVals: extractQueryValues(cell, "S") })
-      } else cells.push({ displayName: cell.id.replace('-', '_') + '_' + cell.stimulated, queryVals: extractQueryValues(cell, cell.stimulated) })
+    Object.entries(selectedCellsState).forEach(([key, value]: [CellName, DynamicCellTypeInfo]) => {
+      if (value.stimulated == "B") {
+        cells.push({ displayName: key.replace('-', '_') + '_U', queryVals: extractQueryValues(cellLineageTreeStaticInfo[key], "U") })
+        cells.push({ displayName: key.replace('-', '_') + '_S', queryVals: extractQueryValues(cellLineageTreeStaticInfo[key], "S") })
+      } else cells.push({ displayName: key.replace('-', '_') + '_' + value.stimulated, queryVals: extractQueryValues(cellLineageTreeStaticInfo[key], value.stimulated) })
     })
 
     //Holds the combination of union/intersection/exlude and name for each query
     let queryGroups: QueryGroup[] = []
 
     //Union of all cells
-    if (selectedCells.length > 0) {
-      queryGroups.push({ union: selectedCells.map(cell => extractQueryValues(cell, cell.stimulated)).flat(2), name: 'Union_All' })
+    if (Object.keys(selectedCellsState).length > 0) {
+      queryGroups.push({ union: Object.entries(selectedCellsState).map(([key, value]: [CellName, DynamicCellTypeInfo]) => extractQueryValues(cellLineageTreeStaticInfo[key], value.stimulated)).flat(2), name: 'Union_All' })
     }
 
     //Individual counts
@@ -955,13 +339,13 @@ export default function UpSet() {
    * Stores selected cells and classes, and begins the fetch
    */
   const handleGenerateUpSet = () => {
-    setUpSetCells(Object.values(cellTypeState).filter((x: CellTypeInfo) => x.selected))
+    setUpSetCells(Object.fromEntries(Object.entries(cellTypeState).filter(([key, value]: [CellName, DynamicCellTypeInfo]) => value.selected)))
     setUpSetClasses(Object.entries(checkboxClasses).filter((x: [string, boolean]) => x[1]).map((y: [string, boolean]) => y[0] as CCRE_CLASS))
     getCountData()
   }
 
   const COUNT_QUERY = useMemo(() => {
-    if (upSetCells.length > 0) {
+    if (Object.keys(upSetCells).length > 0) {
       return (
         generateQuery(upSetCells, upSetClasses)
       )
@@ -1037,12 +421,17 @@ export default function UpSet() {
   UpSetWithRef.displayName = "UpSetPlot"
 
   
-
   //These boolean values are used to disable buttons in certain situaions
   const noneSelected = !Object.values(cellTypeState).map(x => x.selected).find(x => x)
-  const noneStimulated = Object.values(cellTypeState).filter(x => x.stimulable).map(x => x.stimulated).every(x => x === "U")
-  const allStimulated = Object.values(cellTypeState).filter(x => x.stimulable).map(x => x.stimulated).every(x => x === "S")
-  const allBothStimulated = Object.values(cellTypeState).filter(x => x.stimulable).map(x => x.stimulated).every(x => x === "B")
+  const noneStimulated = Object.entries(cellTypeState)
+    .filter(([key, value]: [CellName, DynamicCellTypeInfo]) => cellLineageTreeStaticInfo[key].stimulable)
+    .every(([key, value]: [CellName, DynamicCellTypeInfo]) => value.stimulated === "U")
+  const allStimulated = Object.entries(cellTypeState)
+    .filter(([key, value]: [CellName, DynamicCellTypeInfo]) => cellLineageTreeStaticInfo[key].stimulable)
+    .every(([key, value]: [CellName, DynamicCellTypeInfo]) => value.stimulated === "S")
+  const allBothStimulated = Object.entries(cellTypeState)
+    .filter(([key, value]: [CellName, DynamicCellTypeInfo]) => cellLineageTreeStaticInfo[key].stimulable)
+    .every(([key, value]: [CellName, DynamicCellTypeInfo]) => value.stimulated === "B")
 
   const groupCheckbox = (group: CCRE_CLASS, key: number) => {
     return (
