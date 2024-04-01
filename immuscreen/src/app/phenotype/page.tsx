@@ -6,7 +6,7 @@ import { useState } from "react";
 import { client } from "../../common/utils";
 import ChangeHistoryTwoToneIcon from '@mui/icons-material/ChangeHistoryTwoTone';
 import CircleTwoToneIcon from '@mui/icons-material/CircleTwoTone';
-import LDSCplot from "./LDSC";
+import LDSCplot from "./ldsc";
 
 export type LDSCDataPoint = {
   snps: number,
