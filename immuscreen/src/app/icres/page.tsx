@@ -20,7 +20,7 @@ import InputLabel from "@mui/material/InputLabel";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { stringToColour } from "./utils";
 import { ICRES_CT_ZSCORES_QUERY, ICRES_BYCT_ZSCORES_QUERY, ICRES_QUERY, EBI_ASSO_QUERY } from "./queries";
-import { COLOR_MAP } from "./consts";
+import { cellColors } from "./consts";
 
 
 import {IcresByRegion} from "./icresbyregion"
@@ -72,13 +72,13 @@ export default function Icres() {
     nextFetchPolicy: "cache-first",
     client,
   })
-  console.log(aloading,adata)
+  // console.log(aloading,adata)
 
 
 let barplotdata = icrezscoredata && icrezscoredata.calderoncorcesAtacQuery.map(ic=>{
   return  {
     ...ic,
-    color: COLOR_MAP.get(ic.celltype) || stringToColour(ic.celltype),
+    color: cellColors[ic.celltype] || stringToColour(ic.celltype),
     value: ic.value
 
   }
@@ -86,7 +86,7 @@ let barplotdata = icrezscoredata && icrezscoredata.calderoncorcesAtacQuery.map(i
 let barplotbyctdata = icrebyctzscoredata && icrebyctzscoredata.calderoncorcesByCtAtacQuery.map(ic=>{
   return  {
     ...ic,
-    color: COLOR_MAP.get(ic.celltype) ||stringToColour(ic.celltype),
+    color: cellColors[ic.celltype] ||stringToColour(ic.celltype),
     value: ic.value
 
   }
@@ -128,7 +128,7 @@ function handleSubmit() {
     router.push(`/icres?chromosome=${chromosome}&start=${start}&end=${end}`)
 }
 
-console.log("coordinates", adata && adata.iCREQuery[0].coordinates)
+// console.log("coordinates", adata && adata.iCREQuery[0].coordinates)
   return !searchParams.get('accession') && !searchParams.get('chromosome') ?  (
   <main>
     <Grid2 container spacing={6} sx={{ mr: "auto", ml: "auto", mt: "3rem" }}>
