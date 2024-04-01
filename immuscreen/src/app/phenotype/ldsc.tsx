@@ -157,7 +157,7 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
             )
           })}
         </Group>
-        <Text x={width - 10} y={20} textAnchor="end" fontSize={12}>Colors represent cell type</Text>
+        <Text x={width - 10} y={20} textAnchor="end" fontSize={12}>* Colors represent cell type, hovering shows standard error</Text>
       </svg>
       {tooltipOpen && tooltipData && (
         <TooltipWithBounds
