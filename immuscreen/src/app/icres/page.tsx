@@ -10,26 +10,23 @@ import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { TextField, IconButton, InputAdornment } from "@mui/material"
 import { FormControl, MenuItem } from "@mui/material"
 import { useQuery } from "@apollo/client"
+
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { ReadonlyURLSearchParams, useSearchParams} from "next/navigation"
 import { GenomeBrowserView } from "../../common/gbview/genomebrowserview"
 import { CcreAutoComplete } from "../../common/components/mainsearch/CcreAutocomplete"
 import { DataTable } from "@weng-lab/psychscreen-ui-components"
-import { ATACUMAP } from "./atacumap"
-import { AtacBarPlot } from "./atacbarplot"
-import InputLabel from "@mui/material/InputLabel";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { stringToColour } from "./utils";
-import { ICRES_CT_ZSCORES_QUERY, ICRES_BYCT_ZSCORES_QUERY, ICRES_QUERY, EBI_ASSO_QUERY } from "./queries";
-import { cellColors } from "./consts";
-
 
 import {IcresByRegion} from "./icresbyregion"
-
-
+import { ATAC_UMAP_QUERY, EBI_ASSO_QUERY, ICRES_BYCT_ZSCORES_QUERY, ICRES_CT_ZSCORES_QUERY, ICRES_QUERY } from "./queries"
+import InputLabel from "@mui/material/InputLabel";
+import { stringToColour } from "./utils";
+import { AtacBarPlot } from "./atacbarplot"
+import { cellColors } from "./consts";
+import { RNAUMAP } from "../gene/rnaumap"
 //Need better text styling
 
-export default function Icres() {
-
+export default function Icres() { 
   const searchParams: ReadonlyURLSearchParams = useSearchParams()!
   const [value, setValue] = useState(0)
   const router = useRouter()
@@ -40,7 +37,15 @@ export default function Icres() {
   const handleSelectedPortal = (event: SelectChangeEvent) => {
     setSelectedPortal(event.target.value);
   };
- 
+  const { loading: atacumaploading, data: atacumapdata } = useQuery(ATAC_UMAP_QUERY, {
+    variables: {
+      accession: searchParams.get("accession")
+    },
+    skip: !searchParams.get("accession"),
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
+    client,
+  })
   const {loading: icrezscoreloading, data: icrezscoredata} = useQuery(ICRES_CT_ZSCORES_QUERY,{
     variables: {
       accession: searchParams.get('accession'),
@@ -127,62 +132,60 @@ function handleSubmit() {
     const end = coordinates[1]
     router.push(`/icres?chromosome=${chromosome}&start=${start}&end=${end}`)
 }
-
-// console.log("coordinates", adata && adata.iCREQuery[0].coordinates)
   return !searchParams.get('accession') && !searchParams.get('chromosome') ?  (
   <main>
     <Grid2 container spacing={6} sx={{ mr: "auto", ml: "auto", mt: "3rem" }}>
-      <Grid2 xs={6} sx={{ mt: "5em", ml:"2em"}}>
-        <Typography variant="h3">iCRE Portal</Typography>    
-        <br/>
-        <FormControl variant="standard">
-          <Select
-            id="portal_Select"
-            value={selectedPortal}
-            // defaultValue={10}
-            onChange={handleSelectedPortal}
-          >
-            <MenuItem value={"Genomic Region"}>Genomic Region</MenuItem>
-            <MenuItem value={"iCREs"}>iCREs</MenuItem>
-          </Select>
-        </FormControl>
-        <br/>
-        <br/>
-        <br/>
-        {selectedPortal==="Genomic Region" ?  
-          <TextField
-                  variant="outlined"
-                  InputLabelProps={{ shrink: true, style: { color: "black" } }}
-                  label="Enter a genomic region in form chr:start-end."
-                  placeholder="chr11:5205263-5381894"
-                  value={searchvalue}
-                  onChange={handleSearchChange}
-                  onKeyDown={(event) => {
-                    if (event.code === "Enter") {
-                      handleSubmit()
-                    }
-                  }}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end" sx={{ color:  "black" }}>
-                        <IconButton aria-label="Search" type="submit" onClick={() => handleSubmit()} sx={{ color:  "black" }}>
-                          <SearchIcon />
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                    style: { color:  "black" },
-                  }}
-                  sx={{ mr: "1em", ml: "1em", fieldset: { borderColor:  "black" } }}
-            /> 
-            : <CcreAutoComplete textColor={"black"} assembly={"GRCh38"}/> 
-        }
-      </Grid2> 
-    </Grid2>
+  <Grid2 xs={6} sx={{ mt: "5em", ml:"2em"}}>
+    <Typography variant="h3">iCRE Portal</Typography>
+    
+    <br/>
+    <FormControl variant="standard">
+      <Select
+        id="portal-select"
+        value={selectedPortal}
+        // defaultValue={10}
+        onChange={handleSelectedPortal}
+      >
+        <MenuItem value={"Genomic Region"}>Genomic Region</MenuItem>
+        <MenuItem value={"iCREs"}>iCREs</MenuItem>
+      </Select>
+    </FormControl>
+    <br/>
+    <br/>
+    <br/>
+    {selectedPortal==="Genomic Region" ?  <TextField
+              variant="outlined"
+              InputLabelProps={{ shrink: true, style: { color: "black" } }}
+              label="Enter a genomic region in form chr:start-end."
+              placeholder="chr11:5205263-5381894"
+              value={searchvalue}
+              onChange={handleSearchChange}
+              onKeyDown={(event) => {
+                if (event.code === "Enter") {
+                  handleSubmit()
+                }
+              }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end" sx={{ color:  "black" }}>
+                    <IconButton aria-label="Search" type="submit" onClick={() => handleSubmit()} sx={{ color:  "black" }}>
+                      <SearchIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+                style: { color:  "black" },
+              }}
+              sx={{ mr: "1em", ml: "1em", fieldset: { borderColor:  "black" } }}
+            /> : <CcreAutoComplete textColor={"black"} assembly={"GRCh38"}/> }
+  </Grid2>
+ 
+</Grid2>
 </main>): searchParams.get('chromosome') ? (
    <IcresByRegion/>
   ) :  (
     <main>
-      <Grid2 container  sx={{ maxWidth: "80%", mr: "auto", ml: "auto", mt: "3rem" }}>   
+      <Grid2 container  sx={{ maxWidth: "80%", mr: "auto", ml: "auto", mt: "3rem" }}>
+   
             <Grid2 container sx={{  ml:"0.5em", mt: "4rem", mb: "2rem" }}>
               <Grid2 xs={12} lg={12}>
               {searchParams.get("accession") && <Typography variant="h4">Accession Details: {searchParams.get("accession")}</Typography>}
@@ -190,13 +193,14 @@ function handleSubmit() {
               <Grid2 xs={12} lg={12}>
                   <Tabs aria-label="icres_tabs" value={value} onChange={handleChange}>
                       <StyledTab label="Genome Browser" />
-                      <StyledTab label="Calderon ATAC UMAP" />
-                      <StyledTab label="EBI Associations" />
                       <StyledTab label="Cell type specific zscores" />
+                      <StyledTab label="EBI Associations" />
+                      
+                      {atacumapdata && atacumapdata.calderonAtacUmapQuery.length>0 && <StyledTab label="Calderon ATAC UMAP" />}
                       
                   </Tabs>
+                  </Grid2>
               </Grid2>
-            </Grid2>
            
             {value===0 && adata &&
             <Grid2 xs={12} lg={12}>
@@ -214,16 +218,17 @@ function handleSubmit() {
               />
               </Grid2>
             }              
-            { value===1 && searchParams.get("accession")  && 
+            { value===3 && searchParams.get("accession") && !atacumaploading && atacumapdata && atacumapdata.calderonAtacUmapQuery.length>0 &&
               <>
                 <Grid2 xs={6} lg={6}>
-                  <ATACUMAP accession={searchParams.get("accession") }/>
+                <RNAUMAP data={atacumapdata.calderonAtacUmapQuery}/>
               </Grid2>
               </>
 
-            }
-            { value===2 && ebidata && 
-              <Grid2 container>
+              }
+              {
+                value===2 && ebidata && 
+                <Grid2 container>
                     <Grid2 xs={12} lg={12}>
                             <DataTable
                               columns={[
@@ -279,8 +284,8 @@ function handleSubmit() {
                       />
                       </Grid2>
                   </Grid2>
-            }
-            { value===3 && 
+              }
+               { value===1 && 
               <Grid2 xs={12} lg={12}>
                 <FormControl>
                   <InputLabel id="select-study-label">Study</InputLabel>
@@ -303,7 +308,7 @@ function handleSubmit() {
                 <br/>
                 <br/>
               </Grid2>}
-              {  value===3 && 
+              {  value===1 && 
                  <Grid2 xs={12} lg={12}>
                     <Tabs aria-label="icres_tabs" value={zscoreValue} onChange={handleZscoreChange}>
                         <StyledTab label="By Experiment" />
@@ -311,7 +316,7 @@ function handleSubmit() {
                     </Tabs>
                   </Grid2>
               }
-              { value===3 && zscoreValue===0 && icrezscoredata && icrezscoredata.calderoncorcesAtacQuery.length>0 && barplotdata &&
+              { value===1 && zscoreValue===0 && icrezscoredata && icrezscoredata.calderoncorcesAtacQuery.length>0 && barplotdata &&
                 <>
                   <Grid2 container>
                     {barplotdata.filter(b=>b.grouping==='Lymphoid') && <Grid2 xs={6} lg={6}>
@@ -336,15 +341,16 @@ function handleSubmit() {
                 </>
               }
               {
-                value===3 && zscoreValue===1 && icrebyctzscoredata && icrebyctzscoredata.calderoncorcesByCtAtacQuery.length>0 && barplotbyctdata &&                
+                value===1 && zscoreValue===1 && icrebyctzscoredata && icrebyctzscoredata.calderoncorcesByCtAtacQuery.length>0 && barplotbyctdata &&                
                 <Grid2 container>
                   <Grid2 xs={12} lg={12}>
                     <AtacBarPlot study={study} barplotdata={barplotbyctdata} byct />
                   </Grid2>
                 </Grid2>
               }
-              
-      </Grid2>
+        </Grid2>
+       
+      
     </main>
   )
 }

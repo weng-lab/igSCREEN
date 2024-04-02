@@ -14,6 +14,27 @@ import { GeneAutoComplete } from "../../common/components/mainsearch/GeneAutocom
 import { RNAUMAP } from "./rnaumap"
 
 
+const RNA_UMAP_QUERY = gql`
+query rnaUmapQuery($gene_id: String!) 
+{
+    calderonRnaUmapQuery(gene_id: $gene_id){
+      name
+      donor
+      stimulation
+      
+      celltype
+      class
+      umap_1
+      umap_2
+      value
+      
+     
+      
+    }
+  }
+
+`
+
 
 
 const EQTL_QUERY = gql`
@@ -42,6 +63,16 @@ const Gene = () =>{
   const handleChange = (_, newValue: number) => {
     setValue(newValue)
   }
+
+  const { loading: rnaumaploading, data: rnumapdata } = useQuery(RNA_UMAP_QUERY, {
+    variables: {
+      gene_id: searchParams.get('gene')
+    },
+    skip: !searchParams.get('gene'),
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
+    client,
+  })
   const { loading: loading, data: data } = useQuery(EQTL_QUERY, {
     variables: {
       study: "GTEX",
@@ -215,9 +246,9 @@ const Gene = () =>{
                 coordinates={{ start: +searchParams.get("start")-20000, end: +searchParams.get("end")+20000, 
                 chromosome:searchParams.get("chromosome") }}
               />}
-            {value===2 && 
-            <Grid2 xs={6} lg={6}>
-            <RNAUMAP gene={searchParams.get('gene')}/>
+            {value===2 && rnumapdata && !rnaumaploading && rnumapdata.calderonRnaUmapQuery.length>0 &&
+            <Grid2 xs={12} lg={12}>
+            <RNAUMAP data={rnumapdata.calderonRnaUmapQuery}/>
             </Grid2>
             }
         </Grid2>
