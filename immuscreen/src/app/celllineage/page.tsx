@@ -201,10 +201,11 @@ export default function UpSet() {
 
     //Out of selectedCells, extract relevant information. Create two entries for cells with "B" stimulation to iterate through more easily later
     Object.entries(selectedCellsState).forEach(([key, value]: [CellName, DynamicCellTypeInfo]) => {
+      const name = key.replace('-', '_')
       if (value.stimulated == "B") {
-        cells.push({ displayName: key.replace('-', '_') + '_U', queryVals: extractQueryValues(cellLineageTreeStaticInfo[key], "U") })
-        cells.push({ displayName: key.replace('-', '_') + '_S', queryVals: extractQueryValues(cellLineageTreeStaticInfo[key], "S") })
-      } else cells.push({ displayName: key.replace('-', '_') + '_' + value.stimulated, queryVals: extractQueryValues(cellLineageTreeStaticInfo[key], value.stimulated) })
+        cells.push({ displayName: name + '_U', queryVals: extractQueryValues(cellLineageTreeStaticInfo[key], "U") })
+        cells.push({ displayName: name + '_S', queryVals: extractQueryValues(cellLineageTreeStaticInfo[key], "S") })
+      } else cells.push({ displayName: name + '_' + value.stimulated, queryVals: extractQueryValues(cellLineageTreeStaticInfo[key], value.stimulated) })
     })
 
     //Holds the combination of union/intersection/exlude and name for each query
@@ -424,14 +425,11 @@ export default function UpSet() {
   //These boolean values are used to disable buttons in certain situaions
   const noneSelected = !Object.values(cellTypeState).map(x => x.selected).find(x => x)
   const noneStimulated = Object.entries(cellTypeState)
-    .filter(([key, value]: [CellName, DynamicCellTypeInfo]) => cellLineageTreeStaticInfo[key].stimulable)
-    .every(([key, value]: [CellName, DynamicCellTypeInfo]) => value.stimulated === "U")
+    .every(([key, value]: [CellName, DynamicCellTypeInfo]) => cellLineageTreeStaticInfo[key].stimulable ? value.stimulated === "U" : true)
   const allStimulated = Object.entries(cellTypeState)
-    .filter(([key, value]: [CellName, DynamicCellTypeInfo]) => cellLineageTreeStaticInfo[key].stimulable)
-    .every(([key, value]: [CellName, DynamicCellTypeInfo]) => value.stimulated === "S")
+    .every(([key, value]: [CellName, DynamicCellTypeInfo]) => cellLineageTreeStaticInfo[key].stimulable ? value.stimulated === "S": true)
   const allBothStimulated = Object.entries(cellTypeState)
-    .filter(([key, value]: [CellName, DynamicCellTypeInfo]) => cellLineageTreeStaticInfo[key].stimulable)
-    .every(([key, value]: [CellName, DynamicCellTypeInfo]) => value.stimulated === "B")
+    .every(([key, value]: [CellName, DynamicCellTypeInfo]) => cellLineageTreeStaticInfo[key].stimulable ? value.stimulated === "B" : true)
 
   const groupCheckbox = (group: CCRE_CLASS, key: number) => {
     return (
