@@ -2,11 +2,40 @@ import React, {useMemo} from "react"
 import { linearTransform } from "jubilant-carnival";
 import { Circle, Line, Polygon } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
-import { scaleLinear } from "@visx/scale";
+import { scaleLinear, scaleOrdinal } from "@visx/scale";
 import { Group } from "@visx/group";
 import { defaultStyles as defaultTooltipStyles, useTooltip, TooltipWithBounds } from '@visx/tooltip';
 import { MouseEvent } from "react";
+import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
+import { Legend, LegendLinear,LegendItem,LegendLabel,
+} from "@visx/legend";
+import { GlyphTriangle,GlyphCircle } from "@visx/glyph";
+import { cellColors } from "../icres/consts";
+//create full hex
+const fullHex = (hex) => {
+  let r = hex.slice(1,2);
+  let g = hex.slice(2,3);
+  let b = hex.slice(3,4);
 
+  r = parseInt(r+r, 16);
+  g = parseInt(g+g, 16);
+  b = parseInt(b+b, 16);
+  
+  // return {r, g, b} 
+  return { r, g, b };
+}
+const hex2rgb = (hex) => {
+  if(hex.length === 4){
+    return fullHex(hex);
+  }
+
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  
+  // return {r, g, b} 
+  return `${r},${g},${b}`;
+}
 export type RnaUmapPoint = {
   name: string,
   value: number,
@@ -34,7 +63,41 @@ interface TooltipData {
     return newVals;
   };
   
-export const RNAUMAP = (data) => {
+  function LegendDemo({
+    title,
+    children,
+  }: {
+    title: string;
+    children: React.ReactNode;
+  }) {
+    return (
+      <div className="legend">
+        <div className="title">{title}</div>
+        {children}
+        <style jsx>{`
+          .legend {
+            line-height: 0.9em;
+            color: #000000;
+            font-size: 15px;
+            font-family: arial;
+            padding: 10px 10px;
+            float: left;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            margin-top: 150px;
+            
+            
+          }
+          .title {
+            font-size: 15px;
+            margin-bottom: 10px;
+            font-weight: 500;
+          }
+        `}</style>
+      </div>
+    );
+  }
+export const RNAUMAP = (props) => {
     const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip, updateTooltip } = useTooltip<TooltipData>();
   
     const handleHover = (event: MouseEvent<SVGPolygonElement | SVGCircleElement, globalThis.MouseEvent>, point: RnaUmapPoint) => {
@@ -65,19 +128,19 @@ export const RNAUMAP = (data) => {
 
       
     
-    const xMin: number = Math.min(...data!!.data.map(x => x.umap_1))
-    const xMax: number = Math.max(...data!!.data.map(x => x.umap_1))
+    const xMin: number = Math.min(...props.data.map(x => x.umap_1))
+    const xMax: number = Math.max(...props.data.map(x => x.umap_1))
     const xScale = useMemo(
       () =>
         scaleLinear<number>({
           domain: [xMin-0.5, xMax+0.5],
           range: [0, plotWidth], //Start at 20 to provide left side padding to data points
         }),
-      [plotWidth, data],
+      [plotWidth, props],
     );
   
-    const yMin: number = Math.min(...data.data.map(x => x.umap_2))
-    const yMax: number = Math.max(...data.data.map(x => x.umap_2))
+    const yMin: number = Math.min(...props.data.map(x => x.umap_1))
+    const yMax: number = Math.max(...props.data.map(x => x.umap_2))
       
    
     const yScale = useMemo(
@@ -89,27 +152,54 @@ export const RNAUMAP = (data) => {
       [yMin, yMax, plotHeight],
     );
     
-   const maxValue =Math.max(...data!!.data.map(a=>a.value))
+   const maxValue =Math.max(...props.data.map(a=>a.value))
       
-   const minValue =Math.min(...data!!.data.map(a=>a.value))
-    
-      
-      const gradient = linearTransform(
-        { start: 0, end: maxValue },
-        { start: 215, end: minValue }
-      );
-    
+   const minValue =Math.min(...props.data.map(a=>a.value))
+   const linearScale = scaleLinear({
+    domain: [minValue, maxValue],
+    range: ["rgb(0,0,0,0.1)", "rgb(0,0,0,1)"],
+  });
+
+  const valueLinearScale = scaleLinear({
+    domain: [minValue, maxValue],
+    range: [0.1, 1],
+  });
+
+  const shapeScale = scaleOrdinal<string, React.FC | React.ReactNode>({
+    domain: ["unstimulated", "stimulated"],
+    range: [
+      <GlyphCircle
+        key="unstimulated"
+        size={50}
+        top={50 / 6}
+        left={50 / 6}
+        fill="black"
+      />,
+  
+      <GlyphTriangle
+        key="stimulated"
+        size={50}
+        top={50 / 6}
+        left={50 / 6}
+        fill="black"
+      />,
+    ],
+  });
+
+      const legendGlyphSize = 15;
       
       return (
-        <div>
-          <svg width={width+200} height={height}>
-            <rect width={width+200} height={height} rx={14} fill="none" stroke="black" />
+        <Grid2 container>
+          <Grid2 xs={8}>
+          <svg width={width} height={height}>
+            <rect width={width} height={height} rx={14} fill="none" stroke="black" />
             <Group top={paddingTop} left={spaceForAxis}>
-          <Line stroke="black" opacity={0.3} from={{ x: 0, y: yScale(0) }} to={{ x: plotWidth, y: yScale(0) }} />
+          
           <AxisLeft
             label="UMAP-1"
             labelProps={{fontSize: 14}}
             scale={yScale}
+            numTicks={4}
 
           />
           <AxisBottom
@@ -117,10 +207,11 @@ export const RNAUMAP = (data) => {
             
             label="UMAP-2"
             labelProps={{fontSize: 14}}
+            numTicks={4}
             scale={xScale}
 
           />
-          {data!!.data.map(point=>{
+          {props.data.map(point=>{
 
             return(  
             <Group key={`datapoint-${point.umap_1}-${point.umap_2}`}>
@@ -132,7 +223,7 @@ export const RNAUMAP = (data) => {
                     rotate={90}
                     onMouseOver={(event) => handleHover(event, point)}
                     onMouseLeave={(event) => handleLeaveHover(event, point)}                     
-                    fill= {`rgb(255,${gradient(point.value).toFixed(0)},0)`}
+                    fill= {`rgb(${hex2rgb(cellColors[point.celltype])},${valueLinearScale(point.value)})`}
                   /> :
               <Circle
                     r={5}
@@ -140,7 +231,7 @@ export const RNAUMAP = (data) => {
                     cy={yScale(point.umap_2)}                    
                     onMouseOver={(event) => handleHover(event, point)}
                     onMouseLeave={(event) => handleLeaveHover(event, point)}                    
-                    fill= {`rgb(255,${gradient(point.value).toFixed(0)},0)`}
+                    fill= {`rgb(${hex2rgb(cellColors[point.celltype])},${valueLinearScale(point.value)})`}
                   />}
 
             </Group>)
@@ -148,99 +239,137 @@ export const RNAUMAP = (data) => {
 
           }
           </Group>
-          <defs>
-                        <linearGradient id="scale" x1="0" x2="0" y1="0" y2="1">
-                          <stop offset="0%" stop-color="red" />
-                          <stop offset="100%" stop-color="#ffcd00" />
-                        </linearGradient>
-          </defs>
-          <text
-                          x={xScale(xMax)+210}
-                          y={yScale(yMin)-60}
-                                                 
-                          fontSize={14}
-                          textAnchor="middle"
-                        >
-                           0
-                        </text>
-                        <text
-                          x={xScale(xMax)+200}
-                          y={yScale(yMax)+140}
-                                           
-                          fontSize={14}
-                          textAnchor="middle"
-                        >
-                           {maxValue.toPrecision(2)}
-                        </text>
-                        <text
-                           x={xScale(xMax)+215}
-                           y={yScale(yMin)-30}
-                           textAnchor="middle"
-                          fontSize={14}
-                          
-                        >
-                           Expression
-                        </text>
-                  <circle
-                  cx={xScale(xMax)+180}
-                  cy={yScale(yMin)+25}
-                  r={5}
-                  />
-                        <text
-                           x={xScale(xMax)+235}
-                           y={yScale(yMin)+30}
-                           textAnchor="middle"
-                     //    transform="rotate(20)"
-                          fontSize={14}
-                          
-                        >
-                           Unstimulated
-                        </text>
-                        <polygon points={`${xScale(xMax)+175} ${yScale(yMin)+48}, ${xScale(xMax)+185} ${yScale(yMin)+48}, ${xScale(xMax)+180} ${yScale(yMin)+38}`} fill="black" />
-                       
-                        <text
-                           x={xScale(xMax)+228}
-                           y={yScale(yMin)+50}
-                           textAnchor="middle"
-                     //    transform="rotate(20)"
-                          fontSize={14}
-                          
-                        >
-                          Stimulated
-                        </text>
-          <rect
-                          x={xScale(xMax)+200}
-                          y={yScale(yMax)+150}
-                          width={30}
-                          height={
-                            200
-                          }
-                          
-                          fill="url(#scale)"
-                        />
+         
+       
           </svg>
           {tooltipOpen && tooltipData && (
-        <TooltipWithBounds
-          top={tooltipTop}
-          left={tooltipLeft}
-          style={{ ...defaultTooltipStyles, backgroundColor: '#283238', color: 'white' }}
-        >
-          <div style={{ maxWidth: "20rem" }}>
-            <p><b>Celltype:</b> {tooltipData.celltype}</p>
+          <TooltipWithBounds
+            top={tooltipTop}
+            left={tooltipLeft}
+            style={{ ...defaultTooltipStyles, backgroundColor: '#283238', color: 'white' }}
+          >
+            <div style={{ maxWidth: "20rem" }}>
+              <p><b>Celltype:</b> {tooltipData.celltype}</p>
+            </div>
+            
+            <div>
+              <p><b>Name:</b> {tooltipData.name}</p>
+            </div>
+            <div>
+              <p><b>Donor:</b> {tooltipData.donor}</p>
+            </div>
+            <div>
+              <p><b>Class</b> {tooltipData.class}</p>
+            </div>
+            <div>
+              <p><b>Value</b> {tooltipData.value.toFixed(2)}</p>
+            </div>
+            <div>
+              <p><b>ColorScale</b> {valueLinearScale(tooltipData.value)}</p>
+            </div>
+          </TooltipWithBounds>
+          )}
+          </Grid2>
+          <Grid2 xs={4}>
+          <div className="legends">
+   
+            <LegendDemo title={props.plottitle}>
+              <LegendLinear
+                scale={linearScale}
+                labelFormat={(d, i) => (+d).toFixed(2)}
+              >
+                {(labels) =>
+                  labels.map((label, i) => (
+                    <LegendItem
+                      key={`legend-linear-${i}`}
+                      onClick={() => {
+                        //if (events) alert(`clicked: ${JSON.stringify(label)}`);
+                      }}
+                    >
+                      <svg
+                        width={legendGlyphSize}
+                        height={legendGlyphSize}
+                        style={{ margin: "2px 0" }}
+                      >
+                        <circle
+                          fill={label.value}
+                          r={legendGlyphSize / 2}
+                          cx={legendGlyphSize / 2}
+                          cy={legendGlyphSize / 2}
+                        />
+                      </svg>
+                      <LegendLabel align="left" margin="0 4px">
+                        {label.text}
+                      </LegendLabel>
+                    </LegendItem>
+                  ))
+                }
+              </LegendLinear>
+            </LegendDemo>
+            <div className="custom">
+                <LegendDemo title="">
+                  <Legend scale={shapeScale}>
+                    {(labels) => (
+                      <>
+                        {labels.map((label, i) => {
+                          
+                          const shape = shapeScale(label.datum);
+                          const isValidElement = React.isValidElement(shape);
+                          return (
+                            <LegendItem
+                              key={`legend-quantile-${i}`}
+                              margin="0 4px 0 0"
+                              flexDirection="row"
+                              
+                            >
+                              <svg
+                                width={legendGlyphSize}
+                                height={legendGlyphSize}
+                                style={{ margin: "0 5px 2px 0" }}
+                              >
+                                {isValidElement
+                                  ? React.cloneElement(shape as React.ReactElement)
+                                  : React.createElement(
+                                      shape as React.ComponentType<{ fill: string }>,
+                                      {
+                                        fill: "black",
+                                      }
+                                    )}
+                              </svg>
+
+                              <LegendLabel align="left" margin={0}>
+                                {label.text}
+                              </LegendLabel>
+                            </LegendItem>
+                          );
+                        })}
+                      </>
+                    )}
+                  </Legend>
+                </LegendDemo>
+            </div>
+
+            <style jsx>{`
+              .legends {
+                font-family: arial;
+                font-weight: 100;
+                background-color: white;
+                border-radius: 14px;       
+                overflow-y: auto;
+                flex-grow: 1;
+                
+              }
+
+              .custom {
+                margin-top: 30px;
+                font-weight: 100;
+                
+              }
+            `}</style>
           </div>
+          </Grid2>
           
-          <div>
-            <p><b>Name:</b> {tooltipData.name}</p>
-          </div>
-          <div>
-            <p><b>Donor:</b> {tooltipData.donor}</p>
-          </div>
-          <div>
-            <p><b>Class</b> {tooltipData.class}</p>
-          </div>
-        </TooltipWithBounds>
-      )}
-      </div>
+      </Grid2>
     )  
 }
 

@@ -299,7 +299,7 @@ export const AtacBarPlot: React.FC<{plottitle?: string,  byct?: boolean, study: 
               
             }
             .labelcolor {
-              color:   #000000;
+              color:  #000000;
             }
           `}
         </style>

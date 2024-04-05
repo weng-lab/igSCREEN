@@ -248,7 +248,7 @@ const Gene = () =>{
               />}
             {value===2 && rnumapdata && !rnaumaploading && rnumapdata.calderonRnaUmapQuery.length>0 &&
             <Grid2 xs={12} lg={12}>
-            <RNAUMAP data={rnumapdata.calderonRnaUmapQuery}/>
+            <RNAUMAP data={rnumapdata.calderonRnaUmapQuery.map(d=>{return {...d, value: Math.log(d.value+0.01)} })} plottitle={"log10 TPM"}/>
             </Grid2>
             }
         </Grid2>

@@ -184,11 +184,12 @@ function handleSubmit() {
    <IcresByRegion/>
   ) :  (
     <main>
-      <Grid2 container  sx={{ maxWidth: "80%", mr: "auto", ml: "auto", mt: "3rem" }}>
+      <Grid2 container  sx={{ maxWidth: "80%", mr: "auto", ml: "auto" }}>
    
-            <Grid2 container sx={{  ml:"0.5em", mt: "4rem", mb: "2rem" }}>
+            <Grid2 container sx={{  ml:"0.5rem", mt: "1.5rem", mb: "2rem" }}>
               <Grid2 xs={12} lg={12}>
               {searchParams.get("accession") && <Typography variant="h4">Accession Details: {searchParams.get("accession")}</Typography>}
+              <br/>
               </Grid2>
               <Grid2 xs={12} lg={12}>
                   <Tabs aria-label="icres_tabs" value={value} onChange={handleChange}>
@@ -220,8 +221,8 @@ function handleSubmit() {
             }              
             { value===3 && searchParams.get("accession") && !atacumaploading && atacumapdata && atacumapdata.calderonAtacUmapQuery.length>0 &&
               <>
-                <Grid2 xs={6} lg={6}>
-                <RNAUMAP data={atacumapdata.calderonAtacUmapQuery}/>
+                <Grid2 xs={12} lg={12}>
+                <RNAUMAP data={atacumapdata.calderonAtacUmapQuery} plottitle={"ZScore"}/>
               </Grid2>
               </>
 
