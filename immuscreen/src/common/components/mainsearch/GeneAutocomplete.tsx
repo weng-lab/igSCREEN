@@ -7,12 +7,11 @@ import Typography from "@mui/material/Typography"
 import { debounce } from "@mui/material/utils"
 import { useRouter } from "next/navigation"
 import SearchIcon from "@mui/icons-material/Search"
-import { IconButton, InputAdornment, InputBaseProps, createTheme } from "@mui/material"
 export type QueryResponse = [number, string[], any, [string, string, string, string, string, string][], string[]]
 
 const GENE_AUTOCOMPLETE_QUERY = `
-query ($assembly: String!, $name_prefix: [String!], $limit: Int) {
-    gene(assembly: $assembly, name_prefix: $name_prefix, limit: $limit) {
+query ($assembly: String!, $name_prefix: [String!], $limit: Int,  $version: Int) {
+    gene(assembly: $assembly, name_prefix: $name_prefix, limit: $limit, version: $version) {
       name
       id
       coordinates {
@@ -66,7 +65,8 @@ export const GeneAutoComplete = (props) => {
         variables: {
           assembly: "GRCh38",
           name_prefix: value,
-          limit: 1000,
+          version: 40,
+          limit: 1000
         },
       }),
       headers: { "Content-Type": "application/json" },
@@ -145,14 +145,14 @@ export const GeneAutoComplete = (props) => {
 
             setInputValue(newInputValue)
           }}
-          noOptionsText="e.g sox4,gapdh"
+          noOptionsText="e.g TGFB1,IL2"
           renderInput={(params) => (
             <TextField
               {...params}
               label="Enter a gene name"
               InputLabelProps={{ shrink: true, style: { color: props.textColor || "black" } }}
  
-              placeholder="e.g sox4,gapdh"
+              placeholder="e.g TGFB1,IL2"
               fullWidth
              sx={{ fieldset: { borderColor: props.textColor || "black"}, '& .MuiInput-underline:after': {
               borderBottomColor: props.textColor || "black",

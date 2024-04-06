@@ -4,7 +4,7 @@ import { AxisLeft } from "@visx/axis";
 import { useMemo } from "react";
 import { scaleLinear } from "@visx/scale";
 import { Group } from "@visx/group";
-import { experimentInfo, cellColors } from "../icres/consts"
+import { experimentInfo, cellColors } from "../../common/consts"
 import { defaultStyles as defaultTooltipStyles, useTooltip, TooltipWithBounds } from '@visx/tooltip';
 import { Text } from '@visx/text';
 import { MouseEvent } from "react";

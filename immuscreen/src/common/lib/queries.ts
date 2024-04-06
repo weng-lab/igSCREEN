@@ -311,8 +311,8 @@ const LINKED_GENES_QUERY = gql`
 `
 
 const GENE_QUERY = gql`
-  query($assembly: String!, $name_prefix: [String!]) {
-    gene(assembly: $assembly, name_prefix: $name_prefix) {
+  query($assembly: String!, $name_prefix: [String!], $version: Int) {
+    gene(assembly: $assembly, name_prefix: $name_prefix, version: $version) {
       name
       id
     }
@@ -337,7 +337,7 @@ export async function linkedGenesQuery(assembly: "GRCh38" | "mm10", accession: s
     try {
       geneNames = await getClient().query({
         query: GENE_QUERY,
-        variables: { assembly: assembly, name_prefix: geneIDs },
+        variables: { assembly: assembly, name_prefix: geneIDs, version: 40 },
       })
       //If both queries are successful, go through each of linkedGenes.data.linkedGenesQuery, find the accession and (if doesnt exist) add to linkedGenesData along with any gene names matching the ID in queryRes2
       linkedGenes.data.linkedGenesQuery.forEach((entry) => {

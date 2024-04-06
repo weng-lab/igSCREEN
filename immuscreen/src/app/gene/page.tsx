@@ -5,57 +5,13 @@ import { client } from "../../common/utils"
 import { StyledTab } from "../../common/utils"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { useQuery } from "@apollo/client"
-import { gql } from "@apollo/client"
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation"
-
 import { DataTable } from "@weng-lab/psychscreen-ui-components"
 import { GenomeBrowserView } from "../../common/gbview/genomebrowserview"
 import { GeneAutoComplete } from "../../common/components/mainsearch/GeneAutocomplete"
-import { RNAUMAP } from "./rnaumap"
+import { UmapPlot } from "../../common/components/umapplot"
+import { RNA_UMAP_QUERY, EQTL_QUERY } from "./queries"
 
-
-const RNA_UMAP_QUERY = gql`
-query rnaUmapQuery($gene_id: String!) 
-{
-    calderonRnaUmapQuery(gene_id: $gene_id){
-      name
-      donor
-      stimulation
-      
-      celltype
-      class
-      umap_1
-      umap_2
-      value
-      
-     
-      
-    }
-  }
-
-`
-
-
-
-const EQTL_QUERY = gql`
-  query iCREeQTLQuery($study: String!, $geneid: String) 
-    {
-        icreeQTLQuery(study:$study, geneid:$geneid) {
-          variant_id
-          pvalue
-          qvalue
-          geneid
-          pval_nominal
-          phenotype_id
-          celltype
-          study
-          rsid
-          pval_beta
-        
-        }
-    }
-  
-`
 const Gene = () =>{
   const searchParams: ReadonlyURLSearchParams = useSearchParams()!
   const [value, setValue] = useState(0)
@@ -248,7 +204,7 @@ const Gene = () =>{
               />}
             {value===2 && rnumapdata && !rnaumaploading && rnumapdata.calderonRnaUmapQuery.length>0 &&
             <Grid2 xs={12} lg={12}>
-            <RNAUMAP data={rnumapdata.calderonRnaUmapQuery.map(d=>{return {...d, value: Math.log(d.value+0.01)} })} plottitle={"log10 TPM"}/>
+              <UmapPlot data={rnumapdata.calderonRnaUmapQuery.map(d=>{return {...d, value: Math.log(d.value+0.01)} })} plottitle={"log10 TPM"}/>
             </Grid2>
             }
         </Grid2>

@@ -20,10 +20,10 @@ import { DataTable } from "@weng-lab/psychscreen-ui-components"
 import {IcresByRegion} from "./icresbyregion"
 import { ATAC_UMAP_QUERY, EBI_ASSO_QUERY, ICRES_BYCT_ZSCORES_QUERY, ICRES_CT_ZSCORES_QUERY, ICRES_QUERY } from "./queries"
 import InputLabel from "@mui/material/InputLabel";
-import { stringToColour } from "./utils";
+import { stringToColour } from "../../common/utils";
 import { AtacBarPlot } from "./atacbarplot"
-import { cellColors } from "./consts";
-import { RNAUMAP } from "../gene/rnaumap"
+import { cellColors } from "../../common/consts";
+import { UmapPlot } from "../../common/components/umapplot";
 import CellTypeTree from "../../common/components/cellTypeTree"
 import { generateCellLineageTreeState } from "../celllineage/utils"
 //Need better text styling
@@ -222,7 +222,7 @@ return !searchParams.get('accession') && !searchParams.get('chromosome') ? (
       {value === 1 &&  searchParams.get("accession") && !atacumaploading && atacumapdata && atacumapdata.calderonAtacUmapQuery.length>0 &&
         
           <Grid2 xs={12} lg={12}>
-                <RNAUMAP data={atacumapdata.calderonAtacUmapQuery} plottitle={"ZScore"}/>
+                <UmapPlot data={atacumapdata.calderonAtacUmapQuery} plottitle={"ZScore"}/>
               </Grid2>
         
 

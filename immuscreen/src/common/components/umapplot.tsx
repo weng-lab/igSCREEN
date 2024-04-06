@@ -1,6 +1,5 @@
 import React, {useMemo} from "react"
-import { linearTransform } from "jubilant-carnival";
-import { Circle, Line, Polygon } from "@visx/shape";
+import { Circle, Polygon } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { scaleLinear, scaleOrdinal } from "@visx/scale";
 import { Group } from "@visx/group";
@@ -10,33 +9,12 @@ import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { Legend, LegendLinear,LegendItem,LegendLabel,
 } from "@visx/legend";
 import { GlyphTriangle,GlyphCircle } from "@visx/glyph";
-import { cellColors } from "../icres/consts";
-//create full hex
-const fullHex = (hex) => {
-  let r = hex.slice(1,2);
-  let g = hex.slice(2,3);
-  let b = hex.slice(3,4);
+import { cellColors } from "../consts";
+import { cellLineageTreeStaticInfo } from "../../app/celllineage/utils";
+import { hex2rgb } from "../utils";
 
-  r = parseInt(r+r, 16);
-  g = parseInt(g+g, 16);
-  b = parseInt(b+b, 16);
-  
-  // return {r, g, b} 
-  return { r, g, b };
-}
-const hex2rgb = (hex) => {
-  if(hex.length === 4){
-    return fullHex(hex);
-  }
 
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  
-  // return {r, g, b} 
-  return `${r},${g},${b}`;
-}
-export type RnaUmapPoint = {
+export type UmapPoint = {
   name: string,
   value: number,
   donor: string,
@@ -55,21 +33,8 @@ interface TooltipData {
   class: string
 }
 
-  export const range = (min: number, max: number, by: number = 1) => {
-    let newVals: number[] = [];
-    for (let i = min; i < max; i = i + by) {
-      newVals.push(i);
-    }
-    return newVals;
-  };
   
-  function LegendDemo({
-    title,
-    children,
-  }: {
-    title: string;
-    children: React.ReactNode;
-  }) {
+function UMAPPlotLegend({ title, children }: { title: string; children: React.ReactNode; }) {
     return (
       <div className="legend">
         <div className="title">{title}</div>
@@ -96,11 +61,10 @@ interface TooltipData {
         `}</style>
       </div>
     );
-  }
-export const RNAUMAP = (props) => {
-    const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip, updateTooltip } = useTooltip<TooltipData>();
-  
-    const handleHover = (event: MouseEvent<SVGPolygonElement | SVGCircleElement, globalThis.MouseEvent>, point: RnaUmapPoint) => {
+}
+export const UmapPlot = (props) => {
+    const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip } = useTooltip<TooltipData>();  
+    const handleHover = (event: MouseEvent<SVGPolygonElement | SVGCircleElement, globalThis.MouseEvent>, point: UmapPoint) => {
       showTooltip({
         tooltipTop: event.pageY,
         tooltipLeft: event.pageX,
@@ -113,7 +77,7 @@ export const RNAUMAP = (props) => {
         }
       })
     }
-    const handleLeaveHover = (event: MouseEvent<SVGPolygonElement | SVGCircleElement, globalThis.MouseEvent>, point: RnaUmapPoint) => {
+    const handleLeaveHover = (event: MouseEvent<SVGPolygonElement | SVGCircleElement, globalThis.MouseEvent>, point: UmapPoint) => {
       hideTooltip()
     }
 
@@ -125,8 +89,6 @@ export const RNAUMAP = (props) => {
     const height = 600
     const plotWidth = width - spaceForAxis - paddingRight
     const plotHeight = height - paddingTop - paddingBottom
-
-      
     
     const xMin: number = Math.min(...props.data.map(x => x.umap_1))
     const xMax: number = Math.max(...props.data.map(x => x.umap_1))
@@ -141,8 +103,6 @@ export const RNAUMAP = (props) => {
   
     const yMin: number = Math.min(...props.data.map(x => x.umap_1))
     const yMax: number = Math.max(...props.data.map(x => x.umap_2))
-      
-   
     const yScale = useMemo(
       () =>
         scaleLinear<number>({
@@ -152,128 +112,109 @@ export const RNAUMAP = (props) => {
       [yMin, yMax, plotHeight],
     );
     
-   const maxValue =Math.max(...props.data.map(a=>a.value))
-      
-   const minValue =Math.min(...props.data.map(a=>a.value))
-   const linearScale = scaleLinear({
-    domain: [minValue, maxValue],
-    range: ["rgb(0,0,0,0.1)", "rgb(0,0,0,1)"],
-  });
+    const maxValue =Math.max(...props.data.map(a=>a.value))      
+    const minValue =Math.min(...props.data.map(a=>a.value))
 
-  const valueLinearScale = scaleLinear({
-    domain: [minValue, maxValue],
-    range: [0.1, 1],
-  });
+    const linearScale = scaleLinear({
+      domain: [minValue, maxValue],
+      range: ["rgb(0,0,0,0.1)", "rgb(0,0,0,1)"],
+    });
 
-  const shapeScale = scaleOrdinal<string, React.FC | React.ReactNode>({
-    domain: ["unstimulated", "stimulated"],
-    range: [
-      <GlyphCircle
-        key="unstimulated"
-        size={50}
-        top={50 / 6}
-        left={50 / 6}
-        fill="black"
-      />,
-  
-      <GlyphTriangle
-        key="stimulated"
-        size={50}
-        top={50 / 6}
-        left={50 / 6}
-        fill="black"
-      />,
-    ],
-  });
+    const valueLinearScale = scaleLinear({
+      domain: [minValue, maxValue],
+      range: [0.1, 1],
+    });
 
-      const legendGlyphSize = 15;
-      
-      return (
-        <Grid2 container>
-          <Grid2 xs={8}>
+    const shapeScale = scaleOrdinal<string, React.FC | React.ReactNode>({
+      domain: ["unstimulated", "stimulated"],
+      range: [
+        <GlyphCircle
+          key="unstimulated"
+          size={50}
+          top={50 / 6}
+          left={50 / 6}
+          fill="black"
+        />,    
+        <GlyphTriangle
+          key="stimulated"
+          size={50}
+          top={50 / 6}
+          left={50 / 6}
+          fill="black"
+        />
+      ],
+    });
+
+    const legendGlyphSize = 15;      
+    return (
+      <Grid2 container>
+        <Grid2 xs={8}>
           <svg width={width} height={height}>
             <rect width={width} height={height} rx={14} fill="none" stroke="black" />
-            <Group top={paddingTop} left={spaceForAxis}>
-          
-          <AxisLeft
-            label="UMAP-1"
-            labelProps={{fontSize: 14}}
-            scale={yScale}
-            numTicks={4}
-
-          />
-          <AxisBottom
-            top ={height-paddingBottom}
-            
-            label="UMAP-2"
-            labelProps={{fontSize: 14}}
-            numTicks={4}
-            scale={xScale}
-
-          />
-          {props.data.map(point=>{
-
-            return(  
-            <Group key={`datapoint-${point.umap_1}-${point.umap_2}`}>
-                {point.stimulation==='S' ?
-              <Polygon
-                    center={{ x: xScale(point.umap_1), y: yScale(point.umap_2) }}
-                    sides={3}
-                    size={6}
-                    rotate={90}
-                    onMouseOver={(event) => handleHover(event, point)}
-                    onMouseLeave={(event) => handleLeaveHover(event, point)}                     
-                    fill= {`rgb(${hex2rgb(cellColors[point.celltype])},${valueLinearScale(point.value)})`}
-                  /> :
-              <Circle
-                    r={5}
-                    cx={xScale(point.umap_1)}
-                    cy={yScale(point.umap_2)}                    
-                    onMouseOver={(event) => handleHover(event, point)}
-                    onMouseLeave={(event) => handleLeaveHover(event, point)}                    
-                    fill= {`rgb(${hex2rgb(cellColors[point.celltype])},${valueLinearScale(point.value)})`}
-                  />}
-
-            </Group>)
-          })
-
-          }
-          </Group>
-         
-       
+            <Group top={paddingTop} left={spaceForAxis}>          
+              <AxisLeft
+                label="UMAP-1"
+                labelProps={{fontSize: 14}}
+                scale={yScale}
+                numTicks={4}
+              />
+              <AxisBottom
+                top ={height-paddingBottom}              
+                label="UMAP-2"
+                labelProps={{fontSize: 14}}
+                numTicks={4}
+                scale={xScale}
+              />
+              {props.data.map(point=>{
+                return(  
+                  <Group key={`datapoint-${point.umap_1}-${point.umap_2}`}>
+                      { point.stimulation==='S' ?
+                        <Polygon
+                              center={{ x: xScale(point.umap_1), y: yScale(point.umap_2) }}
+                              sides={3}
+                              size={6}
+                              rotate={90}
+                              onMouseOver={(event) => handleHover(event, point)}
+                              onMouseLeave={(event) => handleLeaveHover(event, point)}                     
+                              fill= {`rgb(${hex2rgb(cellColors[point.celltype])},${valueLinearScale(point.value)})`}
+                            /> :
+                        <Circle
+                              r={5}
+                              cx={xScale(point.umap_1)}
+                              cy={yScale(point.umap_2)}                    
+                              onMouseOver={(event) => handleHover(event, point)}
+                              onMouseLeave={(event) => handleLeaveHover(event, point)}                    
+                              fill= {`rgb(${hex2rgb(cellColors[point.celltype])},${valueLinearScale(point.value)})`}
+                            />
+                      }
+                  </Group>)
+              })}
+            </Group>  
           </svg>
           {tooltipOpen && tooltipData && (
-          <TooltipWithBounds
-            top={tooltipTop}
-            left={tooltipLeft}
-            style={{ ...defaultTooltipStyles, backgroundColor: '#283238', color: 'white' }}
-          >
-            <div style={{ maxWidth: "20rem" }}>
-              <p><b>Celltype:</b> {tooltipData.celltype}</p>
-            </div>
-            
-            <div>
-              <p><b>Name:</b> {tooltipData.name}</p>
-            </div>
-            <div>
-              <p><b>Donor:</b> {tooltipData.donor}</p>
-            </div>
-            <div>
-              <p><b>Class</b> {tooltipData.class}</p>
-            </div>
-            <div>
-              <p><b>Value</b> {tooltipData.value.toFixed(2)}</p>
-            </div>
-            <div>
-              <p><b>ColorScale</b> {valueLinearScale(tooltipData.value)}</p>
-            </div>
-          </TooltipWithBounds>
+            <TooltipWithBounds
+              top={tooltipTop}
+              left={tooltipLeft}
+              style={{ ...defaultTooltipStyles, backgroundColor: '#283238', color: 'white' }}
+            >
+              <div style={{ maxWidth: "20rem" }}>
+                <p><b>Celltype:</b> {cellLineageTreeStaticInfo[tooltipData.celltype] ? cellLineageTreeStaticInfo[tooltipData.celltype].displayName: tooltipData.celltype }</p>              
+              </div>            
+              <div>
+                <p><b>Name:</b> {tooltipData.name}</p>
+              </div>
+              <div>
+                <p><b>Class</b> {tooltipData.class}</p>
+              </div>
+              <div>
+                <p><b>Value</b> {tooltipData.value.toFixed(2)}</p>
+              </div>
+            </TooltipWithBounds>
           )}
-          </Grid2>
-          <Grid2 xs={4}>
-          <div className="legends">
-   
-            <LegendDemo title={props.plottitle}>
+        </Grid2>
+        <Grid2 xs={4}>
+          <div className="legends">   
+            <UMAPPlotLegend title={props.plottitle}>
               <LegendLinear
                 scale={linearScale}
                 labelFormat={(d, i) => (+d).toFixed(2)}
@@ -305,9 +246,9 @@ export const RNAUMAP = (props) => {
                   ))
                 }
               </LegendLinear>
-            </LegendDemo>
-            <div className="custom">
-                <LegendDemo title="">
+            </UMAPPlotLegend>
+            <div className="shapelegends">
+                <UMAPPlotLegend title="">
                   <Legend scale={shapeScale}>
                     {(labels) => (
                       <>
@@ -346,10 +287,10 @@ export const RNAUMAP = (props) => {
                       </>
                     )}
                   </Legend>
-                </LegendDemo>
+                </UMAPPlotLegend>
             </div>
-
-            <style jsx>{`
+            <style jsx>
+              {`
               .legends {
                 font-family: arial;
                 font-weight: 100;
@@ -359,16 +300,14 @@ export const RNAUMAP = (props) => {
                 flex-grow: 1;
                 
               }
-
-              .custom {
+              .shapelegends {
                 margin-top: 30px;
-                font-weight: 100;
-                
+                font-weight: 100;                
               }
-            `}</style>
+            `}
+            </style>
           </div>
-          </Grid2>
-          
+        </Grid2>          
       </Grid2>
     )  
 }
