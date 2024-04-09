@@ -51,7 +51,6 @@ query iCREQuery($coordinates: [GenomicRangeInput!],$accession: [String!])
       }
       }
   }
-
 `
 
 export const EBI_ASSO_QUERY =  gql`

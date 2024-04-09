@@ -15,9 +15,7 @@ export default function About() {
         <Grid2 xs={12} lg={6}>
           <Typography variant="h3">About immuSCREEN</Typography>
           <Typography variant="h5">Search immune Candidate cis-Regulatory Elements by ENCODE</Typography>
-         
         </Grid2>       
-       
       </Grid2>
     </main>
   )
