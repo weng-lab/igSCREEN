@@ -17,13 +17,15 @@ import FlashAutoIcon from '@mui/icons-material/FlashAuto';
 import UndoOutlinedIcon from '@mui/icons-material/UndoOutlined';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { Download, Sync } from "@mui/icons-material";
-import { StaticCellTypeInfo, CellLineageTreeState, downloadSVG, extractQueryValues, generateCellLineageTreeState, DynamicCellTypeInfo, CellName, cellLineageTreeStaticInfo } from "./utils";
+import { downloadSVG, extractQueryValues, generateCellLineageTreeState } from "./utils";
+import { CellQueryValue, CellLineageTreeState, CellName, DynamicCellTypeInfo } from "./types";
+import { cellTypeStaticInfo } from "../../common/consts";
 
 
 type QueryGroup = {
-  intersect?: string[][],
-  exclude?: string[][],
-  union?: string[],
+  intersect?: CellQueryValue[][],
+  exclude?: CellQueryValue[][],
+  union?: CellQueryValue[],
   name: string
 }
 
@@ -101,7 +103,7 @@ export default function UpSet() {
     if (mode === "B" && (currentlySelected * 2) > cellTreeSelectionLimit) {
       handleOpenSnackbar("Unable to apply \"Both\" stimulation status due to selection limit (6)")
     } else {
-      const newState: CellLineageTreeState = Object.fromEntries(Object.entries(cellTypeState).map(([key, value]: [CellName, DynamicCellTypeInfo]) => cellLineageTreeStaticInfo[key].stimulable ? [key, {...value, stimulated: mode}] : [key, value])) as CellLineageTreeState
+      const newState: CellLineageTreeState = Object.fromEntries(Object.entries(cellTypeState).map(([key, value]: [CellName, DynamicCellTypeInfo]) => cellTypeStaticInfo[key].stimulable ? [key, {...value, stimulated: mode}] : [key, value])) as CellLineageTreeState
       setCellTypeState(newState)
     }
   }
@@ -197,15 +199,15 @@ export default function UpSet() {
    */
   const generateQuery = useCallback((selectedCellsState: Partial<CellLineageTreeState>, classes: CCRE_CLASS[]) => {
     //stores extracted relevant information from selectedCells for easier access
-    let cells: { displayName: string, queryVals: string[] }[] = [];
+    let cells: { displayName: string, queryVals: CellQueryValue[] }[] = [];
 
     //Out of selectedCells, extract relevant information. Create two entries for cells with "B" stimulation to iterate through more easily later
     Object.entries(selectedCellsState).forEach(([key, value]: [CellName, DynamicCellTypeInfo]) => {
       const name = key.replace('-', '_')
       if (value.stimulated == "B") {
-        cells.push({ displayName: name + '_U', queryVals: extractQueryValues(cellLineageTreeStaticInfo[key], "U") })
-        cells.push({ displayName: name + '_S', queryVals: extractQueryValues(cellLineageTreeStaticInfo[key], "S") })
-      } else cells.push({ displayName: name + '_' + value.stimulated, queryVals: extractQueryValues(cellLineageTreeStaticInfo[key], value.stimulated) })
+        cells.push({ displayName: name + '_U', queryVals: extractQueryValues(cellTypeStaticInfo[key], "U") })
+        cells.push({ displayName: name + '_S', queryVals: extractQueryValues(cellTypeStaticInfo[key], "S") })
+      } else cells.push({ displayName: name + '_' + value.stimulated, queryVals: extractQueryValues(cellTypeStaticInfo[key], value.stimulated) })
     })
 
     //Holds the combination of union/intersection/exlude and name for each query
@@ -213,7 +215,7 @@ export default function UpSet() {
 
     //Union of all cells
     if (Object.keys(selectedCellsState).length > 0) {
-      queryGroups.push({ union: Object.entries(selectedCellsState).map(([key, value]: [CellName, DynamicCellTypeInfo]) => extractQueryValues(cellLineageTreeStaticInfo[key], value.stimulated)).flat(2), name: 'Union_All' })
+      queryGroups.push({ union: Object.entries(selectedCellsState).map(([key, value]: [CellName, DynamicCellTypeInfo]) => extractQueryValues(cellTypeStaticInfo[key], value.stimulated)).flat(2), name: 'Union_All' })
     }
 
     //Individual counts
@@ -425,11 +427,11 @@ export default function UpSet() {
   //These boolean values are used to disable buttons in certain situaions
   const noneSelected = !Object.values(cellTypeState).map(x => x.selected).find(x => x)
   const noneStimulated = Object.entries(cellTypeState)
-    .every(([key, value]: [CellName, DynamicCellTypeInfo]) => cellLineageTreeStaticInfo[key].stimulable ? value.stimulated === "U" : true)
+    .every(([key, value]: [CellName, DynamicCellTypeInfo]) => cellTypeStaticInfo[key].stimulable ? value.stimulated === "U" : true)
   const allStimulated = Object.entries(cellTypeState)
-    .every(([key, value]: [CellName, DynamicCellTypeInfo]) => cellLineageTreeStaticInfo[key].stimulable ? value.stimulated === "S": true)
+    .every(([key, value]: [CellName, DynamicCellTypeInfo]) => cellTypeStaticInfo[key].stimulable ? value.stimulated === "S": true)
   const allBothStimulated = Object.entries(cellTypeState)
-    .every(([key, value]: [CellName, DynamicCellTypeInfo]) => cellLineageTreeStaticInfo[key].stimulable ? value.stimulated === "B" : true)
+    .every(([key, value]: [CellName, DynamicCellTypeInfo]) => cellTypeStaticInfo[key].stimulable ? value.stimulated === "B" : true)
 
   const groupCheckbox = (group: CCRE_CLASS, key: number) => {
     return (

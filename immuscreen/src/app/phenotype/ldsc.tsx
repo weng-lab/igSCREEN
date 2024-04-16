@@ -4,7 +4,7 @@ import { AxisLeft } from "@visx/axis";
 import { useMemo } from "react";
 import { scaleLinear } from "@visx/scale";
 import { Group } from "@visx/group";
-import { experimentInfo, cellColors } from "../icres/consts"
+import { experimentInfo, cellTypeStaticInfo } from "../../common/consts"
 import { defaultStyles as defaultTooltipStyles, useTooltip, TooltipWithBounds } from '@visx/tooltip';
 import { Text } from '@visx/text';
 import { MouseEvent } from "react";
@@ -113,7 +113,7 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
 
             const commonProps = {
               opacity: toBeShown ? 1 : 0.1, //Sharply decrease opacity if not to be shown
-              fill: cellColors[point.celltype.split('-')[1]] || "black",
+              fill: cellTypeStaticInfo[point.celltype.split('-')[1]].color || "black",
               style: { transformOrigin: `${xScale(i)}px ${yScale(point.enrichment)}px` }, //Needed so that scale transforms are applied correctly
               onMouseMove: (event) => handleHover(event, point),
               onMouseLeave: (event) => handleLeaveHover(event, point)

@@ -10,6 +10,7 @@ import { StyledTab } from "../../common/utils"
 import { Typography } from "@mui/material"
 import { Tabs } from "@mui/material"
 import { ICRES_QUERY } from "./queries"
+import { experimentInfo } from "../../common/consts"
 
 export const IcresByRegion = (props) => {
   const searchParams: ReadonlyURLSearchParams = useSearchParams()!
@@ -73,13 +74,15 @@ export const IcresByRegion = (props) => {
             },
             {
               header: "Celltypes",
-              value: (row) => row.celltypes.join(","),
-            }
+              value: (row) => row.celltypes.map(x => Object.entries(experimentInfo).find(([key, value]) => key.includes(x))[1]?.displayName ?? x).join(", "),
+            },
+            //Add experiments here, how do I get the info?
           ]}
           tableTitle={`iCREs`}
           rows={(data.iCREQuery) || []}
           onRowClick={(row) => {
-            router.push(`/icres?accession=${row.accession}`)
+            // router.push(`/icres?accession=${row.accession}`)
+            console.log(row)
 
           }}
           sortColumn={3}
