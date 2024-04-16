@@ -17,7 +17,8 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     },
     unstimCount: 130780,
     stimCount: 100461,
-    color: "#d043ff"
+    color: "#d043ff",
+    treeDisplayName: "Monocyte"
   },
   Myeloid_DCs: {
     id: 'Myeloid_DCs',
@@ -28,7 +29,8 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
       unstimulated: { Calderon: "Myeloid_DCs-U" }
     },
     unstimCount: 173394,
-    color: "#a64d79"
+    color: "#a64d79",
+    treeDisplayName: "Myeloid/dendritic cell"
   },
   pDCs: {
     id: 'pDCs',
@@ -39,7 +41,8 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
       unstimulated: { Calderon: 'pDCs-U' }
     },
     unstimCount: 146515,
-    color: "#741b47"
+    color: "#741b47",
+    treeDisplayName: "Plasmacytoid/dendritic cell"
   },
   //Using Calderon "name". Using Calderon's Stimulated/Unstimulated. In Corces it is "Bcell", and no stimulation info
   Bulk_B: {
@@ -54,7 +57,8 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     },
     unstimCount: 138138,
     stimCount: 124969,
-    color: "#078fff"
+    color: "#078fff",
+    treeDisplayName: "Bulk/B cell"
   },
   Naive_B: {
     id: 'Naive_B',
@@ -69,6 +73,7 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     unstimCount: 120624,
     stimCount: 128979,
     color: "#073763",
+    treeDisplayName: "Naïve/B cell"
   },
   Mem_B: {
     id: 'Mem_B',
@@ -82,7 +87,8 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     },
     unstimCount: 122662,
     stimCount: 129491,
-    color: "#1155cc"
+    color: "#1155cc",
+    treeDisplayName: "Memory/B cell"
   },
   Plasmablasts: {
     id: 'Plasmablasts',
@@ -93,7 +99,8 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
       unstimulated: { Calderon: 'Plasmablasts-U' }
     },
     unstimCount: 123042,
-    color: "#1606f7"
+    color: "#1606f7",
+    treeDisplayName: "Plasmablast"
   },
   Regulatory_T: {
     id: 'Regulatory_T',
@@ -107,7 +114,8 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     },
     unstimCount: 124481,
     stimCount: 126696,
-    color: "#cc0000"
+    color: "#cc0000",
+    treeDisplayName: "Regulatory/CD4+ T cell"
   },
   Naive_Tregs: {
     id: 'Naive_Tregs',
@@ -121,7 +129,8 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     },
     unstimCount: 95731,
     stimCount: 100068,
-    color: "#e06666"
+    color: "#e06666",
+    treeDisplayName: "Naïve T/regulatory cell"
   },
   Memory_Tregs: {
     id: 'Memory_Tregs',
@@ -135,7 +144,8 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     },
     unstimCount: 125459,
     stimCount: 121029,
-    color: "#770000"
+    color: "#770000",
+    treeDisplayName: "Memory T/regulatory cell"
   },
   Effector_CD4pos_T: {
     id: 'Effector_CD4pos_T',
@@ -149,7 +159,8 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     },
     unstimCount: 123382,
     stimCount: 137982,
-    color: "#990000"
+    color: "#990000",
+    treeDisplayName: "Effector/CD4+ T cell"
   },
   Naive_Teffs: {
     id: 'Naive_Teffs',
@@ -164,6 +175,7 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     unstimCount: 117212,
     stimCount: 137523,
     color: "#ea9999",
+    treeDisplayName: "Naïve T/effector cell"
   },
   Memory_Teffs: {
     id: 'Memory_Teffs',
@@ -178,6 +190,7 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     unstimCount: 137523,
     stimCount: 148833,
     color: "#cc4125",
+    treeDisplayName: "Memory T/effector cell"
   },
   Th1_precursors: {
     id: 'Th1_precursors',
@@ -192,6 +205,7 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     unstimCount: 121879,
     stimCount: 145297,
     color: "#ff3535",
+    treeDisplayName: "Th1/precursor"
   },
   Th2_precursors: {
     id: 'Th2_precursors',
@@ -206,6 +220,7 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     unstimCount: 122826,
     stimCount: 141664,
     color: "#c93232",
+    treeDisplayName: "Th2/precursor"
   },
   Th17_precursors: {
     id: 'Th17_precursors',
@@ -220,6 +235,7 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     unstimCount: 128606,
     stimCount: 147883,
     color: "#ba1818",
+    treeDisplayName: "Th17/precursor"
   },
   Follicular_T_Helper: {
     id: 'Follicular_T_Helper',
@@ -234,6 +250,7 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     unstimCount: 122084,
     stimCount: 136992,
     color: "#6c4141",
+    treeDisplayName: "T follicular/helper cell"
   },
   //Using Calderon "name". Using Calderon's Stimulated/Unstimulated. In Corces it is "CD8Tcell", and no stimulation info
   CD8pos_T: {
@@ -249,6 +266,7 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     unstimCount: 151004,
     stimCount: 127042,
     color: "#ff9900",
+    treeDisplayName: "CD8+ T cell"
   },
   Naive_CD8_T: {
     id: 'Naive_CD8_T',
@@ -263,6 +281,7 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     unstimCount: 100250,
     stimCount: 113028,
     color: "#f6b26b",
+    treeDisplayName: "Naïve CD8+/T cell"
   },
   Central_memory_CD8pos_T: {
     id: 'Central_memory_CD8pos_T',
@@ -277,6 +296,7 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     unstimCount: 125778,
     stimCount: 136023,
     color: "#e69138",
+    treeDisplayName: "Central/memory/CD8+ T cell"
   },
   Effector_memory_CD8pos_T: {
     id: 'Effector_memory_CD8pos_T',
@@ -291,6 +311,7 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     unstimCount: 145641,
     stimCount: 132761,
     color: "#f1c232",
+    treeDisplayName: "Effector/memory/CD8+ T cell"
   },
   Gamma_delta_T: {
     id: 'Gamma_delta_T',
@@ -305,6 +326,7 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     unstimCount: 133605,
     stimCount: 116220,
     color: "#dc5e5e",
+    treeDisplayName: "Gamma-delta/T cell"
   },
   Immature_NK: {
     id: 'Immature_NK',
@@ -316,6 +338,7 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     },
     unstimCount: 130554,
     color: "#5e957b",
+    treeDisplayName: "Immature/NK cell"
   },
   Mature_NK: {
     id: 'Mature_NK',
@@ -330,6 +353,7 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     unstimCount: 119958,
     stimCount: 110082,
     color: "#008000",
+    treeDisplayName: "Mature/NK cell"
   },
   Memory_NK: {
     id: 'Memory_NK',
@@ -341,6 +365,7 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     },
     unstimCount: 135352,
     color: "#93c47d",
+    treeDisplayName: "Memory/NK cell"
   },
   HSC: {
     id: 'HSC',
@@ -352,6 +377,7 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     },
     unstimCount: 173583,
     color: "#595959",
+    treeDisplayName: "Hematopoetic/stem cell"
   },
   MPP: {
     id: "MPP",
@@ -363,6 +389,7 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     },
     unstimCount: 158945,
     color: "#9e9e9e",
+    treeDisplayName: "Multipotent/progenitor"
   },
   CMP: {
     id: "CMP",
@@ -374,6 +401,7 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     },
     unstimCount: 159706,
     color: "#d3b2ce",
+    treeDisplayName: "Common myeloid/progenitor"
   },
   MEP: {
     id: "MEP",
@@ -385,6 +413,7 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     },
     unstimCount: 152044,
     color: "#b8a0cb",
+    treeDisplayName: "Megakaryocyte-erythroid/progenitor"
   },
   Ery: {
     id: "Ery",
@@ -396,6 +425,7 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     },
     unstimCount: 56267,
     color: "#684fda",
+    treeDisplayName: "Erythrocyte"
   },
   GMP: {
     id: "GMP",
@@ -407,6 +437,7 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     },
     unstimCount: 158558,
     color: "#865695",
+    treeDisplayName: "Granulocyte-monocyte/progenitors"
   },
   LMPP: {
     id: "LMPP",
@@ -418,6 +449,7 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     },
     unstimCount: 128494,
     color: "#c1d3ba",
+    treeDisplayName: "Lymphocyte-primed/multipotent progenitor"
   },
   CLP: {
     id: "CLP",
@@ -429,6 +461,7 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     },
     unstimCount: 93170,
     color: "#d5c8ac",
+    treeDisplayName: "Common lymphoid/progenitor"
   },
   CD4Tcell: {
     id: "CD4Tcell",
@@ -440,6 +473,7 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     },
     unstimCount: 121034,
     color: "#5b1606",
+    treeDisplayName: "CD4+ T cell"
   },
   NKcell: {
     id: "NKcell",
@@ -451,6 +485,7 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     },
     unstimCount: 116626,
     color: "#2f4a15",
+    treeDisplayName: "NK cell"
   },
   pHSC: {
     id: "pHSC",
@@ -462,6 +497,7 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     },
     unstimCount: 191307,
     color: "#25e6c9",
+    treeDisplayName: ""
   },
   LSC: {
     id: "LSC",
@@ -473,6 +509,7 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     },
     unstimCount: 192613,
     color: "#1ab19a",
+    treeDisplayName: ""
   },
   Blast: {
     id: "Blast",
@@ -484,6 +521,7 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
     },
     unstimCount: 190471,
     color: "#107263",
+    treeDisplayName: ""
   }
 }
 

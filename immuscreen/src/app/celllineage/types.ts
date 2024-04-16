@@ -147,6 +147,10 @@ export type CellQueryValue =
 export type CellTypeStaticInfo = {
   readonly id: CellName;
   readonly displayName: CellDisplayName;
+  /**
+   * Display name used in the Cell Lineage Tree. Insert '/' to break name onto multiple lines
+   */
+  readonly treeDisplayName: string;
   readonly unstimImagePath: string;
   readonly stimImagePath?: string;
   readonly unstimCount: number

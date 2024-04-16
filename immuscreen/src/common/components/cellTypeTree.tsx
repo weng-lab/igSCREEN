@@ -4,7 +4,7 @@ import { Tree, hierarchy } from '@visx/hierarchy';
 import { HierarchyPointNode, HierarchyPointLink } from '@visx/hierarchy/lib/types';
 import { LinkHorizontal, LinkVertical } from '@visx/shape';
 import { defaultStyles as defaultTooltipStyles, useTooltip, TooltipWithBounds } from '@visx/tooltip';
-import { CellLineageTreeState, CellTypeStaticInfo, DynamicCellTypeInfo } from '../../app/celllineage/types';
+import { CellDisplayName, CellLineageTreeState, CellTypeStaticInfo, DynamicCellTypeInfo } from '../../app/celllineage/types';
 import { cellTypeStaticInfo } from '../consts';
 
 const linkStroke = '#000000';
@@ -25,6 +25,8 @@ const uninteractiveNode = {
   stimulated: "U" as "U" | "S" | "B",
   stimulable: false,
   unstimCount: 0,
+  color: null,
+  displayName: null
 }
 
 interface TooltipData {
@@ -173,7 +175,7 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
                     ...cellTypeStaticInfo.CLP,
                     children: [
                       {
-                        displayName: 'Double-negative cell',
+                        treeDisplayName: 'Double-negative cell',
                         ...uninteractiveNode,
                         children: [
                           {
@@ -203,11 +205,11 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
                             ...cellTypeStaticInfo.Gamma_delta_T,
                           },
                           {
-                            displayName: 'CD4 immature single-positive cell',
+                            treeDisplayName: 'CD4 immature single-positive cell',
                             ...uninteractiveNode,
                             children: [
                               {
-                                displayName: 'Double-positive cell',
+                                treeDisplayName: 'Double-positive cell',
                                 ...uninteractiveNode,
                                 children: [
                                   {
@@ -343,33 +345,19 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
       left = node.y;
     }
 
-    // Take displayName of cell, and then split it into substrings that can be mapped to <tspan> elements below
-    // Needed to break displayName onto multiple lines
-    const displayName = node.data.displayName
-    const x = displayName.split(' ')
-    let y: string[] = []
-    let maxLineLength = 14
-    for (let i = 0; i < x.length; i++) {
-      if (y.length > 0 && y[y.length - 1].length + x[i].length <= maxLineLength){
-        y[y.length - 1] = y[y.length - 1] + ' ' + x[i]
-      } else {
-        y.push(x[i])
-      }
-    }
-
     return (
       <Group
         top={top}
         left={left}
       >
         <text
-          y={-60 - ((fontSize + 2) * (y.length - 1))}
+          y={-60 - ((fontSize + 2) * (node.data.treeDisplayName.split('/').length - 1))}
           fontSize={fontSize}
           fontFamily="Arial"
           textAnchor="middle"
           style={{ pointerEvents: 'none' }}
         >
-          {y.map((str, i) => {
+          {node.data.treeDisplayName.split('/').map((str, i) => {
             return (
               <tspan key={i} x="0" dy={fontSize + 2}>{str}</tspan>
             )
