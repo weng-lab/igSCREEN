@@ -1,5 +1,28 @@
 import { cellTypeStaticInfo } from "../../common/consts";
-import { CellLineageTreeState, CellName, CellQueryValue, CellTypeStaticInfo, DynamicCellTypeInfo } from "./types";
+import { CellDisplayName, CellLineageTreeState, CellName, CellQueryValue, CellTypeStaticInfo, DynamicCellTypeInfo } from "./types";
+
+export const getCellColor = (cell: CellName | CellQueryValue | CellDisplayName): string => {
+  //Want to find entry
+  return Object.values(cellTypeStaticInfo).find((x: CellTypeStaticInfo) => x.id === cell || x.displayName === cell || extractQueryValues(x, "B").includes(cell as CellQueryValue)).color
+}
+
+export const getCellDisplayName = (cell: CellName | CellQueryValue | CellDisplayName): CellDisplayName => {
+  return Object.values(cellTypeStaticInfo).find((x: CellTypeStaticInfo) => x.id === cell || x.displayName === cell || extractQueryValues(x, "B").includes(cell as CellQueryValue)).displayName
+}
+
+/**
+ * 
+ * @param cell CellTypeInfo
+ * @param want "S" | "U" | "B" The query value(s) wanted
+ * @returns array of query values
+ */
+export const extractQueryValues = (cell: CellTypeStaticInfo, want: "S" | "U" | "B"): (CellQueryValue[]) => {
+  switch (want) {
+    case "U": return cell.queryValues?.unstimulated ? [...Object.values(cell.queryValues.unstimulated).flat()] : []
+    case "S": return cell.queryValues?.stimulated ? [...Object.values(cell.queryValues.stimulated).flat()] : []
+    case "B": return (cell.queryValues?.unstimulated ? Object.values(cell.queryValues.unstimulated).flat() : []).concat(cell.queryValues?.stimulated ? (Object.values(cell.queryValues.stimulated).flat()) : [])
+  }
+}
 
 const cellNames: CellName[] = [
   "Myeloid_DCs",
@@ -38,20 +61,6 @@ const cellNames: CellName[] = [
   "Bulk_B",
   "CD8pos_T"
 ]
-
-/**
- * 
- * @param cell CellTypeInfo
- * @param want "S" | "U" | "B" The query value(s) wanted
- * @returns array of query values
- */
-export const extractQueryValues = (cell: CellTypeStaticInfo, want: "S" | "U" | "B"): (CellQueryValue[]) => {
-  switch (want) {
-    case "U": return cell.queryValues?.unstimulated ? [...Object.values(cell.queryValues.unstimulated).flat()] : []
-    case "S": return cell.queryValues?.stimulated ? [...Object.values(cell.queryValues.stimulated).flat()] : []
-    case "B": return (cell.queryValues?.unstimulated ? Object.values(cell.queryValues.unstimulated).flat() : []).concat(cell.queryValues?.stimulated ? (Object.values(cell.queryValues.stimulated).flat()) : [])
-  }
-}
 
 /**
  * Initial Selected Cells being query values not cell names is convenient right now, but confusing. Consider changing in future to plain names, like {name: cellName, stim: "B" | "U" | "S"}

@@ -72,6 +72,7 @@ export const IcresByRegion = (props) => {
               value: (row) => row.coordinates.end || "",
 
             },
+            //This need to change to using staticCellInfo
             {
               header: "Celltypes",
               value: (row) => row.celltypes.map(x => Object.entries(experimentInfo).find(([key, value]) => key.includes(x))[1]?.displayName ?? x).join(", "),
@@ -81,8 +82,8 @@ export const IcresByRegion = (props) => {
           tableTitle={`iCREs`}
           rows={(data.iCREQuery) || []}
           onRowClick={(row) => {
-            // router.push(`/icres?accession=${row.accession}`)
-            console.log(row)
+            router.push(`/icres?accession=${row.accession}`)
+            // console.log(row)
 
           }}
           sortColumn={3}

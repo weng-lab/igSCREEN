@@ -25,7 +25,7 @@ import { cellTypeStaticInfo } from "../../common/consts";
 
 import { IcresByRegion } from "./icresbyregion"
 import CellTypeTree from "../../common/components/cellTypeTree"
-import { generateCellLineageTreeState } from "../celllineage/utils"
+import { generateCellLineageTreeState, getCellColor } from "../celllineage/utils"
 
 
 //Need better text styling
@@ -74,21 +74,19 @@ export default function Icres() {
     nextFetchPolicy: "cache-first",
     client,
   })
-  // console.log(aloading,adata)
 
 
   let barplotdata = icrezscoredata && icrezscoredata.calderoncorcesAtacQuery.map(ic => {
     return {
       ...ic,
-      color: cellTypeStaticInfo[ic.celltype].color || stringToColour(ic.celltype),
+      color: getCellColor(ic.celltype),
       value: ic.value
-
     }
   })
   let barplotbyctdata = icrebyctzscoredata && icrebyctzscoredata.calderoncorcesByCtAtacQuery.map(ic => {
     return {
       ...ic,
-      color: cellTypeStaticInfo[ic.celltype].color || stringToColour(ic.celltype),
+      color: getCellColor(ic.celltype),
       value: ic.value
 
     }
@@ -131,7 +129,7 @@ export default function Icres() {
   }
 
   // console.log("coordinates", adata && adata.iCREQuery[0].coordinates)
-  console.log("active cells: ", adata && adata.iCREQuery[0].celltypes)
+  // console.log("active cells: ", adata && adata.iCREQuery[0].celltypes)
   return !searchParams.get('accession') && !searchParams.get('chromosome') ? (
     <main>
       <Grid2 container spacing={6} sx={{ mr: "auto", ml: "auto", mt: "3rem" }}>

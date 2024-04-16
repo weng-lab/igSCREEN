@@ -483,7 +483,7 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
       unstimulated: { Corces: "Blast" }
     },
     unstimCount: 190471,
-    color: "#1ab19a",
+    color: "#107263",
   }
 }
 

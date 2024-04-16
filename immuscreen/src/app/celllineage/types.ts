@@ -38,6 +38,46 @@ export type CellName =
   | "LSC"
   | "Blast"
 
+export type CellDisplayName =
+  "Monocyte"
+  | "Myeloid dendritic cell"
+  | "Plasmacytoid dendritic cell"
+  | "Bulk B cell"
+  | "Naïve B cell"
+  | "Memory B cell"
+  | "Plasmablast"
+  | "Regulatory CD4+ T cell"
+  | "Naïve T regulatory cell"
+  | "Memory T regulatory cell"
+  | "Effector CD4+ T cell"
+  | "Naïve T effector cell"
+  | "Memory T effector cell"
+  | "Th1 precursor"
+  | "Th2 precursor"
+  | "Th17 precursor"
+  | "T follicular helper cell"
+  | "CD8+ T cell"
+  | "Naïve CD8+ T cell"
+  | "Central memory CD8+ T cell"
+  | "Effector memory CD8+ T cell"
+  | "Gamma-delta T cell"
+  | "Immature NK cell"
+  | "Mature NK cell"
+  | "Memory NK cell"
+  | "Hematopoetic stem cell"
+  | "Multipotent progenitor"
+  | "Common myeloid progenitor"
+  | "Megakaryocyte-erythroid progenitor"
+  | "Erythrocyte"
+  | "Granulocyte-monocyte progenitors"
+  | "Lymphocyte-primed multipotent progenitor"
+  | "Common lymphoid progenitor"
+  | "CD4+ T cell"
+  | "NK cell"
+  | "Preleukemic Hematopoetic Stem Cells"
+  | "Leukemia Stem Cells"
+  | "Leukemic Blast Cells";
+
 export type CellQueryValue =
   "Myeloid_DCs-U"
   | "pDCs-U"
@@ -106,7 +146,7 @@ export type CellQueryValue =
 // Static information for each cell
 export type CellTypeStaticInfo = {
   readonly id: CellName;
-  readonly displayName: string;
+  readonly displayName: CellDisplayName;
   readonly unstimImagePath: string;
   readonly stimImagePath?: string;
   readonly unstimCount: number
@@ -116,7 +156,7 @@ export type CellTypeStaticInfo = {
     readonly unstimulated: { Calderon?: CellQueryValue | CellQueryValue[], Corces?: CellQueryValue | CellQueryValue[] };
     readonly stimulated?: { Calderon: CellQueryValue | CellQueryValue[] }
   }
-  readonly color?: string;
+  readonly color: string;
 }
 
 // Dynamic information that changes depending on use case

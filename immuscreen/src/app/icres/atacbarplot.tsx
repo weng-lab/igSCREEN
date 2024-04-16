@@ -10,37 +10,39 @@ import { scaleOrdinal } from '@visx/scale';
 import { useTooltip, useTooltipInPortal, defaultStyles } from '@visx/tooltip';
 import { localPoint } from '@visx/event';
 import { cellTypeStaticInfo } from "../../common/consts"
+import { getCellColor, getCellDisplayName } from "../celllineage/utils";
+import { CellDisplayName, CellName, CellQueryValue } from "../celllineage/types";
 
 type TooltipData = {
-    bardata: { class: string, subclass: string, description: string , ct_description?: string, value: number }
-    key: string;
-    index: number;
-    height: number;
-    width: number;
-    x: number;
-    y: number;
-    color: string;
+  bardata: { class: string, subclass: string, description: string, ct_description?: string, value: number }
+  key: string;
+  index: number;
+  height: number;
+  width: number;
+  x: number;
+  y: number;
+  color: string;
 };
 
 const tooltipStyles = {
-    ...defaultStyles,
-    minWidth: 60,
-    backgroundColor: 'rgba(0,0,0,0.9)',
-    color: 'white',
+  ...defaultStyles,
+  minWidth: 60,
+  backgroundColor: 'rgba(0,0,0,0.9)',
+  color: 'white',
 };
 
-   
+
 const legendGlyphSize = 15;
-  
-  
+
+
 const CellTypesLegends = ({ title, plottitle, children }: { title: string; plottitle?: string; children: React.ReactNode }) => {
-    return (
-      <div className="legend">
-        {plottitle && <div className="maintitle">{plottitle}</div>}
-        {plottitle && <br/>}
-        <div className="title">{title}</div>
-        {children}
-        <style>{`
+  return (
+    <div className="legend">
+      {plottitle && <div className="maintitle">{plottitle}</div>}
+      {plottitle && <br />}
+      <div className="title">{title}</div>
+      {children}
+      <style>{`
           .legend {
             line-height: 0.9em;
             color: #efefef;
@@ -67,82 +69,78 @@ const CellTypesLegends = ({ title, plottitle, children }: { title: string; plott
             color:  #000000;
           }
         `}</style>
-      </div>
-    );
+    </div>
+  );
+}
+
+
+
+export const AtacBarPlot: React.FC<{ plottitle?: string, byct?: boolean, study: string, barplotdata: { color: string, ct_description?: string, celltype: string, class: string, subclass: string, description: string, order: number, value: number, name: string, study: string, group: string, grouping: string, stimulation: string }[] }> = (props) => {
+  const width = 800
+  const height = 700
+  const margin = { top: 40, right: 8, bottom: 40, left: 60 };
+  const xMax = width - margin.left - margin.right;
+  const yMax = height - margin.top - margin.bottom;
+
+  function floorToHalf(value) {
+    return Math.floor(value * 2) / 2;
   }
-  
-  
-  
-export const AtacBarPlot: React.FC<{plottitle?: string,  byct?: boolean, study: string, barplotdata: { color: string, ct_description?: string, celltype: string, class: string, subclass: string, description: string, order: number, value: number, name: string, study: string, group: string, grouping: string,stimulation: string}[]}> = (props) => {    
-    const width = 800
-    const height = 700
-    const margin =  { top: 40, right: 8, bottom: 40, left: 60 };    
-    const xMax = width - margin.left - margin.right;
-    const yMax = height - margin.top - margin.bottom;   
 
-    function floorToHalf(value) {
-      return Math.floor(value * 2) / 2;
-    }
+  //Find Minimum active value in dataset
+  const yMinActive = Math.min(...props.barplotdata?.map((d) => d.value).filter(x => x !== -10))
 
-    //Find Minimum active value in dataset
-    const yMinActive = Math.min(...props.barplotdata?.map((d) => d.value).filter(x => x !== -10))
+  //Transform all -10 values to yMinActive - 1 rounded down to nearest whole number
+  let transformedData = props.barplotdata?.map(x => x.value === -10 ? { ...x, value: floorToHalf(yMinActive - 0.5) } : x)
 
-    //Transform all -10 values to yMinActive - 1 rounded down to nearest whole number
-    let transformedData = props.barplotdata?.map(x => x.value === -10 ? {...x, value: floorToHalf(yMinActive - 0.5)} : x)
+  const maxVal = Math.max(...transformedData.map((d) => d.value))
 
-    const maxVal = Math.max(...transformedData.map((d) => d.value ))
+  const xScale = transformedData && scaleBand<string>({
+    domain: transformedData.map((d) => d.name),
+    round: true,
+    range: [0, xMax],
+    padding: 0.1
+  });
 
-    const xScale = transformedData && scaleBand<string>({
-      domain: transformedData.map((d) => d.name),
-      round: true,
-      range: [0,xMax],
-      padding: 0.1   
-    });
+  const yScale = transformedData && scaleLinear<number>({
+    domain: [
+      floorToHalf(yMinActive - 0.5),
+      maxVal + 0.5
+    ],
+    range: [yMax, 0]
+  });
 
-    const yScale = transformedData &&  scaleLinear<number>({
-      domain: [
-        floorToHalf(yMinActive - 0.5),
-        maxVal + 0.5
-      ],
-      range:[yMax, 0]
-    });
+  let ticks: number[] = []
+  for (let index = floorToHalf(yMinActive - 0.5); index < (Math.max(...transformedData.map((d) => d.value)) + 0.5); index += 0.5) {
+    ticks.push(index);
+  }
 
-    let ticks: number[] = []
-    for (let index = floorToHalf(yMinActive - 0.5); index < (Math.max(...transformedData.map((d) => d.value )) + 0.5); index += 0.5) {
-      ticks.push(index);
-    }
-
-    const yScaleTickFormat = (v: number, index: number, ticks: { value: number; index: number }[]) =>
+  const yScaleTickFormat = (v: number, index: number, ticks: { value: number; index: number }[]) =>
     index === 0 ? 'No Signal' : `${v}`
-    
 
-    const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip } =  useTooltip<TooltipData>();
-    
-    const { containerRef, TooltipInPortal } = useTooltipInPortal({scroll: true});
-    
 
-    let uniqcelltypes: string[] =  [...new Set(transformedData.map(c=>c.celltype))] as string[]
-    if(props.byct)
-    {
-      // Need to make sure this is working properly
-        uniqcelltypes =  [...new Set(transformedData.map(c=> cellTypeStaticInfo[c.celltype] ? c.celltype : c.description))] as string[]
-        
-    }
-    let ordinalColorScale =  uniqcelltypes && scaleOrdinal({ 
-      domain: uniqcelltypes, 
-      range: uniqcelltypes.map((c: string)=> cellTypeStaticInfo[c].color || stringToColour(c) )
-    })
+  const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip } = useTooltip<TooltipData>();
 
-    const minTemp = Math.min(...(yScale.domain() as number[]));
+  const { containerRef, TooltipInPortal } = useTooltipInPortal({ scroll: true });
 
-    const colorScale = scaleOrdinal<string, string>({
-      domain: ['value'],
-      range: ["#ff0000"]
-    });
+  let uniqcelltypes = [...new Set(transformedData.map(c => getCellDisplayName(c.celltype as any)))]
 
-    return(
+  let ordinalColorScale = uniqcelltypes && scaleOrdinal({
+    domain: uniqcelltypes,
+    //Duplicates?
+    range: uniqcelltypes.map((c) => getCellColor(c)),
+
+  })
+
+  const minTemp = Math.min(...(yScale.domain() as number[]));
+
+  const colorScale = scaleOrdinal<string, string>({
+    domain: ['value'],
+    range: ["#ff0000"]
+  });
+
+  return (
     <div style={{ position: 'relative' }}>
-      <svg width={width} height={height} ref={containerRef}>    
+      <svg width={width} height={height} ref={containerRef}>
         <Group top={margin.top} left={margin.left}>
           <BarGroup
             data={transformedData}
@@ -157,43 +155,44 @@ export const AtacBarPlot: React.FC<{plottitle?: string,  byct?: boolean, study: 
             {(barGroups) =>
               barGroups.map((barGroup) => {
                 return (
-                <Group
-                  key={`bar-group-${barGroup.index}-${barGroup.x0}`}
-                  left={barGroup.x0}
-                >
-                  {barGroup.bars.map((bar, i) => (
-                    <rect
-                      key={`bar-group-bar-${barGroup.index}-${bar.index}-${bar.value}-${bar.key}`}
-                      x={bar.x}
-                      y={yScale(bar.value > 0 ? bar.value : 0)}
-                      width={bar.width}
-                      height={Math.abs(
-                        yScale( bar.value)   -
+                  <Group
+                    key={`bar-group-${barGroup.index}-${barGroup.x0}`}
+                    left={barGroup.x0}
+                  >
+                    {barGroup.bars.map((bar, i) => (
+                      <rect
+                        key={`bar-group-bar-${barGroup.index}-${bar.index}-${bar.value}-${bar.key}`}
+                        x={bar.x}
+                        y={yScale(bar.value > 0 ? bar.value : 0)}
+                        width={bar.width}
+                        height={Math.abs(
+                          yScale(bar.value) -
                           (bar.value > 0
                             ? yScale(Math.max(0, minTemp))
                             : yScale(0))
-                      )}
-                      opacity={bar.value === yScale.domain()[0] ? 0.20 : 1}
-                      fill={transformedData[barGroup.index].color}
-                      rx={4}
-                      onMouseLeave={() => {hideTooltip();}}
-                      onMouseMove={(event) => {
-                        const eventSvgCoords = localPoint(event);
-                        const left = barGroup.x0                         
-                        showTooltip({
-                          tooltipData: {
-                            ...bar,
-                            bardata: transformedData[barGroup.index]
-                          },
-                          tooltipTop: eventSvgCoords?.y,
-                          tooltipLeft: left,
-                        });
-                      }}
-                      
-                    />
-                  ))}
-                </Group>
-              )})
+                        )}
+                        opacity={bar.value === yScale.domain()[0] ? 0.20 : 1}
+                        fill={transformedData[barGroup.index].color}
+                        rx={4}
+                        onMouseLeave={() => { hideTooltip(); }}
+                        onMouseMove={(event) => {
+                          const eventSvgCoords = localPoint(event);
+                          const left = barGroup.x0
+                          showTooltip({
+                            tooltipData: {
+                              ...bar,
+                              bardata: transformedData[barGroup.index]
+                            },
+                            tooltipTop: eventSvgCoords?.y,
+                            tooltipLeft: left,
+                          });
+                        }}
+
+                      />
+                    ))}
+                  </Group>
+                )
+              })
             }
           </BarGroup>
           <line
@@ -203,7 +202,7 @@ export const AtacBarPlot: React.FC<{plottitle?: string,  byct?: boolean, study: 
             x2={xMax}
             stroke="#000000"
           />
-          
+
         </Group>
         <AxisBottom
           left={margin.left}
@@ -214,25 +213,25 @@ export const AtacBarPlot: React.FC<{plottitle?: string,  byct?: boolean, study: 
           hideTicks
           tickComponent={() => null}
           numTicks={transformedData.length}
-          tickLabelProps={(value) => { 
+          tickLabelProps={(value) => {
             return {
               fill: "#000000",
               fontSize: 11,
               textAnchor: "middle",
               transform: 'rotate(90 ' + xScale(value) + ',50)',
             }
-          }}        
+          }}
         />
         <AxisLeft
           top={margin.top}
           left={margin.left}
           scale={yScale}
           stroke={"#000000"}
-          tickStroke={"#000000"}     
+          tickStroke={"#000000"}
           tickLabelProps={{
-            fill:"#000000",
+            fill: "#000000",
             fontSize: 11,
-            textAnchor: "end"          
+            textAnchor: "end"
           }}
           tickFormat={yScaleTickFormat}
           tickValues={ticks}
@@ -261,35 +260,34 @@ export const AtacBarPlot: React.FC<{plottitle?: string,  byct?: boolean, study: 
           />
         </Group>
       </svg>
-      <div className="legends">    
-        <CellTypesLegends title={`${props.study} immune cell types`} plottitle={props.plottitle}>
-          <LegendOrdinal scale={ordinalColorScale} labelFormat={(label) => `${label}`}>
+      <div className="legends">
+        <CellTypesLegends title={props.byct ? "Immune Cell Types" : `${props.study} Immune Cell Types`} plottitle={props.plottitle}>
+          <LegendOrdinal scale={ordinalColorScale} labelFormat={(label: CellDisplayName) => label}>
             {(labels) => (
               <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '10px' }}>
-                {labels.map((label, i) => { 
-                  return (                  
-                  <LegendItem
-                    key={`legend-quantile-${i}`}
-                    margin="0 5px"
-                  
-                  >
-                    <svg width={legendGlyphSize} height={legendGlyphSize}>
-                      <rect fill={label.value} width={legendGlyphSize} height={legendGlyphSize} />
-                    </svg>
-                    <LegendLabel align="left" margin="0 0 0 4px" color={"#ff0000"}>
-                      <p className={"labelcolor"}>
-                        {transformedData.find(b => b.celltype === label.text)?.ct_description || (transformedData.find(b => b.celltype === label.text) ? transformedData.find(b => b.celltype === label.text).description : label.text)}
-                      </p>
-                    </LegendLabel>
-                  </LegendItem>
-                  
-                )} )}
+                {labels.map((label, i) => {
+                  return (
+                    <LegendItem
+                      key={`legend-quantile-${i}`}
+                      margin="0 5px"
+                    >
+                      <svg width={legendGlyphSize} height={legendGlyphSize}>
+                        <rect fill={label.value} width={legendGlyphSize} height={legendGlyphSize} />
+                      </svg>
+                      <LegendLabel align="left" margin="0 0 0 4px" color={"#ff0000"}>
+                        <p className={"labelcolor"}>
+                          {label.text}
+                        </p>
+                      </LegendLabel>
+                    </LegendItem>
+                  )
+                })}
               </div>
             )}
           </LegendOrdinal>
         </CellTypesLegends>
         <style>
-            {`
+          {`
             .legends {
               display: flex;
               font-family: arial;
@@ -303,19 +301,19 @@ export const AtacBarPlot: React.FC<{plottitle?: string,  byct?: boolean, study: 
             }
           `}
         </style>
-      </div>  
+      </div>
       {tooltipOpen && tooltipData && (
-          <TooltipInPortal top={tooltipTop} left={tooltipLeft} style={tooltipStyles}>
-            <div style={{ color: colorScale(tooltipData.key) }}>
-              <strong>{tooltipData.bardata.description.toString().replace('"','')}</strong>
-            </div>
-            <br/>
-            <div>{"Cell Type: "+(tooltipData.bardata.ct_description || tooltipData.bardata.description)}</div>
-            <div>{"Class: "+tooltipData.bardata.class}</div>
-            <div>{"SubClass: "+tooltipData.bardata.subclass}</div>
-            <div>{tooltipData.bardata.value === yScale.domain()[0] ? "No Signal" : tooltipData.bardata.value.toFixed(2)}</div>
+        <TooltipInPortal top={tooltipTop} left={tooltipLeft} style={tooltipStyles}>
+          <div style={{ color: colorScale(tooltipData.key) }}>
+            <strong>{tooltipData.bardata.description.toString().replace('"', '')}</strong>
+          </div>
+          <br />
+          <div>{"Cell Type: " + (tooltipData.bardata.ct_description || tooltipData.bardata.description)}</div>
+          <div>{"Class: " + tooltipData.bardata.class}</div>
+          <div>{"SubClass: " + tooltipData.bardata.subclass}</div>
+          <div>{tooltipData.bardata.value === yScale.domain()[0] ? "No Signal" : tooltipData.bardata.value.toFixed(2)}</div>
         </TooltipInPortal>
-      )}  
+      )}
     </div>
-    )
+  )
 }

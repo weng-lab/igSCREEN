@@ -8,6 +8,8 @@ import { experimentInfo, cellTypeStaticInfo } from "../../common/consts"
 import { defaultStyles as defaultTooltipStyles, useTooltip, TooltipWithBounds } from '@visx/tooltip';
 import { Text } from '@visx/text';
 import { MouseEvent } from "react";
+import { getCellColor } from "../celllineage/utils";
+import { CellName, CellQueryValue } from "../celllineage/types";
 
 type Props = {
   width: number;
@@ -110,10 +112,9 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
             const stimulated = point.celltype.split("-")[point.celltype.split("-").length - 1] === "S"
             // Passes p-val cutoff and is correct stimulation
             const toBeShown = point.enrichment_p <= pValCutoff && (stimView === "S" && stimulated || stimView === "U" && !stimulated || stimView === "B")
-
             const commonProps = {
               opacity: toBeShown ? 1 : 0.1, //Sharply decrease opacity if not to be shown
-              fill: cellTypeStaticInfo[point.celltype.split('-')[1]].color || "black",
+              fill: getCellColor(point.celltype.split('-')[1] as CellQueryValue | CellName),
               style: { transformOrigin: `${xScale(i)}px ${yScale(point.enrichment)}px` }, //Needed so that scale transforms are applied correctly
               onMouseMove: (event) => handleHover(event, point),
               onMouseLeave: (event) => handleLeaveHover(event, point)
