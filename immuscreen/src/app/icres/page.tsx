@@ -1,10 +1,10 @@
-"use client"
+ "use client"
 import React, { useState } from "react"
 import { useRouter } from "next/navigation"
 import { StyledTab } from "../../common/utils"
 import { client } from "../../common/utils"
 import SearchIcon from "@mui/icons-material/Search"
-import { CircularProgress, Stack, Typography } from "@mui/material"
+import { CircularProgress, Stack, ToggleButtonGroup, Typography } from "@mui/material"
 import { Tabs } from "@mui/material"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { TextField, IconButton, InputAdornment } from "@mui/material"
@@ -27,6 +27,8 @@ import { UmapPlot } from "../../common/components/umapplot";
 import CellTypeTree from "../../common/components/cellTypeTree"
 import { generateCellLineageTreeState } from "../celllineage/utils"
 //Need better text styling
+import ToggleButton from '@mui/material/ToggleButton';
+
 
 export default function Icres() { 
   const searchParams: ReadonlyURLSearchParams = useSearchParams()!
@@ -90,6 +92,14 @@ export default function Icres() {
 
     }
   })
+
+  const [colorScheme, setcolorScheme] = useState('Zscore');
+  const handleColorSchemeChange = (
+    event: React.MouseEvent<HTMLElement>,
+    newScheme: string,
+  ) => {
+    setcolorScheme(newScheme);
+  };
   let barplotbyctdata = icrebyctzscoredata && icrebyctzscoredata.calderoncorcesByCtAtacQuery.map(ic => {
     return {
       ...ic,
@@ -195,7 +205,7 @@ return !searchParams.get('accession') && !searchParams.get('chromosome') ? (
         <Grid2 xs={12} lg={12}>
           <Tabs aria-label="icres_tabs" value={value} onChange={handleChange}>
             <StyledTab label="Genome Browser" />
-            <StyledTab label="Calderon ATAC UMAP" />
+            <StyledTab label="Calderon Zscore UMAP" />
             <StyledTab label="EBI Associations" />
             <StyledTab label="Cell type specific zscores" />
             <StyledTab label="View Activity in Cell Lineage" />
@@ -222,8 +232,23 @@ return !searchParams.get('accession') && !searchParams.get('chromosome') ? (
       {value === 1 &&  searchParams.get("accession") && !atacumaploading && atacumapdata && atacumapdata.calderonAtacUmapQuery.length>0 &&
         
           <Grid2 xs={12} lg={12}>
-                <UmapPlot data={atacumapdata.calderonAtacUmapQuery} plottitle={"ZScore"}/>
-              </Grid2>
+              Color Scheme:
+              <br/><br/>
+            <ToggleButtonGroup
+              color="primary"
+              value={colorScheme}
+              exclusive
+              
+              onChange={handleColorSchemeChange}
+              aria-label="Platform"
+            >
+            <ToggleButton value="ZScore">Zscore</ToggleButton>
+            <ToggleButton value="celltype">CellType Cluster</ToggleButton>      
+            </ToggleButtonGroup>
+            <br/>
+            <br/>
+            <UmapPlot colorScheme={colorScheme} data={atacumapdata.calderonAtacUmapQuery} plottitle={"ZScore"}/>
+            </Grid2>
         
 
       }

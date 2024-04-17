@@ -11,7 +11,6 @@ import { Legend, LegendLinear,LegendItem,LegendLabel,
 import { GlyphTriangle,GlyphCircle } from "@visx/glyph";
 import { cellColors } from "../consts";
 import { cellLineageTreeStaticInfo } from "../../app/celllineage/utils";
-import { hex2rgb } from "../utils";
 
 
 export type UmapPoint = {
@@ -63,6 +62,7 @@ function UMAPPlotLegend({ title, children }: { title: string; children: React.Re
     );
 }
 export const UmapPlot = (props) => {
+    
     const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip } = useTooltip<TooltipData>();  
     const handleHover = (event: MouseEvent<SVGPolygonElement | SVGCircleElement, globalThis.MouseEvent>, point: UmapPoint) => {
       showTooltip({
@@ -117,7 +117,7 @@ export const UmapPlot = (props) => {
 
     const linearScale = scaleLinear({
       domain: [minValue, maxValue],
-      range: ["rgb(0,0,0,0.1)", "rgb(0,0,0,1)"],
+      range: ["#ffcd00", "#ff0000"],
     });
 
     const valueLinearScale = scaleLinear({
@@ -176,7 +176,9 @@ export const UmapPlot = (props) => {
                               rotate={90}
                               onMouseOver={(event) => handleHover(event, point)}
                               onMouseLeave={(event) => handleLeaveHover(event, point)}                     
-                              fill= {`rgb(${hex2rgb(cellColors[point.celltype])},${valueLinearScale(point.value)})`}
+                              fill= {( props.colorScheme==='geneexp' || props.colorScheme==='ZScore') ? linearScale(point.value) : cellColors[point.celltype]}
+                            
+                             stroke={tooltipData && tooltipData.celltype===point.celltype ? 'black': ''}
                             /> :
                         <Circle
                               r={5}
@@ -184,7 +186,10 @@ export const UmapPlot = (props) => {
                               cy={yScale(point.umap_2)}                    
                               onMouseOver={(event) => handleHover(event, point)}
                               onMouseLeave={(event) => handleLeaveHover(event, point)}                    
-                              fill= {`rgb(${hex2rgb(cellColors[point.celltype])},${valueLinearScale(point.value)})`}
+                              //fill= {`${linearScale(point.value)}`}
+                              fill= { (props.colorScheme==='geneexp' || props.colorScheme==='ZScore') ? linearScale(point.value) : cellColors[point.celltype]}
+                              stroke={tooltipData && tooltipData.celltype===point.celltype ? 'black': ''}
+                              
                             />
                       }
                   </Group>)
@@ -214,13 +219,13 @@ export const UmapPlot = (props) => {
         </Grid2>
         <Grid2 xs={4}>
           <div className="legends">   
-            <UMAPPlotLegend title={props.plottitle}>
+            {(props.colorScheme==='geneexp'|| props.colorScheme==='ZScore' ) && <UMAPPlotLegend title={props.plottitle}>
               <LegendLinear
                 scale={linearScale}
                 labelFormat={(d, i) => (+d).toFixed(2)}
               >
                 {(labels) =>
-                  labels.map((label, i) => (
+                  labels.sort((a,b)=> b.index - a.index).map((label, i) => (
                     <LegendItem
                       key={`legend-linear-${i}`}
                       onClick={() => {
@@ -246,7 +251,7 @@ export const UmapPlot = (props) => {
                   ))
                 }
               </LegendLinear>
-            </UMAPPlotLegend>
+            </UMAPPlotLegend>}
             <div className="shapelegends">
                 <UMAPPlotLegend title="">
                   <Legend scale={shapeScale}>
