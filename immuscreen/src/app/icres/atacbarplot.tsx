@@ -4,7 +4,7 @@ import { Group } from "@visx/group";
 import { BarGroup } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { scaleBand, scaleLinear } from "@visx/scale";
-import { stringToColour } from './utils';
+import { stringToColour } from '../../common/utils';
 import { LegendOrdinal, LegendItem, LegendLabel } from '@visx/legend';
 import { scaleOrdinal } from '@visx/scale';
 import { useTooltip, useTooltipInPortal, defaultStyles } from '@visx/tooltip';
@@ -297,7 +297,7 @@ export const AtacBarPlot: React.FC<{ plottitle?: string, byct?: boolean, study: 
               
             }
             .labelcolor {
-              color:   #000000;
+              color:  #000000;
             }
           `}
         </style>
