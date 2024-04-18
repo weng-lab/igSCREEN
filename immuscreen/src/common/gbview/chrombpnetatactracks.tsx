@@ -62,6 +62,7 @@ import { CalderonBigWigTracksMetadata, CalderonCellTypesMetadata } from "./const
     defaultcelltypes
   }) => {
 
+    console.log("defaultcelltypes",defaultcelltypes)
     const r = defaultcelltypes && CalderonBigWigTracksMetadata.filter(c=>defaultcelltypes.includes(c.celltype_name))
 
     
@@ -106,8 +107,8 @@ import { CalderonBigWigTracksMetadata, CalderonCellTypesMetadata } from "./const
               title={x[0]}
               height={130}
               width={1400}
+              imputedSignalURL={`${x[1]}`}
               signalURL={`${x[1].replace('bigWig','profile_scores.bw')}`}
-              imputedSignalURL={`${x[1].replace('bigWig','profile_scores.bw')}`}
               domain={domain}            
               neutralRegions={[]}
             />
