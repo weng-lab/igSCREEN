@@ -28,8 +28,8 @@ type GenomeBrowserViewProps = {
   assembly: string
 }
 const GENE_QUERY = gql`
-  query s($chromosome: String, $start: Int, $end: Int, $assembly: String!) {
-    gene(chromosome: $chromosome, start: $start, end: $end, assembly: $assembly) {
+  query s($chromosome: String, $start: Int, $end: Int, $assembly: String!,  $version: Int) {
+    gene(chromosome: $chromosome, start: $start, end: $end, assembly: $assembly, version :$version) {
       name
       strand
       transcripts {
@@ -80,7 +80,7 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (props) => {
   const [highlight, setHighlight] = useState(null)
   
   const snpResponse = useQuery<SNPQueryResponse>(GENE_QUERY, {
-    variables: { ...coordinates, assembly: props.assembly },
+    variables: { ...coordinates, assembly: props.assembly, version: 40 },
     fetchPolicy: "cache-and-network",
     nextFetchPolicy: "cache-first",
     client,

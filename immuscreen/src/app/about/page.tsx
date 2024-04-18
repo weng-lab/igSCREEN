@@ -13,11 +13,9 @@ export default function About() {
     <main>
       <Grid2 container spacing={4} sx={{ maxWidth: "70%", mr: "auto", ml: "auto", mt: "3rem" }}>
         <Grid2 xs={12} lg={6}>
-          <Typography variant="h3">About immuSCREEN</Typography>
-          <Typography variant="h5">Search immune Candidate cis-Regulatory Elements by ENCODE</Typography>
-         
-        </Grid2>       
-       
+          <Typography variant="h3">About igSCREEN</Typography>
+          <Typography variant="h5">Search immune Candidate cis-Regulatory Elements by ENCODE</Typography>         
+        </Grid2>              
       </Grid2>
     </main>
   )

@@ -1,40 +1,20 @@
 "use client"
 import React, { useState} from "react"
-import { Tabs, Tab, Typography } from "@mui/material"
+import { Tabs, Tab, Typography, colors } from "@mui/material"
 import { client } from "../../common/utils"
 import { StyledTab } from "../../common/utils"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { useQuery } from "@apollo/client"
-import { gql } from "@apollo/client"
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation"
-
 import { DataTable } from "@weng-lab/psychscreen-ui-components"
 import { GenomeBrowserView } from "../../common/gbview/genomebrowserview"
 import { GeneAutoComplete } from "../../common/components/mainsearch/GeneAutocomplete"
-import { RNAUMAP } from "./rnaumap"
+import { UmapPlot } from "../../common/components/umapplot"
+import { RNA_UMAP_QUERY, EQTL_QUERY } from "./queries"
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 
-
-
-const EQTL_QUERY = gql`
-  query iCREeQTLQuery($study: String!, $geneid: String) 
-    {
-        icreeQTLQuery(study:$study, geneid:$geneid) {
-          variant_id
-          pvalue
-          qvalue
-          geneid
-          pval_nominal
-          phenotype_id
-          celltype
-          study
-          rsid
-          pval_beta
-        
-        }
-    }
-  
-`
 const Gene = () =>{
   const searchParams: ReadonlyURLSearchParams = useSearchParams()!
   const [value, setValue] = useState(0)
@@ -42,6 +22,16 @@ const Gene = () =>{
   const handleChange = (_, newValue: number) => {
     setValue(newValue)
   }
+
+  const { loading: rnaumaploading, data: rnumapdata } = useQuery(RNA_UMAP_QUERY, {
+    variables: {
+      gene_id: searchParams.get('gene')
+    },
+    skip: !searchParams.get('gene'),
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
+    client,
+  })
   const { loading: loading, data: data } = useQuery(EQTL_QUERY, {
     variables: {
       study: "GTEX",
@@ -76,8 +66,13 @@ const Gene = () =>{
   })
 
 
-  
-  
+  const [colorScheme, setcolorScheme] = useState('genexp');
+  const handleColorSchemeChange = (
+    event: React.MouseEvent<HTMLElement>,
+    newScheme: string,
+  ) => {
+    setcolorScheme(newScheme);
+  };
 
   return  !searchParams.get('gene') ? <main>
 
@@ -97,8 +92,6 @@ const Gene = () =>{
   </main>: (
     <main>
       <Grid2 container  sx={{ maxWidth: "80%", mr: "auto", ml: "auto", mt: "3rem" }}>
-        
-            
             <Grid2 container spacing={3} sx={{ mt: "2rem", mb: "1rem" }}>
                   <Grid2 xs={12} lg={12}>
                       {searchParams.get("gene") && <Typography variant="h4">Gene Details: {searchParams.get("gene")}</Typography>}
@@ -107,7 +100,7 @@ const Gene = () =>{
                     <Tabs aria-label="basic tabs example" value={value} onChange={handleChange}>
                     <StyledTab label="Genome Browser" />
                               <StyledTab label="eQTLs" />
-                        <StyledTab label="Calderon RNA UMAP" />
+                        <StyledTab label="Gene Expression UMAP" />
                     </Tabs>
                   </Grid2>
             </Grid2>
@@ -215,9 +208,23 @@ const Gene = () =>{
                 coordinates={{ start: +searchParams.get("start")-20000, end: +searchParams.get("end")+20000, 
                 chromosome:searchParams.get("chromosome") }}
               />}
-            {value===2 && 
-            <Grid2 xs={6} lg={6}>
-            <RNAUMAP gene={searchParams.get('gene')}/>
+            {value===2 && rnumapdata && !rnaumaploading && rnumapdata.calderonRnaUmapQuery.length>0 &&
+            <Grid2 xs={12} lg={12}>
+              Color Scheme:
+              <br/><br/>
+              <ToggleButtonGroup
+              color="primary"
+              value={colorScheme}
+              exclusive
+              onChange={handleColorSchemeChange}
+              aria-label="Platform"
+              >
+            <ToggleButton value="geneexp">Gene Expression</ToggleButton>
+            <ToggleButton value="celltype">CellType Cluster</ToggleButton>      
+            </ToggleButtonGroup>
+            <br/>
+            <br/>
+              <UmapPlot colorScheme={colorScheme} data={rnumapdata.calderonRnaUmapQuery.map(d=>{return {...d, value: Math.log(d.value+0.01)} })} plottitle={"log10 TPM"}/>
             </Grid2>
             }
         </Grid2>

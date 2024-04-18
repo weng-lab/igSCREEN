@@ -1,5 +1,24 @@
 import { gql } from "@apollo/client"
 
+
+export const ATAC_UMAP_QUERY = gql`
+query atacUmapQuery($accession: String!) 
+{
+    calderonAtacUmapQuery(accession: $accession){
+      name
+      donor
+      stimulation
+      end
+      celltype
+      class
+      umap_1
+      umap_2
+      value
+      
+    }
+  }
+
+`
 export const ICRES_CT_ZSCORES_QUERY= gql`
 query calderoncorceszscoreAtacQuery($accession: [String], $study: [String]) {
   calderoncorcesAtacQuery(accession: $accession,study: $study) {
