@@ -3,11 +3,11 @@ import { CellDisplayName, CellLineageTreeState, CellName, CellQueryValue, CellTy
 
 export const getCellColor = (cell: CellName | CellQueryValue | CellDisplayName): string => {
   //Want to find entry
-  return Object.values(cellTypeStaticInfo).find((x: CellTypeStaticInfo) => x.id === cell || x.displayName === cell || extractQueryValues(x, "B").includes(cell as CellQueryValue)).color
+  return Object.values(cellTypeStaticInfo).find((x: CellTypeStaticInfo) => x.id === cell || x.displayName === cell || extractQueryValues(x, "B").includes(cell as CellQueryValue))?.color ?? "#000000"
 }
 
 export const getCellDisplayName = (cell: CellName | CellQueryValue | CellDisplayName): CellDisplayName => {
-  return Object.values(cellTypeStaticInfo).find((x: CellTypeStaticInfo) => x.id === cell || x.displayName === cell || extractQueryValues(x, "B").includes(cell as CellQueryValue)).displayName
+  return Object.values(cellTypeStaticInfo).find((x: CellTypeStaticInfo) => x.id === cell || x.displayName === cell || extractQueryValues(x, "B").includes(cell as CellQueryValue))?.displayName ?? cell as CellDisplayName
 }
 
 /**

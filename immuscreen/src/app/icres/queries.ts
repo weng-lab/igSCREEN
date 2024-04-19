@@ -94,3 +94,14 @@ query ebiAssoc($accession: String)
   }
 
 `
+export const ICRES_ACTIVE_EXPERIMENTS = gql`
+  query calderoncorceszscoreAtacQuery($accession: [String]) {
+    calderoncorcesAtacQuery(accession: $accession) {
+      grouping
+      description
+      name
+      start
+      value
+    }
+  }
+`

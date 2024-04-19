@@ -73,6 +73,8 @@ export function expandCoordinates(coordinates, l = 20000) {
 }
 
 export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (props) => {
+
+  console.log(props.defaultcelltypes)
   
   const svgRef = useRef<SVGSVGElement>(null)
   const expandedCoordinates = useMemo(() => expandCoordinates(props.coordinates), [props.coordinates])

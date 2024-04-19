@@ -9,8 +9,9 @@ import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { Legend, LegendLinear,LegendItem,LegendLabel,
 } from "@visx/legend";
 import { GlyphTriangle,GlyphCircle } from "@visx/glyph";
-import { cellColors } from "../consts";
-import { cellLineageTreeStaticInfo } from "../../app/celllineage/utils";
+import { CellTypeStaticInfo } from "../../app/celllineage/types";
+import { getCellColor } from "../../app/celllineage/utils";
+import { cellTypeStaticInfo } from "../consts";
 
 
 export type UmapPoint = {
@@ -176,8 +177,7 @@ export const UmapPlot = (props) => {
                               rotate={90}
                               onMouseOver={(event) => handleHover(event, point)}
                               onMouseLeave={(event) => handleLeaveHover(event, point)}                     
-                              fill= {( props.colorScheme==='geneexp' || props.colorScheme==='ZScore') ? linearScale(point.value) : cellColors[point.celltype]}
-                            
+                              fill= {( props.colorScheme==='geneexp' || props.colorScheme==='ZScore') ? linearScale(point.value) : getCellColor(point.celltype)}
                              stroke={tooltipData && tooltipData.celltype===point.celltype ? 'black': ''}
                             /> :
                         <Circle
@@ -187,7 +187,7 @@ export const UmapPlot = (props) => {
                               onMouseOver={(event) => handleHover(event, point)}
                               onMouseLeave={(event) => handleLeaveHover(event, point)}                    
                               //fill= {`${linearScale(point.value)}`}
-                              fill= { (props.colorScheme==='geneexp' || props.colorScheme==='ZScore') ? linearScale(point.value) : cellColors[point.celltype]}
+                              fill= { (props.colorScheme==='geneexp' || props.colorScheme==='ZScore') ? linearScale(point.value) : getCellColor(point.celltype)}
                               stroke={tooltipData && tooltipData.celltype===point.celltype ? 'black': ''}
                               
                             />
@@ -203,7 +203,7 @@ export const UmapPlot = (props) => {
               style={{ ...defaultTooltipStyles, backgroundColor: '#283238', color: 'white' }}
             >
               <div style={{ maxWidth: "20rem" }}>
-                <p><b>Celltype:</b> {cellLineageTreeStaticInfo[tooltipData.celltype] ? cellLineageTreeStaticInfo[tooltipData.celltype].displayName: tooltipData.celltype }</p>              
+                <p><b>Celltype:</b> {cellTypeStaticInfo[tooltipData.celltype].displayName }</p>              
               </div>            
               <div>
                 <p><b>Name:</b> {tooltipData.name}</p>

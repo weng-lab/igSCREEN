@@ -194,7 +194,6 @@ const Snp = () =>{
                       </Grid2>
                   </Grid2>
         }                      
-      `
         </Grid2>
        
       </Grid2>
