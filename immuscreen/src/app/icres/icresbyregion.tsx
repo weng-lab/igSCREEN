@@ -7,12 +7,13 @@ import { gql } from "@apollo/client"
 import { ReadonlyURLSearchParams, useSearchParams, useRouter } from "next/navigation"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { StyledTab } from "../../common/utils"
-import { Collapse, List, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material"
+import { CircularProgress, Collapse, List, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material"
 import { Tabs } from "@mui/material"
 import { ICRES_ACTIVE_EXPERIMENTS, ICRES_QUERY } from "./queries"
 import { experimentInfo } from "../../common/consts"
 import { getCellDisplayName } from "../celllineage/utils"
 import { ExpandLess, ExpandMore, StarBorder } from "@mui/icons-material"
+import { CellQueryValue } from "../celllineage/types"
 
 export const IcresByRegion = (props) => {
   const searchParams: ReadonlyURLSearchParams = useSearchParams()!
@@ -22,7 +23,10 @@ export const IcresByRegion = (props) => {
     setValue(newValue)
   }
 
-  const { loading: loading_icres, data: data_icres } = useQuery(ICRES_QUERY, {
+  type ICRE_Data = { accession: string, rdhs: string, celltypes: CellQueryValue[], coordinates: { chromosome: string, start: number, end: number, } }
+  type Experiment_Data = { grouping: string, description: string, name: string, start: number, value: number }
+
+  const { loading: loading_icres, data: data_icres }: { loading: boolean, data: { iCREQuery: ICRE_Data[] } } = useQuery(ICRES_QUERY, {
     variables: {
       coordinates: {
         chromosome: searchParams.get("chromosome"),
@@ -36,7 +40,7 @@ export const IcresByRegion = (props) => {
     client,
   })
 
-  const { loading: loading_experiments, data: data_experiments } = useQuery(ICRES_ACTIVE_EXPERIMENTS, {
+  const { loading: loading_experiments, data: data_experiments }: { loading: boolean, data: { calderoncorcesAtacQuery: Experiment_Data[] } } = useQuery(ICRES_ACTIVE_EXPERIMENTS, {
     variables: {
       accession: data_icres?.iCREQuery.map((x) => x.accession) || []
     },
@@ -46,7 +50,27 @@ export const IcresByRegion = (props) => {
     client,
   })
 
-  console.log(data_experiments)
+  type ICRE_Row = ICRE_Data & { activeExps?: { [key: string]: Experiment_Data[] } }
+
+  const rowsNoExps: ICRE_Row[] = data_icres?.iCREQuery || []
+
+  const rowsWithExps = rowsNoExps.length > 0 && data_experiments && rowsNoExps.map((row: ICRE_Row) => {
+    let activeExps: { [key: string]: Experiment_Data[] } = {}
+
+    data_experiments.calderoncorcesAtacQuery.forEach(exp => {
+      if (exp.start === row.coordinates.start && exp.value > 1.64) {
+        if (activeExps[exp.grouping]) {
+          activeExps[exp.grouping] = [...activeExps[exp.grouping], exp]
+        } else {
+          activeExps[exp.grouping] = [exp]
+        }
+      }
+    });
+
+    return { ...row, activeExps: activeExps }
+  })
+
+  console.log(rowsWithExps)
 
   return (
     <main>
@@ -62,7 +86,7 @@ export const IcresByRegion = (props) => {
           </Grid2>
         </Grid2>
         {/* This needs to have proper loading state */}
-        {value === 0 && !loading_icres && data_icres && data_experiments && <DataTable
+        {value === 0 && !loading_icres ? <DataTable
           columns={[
             {
               header: "Accession",
@@ -95,6 +119,9 @@ export const IcresByRegion = (props) => {
               FunctionalRender: (row) => {
                 const [open, setOpen] = useState(false)
 
+                /**
+                 * @todo should specify whether the cell is stimulated or not
+                 */
                 const celltypes = row.celltypes.map(x => getCellDisplayName(x))
 
                 const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -110,7 +137,7 @@ export const IcresByRegion = (props) => {
                         {open ? <ExpandLess /> : <ExpandMore />}
                       </ListItemButton>
                       <Collapse in={open} timeout="auto" unmountOnExit>
-                        <List sx={{pl: 2}} component="div" disablePadding>
+                        <List sx={{ pl: 2 }} component="div" disablePadding>
                           {
                             celltypes.map((cell: string) =>
                               <ListItemText key={cell} primary={"\u2022 " + cell} />
@@ -126,33 +153,9 @@ export const IcresByRegion = (props) => {
             },
             {
               header: "Active Experiments",
-              value: (row) => null,
-              FunctionalRender: (row) => {
+              value: (row: ICRE_Row) => row?.activeExps ? Object.values(row.activeExps).flat().length : 0,
+              FunctionalRender: (row: ICRE_Row) => {
                 const [open, setOpen] = useState(false)
-
-                type ExperimentInfo = {grouping: string, description: string, name: string, start: number, value: number}
-
-                //Accessing global scope variable here is not great, should maybe pass it in as part of the rows object. That seems cleaner
-
-                /**
-                 * @todo 4/19
-                 * - Find out which score is the cutoff for "active" in an experiment
-                 * - Refactor this to pass experiment info as part of the rows prop (and properly type it). Nothing seems correct here
-                 */
-
-                const experiments: ExperimentInfo[]  = data_experiments.calderoncorcesAtacQuery
-
-                let groupings: {[key: string]: ExperimentInfo[]} = {}
-
-                experiments.forEach(exp => {
-                  if (exp.start === row.coordinates.start && exp.value > 0) {
-                    if (groupings[exp.grouping]) {
-                      groupings[exp.grouping] = [...groupings[exp.grouping], exp]
-                    } else {
-                      groupings[exp.grouping] = [exp]
-                    }
-                  }
-                });
 
                 const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
                   event.stopPropagation()
@@ -160,7 +163,7 @@ export const IcresByRegion = (props) => {
                 };
 
 
-                type GroupListProps = {exps: ExperimentInfo[], grouping: string}
+                type GroupListProps = { exps: Experiment_Data[], grouping: string }
 
                 const GroupList: React.FC<GroupListProps> = (props: GroupListProps) => {
                   const [openGroup, setOpenGroup] = useState(false)
@@ -173,14 +176,14 @@ export const IcresByRegion = (props) => {
                   return (
                     <List>
                       <ListItemButton onClick={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => handleClick(event)}>
-                        <ListItemText primary={`${props.grouping} - (${props.exps.length})`} />
+                        <ListItemText primary={`${props.grouping} (${props.exps.length})`} />
                         {openGroup ? <ExpandLess /> : <ExpandMore />}
                       </ListItemButton>
                       <Collapse in={openGroup} timeout="auto" unmountOnExit>
-                        <List sx={{pl: 2}} component="div" disablePadding>
+                        <List sx={{ pl: 2 }} component="div" disablePadding>
                           {
                             props.exps.map((exp) =>
-                            //Todo add hover info
+                              //Todo add hover info
                               <ListItemText key={exp.name} primary={"\u2022 " + exp.name} />
                             )
                           }
@@ -191,16 +194,16 @@ export const IcresByRegion = (props) => {
                 }
 
                 return (
-                  experiments.length > 0 ?
+                  row?.activeExps ?
                     <List>
                       <ListItemButton onClick={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => handleClick(event)}>
-                        <ListItemText primary={"Active in " + Object.values(groupings).flat().length + " experiments"} />
+                        <ListItemText primary={"Active in " + Object.values(row.activeExps).flat().length + " experiments"} />
                         {open ? <ExpandLess /> : <ExpandMore />}
                       </ListItemButton>
                       <Collapse in={open} timeout="auto" unmountOnExit>
-                        <List sx={{pl: 2}} component="div" disablePadding>
+                        <List sx={{ pl: 2 }} component="div" disablePadding>
                           {
-                            Object.entries(groupings).map(([grouping, exps]: [string, ExperimentInfo[]]) =>
+                            Object.entries(row.activeExps).map(([grouping, exps]: [string, Experiment_Data[]]) =>
                               <GroupList key={grouping} exps={exps} grouping={grouping} />
                             )
                           }
@@ -208,21 +211,23 @@ export const IcresByRegion = (props) => {
                       </Collapse>
                     </List>
                     :
-                    //This case should never happen
-                    <Typography pl={2}>Not Active in Any Experiments</Typography>
+                    <CircularProgress />
                 )
               }
             },
           ]}
           tableTitle={`iCREs`}
-          rows={(data_icres.iCREQuery) || []}
+          rows={rowsWithExps ?? rowsNoExps}
           onRowClick={(row) => {
             router.push(`/icres?accession=${row.accession}`)
           }}
           sortColumn={3}
           itemsPerPage={10}
           searchable
-        />}
+        />
+          :
+          <CircularProgress />
+        }
       </Grid2>
     </main>
   )

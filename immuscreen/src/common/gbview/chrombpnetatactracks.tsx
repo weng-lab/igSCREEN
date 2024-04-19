@@ -62,7 +62,7 @@ import { CalderonBigWigTracksMetadata, CalderonCellTypesMetadata } from "./const
     defaultcelltypes
   }) => {
 
-    console.log("defaultcelltypes",defaultcelltypes)
+    // console.log("defaultcelltypes",defaultcelltypes)
     const r = defaultcelltypes && CalderonBigWigTracksMetadata.filter(c=>defaultcelltypes.includes(c.celltype_name))
 
     
