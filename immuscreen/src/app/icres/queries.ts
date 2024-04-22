@@ -70,7 +70,6 @@ query iCREQuery($coordinates: [GenomicRangeInput!],$accession: [String!])
       }
       }
   }
-
 `
 
 export const EBI_ASSO_QUERY =  gql`
@@ -94,4 +93,15 @@ query ebiAssoc($accession: String)
       }
   }
 
+`
+export const ICRES_ACTIVE_EXPERIMENTS = gql`
+  query calderoncorceszscoreAtacQuery($accession: [String]) {
+    calderoncorcesAtacQuery(accession: $accession) {
+      grouping
+      description
+      name
+      start
+      value
+    }
+  }
 `

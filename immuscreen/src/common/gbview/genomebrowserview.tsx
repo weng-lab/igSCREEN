@@ -72,8 +72,7 @@ export function expandCoordinates(coordinates, l = 20000) {
   }
 }
 
-export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (props) => {
-  
+export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (props: GenomeBrowserViewProps) => {  
   const svgRef = useRef<SVGSVGElement>(null)
   const expandedCoordinates = useMemo(() => expandCoordinates(props.coordinates), [props.coordinates])
   const [coordinates, setCoordinates] = useState<GenomicRange>(expandedCoordinates)
@@ -110,7 +109,6 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (props) => {
   )
   const l = useCallback((c) => ((c - coordinates.start) * 1400) / (coordinates.end - coordinates.start), [coordinates])
 
-console.log("coords gb", coordinates)
   return (
     <>
       <Grid2 container spacing={3} sx={{ mt: "1rem", mb: "1rem" }}>
@@ -142,9 +140,6 @@ console.log("coords gb", coordinates)
             {highlight && (
               <rect fill="#8ec7d1" fillOpacity={0.5} height={1000} x={l(highlight.start)} width={l(highlight.end) - l(highlight.start)} />
             )}
-             
-            
-            
             <RulerTrack domain={coordinates} height={30} width={1400} />
             {props.accession && false && <rect key={props.accession?.name} fill="#FAA4A4" fillOpacity={0.5} height={900} x={l(props.accession?.start)} width={l(props.accession?.end) - l(props.accession?.start)} />}
             {props.gene && <EGeneTracks
@@ -152,13 +147,12 @@ console.log("coords gb", coordinates)
               expandedCoordinates={coordinates}
               squish={coordinates.end - coordinates.start >= 500000 ? true : false}
             />}
-
-            {!props.gene && <DefaultTracks
+            <DefaultTracks
               assembly={props.assembly}
               domain={coordinates}
               oncCREMousedOver={(x) => x && setHighlight(x)}
               oncCREMousedOut={() => setHighlight(null)}
-            />}
+            />
             <BulkAtacTracks
           assembly="GRCh38"
           domain={coordinates}

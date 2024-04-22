@@ -4,7 +4,8 @@ import { Tree, hierarchy } from '@visx/hierarchy';
 import { HierarchyPointNode, HierarchyPointLink } from '@visx/hierarchy/lib/types';
 import { LinkHorizontal, LinkVertical } from '@visx/shape';
 import { defaultStyles as defaultTooltipStyles, useTooltip, TooltipWithBounds } from '@visx/tooltip';
-import { CellLineageTreeState, DynamicCellTypeInfo, StaticCellTypeInfo, cellLineageTreeStaticInfo } from '../../app/celllineage/utils';
+import { CellDisplayName, CellLineageTreeState, CellTypeStaticInfo, DynamicCellTypeInfo } from '../../app/celllineage/types';
+import { cellTypeStaticInfo } from '../consts';
 
 const linkStroke = '#000000';
 const background = 'transparent';
@@ -12,7 +13,7 @@ const fontSize = 12
 
 const fadedCellOpacity = 0.3
 
-interface CellNode extends StaticCellTypeInfo, DynamicCellTypeInfo {
+interface CellNode extends CellTypeStaticInfo, DynamicCellTypeInfo {
   children?: CellNode[];
 }
 
@@ -23,7 +24,9 @@ const uninteractiveNode = {
   selectable: false,
   stimulated: "U" as "U" | "S" | "B",
   stimulable: false,
-  unstimCount: 0
+  unstimCount: 0,
+  color: null,
+  displayName: null
 }
 
 interface TooltipData {
@@ -119,19 +122,19 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
     return (
       {
         ...cellTypeState.HSC,
-        ...cellLineageTreeStaticInfo.HSC,
+        ...cellTypeStaticInfo.HSC,
         children: [
           {
             ...cellTypeState.MPP,
-            ...cellLineageTreeStaticInfo.MPP,
+            ...cellTypeStaticInfo.MPP,
             children: [
               {
                 ...cellTypeState.CMP,
-                ...cellLineageTreeStaticInfo.CMP,
+                ...cellTypeStaticInfo.CMP,
                 children: [
                   {
                     ...cellTypeState.GMP,
-                    ...cellLineageTreeStaticInfo.GMP,
+                    ...cellTypeStaticInfo.GMP,
                     children: [
                       // {
                       //   displayName: 'Neutrophil',
@@ -139,15 +142,15 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
                       // },
                       {
                         ...cellTypeState.pDCs,
-                        ...cellLineageTreeStaticInfo.pDCs,  
+                        ...cellTypeStaticInfo.pDCs,  
                       },
                       {
                         ...cellTypeState.Myeloid_DCs,
-                        ...cellLineageTreeStaticInfo.Myeloid_DCs,
+                        ...cellTypeStaticInfo.Myeloid_DCs,
                       },
                       {
                         ...cellTypeState.Monocytes,
-                        ...cellLineageTreeStaticInfo.Monocytes,
+                        ...cellTypeStaticInfo.Monocytes,
                       }
                     ]
                   }
@@ -155,41 +158,41 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
               },
               {
                 ...cellTypeState.MEP,
-                ...cellLineageTreeStaticInfo.MEP,
+                ...cellTypeStaticInfo.MEP,
                 children: [
                   {
                     ...cellTypeState.Ery,
-                    ...cellLineageTreeStaticInfo.Ery,
+                    ...cellTypeStaticInfo.Ery,
                   }
                 ]
               },
               {
                 ...cellTypeState.LMPP,
-                ...cellLineageTreeStaticInfo.LMPP,
+                ...cellTypeStaticInfo.LMPP,
                 children: [
                   {
                     ...cellTypeState.CLP,
-                    ...cellLineageTreeStaticInfo.CLP,
+                    ...cellTypeStaticInfo.CLP,
                     children: [
                       {
-                        displayName: 'Double-negative cell',
+                        treeDisplayName: 'Double-negative cell',
                         ...uninteractiveNode,
                         children: [
                           {
-                            ...cellTypeState.Nkcell,
-                            ...cellLineageTreeStaticInfo.Nkcell,
+                            ...cellTypeState.NKcell,
+                            ...cellTypeStaticInfo.NKcell,
                             children: [
                               {
                                 ...cellTypeState.Immature_NK,
-                                ...cellLineageTreeStaticInfo.Immature_NK,
+                                ...cellTypeStaticInfo.Immature_NK,
                                 children: [
                                   {
                                     ...cellTypeState.Mature_NK,
-                                    ...cellLineageTreeStaticInfo.Mature_NK,
+                                    ...cellTypeStaticInfo.Mature_NK,
                                     children: [
                                       {
                                         ...cellTypeState.Memory_NK,
-                                        ...cellLineageTreeStaticInfo.Memory_NK,
+                                        ...cellTypeStaticInfo.Memory_NK,
                                       }
                                     ]
                                   }
@@ -199,47 +202,47 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
                           },
                           {
                             ...cellTypeState.Gamma_delta_T,
-                            ...cellLineageTreeStaticInfo.Gamma_delta_T,
+                            ...cellTypeStaticInfo.Gamma_delta_T,
                           },
                           {
-                            displayName: 'CD4 immature/single-positive cell',
+                            treeDisplayName: 'CD4 immature single-positive cell',
                             ...uninteractiveNode,
                             children: [
                               {
-                                displayName: 'Double-positive/cell',
+                                treeDisplayName: 'Double-positive cell',
                                 ...uninteractiveNode,
                                 children: [
                                   {
                                     ...cellTypeState.CD4Tcell,
-                                    ...cellLineageTreeStaticInfo.CD4Tcell,
+                                    ...cellTypeStaticInfo.CD4Tcell,
                                     children: [
                                       {
                                         ...cellTypeState.Effector_CD4pos_T,
-                                        ...cellLineageTreeStaticInfo.Effector_CD4pos_T,
+                                        ...cellTypeStaticInfo.Effector_CD4pos_T,
                                         children: [
                                           {
                                             ...cellTypeState.Naive_Teffs,
-                                            ...cellLineageTreeStaticInfo.Naive_Teffs,
+                                            ...cellTypeStaticInfo.Naive_Teffs,
                                             children: [
                                               {
                                                 ...cellTypeState.Memory_Teffs,
-                                                ...cellLineageTreeStaticInfo.Memory_Teffs,
+                                                ...cellTypeStaticInfo.Memory_Teffs,
                                                 children: [
                                                   {
                                                     ...cellTypeState.Th1_precursors,
-                                                    ...cellLineageTreeStaticInfo.Th1_precursors,
+                                                    ...cellTypeStaticInfo.Th1_precursors,
                                                   },
                                                   {
                                                     ...cellTypeState.Th2_precursors,
-                                                    ...cellLineageTreeStaticInfo.Th2_precursors,
+                                                    ...cellTypeStaticInfo.Th2_precursors,
                                                   },
                                                   {
                                                     ...cellTypeState.Th17_precursors,
-                                                    ...cellLineageTreeStaticInfo.Th17_precursors,
+                                                    ...cellTypeStaticInfo.Th17_precursors,
                                                   },
                                                   {
                                                     ...cellTypeState.Follicular_T_Helper,
-                                                    ...cellLineageTreeStaticInfo.Follicular_T_Helper,
+                                                    ...cellTypeStaticInfo.Follicular_T_Helper,
                                                   }
                                                 ]
                                               }
@@ -249,15 +252,15 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
                                       },
                                       {
                                         ...cellTypeState.Regulatory_T,
-                                        ...cellLineageTreeStaticInfo.Regulatory_T,
+                                        ...cellTypeStaticInfo.Regulatory_T,
                                         children: [
                                           {
                                             ...cellTypeState.Naive_Tregs,
-                                            ...cellLineageTreeStaticInfo.Naive_Tregs,
+                                            ...cellTypeStaticInfo.Naive_Tregs,
                                             children: [
                                               {
                                                 ...cellTypeState.Memory_Tregs,
-                                                ...cellLineageTreeStaticInfo.Memory_Tregs,
+                                                ...cellTypeStaticInfo.Memory_Tregs,
                                               }
                                             ]
                                           }
@@ -267,19 +270,19 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
                                   },
                                   {
                                     ...cellTypeState.CD8pos_T,
-                                    ...cellLineageTreeStaticInfo.CD8pos_T,
+                                    ...cellTypeStaticInfo.CD8pos_T,
                                     children: [
                                       {
                                         ...cellTypeState.Naive_CD8_T,
-                                        ...cellLineageTreeStaticInfo.Naive_CD8_T,
+                                        ...cellTypeStaticInfo.Naive_CD8_T,
                                         children: [
                                           {
                                             ...cellTypeState.Central_memory_CD8pos_T,
-                                            ...cellLineageTreeStaticInfo.Central_memory_CD8pos_T,
+                                            ...cellTypeStaticInfo.Central_memory_CD8pos_T,
                                           },
                                           {
                                             ...cellTypeState.Effector_memory_CD8pos_T,
-                                            ...cellLineageTreeStaticInfo.Effector_memory_CD8pos_T,
+                                            ...cellTypeStaticInfo.Effector_memory_CD8pos_T,
                                           }
                                         ]
                                       }
@@ -293,19 +296,19 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
                       },
                       {
                         ...cellTypeState.Bulk_B,
-                        ...cellLineageTreeStaticInfo.Bulk_B,
+                        ...cellTypeStaticInfo.Bulk_B,
                         children: [
                           {
                             ...cellTypeState.Naive_B,
-                            ...cellLineageTreeStaticInfo.Naive_B,
+                            ...cellTypeStaticInfo.Naive_B,
                             children: [
                               {
                                 ...cellTypeState.Mem_B,
-                                ...cellLineageTreeStaticInfo.Mem_B,
+                                ...cellTypeStaticInfo.Mem_B,
                                 children: [
                                   {
                                     ...cellTypeState.Plasmablasts,
-                                    ...cellLineageTreeStaticInfo.Plasmablasts,
+                                    ...cellTypeStaticInfo.Plasmablasts,
                                   }
                                 ]
                               }
@@ -348,13 +351,13 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
         left={left}
       >
         <text
-          y={-60 - ((fontSize + 2) * (node.data.displayName.split('/').length - 1))}
+          y={-60 - ((fontSize + 2) * (node.data.treeDisplayName.split('/').length - 1))}
           fontSize={fontSize}
           fontFamily="Arial"
           textAnchor="middle"
           style={{ pointerEvents: 'none' }}
         >
-          {node.data.displayName.split('/').map((str, i) => {
+          {node.data.treeDisplayName.split('/').map((str, i) => {
             return (
               <tspan key={i} x="0" dy={fontSize + 2}>{str}</tspan>
             )
@@ -507,7 +510,7 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
           style={{ ...defaultTooltipStyles, backgroundColor: '#283238', color: 'white' }}
         >
           <div>
-            <strong>{tooltipData.name.replace('/', '\u00A0').replace(' ', '\u00A0').replace('-', '\u2011')}</strong>
+            <strong>{tooltipData.name.replace(' ', '\u00A0').replace('-', '\u2011')}</strong>
           </div>
           <div>
             <p>Unstimulated Active iCREs: {tooltipData.unstimCount.toLocaleString()}</p>

@@ -22,10 +22,12 @@ import { ATAC_UMAP_QUERY, EBI_ASSO_QUERY, ICRES_BYCT_ZSCORES_QUERY, ICRES_CT_ZSC
 import InputLabel from "@mui/material/InputLabel";
 import { stringToColour } from "../../common/utils";
 import { AtacBarPlot } from "./atacbarplot"
-import { cellColors } from "../../common/consts";
+import { cellTypeStaticInfo } from "../../common./../common/consts";
 import { UmapPlot } from "../../common/components/umapplot";
 import CellTypeTree from "../../common/components/cellTypeTree"
-import { generateCellLineageTreeState } from "../celllineage/utils"
+import { generateCellLineageTreeState, getCellColor } from "../celllineage/utils"
+
+
 //Need better text styling
 import ToggleButton from '@mui/material/ToggleButton';
 
@@ -81,15 +83,13 @@ export default function Icres() {
     nextFetchPolicy: "cache-first",
     client,
   })
-  // console.log(aloading,adata)
 
 
   let barplotdata = icrezscoredata && icrezscoredata.calderoncorcesAtacQuery.map(ic => {
     return {
       ...ic,
-      color: cellColors[ic.celltype] || stringToColour(ic.celltype),
+      color: getCellColor(ic.celltype),
       value: ic.value
-
     }
   })
 
@@ -103,7 +103,7 @@ export default function Icres() {
   let barplotbyctdata = icrebyctzscoredata && icrebyctzscoredata.calderoncorcesByCtAtacQuery.map(ic => {
     return {
       ...ic,
-      color: cellColors[ic.celltype] || stringToColour(ic.celltype),
+      color: getCellColor(ic.celltype),
       value: ic.value
 
     }
@@ -147,9 +147,9 @@ export default function Icres() {
 return !searchParams.get('accession') && !searchParams.get('chromosome') ? (
   <main>
     <Grid2 container spacing={6} sx={{ mr: "auto", ml: "auto", mt: "3rem" }}>
-      <Grid2 xs={6} sx={{ mt: "5em", ml: "2em" }}>
+      <Grid2 xs={6}>
         <Typography variant="h3">iCRE Portal</Typography>
-        <br />
+        <br/>
         <FormControl variant="standard">
           <Select
             id="portal_Select"
@@ -161,9 +161,8 @@ return !searchParams.get('accession') && !searchParams.get('chromosome') ? (
             <MenuItem value={"iCREs"}>iCREs</MenuItem>
           </Select>
         </FormControl>
-        <br />
-        <br />
-        <br />
+        <br/>
+        <br/>
         {selectedPortal === "Genomic Region" ?
           <TextField
             variant="outlined"
