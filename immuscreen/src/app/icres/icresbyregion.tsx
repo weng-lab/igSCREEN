@@ -7,12 +7,12 @@ import { gql } from "@apollo/client"
 import { ReadonlyURLSearchParams, useSearchParams, useRouter } from "next/navigation"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { StyledTab } from "../../common/utils"
-import { CircularProgress, Collapse, List, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material"
+import { CircularProgress, Collapse, List, ListItemButton, ListItemIcon, ListItemText, Stack, Tooltip, Typography } from "@mui/material"
 import { Tabs } from "@mui/material"
 import { ICRES_ACTIVE_EXPERIMENTS, ICRES_QUERY } from "./queries"
 import { experimentInfo } from "../../common/consts"
 import { getCellDisplayName } from "../celllineage/utils"
-import { ExpandLess, ExpandMore, StarBorder } from "@mui/icons-material"
+import { ExpandLess, ExpandMore, InfoOutlined, StarBorder } from "@mui/icons-material"
 import { CellQueryValue } from "../celllineage/types"
 
 export const IcresByRegion = (props) => {
@@ -174,7 +174,7 @@ export const IcresByRegion = (props) => {
                   };
 
                   return (
-                    <List>
+                    <List disablePadding>
                       <ListItemButton onClick={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => handleClick(event)}>
                         <ListItemText primary={`${props.grouping} (${props.exps.length})`} />
                         {openGroup ? <ExpandLess /> : <ExpandMore />}
@@ -182,9 +182,13 @@ export const IcresByRegion = (props) => {
                       <Collapse in={openGroup} timeout="auto" unmountOnExit>
                         <List sx={{ pl: 2 }} component="div" disablePadding>
                           {
-                            props.exps.map((exp) =>
-                              //Todo add hover info
-                              <ListItemText key={exp.name} primary={"\u2022 " + exp.name} />
+                            props.exps.sort((a, b) => experimentInfo[a.name].order - experimentInfo[b.name].order).map((exp) =>
+                              <Tooltip title={exp.description}>
+                                <Stack direction={"row"}>
+                                  <ListItemText key={exp.name} primary={"\u2022 " + exp.name} />
+                                  <InfoOutlined fontSize="small"/>
+                                </Stack>
+                              </Tooltip>
                             )
                           }
                         </List>
@@ -195,7 +199,7 @@ export const IcresByRegion = (props) => {
 
                 return (
                   row?.activeExps ?
-                    <List>
+                    <List disablePadding>
                       <ListItemButton onClick={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => handleClick(event)}>
                         <ListItemText primary={"Active in " + Object.values(row.activeExps).flat().length + " experiments"} />
                         {open ? <ExpandLess /> : <ExpandMore />}
