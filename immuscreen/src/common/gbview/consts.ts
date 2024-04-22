@@ -1,6 +1,6 @@
 
 /**
- * @todo this is redundant, use getCellDisplayName function instead once it supports adding (stimulated)
+ * @todo information in this file is extrement redudant with common/consts
  */
 export const CalderonCellTypes = [
 ["Monocytes-U",	"Monocyte"],

@@ -185,8 +185,6 @@ const BulkAtacTracks: React.FC<BulkAtacTrackProps> = (props) => {
     let ct = CalderonCellTypesMetadata.find(c=>c.name===st).description
     return [ ct,`https://downloads.wenglab.org/${st}.bigWig`] as [string,string]
   })
-
-  console.log(props.defaultcelltypes)
   
   const [cTracks, setTracks] = useState<[string, string][]>(r && r.length>0 ?  r : [
     [

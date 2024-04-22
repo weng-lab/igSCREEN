@@ -109,8 +109,6 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (props: Genom
   )
   const l = useCallback((c) => ((c - coordinates.start) * 1400) / (coordinates.end - coordinates.start), [coordinates])
 
-// console.log("coords gb", coordinates)
-// console.log(props.defaultcelltypes)
   return (
     <>
       <Grid2 container spacing={3} sx={{ mt: "1rem", mb: "1rem" }}>

@@ -1,5 +1,5 @@
 /**
- * @todo the cell info in this file and in celllineage/utils.ts should probably combined
+ * @todo the cell info in this file and in celllineage/utils.ts need to be combined
  */
 
 import { CellName, CellTypeStaticInfo } from "../app/celllineage/types"

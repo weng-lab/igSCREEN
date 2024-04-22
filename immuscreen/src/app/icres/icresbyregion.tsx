@@ -85,7 +85,6 @@ export const IcresByRegion = (props) => {
             </Tabs>
           </Grid2>
         </Grid2>
-        {/* This needs to have proper loading state */}
         {value === 0 && !loading_icres ? <DataTable
           columns={[
             {
@@ -183,10 +182,10 @@ export const IcresByRegion = (props) => {
                         <List sx={{ pl: 2 }} component="div" disablePadding>
                           {
                             props.exps.sort((a, b) => experimentInfo[a.name].order - experimentInfo[b.name].order).map((exp) =>
-                              <Tooltip title={exp.description}>
+                              <Tooltip key={exp.name} title={exp.description}>
                                 <Stack direction={"row"}>
-                                  <ListItemText key={exp.name} primary={"\u2022 " + exp.name} />
-                                  <InfoOutlined fontSize="small"/>
+                                  <ListItemText primary={"\u2022 " + exp.name} />
+                                  <InfoOutlined fontSize="small" />
                                 </Stack>
                               </Tooltip>
                             )

@@ -147,9 +147,9 @@ export default function Icres() {
 return !searchParams.get('accession') && !searchParams.get('chromosome') ? (
   <main>
     <Grid2 container spacing={6} sx={{ mr: "auto", ml: "auto", mt: "3rem" }}>
-      <Grid2 xs={6} sx={{ mt: "5em", ml: "2em" }}>
+      <Grid2 xs={6}>
         <Typography variant="h3">iCRE Portal</Typography>
-        <br />
+        <br/>
         <FormControl variant="standard">
           <Select
             id="portal_Select"
@@ -161,9 +161,8 @@ return !searchParams.get('accession') && !searchParams.get('chromosome') ? (
             <MenuItem value={"iCREs"}>iCREs</MenuItem>
           </Select>
         </FormControl>
-        <br />
-        <br />
-        <br />
+        <br/>
+        <br/>
         {selectedPortal === "Genomic Region" ?
           <TextField
             variant="outlined"
