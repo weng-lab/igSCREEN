@@ -58,6 +58,7 @@ export const IcresByRegion = (props) => {
     let activeExps: { [key: string]: Experiment_Data[] } = {}
 
     data_experiments.calderoncorcesAtacQuery.forEach(exp => {
+      //Cutoff for experiment activity set at 1.64
       if (exp.start === row.coordinates.start && exp.value > 1.64) {
         if (activeExps[exp.grouping]) {
           activeExps[exp.grouping] = [...activeExps[exp.grouping], exp]
@@ -69,8 +70,6 @@ export const IcresByRegion = (props) => {
 
     return { ...row, activeExps: activeExps }
   })
-
-  console.log(rowsWithExps)
 
   return (
     <main>
@@ -112,16 +111,12 @@ export const IcresByRegion = (props) => {
 
             },
             {
-              header: "Celltypes",
-              value: (row) => row.celltypes.map(x => getCellDisplayName(x)).join(', '),
-              sort: (a, b) => a.celltypes.length - b.celltypes.length,
+              header: "Active Cell Types",
+              value: (row) => row.celltypes.map(x => getCellDisplayName(x)).length,
               FunctionalRender: (row) => {
                 const [open, setOpen] = useState(false)
 
-                /**
-                 * @todo should specify whether the cell is stimulated or not
-                 */
-                const celltypes = row.celltypes.map(x => getCellDisplayName(x))
+                const celltypes = [... new Set(row.celltypes.map(x => getCellDisplayName(x, true)))].sort()
 
                 const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
                   event.stopPropagation()
@@ -152,6 +147,18 @@ export const IcresByRegion = (props) => {
             },
             {
               header: "Active Experiments",
+              HeaderRender: () => {
+                return (
+                  <Stack direction={"row"} spacing={1} alignItems={"center"}>
+                    <Typography variant="body2">
+                      Active Experiments
+                    </Typography>
+                    <Tooltip title="Activity in individual experiments determined by an ATAC-seq signal z-score of >1.65 (95th percentile)">
+                      <InfoOutlined />
+                    </Tooltip>
+                  </Stack>
+                )
+              },
               value: (row: ICRE_Row) => row?.activeExps ? Object.values(row.activeExps).flat().length : 0,
               FunctionalRender: (row: ICRE_Row) => {
                 const [open, setOpen] = useState(false)
@@ -183,7 +190,7 @@ export const IcresByRegion = (props) => {
                           {
                             props.exps.sort((a, b) => experimentInfo[a.name].order - experimentInfo[b.name].order).map((exp) =>
                               <Tooltip key={exp.name} title={exp.description}>
-                                <Stack direction={"row"}>
+                                <Stack direction={"row"} alignItems={"center"}>
                                   <ListItemText primary={"\u2022 " + exp.name} />
                                   <InfoOutlined fontSize="small" />
                                 </Stack>

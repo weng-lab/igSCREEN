@@ -1,13 +1,17 @@
 import { cellTypeStaticInfo } from "../../common/consts";
-import { CellDisplayName, CellLineageTreeState, CellName, CellQueryValue, CellTypeStaticInfo, DynamicCellTypeInfo } from "./types";
+import { CellDisplayName, CellLineageTreeState, CellName, CellQueryValue, CellTypeStaticInfo } from "./types";
 
 export const getCellColor = (cell: CellName | CellQueryValue | CellDisplayName): string => {
-  //Want to find entry
   return Object.values(cellTypeStaticInfo).find((x: CellTypeStaticInfo) => x.id === cell || x.displayName === cell || extractQueryValues(x, "B").includes(cell as CellQueryValue))?.color ?? "#000000"
 }
 
-export const getCellDisplayName = (cell: CellName | CellQueryValue | CellDisplayName): CellDisplayName => {
-  return Object.values(cellTypeStaticInfo).find((x: CellTypeStaticInfo) => x.id === cell || x.displayName === cell || extractQueryValues(x, "B").includes(cell as CellQueryValue))?.displayName ?? cell as CellDisplayName
+//In some situations, want to be able to display "stimulated" after. In bar plot, the output is used to get Cell color which would break that
+//In these cases, would be extracting from cell query value where that info exists
+export const getCellDisplayName = (cell: CellName | CellQueryValue, appendStim = false): string => {
+  let name = Object.values(cellTypeStaticInfo).find((x: CellTypeStaticInfo) => x.id === cell || extractQueryValues(x, "B").includes(cell as CellQueryValue))?.displayName ?? cell
+  if (name === cell) console.log("Unable to find display name for " + cell)
+  if (appendStim && cell.slice(-2) == "-S") name += " (stimulated)"
+  return name
 }
 
 /**

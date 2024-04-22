@@ -127,7 +127,7 @@ export const AtacBarPlot: React.FC<{ plottitle?: string, byct?: boolean, study: 
   let ordinalColorScale = uniqcelltypes && scaleOrdinal({
     domain: uniqcelltypes,
     //Duplicates?
-    range: uniqcelltypes.map((c) => getCellColor(c)),
+    range: uniqcelltypes.map((c) => getCellColor(c as CellName)),
 
   })
 
