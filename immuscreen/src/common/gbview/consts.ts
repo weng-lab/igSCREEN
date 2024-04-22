@@ -1,5 +1,7 @@
 
-
+/**
+ * @todo information in this file is extrement redudant with common/consts
+ */
 export const CalderonCellTypes = [
 ["Monocytes-U",	"Monocyte"],
 ["Monocytes-S",	"Monocyte (stimulated)"],
@@ -42,7 +44,7 @@ export const CalderonCellTypes = [
 ["Effector_memory_CD8pos_T-S",	"Effector memory CD8+ T cells (stimulated)"],
 ["Gamma_delta_T-U",	"Gamma delta T cells"],
 ["Gamma_delta_T-S",	"Gamma delta T cells (stimulated)"],
-["Immature_NK-U",	"Immature Natural Killer cells"],
+["Immature_NK-U", "Immature Natural Killer cells"],
 ["Mature_NK-U",	"Mature Natural Killer cells"],
 ["Mature_NK-S",	"Mature Natural Killer cells (stimulated)"],
 ["Memory_NK-U",	"Memory Natural Killer cells"]

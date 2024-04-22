@@ -179,14 +179,11 @@ export const TitledTrack: React.FC<{
 
 const BulkAtacTracks: React.FC<BulkAtacTrackProps> = (props) => {
 
-  const s = props.defaultcelltypes && BulkAtacCelltypeTrack.filter(b=>props.defaultcelltypes?.includes(b))
-
-  
+  const s = props.defaultcelltypes && BulkAtacCelltypeTrack.filter(b => props.defaultcelltypes?.includes(b))
 
   let r = s && s.map(st=>{
     let ct = CalderonCellTypesMetadata.find(c=>c.name===st).description
     return [ ct,`https://downloads.wenglab.org/${st}.bigWig`] as [string,string]
-    
   })
   
   const [cTracks, setTracks] = useState<[string, string][]>(r && r.length>0 ?  r : [
