@@ -1,6 +1,6 @@
 
 /**
- * @todo information in this file is extrement redudant with common/consts
+ * @todo information in this file is extrement redudant with common
  */
 export const CalderonCellTypes = [
 ["Monocytes-U",	"Monocyte"],
