@@ -3,17 +3,17 @@ import { client } from "../../common/utils"
 import { DataTable } from "@weng-lab/psychscreen-ui-components"
 import React, { useState } from "react"
 import { ApolloError, useQuery } from "@apollo/client"
-import { gql } from "@apollo/client"
 import { ReadonlyURLSearchParams, useSearchParams, useRouter } from "next/navigation"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { StyledTab } from "../../common/utils"
-import { CircularProgress, Collapse, List, ListItemButton, ListItemIcon, ListItemText, Stack, Tooltip, Typography } from "@mui/material"
+import { CircularProgress, Collapse, List, ListItemButton, ListItemText, Stack, Tooltip, Typography } from "@mui/material"
 import { Tabs } from "@mui/material"
 import { ICRES_ACTIVE_EXPERIMENTS, ICRES_QUERY } from "./queries"
 import { experimentInfo } from "../../common/consts"
 import { getCellDisplayName } from "../celllineage/utils"
-import { ExpandLess, ExpandMore, InfoOutlined, StarBorder } from "@mui/icons-material"
-import { CellQueryValue } from "../celllineage/types"
+import { ExpandLess, ExpandMore, InfoOutlined } from "@mui/icons-material"
+import { ICRE_Data, Experiment_Data } from "./types"
+import { ActiveCellTypesList, ActiveExperimentList } from "./utils"
 
 export const IcresByRegion = (props) => {
   const searchParams: ReadonlyURLSearchParams = useSearchParams()!
@@ -22,9 +22,6 @@ export const IcresByRegion = (props) => {
   const handleChange = (_, newValue: number) => {
     setValue(newValue)
   }
-
-  type ICRE_Data = { accession: string, rdhs: string, celltypes: CellQueryValue[], coordinates: { chromosome: string, start: number, end: number, } }
-  type Experiment_Data = { grouping: string, description: string, name: string, start: number, value: number }
 
   const { loading: loading_icres, data: data_icres, error: error_icres }: { loading: boolean, data: { iCREQuery: ICRE_Data[] }, error?: ApolloError } = useQuery(ICRES_QUERY, {
     variables: {
@@ -125,7 +122,7 @@ export const IcresByRegion = (props) => {
                       <Typography variant="body2">
                         Active Cell Types
                       </Typography>
-                      <Tooltip title="Activity in cell types determined by aggregated ATAC-seq signal z-score of >1.64 (95th percentile)">
+                      <Tooltip arrow title="Activity in cell types determined by aggregated ATAC-seq signal z-score of >1.64 (95th percentile)">
                         <InfoOutlined />
                       </Tooltip>
                     </Stack>
@@ -133,34 +130,8 @@ export const IcresByRegion = (props) => {
                 },
                 value: (row) => row.celltypes.map(x => getCellDisplayName(x)).length,
                 FunctionalRender: (row) => {
-                  const [open, setOpen] = useState(false)
-
-                  const celltypes = [... new Set(row.celltypes.map(x => getCellDisplayName(x, true)))].sort()
-
-                  const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-                    event.stopPropagation()
-                    setOpen(!open);
-                  };
-
                   return (
-                    celltypes.length > 0 ?
-                      <List>
-                        <ListItemButton onClick={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => handleClick(event)}>
-                          <ListItemText primary={"Active in " + celltypes.length + " immune cell types"} />
-                          {open ? <ExpandLess /> : <ExpandMore />}
-                        </ListItemButton>
-                        <Collapse in={open} timeout="auto" unmountOnExit>
-                          <List sx={{ pl: 2 }} component="div" disablePadding>
-                            {
-                              celltypes.map((cell: string) =>
-                                <ListItemText key={cell} primary={"\u2022 " + cell} />
-                              )
-                            }
-                          </List>
-                        </Collapse>
-                      </List>
-                      :
-                      <Typography pl={2}>Not Active</Typography>
+                    <ActiveCellTypesList celltypes={row.celltypes} />
                   )
                 }
               },
@@ -172,7 +143,7 @@ export const IcresByRegion = (props) => {
                       <Typography variant="body2">
                         Active Experiments
                       </Typography>
-                      <Tooltip title="Activity in individual experiments determined by an ATAC-seq signal z-score of >1.64 (95th percentile)">
+                      <Tooltip arrow title="Activity in individual experiments determined by an ATAC-seq signal z-score of >1.64 (95th percentile)">
                         <InfoOutlined />
                       </Tooltip>
                     </Stack>
@@ -180,65 +151,9 @@ export const IcresByRegion = (props) => {
                 },
                 value: (row: ICRE_Row) => row?.activeExps ? Object.values(row.activeExps).flat().length : 0,
                 FunctionalRender: (row: ICRE_Row) => {
-                  const [open, setOpen] = useState(false)
-
-                  const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-                    event.stopPropagation()
-                    setOpen(!open);
-                  };
-
-
-                  type GroupListProps = { exps: Experiment_Data[], grouping: string }
-
-                  const GroupList: React.FC<GroupListProps> = (props: GroupListProps) => {
-                    const [openGroup, setOpenGroup] = useState(false)
-
-                    const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-                      event.stopPropagation()
-                      setOpenGroup(!openGroup);
-                    };
-
-                    return (
-                      <List disablePadding>
-                        <ListItemButton onClick={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => handleClick(event)}>
-                          <ListItemText primary={`${props.grouping} (${props.exps.length})`} />
-                          {openGroup ? <ExpandLess /> : <ExpandMore />}
-                        </ListItemButton>
-                        <Collapse in={openGroup} timeout="auto" unmountOnExit>
-                          <List sx={{ pl: 2 }} component="div" disablePadding>
-                            {
-                              props.exps.sort((a, b) => experimentInfo[a.name].order - experimentInfo[b.name].order).map((exp) =>
-                                <Tooltip key={exp.name} title={exp.description}>
-                                  <Stack direction={"row"} alignItems={"center"}>
-                                    <ListItemText primary={"\u2022 " + exp.name} />
-                                    <InfoOutlined fontSize="small" />
-                                  </Stack>
-                                </Tooltip>
-                              )
-                            }
-                          </List>
-                        </Collapse>
-                      </List>
-                    )
-                  }
-
                   return (
                     row?.activeExps ?
-                      <List disablePadding>
-                        <ListItemButton onClick={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => handleClick(event)}>
-                          <ListItemText primary={"Active in " + Object.values(row.activeExps).flat().length + " experiments"} />
-                          {open ? <ExpandLess /> : <ExpandMore />}
-                        </ListItemButton>
-                        <Collapse in={open} timeout="auto" unmountOnExit>
-                          <List sx={{ pl: 2 }} component="div" disablePadding>
-                            {
-                              Object.entries(row.activeExps).map(([grouping, exps]: [string, Experiment_Data[]]) =>
-                                <GroupList key={grouping} exps={exps} grouping={grouping} />
-                              )
-                            }
-                          </List>
-                        </Collapse>
-                      </List>
+                      <ActiveExperimentList activeExps={row.activeExps} />
                       :
                       <CircularProgress />
                   )
