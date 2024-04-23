@@ -127,7 +127,7 @@ const Gene = () =>{
                               
                               ]}
                         tableTitle={`GTEX eQTLs have been identified for ${searchParams.get('gene')}:`}
-                        rows={data.icreeQTLQuery || []}
+                        rows={data?.icreeQTLQuery || []}
                         
                         
                         itemsPerPage={10}
