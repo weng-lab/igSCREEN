@@ -7,6 +7,7 @@ import { ThemeProvider } from "@mui/material/styles"
 import Link from "next/link"
 import nextConfig from "../../../next.config"
 import { defaultTheme } from "../lib/themes"
+import Image from 'next/image'
 
 const pageLinks = [
   {
@@ -82,7 +83,7 @@ const HomeAppBar = () => {
         <Container maxWidth={false}>
           <Toolbar disableGutters sx={{ justifyContent: "center"}}>           
            
-            <Typography
+            {/* <Typography
               variant="h5"
               noWrap
               component="a"
@@ -102,7 +103,13 @@ const HomeAppBar = () => {
               }}
             >
               igSCREEN
-            </Typography>
+            </Typography> */}
+            <Image 
+              src="/igSCREEN.png"
+              width={116}
+              height={50}
+              alt="igSCREEN logo"
+            />
             
             <Box sx={{ flexGrow: 0, display: { xs: "inline", md: "none" } }}>
               {/* Hamburger Menu, open on click */}

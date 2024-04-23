@@ -4,12 +4,12 @@ import { useRouter } from "next/navigation"
 import { StyledTab } from "../../common/utils"
 import { client } from "../../common/utils"
 import SearchIcon from "@mui/icons-material/Search"
-import { CircularProgress, Stack, ToggleButtonGroup, Typography } from "@mui/material"
+import { Box, CircularProgress, Collapse, List, ListItemButton, ListItemText, Stack, ToggleButtonGroup, Typography } from "@mui/material"
 import { Tabs } from "@mui/material"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { TextField, IconButton, InputAdornment } from "@mui/material"
 import { FormControl, MenuItem } from "@mui/material"
-import { useQuery } from "@apollo/client"
+import { ApolloError, useQuery } from "@apollo/client"
 
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { ReadonlyURLSearchParams, useSearchParams} from "next/navigation"
@@ -18,18 +18,21 @@ import { CcreAutoComplete } from "../../common/components/mainsearch/CcreAutocom
 import { DataTable } from "@weng-lab/psychscreen-ui-components"
 
 import {IcresByRegion} from "./icresbyregion"
-import { ATAC_UMAP_QUERY, EBI_ASSO_QUERY, ICRES_BYCT_ZSCORES_QUERY, ICRES_CT_ZSCORES_QUERY, ICRES_QUERY } from "./queries"
+import { ATAC_UMAP_QUERY, EBI_ASSO_QUERY, ICRES_ACTIVE_EXPERIMENTS, ICRES_BYCT_ZSCORES_QUERY, ICRES_CT_ZSCORES_QUERY, ICRES_QUERY } from "./queries"
 import InputLabel from "@mui/material/InputLabel";
 import { stringToColour } from "../../common/utils";
 import { AtacBarPlot } from "./atacbarplot"
 import { cellTypeStaticInfo } from "../../common./../common/consts";
 import { UmapPlot } from "../../common/components/umapplot";
 import CellTypeTree from "../../common/components/cellTypeTree"
-import { generateCellLineageTreeState, getCellColor } from "../celllineage/utils"
+import { generateCellLineageTreeState, getCellColor, getCellDisplayName } from "../celllineage/utils"
 
 
 //Need better text styling
 import ToggleButton from '@mui/material/ToggleButton';
+import { Experiment_Data } from "./types"
+import { ExpandLess, ExpandMore } from "@mui/icons-material"
+import { ActiveCellTypesList, ActiveExperimentList } from "./utils"
 
 
 export default function Icres() { 
@@ -73,8 +76,7 @@ export default function Icres() {
     client,
   })
 
-
-  const { loading: aloading, data: adata } = useQuery(ICRES_QUERY, {
+  const { loading: aloading, data: adata, error: error_adata } = useQuery(ICRES_QUERY, {
     variables: {
       accession: searchParams.get('accession')
     },
@@ -83,6 +85,29 @@ export default function Icres() {
     nextFetchPolicy: "cache-first",
     client,
   })
+
+  const { loading: loading_experiments, data: data_experiments, error: error_experiments }: { loading: boolean, data: { calderoncorcesAtacQuery: Experiment_Data[] }, error?: ApolloError } = useQuery(ICRES_ACTIVE_EXPERIMENTS, {
+    variables: {
+      accession: searchParams.get('accession') ? [searchParams.get('accession')] : []
+    },
+    skip: !searchParams.get('accession'),
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
+    client,
+  })
+
+  //Parse experiment info
+  let activeExps: { [key: string]: Experiment_Data[] } = {}
+  data_experiments?.calderoncorcesAtacQuery.forEach(exp => {
+    //Cutoff for experiment activity set at 1.64
+    if (exp.value > 1.64) {
+      if (activeExps[exp.grouping]) {
+        activeExps[exp.grouping] = [...activeExps[exp.grouping], exp]
+      } else {
+        activeExps[exp.grouping] = [exp]
+      }
+    }
+  });
 
 
   let barplotdata = icrezscoredata && icrezscoredata.calderoncorcesAtacQuery.map(ic => {
@@ -376,11 +401,19 @@ return !searchParams.get('accession') && !searchParams.get('chromosome') ? (
         (aloading ?
           <CircularProgress />
           :
-          (adata?.iCREQuery[0].celltypes.length === 0) ?
-            <Typography>Not identified as active in immune cells</Typography>
-            :
             <Stack rowGap={2}>
-              <Typography>{searchParams.get('accession')} is determined to be active in the following cells:</Typography>
+              <Stack direction={"row"}>
+                {
+                aloading ? <CircularProgress />
+                : error_adata ? <Typography>Something went wrong fetching activity in cell types</Typography>
+                : <Box maxWidth={500}><ActiveCellTypesList celltypes={adata?.iCREQuery[0].celltypes} /></Box>
+              }
+              {
+                loading_experiments ? <CircularProgress />
+                : error_experiments ? <Typography>Something went wrong fetching activity in individual experiments</Typography>
+                : <Box maxWidth={500}><ActiveExperimentList activeExps={activeExps} /></Box>
+              }
+              </Stack>
               <CellTypeTree
                 width={830}
                 height={1100}
