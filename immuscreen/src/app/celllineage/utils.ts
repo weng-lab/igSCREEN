@@ -5,12 +5,20 @@ export const getCellColor = (cell: CellName | CellQueryValue | CellDisplayName):
   return Object.values(cellTypeStaticInfo).find((x: CellTypeStaticInfo) => x.id === cell || x.displayName === cell || extractQueryValues(x, "B").includes(cell as CellQueryValue))?.color ?? "#000000"
 }
 
-//In some situations, want to be able to display "stimulated" after. In bar plot, the output is used to get Cell color which would break that
-//In these cases, would be extracting from cell query value where that info exists
-export const getCellDisplayName = (cell: CellName | CellQueryValue, appendStim = false): string => {
+/**
+ * 
+ * @param cell 
+ * @param appendStim 
+ * @param appendStudy IMPORTANT - only works if you're passing CellQueryValue, which have the -S or -U on the end. Otherwise will mark all as Corces
+ * @returns 
+ */
+export const getCellDisplayName = (cell: CellName | CellQueryValue, appendStim = false, appendStudy = false): string => {
   let name = Object.values(cellTypeStaticInfo).find((x: CellTypeStaticInfo) => x.id === cell || extractQueryValues(x, "B").includes(cell as CellQueryValue))?.displayName ?? cell
   if (name === cell) console.log("Unable to find display name for " + cell)
-  if (appendStim && cell.slice(-2) == "-S") name += " (stimulated)"
+  if (appendStim && cell.slice(-2) === "-S") name += " (stimulated)"
+  if (appendStudy && (cell.slice(-2) === "-S" || cell.slice(-2) === "-U")){
+     name += " - Study: Calderon"
+  } else if (appendStudy) name += " - Study: Corces"
   return name
 }
 

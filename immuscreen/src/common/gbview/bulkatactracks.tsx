@@ -2,14 +2,14 @@ import { gql, useQuery } from "@apollo/client";
 import { BigWigData, BigBedData, BigZoomData } from "bigwig-reader";
 import React, { RefObject, useEffect, useMemo, useState } from "react";
 import { DenseBigBed, EmptyTrack, FullBigWig } from "umms-gb";
-import {
-  BigRequest,
-  RequestError,
-} from "umms-gb/dist/components/tracks/trackset/types";
+import { BigRequest, RequestError, } from "umms-gb/dist/components/tracks/trackset/types";
 import { ValuedPoint } from "umms-gb/dist/utils/types";
 import { client } from "../utils"
 import BulkAtacTrackModal from "./bulkatacmodal";
 import { BulkAtacCelltypeTrack, CalderonCellTypesMetadata } from "./consts";
+import { CellQueryValue } from "../../app/celllineage/types";
+import { getCellDisplayName } from "../../app/celllineage/utils";
+
 export const DEFAULT_TRACKS = (
   assembly: string
 ): Map<string, { url: string }> =>
@@ -177,33 +177,13 @@ export const TitledTrack: React.FC<{
     );
   };
 
-const BulkAtacTracks: React.FC<BulkAtacTrackProps> = (props) => {
+  const BulkAtacTracks: React.FC<BulkAtacTrackProps> = (props: BulkAtacTrackProps) => {
 
-  const s = props.defaultcelltypes && BulkAtacCelltypeTrack.filter(b => props.defaultcelltypes?.includes(b))
+  const defaultTracks: [string, string][] = props.defaultcelltypes?.map((cell: CellQueryValue) => [getCellDisplayName(cell, true, true), `https://downloads.wenglab.org/${cell}.bigWig`]) || []
 
-  let r = s && s.map(st=>{
-    let ct = CalderonCellTypesMetadata.find(c=>c.name===st).description
-    return [ ct,`https://downloads.wenglab.org/${st}.bigWig`] as [string,string]
-  })
-  
-  const [cTracks, setTracks] = useState<[string, string][]>(r && r.length>0 ?  r : [
-    [
-      "Bulk B Stimulated",
-      "https://downloads.wenglab.org/Bulk_B-S.bigWig",
-    ],
-    [
-      "Bulk B Untimulated",
-      "https://downloads.wenglab.org/Bulk_B-U.bigWig",
-    ],
-    [
-      "CD8pos T Stimulated",
-      "https://downloads.wenglab.org/CD8pos_T-S.bigWig",
-    ],
-    [
-      "CD8pos T Unstimulated",
-      "https://downloads.wenglab.org/CD8pos_T-U.bigWig",
-    ],
-  ]);
+  defaultTracks.unshift(["All Immune Cells (Aggregate Signal)", "https://downloads.wenglab.org/all_immune.bigWig"])
+
+  const [cTracks, setTracks] = useState<[string, string][]>(defaultTracks);
   const height = useMemo(() => cTracks.length * 80, [cTracks]);
   const bigRequests = useMemo(
     () =>

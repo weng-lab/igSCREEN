@@ -9,7 +9,7 @@ import EGeneTracks from "./egenetracks"
 import { client } from "../utils"
 import DefaultTracks from "./defaulttracks"
 import BulkAtacTracks from "./bulkatactracks";
-import  ChromBPNetAtacTracks  from "./chrombpnetatactracks";
+import ChromBPNetAtacTracks from "./chrombpnetatactracks";
 
 type GenomeBrowserViewProps = {
   coordinates: {
@@ -72,12 +72,12 @@ export function expandCoordinates(coordinates, l = 20000) {
   }
 }
 
-export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (props: GenomeBrowserViewProps) => {  
+export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (props: GenomeBrowserViewProps) => {
   const svgRef = useRef<SVGSVGElement>(null)
   const expandedCoordinates = useMemo(() => expandCoordinates(props.coordinates), [props.coordinates])
   const [coordinates, setCoordinates] = useState<GenomicRange>(expandedCoordinates)
   const [highlight, setHighlight] = useState(null)
-  
+
   const snpResponse = useQuery<SNPQueryResponse>(GENE_QUERY, {
     variables: { ...coordinates, assembly: props.assembly, version: 40 },
     fetchPolicy: "cache-and-network",
@@ -154,14 +154,19 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (props: Genom
               oncCREMousedOut={() => setHighlight(null)}
             />
             <BulkAtacTracks
-          assembly="GRCh38"
-          domain={coordinates}
-          defaultcelltypes={props.defaultcelltypes}
-        />
-        <ChromBPNetAtacTracks 
-          domain={coordinates}
-          defaultcelltypes={props.defaultcelltypes}
-          />
+              assembly="GRCh38"
+              domain={coordinates}
+              defaultcelltypes={props.defaultcelltypes}
+            />
+            {
+              /**
+               * @todo Need to make sure chrombpnet tracks also include Corces 
+               */
+            }
+            <ChromBPNetAtacTracks
+              domain={coordinates}
+              defaultcelltypes={props.defaultcelltypes}
+            />
           </GenomeBrowser>
         </Grid2>
       </Grid2>
