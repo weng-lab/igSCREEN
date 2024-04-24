@@ -1,6 +1,6 @@
 
 /**
- * @todo information in this file is extrement redudant with common
+ * @todo information in this file is extrement redudant with common/consts 
  */
 export const CalderonCellTypes = [
 ["Monocytes-U",	"Monocyte"],
@@ -361,7 +361,6 @@ export const CalderonBigWigTracks = [
 ["SU623-Blast-SRX1427913","Leukemic Blast Cells","Leukemic Blast Cells in donor SU62","Leukemic"],
 ["SU623-Blast-SRX1427914","Leukemic Blast Cells","Leukemic Blast Cells in donor SU62","Leukemic"],
 ["SU654-Blast-SRX1427916","Leukemic Blast Cells","Leukemic Blast Cells in donor SU65","Leukemic"],
-
 ]
 
 export const CalderonCellTypesMetadata = CalderonCellTypes.map(c=>{

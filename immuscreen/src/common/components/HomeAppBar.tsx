@@ -104,13 +104,14 @@ const HomeAppBar = () => {
             >
               igSCREEN
             </Typography> */}
-            <Image 
-              src="/igSCREEN.png"
-              width={116}
-              height={50}
-              alt="igSCREEN logo"
-            />
-            
+            <Box component='a' href="/">
+              <Image
+                src="/igSCREEN.png"
+                width={116}
+                height={50}
+                alt="igSCREEN logo"
+              />
+            </Box>
             <Box sx={{ flexGrow: 0, display: { xs: "inline", md: "none" } }}>
               {/* Hamburger Menu, open on click */}
               <IconButton
