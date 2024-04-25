@@ -126,7 +126,7 @@ const Gene = () =>{
                               }
                               
                               ]}
-                        tableTitle={`GTEX eQTLs have been identified for ${searchParams.get('gene')}:`}
+                        tableTitle={`GTEX whole-blood eQTLs for ${searchParams.get('gene')}:`}
                         rows={data?.icreeQTLQuery || []}
                         
                         
@@ -158,7 +158,7 @@ const Gene = () =>{
                                 
                               }
                               ]}
-                        tableTitle={`Yazar.Powell eQTLs have been identified for ${searchParams.get('gene')}:`}
+                        tableTitle={`Yazar.Powell eQTLs for ${searchParams.get('gene')}:`}
                         rows={(yazarData.icreeQTLQuery) || []}
                         
                         sortColumn={3}
