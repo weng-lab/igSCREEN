@@ -1,7 +1,7 @@
 "use client"
-import React, { useState } from "react"
+import React, { useMemo, useState } from "react"
 import { DataTable } from "@weng-lab/psychscreen-ui-components"
-import { Tabs, Typography } from "@mui/material"
+import { CircularProgress, Tabs, Typography } from "@mui/material"
 import { client } from "../../common/utils"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { ReadonlyURLSearchParams, useSearchParams, usePathname } from "next/navigation"
@@ -12,6 +12,7 @@ import { SnpAutoComplete } from "../../common/components/mainsearch/SnpAutocompl
 import { StyledTab } from "../../common/utils"
 import { ICRES_QUERY, EBI_ASSO_QUERY } from "../icres/queries"
 import { getCellDisplayName } from "../celllineage/utils"
+import { ActiveCellTypesList } from "../icres/utils"
 
 const EQTL_QUERY = gql`
   query iCREeQTLQuery($study: String!, $rsid: String) {
@@ -71,7 +72,7 @@ const Snp = () => {
     client,
   })
 
-  const { loading: loadingSNP, data: dataSNP } = useQuery(SNP_Query, {
+  const { loading: loadingSNP, data: dataSNP, error: errorSNP } = useQuery(SNP_Query, {
     variables: {
       snpids: [snp]
     },
@@ -81,11 +82,64 @@ const Snp = () => {
 
   const { loading: loadingOverlapICRE, data: dataOverlapICRE } = useQuery(ICRES_QUERY, {
     variables: {
-      coordinates: { chromosome: dataSNP?.snpQuery[0].coordinates.chromosome, start: dataSNP?.snpQuery[0].coordinates.start - 2000, end: dataSNP?.snpQuery[0].coordinates.start + 2000 }
+      coordinates: { chromosome: dataSNP?.snpQuery[0].coordinates.chromosome, start: dataSNP?.snpQuery[0].coordinates.end - 2000, end: dataSNP?.snpQuery[0].coordinates.end + 2000 }
     },
     skip: loadingSNP || !dataSNP,
     client,
   })
+
+  const NearbyICREs = () => useMemo(() => {
+    return (
+      <DataTable
+        columns={[
+          {
+            header: "Distance to SNP",
+            value: (row) => Math.abs(row.coordinates.start - dataSNP?.snpQuery[0].coordinates.end),
+            FunctionalRender: (row) => {
+              return (
+                loadingSNP ? <CircularProgress />
+                  : errorSNP ? <Typography>Error fetching SNP location</Typography>
+                    : <Typography>{Math.abs(row.coordinates.start - dataSNP?.snpQuery[0].coordinates.end)}</Typography>
+              )
+            }
+          },
+          {
+            header: "Accession",
+            value: (row) => row.accession,
+          },
+          {
+            header: "rDHS",
+            value: (row) => row.rdhs,
+          },
+          {
+            header: "Chromosome",
+            value: (row) => row.coordinates.chromosome,
+          },
+          {
+            header: "Start",
+            value: (row) => row.coordinates.start,
+          },
+          {
+            header: "End",
+            value: (row) => row.coordinates.end,
+          },
+          {
+            header: "Class",
+            value: (row) => row.group,
+          },
+          {
+            header: "Cell Type Specific Activity",
+            value: (row) => row.celltypes.length,
+            FunctionalRender: (row) => <ActiveCellTypesList celltypes={row.celltypes} />
+          },
+        ]}
+        tableTitle={`iCREs within 2kbp of ${snp}`}
+        rows={dataOverlapICRE?.iCREQuery || []}
+        itemsPerPage={10}
+        sortDescending
+      />
+    )
+  }, [dataOverlapICRE, dataSNP, loadingSNP, errorSNP])
 
   return !snp ? (<main>
 
@@ -104,124 +158,90 @@ const Snp = () => {
         <Grid2 xs={12} lg={12}>
           {snp && <Typography variant="h4">SNP Details: {snp}{dataSNP && " - " + dataSNP.snpQuery[0].coordinates.chromosome + ":" + dataSNP.snpQuery[0].coordinates.end}</Typography>}
           <Tabs aria-label="snps_tabs" value={value} onChange={handleChange}>
-            <StyledTab label="eQTLs" />
-            <StyledTab label="GWAS Variants" />
+            <StyledTab label="Nearby iCREs" />
+            <StyledTab label="eQTLs + GWAS Variants" />
           </Tabs>
         </Grid2>
-        <Grid2 xs={12} lg={12}>
-          <DataTable
-            columns={[
-              {
-                header: "Accession",
-                value: (row) => row.accession,
-              },
-              {
-                header: "rDHS",
-                value: (row) => row.rdhs,
-              },
-              {
-                header: "Chromosome",
-                value: (row) => row.coordinates.chromosome,
-              },
-              {
-                header: "Start",
-                value: (row) => row.coordinates.start,
-              },
-              {
-                header: "End",
-                value: (row) => row.coordinates.end,
-              },
-              {
-                header: "Class",
-                value: (row) => row.group,
-              },
-              {
-                header: "Cell Type Specific Activity",
-                value: (row) => [... new Set(row.celltypes.map(x => getCellDisplayName(x, true)))].join(', '),
-              },
-            ]}
-            tableTitle={`iCREs within 2kbp of ${snp}:`}
-            rows={dataOverlapICRE?.iCREQuery || []}
-            itemsPerPage={10}
-            sortColumn={3}
-          />
-        </Grid2>
-        <Grid2 xs={12} lg={12}>
-          <DataTable
-            columns={[
-              {
-                header: "Gene Id",
-                value: (row) => row.geneid || "",
-              },
-              {
-                header: "P-Value",
-                value: (row) => row.pvalue && row.pvalue.toExponential(2) || 0,
-              },
-              {
-                header: "Q-Value",
-                value: (row) => row.qvalue && row.qvalue.toExponential(2) || 0,
-              },
-              {
-                header: "Celltype",
-                value: (row) => row.celltype || "",
-              }
-            ]}
-            tableTitle={`Yazar.Powell eQTLs identified for ${searchParams.get('rsid')}:`}
-            rows={data?.icreeQTLQuery || []}
-            itemsPerPage={10}
-          />
-        </Grid2>
-        <Grid2 xs={12} lg={12}>
-          <DataTable
-            columns={[
-              {
-                header: "Chromosome",
-                value: (row) => row.chromosome,
-              },
-              {
-                header: "Position",
-                value: (row) => row.position,
-              },
-              {
-                header: "Strongest snp risk allele",
-                value: (row) => row.strongest_snp_risk_allele,
-              },
-              {
-                header: "Risk Allele Frequency",
-                value: (row) => row.risk_allele_frequency,
-
-              },
-              {
-                header: "P-Value",
-                value: (row) => row.p_value && row.p_value.toExponential(2) || 0,
-              },
-              {
-                header: "Study",
-                value: (row) => row.study,
-              },
-              {
-                header: "Region",
-                value: (row) => row.region,
-              },
-              {
-                header: "Immu screen trait",
-                value: (row) => row.immu_screen_trait
-              },
-              {
-                header: "mapped_trait",
-                value: (row) => row.mapped_trait
-              },
-              {
-                header: "Pubmed Id",
-                value: (row) => row.pubmedid
-              }
-            ]}
-            tableTitle={`Trait Associations for ${snp}:`}
-            rows={ebidata?.ebiAssociationsQuery || []}
-            sortColumn={3}
-            itemsPerPage={10}
-          />
-        </Grid2>
+        {value === 0 &&
+          <Grid2 xs={12} lg={12}>
+            <NearbyICREs />
+          </Grid2>
+        }
+        {value === 1 &&
+          <><Grid2 xs={12} lg={12}>
+            <DataTable
+              columns={[
+                {
+                  header: "Gene Id",
+                  value: (row) => row.geneid || "",
+                },
+                {
+                  header: "P-Value",
+                  value: (row) => row.pvalue && row.pvalue.toExponential(2) || 0,
+                },
+                {
+                  header: "Q-Value",
+                  value: (row) => row.qvalue && row.qvalue.toExponential(2) || 0,
+                },
+                {
+                  header: "Celltype",
+                  value: (row) => row.celltype || "",
+                }
+              ]}
+              tableTitle={`Yazar.Powell eQTLs for ${searchParams.get('rsid')}`}
+              rows={data?.icreeQTLQuery || []}
+              itemsPerPage={10} />
+          </Grid2>
+            <Grid2 xs={12} lg={12}>
+              <DataTable
+                columns={[
+                  {
+                    header: "Chromosome",
+                    value: (row) => row.chromosome,
+                  },
+                  {
+                    header: "Position",
+                    value: (row) => row.position,
+                  },
+                  {
+                    header: "Strongest snp risk allele",
+                    value: (row) => row.strongest_snp_risk_allele,
+                  },
+                  {
+                    header: "Risk Allele Frequency",
+                    value: (row) => row.risk_allele_frequency,
+                  },
+                  {
+                    header: "P-Value",
+                    value: (row) => row.p_value && row.p_value.toExponential(2) || 0,
+                  },
+                  {
+                    header: "Study",
+                    value: (row) => row.study,
+                  },
+                  {
+                    header: "Region",
+                    value: (row) => row.region,
+                  },
+                  {
+                    header: "Immu screen trait",
+                    value: (row) => row.immu_screen_trait
+                  },
+                  {
+                    header: "mapped_trait",
+                    value: (row) => row.mapped_trait
+                  },
+                  {
+                    header: "Pubmed Id",
+                    value: (row) => row.pubmedid
+                  }
+                ]}
+                tableTitle={`Trait Associations for ${snp}:`}
+                rows={ebidata?.ebiAssociationsQuery || []}
+                sortColumn={3}
+                itemsPerPage={10} />
+            </Grid2></>
+        }
       </Grid2>
     </main>
   )
