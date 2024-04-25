@@ -142,10 +142,9 @@ export const GeneAutoComplete = (props) => {
             if (newInputValue != "") {
               debounceFn(newInputValue)
             }
-
             setInputValue(newInputValue)
           }}
-          noOptionsText="e.g TGFB1,IL2"
+          noOptionsText="e.g TGFB1, IL2"
           renderInput={(params) => (
             <TextField
               {...params}

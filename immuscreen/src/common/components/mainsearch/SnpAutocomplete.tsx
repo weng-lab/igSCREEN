@@ -79,7 +79,7 @@ export const SnpAutoComplete = (props) => {
 
               if (value) {
                 let chromosome = snpids.find((g) => g.id === value)?.chrom
-                let start = snpids.find((g) => g.id === value)?.start - 2000
+                let start = snpids.find((g) => g.id === value)?.end - 2000
                 let end = snpids.find((g) => g.id === value)?.end + 2000
                 router.push(
                   `/snp?rsid=${value}`
@@ -96,7 +96,6 @@ export const SnpAutoComplete = (props) => {
             if (newInputValue != "") {
               debounceFn(newInputValue)
             }
-
             setInputValue(newInputValue)
           }}
           noOptionsText="e.g. rs11669173"
@@ -135,9 +134,7 @@ export const SnpAutoComplete = (props) => {
                     </Box>
                     {snpids && snpids.find((g) => g.id === option) && (
                       <Typography variant="body2" color="text.secondary">
-                        {`${snpids.find((g) => g.id === option)?.chrom}:${snpids.find((g) => g.id === option)?.start}:${
-                          snpids.find((g) => g.id === option)?.end
-                        }`}
+                        {`${snpids.find((g) => g.id === option)?.chrom}:${snpids.find((g) => g.id === option)?.end}`}
                       </Typography>
                     )}
                   </Grid>

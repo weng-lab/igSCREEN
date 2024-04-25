@@ -59,9 +59,10 @@ query calderoncorcebyctszscoreAtacQuery($accession: [String], $study: [String]) 
 export const ICRES_QUERY = gql`
 query iCREQuery($coordinates: [GenomicRangeInput!],$accession: [String!]) 
   {
-    iCREQuery(coordinates:$coordinates, accession: $accession) {
+    iCREQuery(coordinates: $coordinates, accession: $accession) {
       rdhs
       accession
+      group
       celltypes
       coordinates {
         start
@@ -73,9 +74,9 @@ query iCREQuery($coordinates: [GenomicRangeInput!],$accession: [String!])
 `
 
 export const EBI_ASSO_QUERY =  gql`
-query ebiAssoc($accession: String) 
+query ebiAssoc($accession: String, $snpid: String) 
   {
-    ebiAssociationsQuery(accession:$accession) {
+    ebiAssociationsQuery(accession: $accession, snpid: $snpid) {
       ccre
       class
       strongest_snp_risk_allele

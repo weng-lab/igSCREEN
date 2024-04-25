@@ -180,9 +180,11 @@ export const TitledTrack: React.FC<{
   const BulkAtacTracks: React.FC<BulkAtacTrackProps> = (props: BulkAtacTrackProps) => {
 
   const defaultTracks: [string, string][] = props.defaultcelltypes?.map((cell: CellQueryValue) => [getCellDisplayName(cell, true, true), `https://downloads.wenglab.org/${cell}.bigWig`]) || []
-
+  defaultTracks.sort()
   defaultTracks.unshift(["All Immune Cells (Aggregate Signal)", "https://downloads.wenglab.org/all_immune.bigWig"])
+  console.log(defaultTracks)
 
+  //Why is this this not working when you have a lot of tracks? Why did my changes matter?
   const [cTracks, setTracks] = useState<[string, string][]>(defaultTracks);
   const height = useMemo(() => cTracks.length * 80, [cTracks]);
   const bigRequests = useMemo(

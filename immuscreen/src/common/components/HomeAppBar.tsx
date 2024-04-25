@@ -82,32 +82,19 @@ const HomeAppBar = () => {
       <AppBar position="static">
         <Container maxWidth={false}>
           <Toolbar disableGutters sx={{ justifyContent: "center"}}>           
-           
-            {/* <Typography
-              variant="h5"
-              noWrap
-              component="a"
-              href={"/"}
+            <Box
+              component='a'
+              href="/"
               sx={{
                 mr: 2,
                 ml: 1,
                 flexGrow: 0,
-                display: { xs: "none", md: "flex" },                
-                fontFamily: "monospace",
-                
-                fontWeight: 700,
-                letterSpacing: ".3rem",
-                color: "inherit",
-                
-                textDecoration: "none",
+                display: { xs: "none", md: "flex" },
               }}
             >
-              igSCREEN
-            </Typography> */}
-            <Box component='a' href="/">
               <Image
-                src="/igSCREEN.png"
-                width={116}
+                src="/igSCREEN_dark.png"
+                width={100}
                 height={50}
                 alt="igSCREEN logo"
               />
@@ -158,25 +145,22 @@ const HomeAppBar = () => {
                 ))}
               </Menu>
             </Box>
-            <Typography
-              variant="h5"
-              noWrap
-              component="a"
-              href={`${nextConfig.basePath}`}
+            <Box
+              component='a'
+              href="/"
               sx={{
                 mr: 2,
                 flexGrow: 0,
-                display: { xs: "none", sm: "flex", md: "none" },
-                //flexGrow: 1,
-                fontFamily: "monospace",
-                fontWeight: 700,
-                letterSpacing: ".3rem",
-                color: "inherit",
-                textDecoration: "none",
+                display: { xs: "flex", md: "none" },
               }}
             >
-              SCREEN
-            </Typography>
+              <Image
+                src="/igSCREEN_dark.png"
+                width={116}
+                height={50}
+                alt="igSCREEN logo"
+              />
+            </Box>
             {/* Main navigation items for desktop */}
             <Box sx={{ flexGrow: 0, flexShrink: 1, display: { xs: "none", md: "flex" } }}>
               {pageLinks.map((page) => (
