@@ -3,6 +3,7 @@ import { Inter } from "next/font/google"
 import AppBar from "../common/components/HomeAppBar"
 import Footer from "../common/components/Footer"
 import { Suspense } from "react"
+import { CssBaseline } from "@mui/material"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -16,6 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={inter.className} id="page-container">
         <div id="content-wrapper">
+          <CssBaseline />
           <AppBar />
           <Suspense>
             <div id="body-wrapper">{children}</div>
