@@ -39,7 +39,6 @@ const Home = () => {
             <Select
               id="portal-select"
               value={selectedPortal}
-              // defaultValue={10}
               onChange={handleChange}
             >
               <MenuItem value={"Genes"}>Genes</MenuItem>

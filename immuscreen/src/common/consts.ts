@@ -2,7 +2,7 @@
  * @todo the cell info in this file and in celllineage/utils.ts need to be combined
  */
 
-import { CellName, CellTypeStaticInfo } from "../app/celllineage/types"
+import { CellDisplayName, CellName, CellTypeStaticInfo } from "../app/celllineage/types"
 
 export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
   Monocytes: {
@@ -529,7 +529,7 @@ export const experimentInfo: { [key: string]: {order: number, description: strin
   '1020-CD34_Cord_Blood-SRX1427814': { order: 1, description: 'CD34+ Cord Blood in donor 1020', displayName: 'CD34+ Cord Blood', group: 'Progenitors', study: 'Corces et al', pmid: '27526324' },
   '7291-CD34_Bone_Marrow-SRX1427812': { order: 2, description: 'CD34+ Bone Marrow in donor 7291', displayName: 'CD34+ Bone Marrow', group: 'Progenitors', study: 'Corces et al', pmid: '27526324' },
   '7292-CD34_Bone_Marrow-SRX1427813': { order: 3, description: 'CD34+ Bone Marrow in donor 7292', displayName: 'CD34+ Bone Marrow', group: 'Progenitors', study: 'Corces et al', pmid: '27526324' },
-  '2596-HSC-SRX1427829': { order: 4, description: 'Hematopoetic Stem Cells in donor 2596', displayName: 'Hematopoetic Stem Cells', group: 'Progenitors', study: 'Corces et al', pmid: '27526324' },
+  '2596-HSC-SRX1427829': { order: 4, description: 'Hematopoetic Stem Cells in donor 2596', displayName: 'Hematopoetic stem ells', group: 'Progenitors', study: 'Corces et al', pmid: '27526324' },
   '2596-HSC-SRX1427830': { order: 5, description: 'Hematopoetic Stem Cells in donor 2596', displayName: 'Hematopoetic Stem Cells', group: 'Progenitors', study: 'Corces et al', pmid: '27526324' },
   '4983-HSC-SRX1427789': { order: 6, description: 'Hematopoetic Stem Cells in donor 4983', displayName: 'Hematopoetic Stem Cells', group: 'Progenitors', study: 'Corces et al', pmid: '27526324' },
   '6792-HSC-SRX1427800': { order: 7, description: 'Hematopoetic Stem Cells in donor 6792', displayName: 'Hematopoetic Stem Cells', group: 'Progenitors', study: 'Corces et al', pmid: '27526324' },

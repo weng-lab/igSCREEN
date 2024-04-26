@@ -1,4 +1,4 @@
-import {  useQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client"
 import { associateBy } from "queryz"
 import { BigWigData, BigBedData } from "bigwig-reader"
 import React, { RefObject, useEffect, useMemo, useState } from "react"
@@ -22,7 +22,7 @@ type DefaultTracksProps = {
 }
 
 const CCRETooltip = (props) => {
-console.log(props,"icretoltip")
+  console.log(props, "icretoltip")
   return (<>
   </>)
 }
@@ -58,45 +58,46 @@ export const TitledTrack: React.FC<{
   cCRECoordinateMap,
   biosample,
 }) => {
-  useEffect(() => onHeightChanged && onHeightChanged(height + 40), [height, onHeightChanged])
+    useEffect(() => onHeightChanged && onHeightChanged(height + 40), [height, onHeightChanged])
 
-  return (
-    <g transform={transform}>
-      <EmptyTrack height={40} width={1400} transform="translate(0,8)" id="" text={title} />
-      {url.endsWith(".bigBed") || url.endsWith(".bigbed") ? (
-        <DenseBigBed
-          width={1400}
-          height={height}
-          domain={domain}
-          id={url}
-          transform="translate(0,40)"
-          data={data as BigBedData[]}
-          svgRef={svgRef}
-          onMouseOver={(x) => oncCREMousedOver && x.name && oncCREMousedOver(cCRECoordinateMap.get(x.name))}
-          onMouseOut={oncCREMousedOut}
-        />
-      ) : (
-        <FullBigWig
-          transform="translate(0,40)"
-          width={1400}
-          height={height}
-          domain={domain}
-          id={url}
-          color={color}
-          data={data as BigWigData[]}
-          noTransparency
-        />
-      )}
-    </g>
-  )
-}
+    return (
+      <g transform={transform}>
+        <EmptyTrack height={40} width={1400} transform="translate(0,8)" id="" text={title} />
+        {url.endsWith(".bigBed") || url.endsWith(".bigbed") ? (
+          //This is the cCRE track
+          <DenseBigBed
+            width={1400}
+            height={height}
+            domain={domain}
+            id={url}
+            transform="translate(0,40)"
+            data={data as BigBedData[]}
+            svgRef={svgRef}
+            onMouseOver={(x) => oncCREMousedOver && x.name && oncCREMousedOver(cCRECoordinateMap.get(x.name))}
+            onMouseOut={oncCREMousedOut}
+            
+          />
+        ) : (
+          <FullBigWig
+            transform="translate(0,40)"
+            width={1400}
+            height={height}
+            domain={domain}
+            id={url}
+            color={color}
+            data={data as BigWigData[]}
+            noTransparency
+          />
+        )}
+      </g>
+    )
+  }
 
 const DefaultTracks: React.FC<DefaultTracksProps> = (props) => {
   const [cTracks, setTracks] = useState<[string, string][]>(
-   [
-          ["All iCREs", "https://downloads.wenglab.org/Calderon-Corces_activeCREs_iSCREEN.bigBed"],
-        ]
-      
+    [
+      ["All iCREs", "https://downloads.wenglab.org/Calderon-Corces_activeCREs_iSCREEN.bigBed"],
+    ]
   )
   const height = useMemo(() => cTracks.length * 80, [cTracks])
   const bigRequests = useMemo(
@@ -118,7 +119,7 @@ const DefaultTracks: React.FC<DefaultTracksProps> = (props) => {
     () =>
       associateBy(
         (data && data.bigRequests && data.bigRequests[0].data) || [],
-        (x: { name: string}) => x.name,
+        (x: { name: string }) => x.name,
         (x: any) => ({ chromosome: x.chr, start: x.start, end: x.end })
       ),
     [data]
@@ -149,6 +150,7 @@ const DefaultTracks: React.FC<DefaultTracksProps> = (props) => {
           title={cTracks[i][0]}
           svgRef={props.svgRef}
           data={data.data}
+          color={'#FF0000'}
           transform={`translate(0,${i * 70})`}
           cCRECoordinateMap={cCRECoordinateMap}
         />
