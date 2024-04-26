@@ -23,7 +23,7 @@ const Home = () => {
   return (
     <main>
       {/* May need to rethink where these margins are set. Which element should be setting content width? */}
-      <Grid2 container spacing={6} sx={{ mr: "auto", ml: "auto", mt: "2rem" }}>
+      <Grid2 container spacing={6}>
         <Grid2 xs={12}>
           <Image
             src="/igSCREEN_red_light.png"
@@ -31,8 +31,6 @@ const Home = () => {
             height={172}
             alt="igSCREEN logo"
           />
-        </Grid2>
-        <Grid2 xs={12}>
           <Typography variant="h6">Search <em>immune</em> Candidate cis-Regulatory Elements by ENCODE</Typography>
           <br />
           <FormControl variant="standard">
@@ -55,6 +53,9 @@ const Home = () => {
                 : selectedPortal === "Genomic Region" ? <GenomicRegion assembly="GRCh38" />
                   : <CcreAutoComplete textColor={"black"} assembly={"GRCh38"} />
           }
+        </Grid2>
+        <Grid2 xs={12}>
+
         </Grid2>
       </Grid2>
     </main>

@@ -70,11 +70,6 @@ const ChromBPNetAtacTracks: React.FC<ChromBPNetBulkAtacTrackProps> = ({
 
 
   const chrombpnetColors: {[key:string]: string} = {}
-  
-  // const defaultTracks: [string, string][] = defaultcelltypes?.map((cell: CellQueryValue) => {
-  //   chrombpnetColors[getCellDisplayName(cell, true, true)] = getCellColor(cell)
-  //   return [getCellDisplayName(cell, true, true), `https://downloads.wenglab.org/${cell}.bigWig`]
-  // }) || []
 
   const defaultTracks: [string, string][] = []
 
