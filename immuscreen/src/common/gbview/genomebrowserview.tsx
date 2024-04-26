@@ -10,6 +10,7 @@ import { client } from "../utils"
 import DefaultTracks from "./defaulttracks"
 import BulkAtacTracks from "./bulkatactracks";
 import ChromBPNetAtacTracks from "./chrombpnetatactracks";
+import { Box } from "@mui/material"
 
 type GenomeBrowserViewProps = {
   coordinates: {
@@ -109,6 +110,7 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (props: Genom
   )
   const l = useCallback((c) => ((c - coordinates.start) * 1400) / (coordinates.end - coordinates.start), [coordinates])
 
+  console.log(svgRef.current?.clientHeight)
   return (
     <>
       <Grid2 container spacing={3} sx={{ mt: "1rem", mb: "1rem" }}>
@@ -121,8 +123,9 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (props: Genom
           </div>
           <br />
           <br />
-          <GenomeBrowser
-            svgRef={svgRef}
+          <Box id="GB">
+            <GenomeBrowser
+            svgRef={svgRef}      
             domain={coordinates}
             innerWidth={1400}
             width="100%"
@@ -138,10 +141,13 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (props: Genom
             }}
           >
             {highlight && (
-              <rect fill="#8ec7d1" fillOpacity={0.5} height={1000} x={l(highlight.start)} width={l(highlight.end) - l(highlight.start)} />
+              <rect fill="#8ec7d1" fillOpacity={0.5} height={'100%'} x={l(highlight.start)} width={l(highlight.end) - l(highlight.start)} />
             )}
             <RulerTrack domain={coordinates} height={30} width={1400} />
-            {props.accession && false && <rect key={props.accession?.name} fill="#FAA4A4" fillOpacity={0.5} height={900} x={l(props.accession?.start)} width={l(props.accession?.end) - l(props.accession?.start)} />}
+            <>
+              {props.accession && <rect fill="#FAA4A4" fillOpacity={0.3} height={'100%'} x={l(props.accession.start)} width={l(props.accession.end) - l(props.accession.start)} />
+              }
+            </>
             {props.gene && <EGeneTracks
               genes={groupedTranscripts || []}
               expandedCoordinates={coordinates}
@@ -168,6 +174,8 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (props: Genom
               defaultcelltypes={props.defaultcelltypes}
             />
           </GenomeBrowser>
+          </Box>
+          
         </Grid2>
       </Grid2>
     </>

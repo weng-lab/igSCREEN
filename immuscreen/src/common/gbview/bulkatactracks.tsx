@@ -8,7 +8,7 @@ import { client } from "../utils"
 import BulkAtacTrackModal from "./bulkatacmodal";
 import { BulkAtacCelltypeTrack, CalderonCellTypesMetadata } from "./consts";
 import { CellQueryValue } from "../../app/celllineage/types";
-import { getCellDisplayName } from "../../app/celllineage/utils";
+import { getCellColor, getCellDisplayName } from "../../app/celllineage/utils";
 
 export const DEFAULT_TRACKS = (
   assembly: string
@@ -162,6 +162,7 @@ export const TitledTrack: React.FC<{
           //tooltipContent={(rect) => <CCRETooltip {...rect} assembly="grch38" />}
           />
         ) : (
+          // This is the bulk atac
           <FullBigWig
             transform="translate(0,40)"
             width={1400}
@@ -179,10 +180,15 @@ export const TitledTrack: React.FC<{
 
   const BulkAtacTracks: React.FC<BulkAtacTrackProps> = (props: BulkAtacTrackProps) => {
 
-  const defaultTracks: [string, string][] = props.defaultcelltypes?.map((cell: CellQueryValue) => [getCellDisplayName(cell, true, true), `https://downloads.wenglab.org/${cell}.bigWig`]) || []
+  const bulkAtacColors: {[key:string]: string} = {}
+  
+  const defaultTracks: [string, string][] = props.defaultcelltypes?.map((cell: CellQueryValue) => {
+    bulkAtacColors[getCellDisplayName(cell, true, true)] = getCellColor(cell)
+    return [getCellDisplayName(cell, true, true), `https://downloads.wenglab.org/${cell}.bigWig`]
+  }) || []
+  
   defaultTracks.sort()
   defaultTracks.unshift(["All Immune Cells (Aggregate Signal)", "https://downloads.wenglab.org/all_immune.bigWig"])
-  console.log(defaultTracks)
 
   //Why is this this not working when you have a lot of tracks? Why did my changes matter?
   const [cTracks, setTracks] = useState<[string, string][]>(defaultTracks);
@@ -213,6 +219,7 @@ export const TitledTrack: React.FC<{
     <EmptyTrack width={1400} height={40} transform="" id="" text="Loading..." />
   ) : (
     <>
+    {/* Need to add all cell types to this */}
       <BulkAtacTrackModal
         open={settingsModalShown}
         onCancel={() => setSettingsModalShown(false)}
@@ -235,6 +242,8 @@ export const TitledTrack: React.FC<{
           svgRef={props.svgRef}
           data={data.data}
           transform={`translate(0,${i * 70})`}
+          //Need to add the color here
+          color={bulkAtacColors[cTracks[i][0]]}
         />
       ))}
       <g className="tf-motifs">
