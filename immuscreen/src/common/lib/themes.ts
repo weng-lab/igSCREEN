@@ -5,8 +5,8 @@ export const defaultTheme = createTheme({
   palette: {
     mode: "light",
     primary: {
-      main: "#545454",
       // main: "#000F9F",
+      main: "#494d6b",
     }, 
   },
   components: {
