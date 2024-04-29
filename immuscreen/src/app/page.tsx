@@ -1,7 +1,7 @@
 //Home Page
 
 "use client"
-import { Box, FormControl, MenuItem, Stack, Typography } from "@mui/material"
+import { Box, Divider, FormControl, MenuItem, Stack, Typography } from "@mui/material"
 import React, { useState } from "react"
 
 import Select, { SelectChangeEvent } from "@mui/material/Select";
@@ -22,7 +22,7 @@ const Home = () => {
   };
 
   return (
-    <Grid2 container pt={3} maxWidth={{ xl: "65%", lg: "75%", md: "85%", sm: "90%", xs: "95%" }} margin={"auto"}>
+    <Grid2 container pt={3} maxWidth={{ xl: "60%", lg: "75%", md: "85%", sm: "90%", xs: "95%" }} margin={"auto"} rowSpacing={10}>
       <Grid2 xs={12}>
         <Image
           src="/igSCREEN_red_light.png"
@@ -51,40 +51,132 @@ const Home = () => {
                 : <CcreAutoComplete textColor={"black"} assembly={"GRCh38"} />
         }
       </Grid2>
-      <Grid2 container flexDirection={"column"} alignItems={"center"} xs={12}>
-        <Typography variant="h5">Portals</Typography>
-        {/* Todo make scroll */}
-        <ExpandMore />
+      <Grid2 xs={12}>
+        <div>
+          <Grid2 container flexDirection={"column"} alignItems={"center"} xs={12}>
+            <Typography variant="h5">Portals</Typography>
+            {/* Todo make scroll */}
+            <ExpandMore />
+          </Grid2>
+        </div>
       </Grid2>
-      <Grid2 container xs={12} justifyContent={"space-between"}>
-        <Grid2 xs={12} md={5} order={{ xs: 2, md: 1 }}>
-          <Typography variant="h4">Gene Portal</Typography>
-          <Typography>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sem nulla, fermentum in neque ut, tincidunt pellentesque eros. Ut vel ex vel tellus facilisis sodales ac ac risus.</Typography>
-          <Stack direction="row">
-            <ArrowRight />
-            <Typography>This is a statistic</Typography>
-          </Stack>
-          <Stack direction="row">
-            <ArrowRight />
-            <Typography>This is a statistic</Typography>
-          </Stack>
-          <Stack direction="row" mb={2}>
-            <ArrowRight />
-            <Typography>This is a statistic</Typography>
-          </Stack>
-          <GeneAutoComplete textColor={"black"} assembly={"GRCh38"} />
-        </Grid2>
-        <Grid2 container xs={12} md={7} order={{ xs: 1, md: 2 }} justifyContent={{ xs: "center", md: "flex-end" }} minHeight={250}>
-          <Box position={"relative"} height={"100%"} width={'100%'} sx={{objectPosition: {md: "right bottom", xs: "left bottom"}}}>
-            <Image
-              objectFit="contain"
-              objectPosition="inherit"
-              src="/assets/gene-bcre.png"
-              fill
-              alt="igSCREEN logo"
-            />
-          </Box>
-        </Grid2>
+      {/* Portals */}
+      <Grid2 xs={12}>
+        <div>
+          <Grid2 container rowSpacing={8}>
+            <Grid2 xs={12}>
+              {/* Gene Portal */}
+              <div>
+                <Grid2 container xs={12} justifyContent={"space-between"}>
+                  <Grid2 xs={12} md={5} order={{ xs: 2, md: 1 }}>
+                    <Typography variant="h4">Gene Portal</Typography>
+                    <Typography>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sem nulla, fermentum in neque ut, tincidunt pellentesque eros. Ut vel ex vel tellus facilisis sodales ac ac risus.</Typography>
+                    <Stack direction="row">
+                      <ArrowRight />
+                      <Typography>This is a statistic</Typography>
+                    </Stack>
+                    <Stack direction="row">
+                      <ArrowRight />
+                      <Typography>This is a statistic</Typography>
+                    </Stack>
+                    <Stack direction="row" mb={2}>
+                      <ArrowRight />
+                      <Typography>This is a statistic</Typography>
+                    </Stack>
+                    <GeneAutoComplete textColor={"black"} assembly={"GRCh38"} />
+                  </Grid2>
+                  <Grid2 container xs={12} md={7} order={{ xs: 1, md: 2 }} minHeight={250}>
+                    <Box position={"relative"} height={"100%"} width={'100%'} sx={{ objectPosition: { md: "right bottom", xs: "left bottom" } }}>
+                      <Image
+                        objectFit="contain"
+                        objectPosition="inherit"
+                        src="/assets/gene-bcre.png"
+                        fill
+                        alt="igSCREEN logo"
+                      />
+                    </Box>
+                  </Grid2>
+                </Grid2>
+              </div>
+            </Grid2>
+            <Grid2 xs={12}>
+              <Divider />
+            </Grid2>
+            <Grid2 xs={12}>
+              {/* Gene Portal */}
+              <div>
+                <Grid2 container xs={12} justifyContent={"space-between"}>
+                  <Grid2 container xs={12} md={7} order={{ xs: 1, md: 1 }} minHeight={250}>
+                    <Box position={"relative"} height={"100%"} width={'100%'} sx={{ objectPosition: { md: "left bottom", xs: "left bottom" } }}>
+                      <Image
+                        objectFit="contain"
+                        objectPosition="inherit"
+                        src="/assets/gene-bcre.png"
+                        fill
+                        alt="igSCREEN logo"
+                      />
+                    </Box>
+                  </Grid2>
+                  <Grid2 xs={12} md={5} order={{ xs: 1, md: 1 }}>
+                    <Typography variant="h4">Gene Portal</Typography>
+                    <Typography>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sem nulla, fermentum in neque ut, tincidunt pellentesque eros. Ut vel ex vel tellus facilisis sodales ac ac risus.</Typography>
+                    <Stack direction="row">
+                      <ArrowRight />
+                      <Typography>This is a statistic</Typography>
+                    </Stack>
+                    <Stack direction="row">
+                      <ArrowRight />
+                      <Typography>This is a statistic</Typography>
+                    </Stack>
+                    <Stack direction="row" mb={2}>
+                      <ArrowRight />
+                      <Typography>This is a statistic</Typography>
+                    </Stack>
+                    <GeneAutoComplete textColor={"black"} assembly={"GRCh38"} />
+                  </Grid2>
+                </Grid2>
+              </div>
+            </Grid2>
+            <Grid2 xs={12}>
+              <Divider />
+            </Grid2>
+            <Grid2 xs={12}>
+              {/* Gene Portal */}
+              <div>
+                <Grid2 container xs={12} justifyContent={"space-between"}>
+                  <Grid2 xs={12} md={5} order={{ xs: 2, md: 1 }}>
+                    <Typography variant="h4">Gene Portal</Typography>
+                    <Typography>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sem nulla, fermentum in neque ut, tincidunt pellentesque eros. Ut vel ex vel tellus facilisis sodales ac ac risus.</Typography>
+                    <Stack direction="row">
+                      <ArrowRight />
+                      <Typography>This is a statistic</Typography>
+                    </Stack>
+                    <Stack direction="row">
+                      <ArrowRight />
+                      <Typography>This is a statistic</Typography>
+                    </Stack>
+                    <Stack direction="row" mb={2}>
+                      <ArrowRight />
+                      <Typography>This is a statistic</Typography>
+                    </Stack>
+                    <GeneAutoComplete textColor={"black"} assembly={"GRCh38"} />
+                  </Grid2>
+                  <Grid2 container xs={12} md={7} order={{ xs: 1, md: 2 }} minHeight={250}>
+                    <Box position={"relative"} height={"100%"} width={'100%'} sx={{ objectPosition: { md: "right bottom", xs: "left bottom" } }}>
+                      <Image
+                        objectFit="contain"
+                        objectPosition="inherit"
+                        src="/assets/gene-bcre.png"
+                        fill
+                        alt="igSCREEN logo"
+                      />
+                    </Box>
+                  </Grid2>
+                </Grid2>
+              </div>
+            </Grid2>
+          </Grid2>
+        </div>
       </Grid2>
     </Grid2>
   )
