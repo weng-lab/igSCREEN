@@ -17,8 +17,14 @@ import { ExpandMore, ArrowRight } from "@mui/icons-material";
 
 const Home = () => {
   const [selectedPortal, setSelectedPortal] = useState<string>("Genes");
+  const [elementSearch, setElementSearch] = useState<string>("Genomic Region")
+
   const handleChange = (event: SelectChangeEvent) => {
     setSelectedPortal(event.target.value);
+  };
+
+  const handleSetElementSearch = (event: SelectChangeEvent) => {
+    setElementSearch(event.target.value);
   };
 
   return (
@@ -52,13 +58,19 @@ const Home = () => {
         }
       </Grid2>
       <Grid2 xs={12}>
-        <div>
-          <Grid2 container flexDirection={"column"} alignItems={"center"} xs={12}>
-            <Typography variant="h5">Portals</Typography>
-            {/* Todo make scroll */}
+        <Divider>
+          <Stack
+            alignItems={"center"}
+            onClick={() => {
+              var element = document.getElementById("Portals");
+              element.scrollIntoView({ behavior: "smooth", block: "start" });
+            }}
+            sx={{ cursor: 'pointer' }}
+          >
+            <Typography variant="h5" id="Portals">Portals</Typography>
             <ExpandMore />
-          </Grid2>
-        </div>
+          </Stack>
+        </Divider>
       </Grid2>
       {/* Portals */}
       <Grid2 xs={12}>
@@ -103,7 +115,7 @@ const Home = () => {
               <Divider />
             </Grid2>
             <Grid2 xs={12}>
-              {/* Gene Portal */}
+              {/* Element Portal */}
               <div>
                 <Grid2 container xs={12} justifyContent={"space-between"}>
                   <Grid2 container xs={12} md={7} order={{ xs: 1, md: 1 }} minHeight={250}>
@@ -111,14 +123,14 @@ const Home = () => {
                       <Image
                         objectFit="contain"
                         objectPosition="inherit"
-                        src="/assets/gene-bcre.png"
+                        src="/assets/snp-qtl.png"
                         fill
                         alt="igSCREEN logo"
                       />
                     </Box>
                   </Grid2>
                   <Grid2 xs={12} md={5} order={{ xs: 1, md: 1 }}>
-                    <Typography variant="h4">Gene Portal</Typography>
+                    <Typography variant="h4">Element Portal</Typography>
                     <Typography>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sem nulla, fermentum in neque ut, tincidunt pellentesque eros. Ut vel ex vel tellus facilisis sodales ac ac risus.</Typography>
                     <Stack direction="row">
                       <ArrowRight />
@@ -132,7 +144,21 @@ const Home = () => {
                       <ArrowRight />
                       <Typography>This is a statistic</Typography>
                     </Stack>
-                    <GeneAutoComplete textColor={"black"} assembly={"GRCh38"} />
+                    <FormControl variant="standard" sx={{mb: 2}}>
+                      <Select
+                        id="portal_Select"
+                        value={elementSearch}
+                        onChange={handleSetElementSearch}
+                      >
+                        <MenuItem value={"Genomic Region"}>Genomic Region</MenuItem>
+                        <MenuItem value={"iCREs"}>iCREs</MenuItem>
+                      </Select>
+                    </FormControl>
+                    {elementSearch === "Genomic Region" ?
+                      <GenomicRegion assembly="GRCh38" />
+                      :
+                      <CcreAutoComplete textColor={"black"} assembly={"GRCh38"} />
+                    }
                   </Grid2>
                 </Grid2>
               </div>
@@ -141,11 +167,11 @@ const Home = () => {
               <Divider />
             </Grid2>
             <Grid2 xs={12}>
-              {/* Gene Portal */}
+              {/* SNP Portal */}
               <div>
                 <Grid2 container xs={12} justifyContent={"space-between"}>
                   <Grid2 xs={12} md={5} order={{ xs: 2, md: 1 }}>
-                    <Typography variant="h4">Gene Portal</Typography>
+                    <Typography variant="h4">SNP Portal</Typography>
                     <Typography>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sem nulla, fermentum in neque ut, tincidunt pellentesque eros. Ut vel ex vel tellus facilisis sodales ac ac risus.</Typography>
                     <Stack direction="row">
                       <ArrowRight />
@@ -159,14 +185,14 @@ const Home = () => {
                       <ArrowRight />
                       <Typography>This is a statistic</Typography>
                     </Stack>
-                    <GeneAutoComplete textColor={"black"} assembly={"GRCh38"} />
+                    <SnpAutoComplete textColor={"black"} assembly={"GRCh38"} />
                   </Grid2>
                   <Grid2 container xs={12} md={7} order={{ xs: 1, md: 2 }} minHeight={250}>
                     <Box position={"relative"} height={"100%"} width={'100%'} sx={{ objectPosition: { md: "right bottom", xs: "left bottom" } }}>
                       <Image
                         objectFit="contain"
                         objectPosition="inherit"
-                        src="/assets/gene-bcre.png"
+                        src="/assets/disease-trait.png"
                         fill
                         alt="igSCREEN logo"
                       />
