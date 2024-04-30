@@ -1,8 +1,4 @@
-/**
- * @todo the cell info in this file and in celllineage/utils.ts need to be combined
- */
-
-import { CellDisplayName, CellName, CellTypeStaticInfo } from "../app/celllineage/types"
+import { CellName, CellTypeStaticInfo } from "../app/celllineage/types"
 
 export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
   Monocytes: {

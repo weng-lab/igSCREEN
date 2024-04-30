@@ -9,6 +9,7 @@ import BulkAtacTrackModal from "./bulkatacmodal";
 import { BulkAtacCelltypeTrack, CalderonCellTypesMetadata } from "./consts";
 import { CellQueryValue } from "../../app/celllineage/types";
 import { getCellColor, getCellDisplayName } from "../../app/celllineage/utils";
+import NewModal from "./newModal";
 
 export const DEFAULT_TRACKS = (
   assembly: string
@@ -181,7 +182,6 @@ export const TitledTrack: React.FC<{
   const BulkAtacTracks: React.FC<BulkAtacTrackProps> = (props: BulkAtacTrackProps) => {
 
   const bulkAtacColors: {[key:string]: string} = {}
-  
   const defaultTracks: [string, string][] = props.defaultcelltypes?.map((cell: CellQueryValue) => {
     bulkAtacColors[getCellDisplayName(cell, true, true)] = getCellColor(cell)
     return [getCellDisplayName(cell, true, true), `https://downloads.wenglab.org/${cell}.bigWig`]
@@ -190,8 +190,10 @@ export const TitledTrack: React.FC<{
   defaultTracks.sort()
   defaultTracks.unshift(["All Immune Cells (Aggregate Signal)", "https://downloads.wenglab.org/all_immune.bigWig"])
 
-  //Why is this this not working when you have a lot of tracks? Why did my changes matter?
   const [cTracks, setTracks] = useState<[string, string][]>(defaultTracks);
+  const [settingsMousedOver, setSettingsMousedOver] = useState(false);
+  const [settingsModalShown, setSettingsModalShown] = useState(false);
+
   const height = useMemo(() => cTracks.length * 80, [cTracks]);
   const bigRequests = useMemo(
     () =>
@@ -212,22 +214,25 @@ export const TitledTrack: React.FC<{
     props.onHeightChanged && props.onHeightChanged(height);
   }, [props.onHeightChanged, height, props]);
 
-  const [settingsMousedOver, setSettingsMousedOver] = useState(false);
-  const [settingsModalShown, setSettingsModalShown] = useState(false);
-
   return loading || (data?.bigRequests.length || 0) < 1 ? (
     <EmptyTrack width={1400} height={40} transform="" id="" text="Loading..." />
   ) : (
     <>
-    {/* Need to add all cell types to this */}
-      <BulkAtacTrackModal
+      {/* <BulkAtacTrackModal
         open={settingsModalShown}
         onCancel={() => setSettingsModalShown(false)}
         onAccept={(x) => {
+          console.log(x)
           setTracks(x);
           setSettingsModalShown(false);
         }}
         initialSelection={cTracks}
+      /> */}
+      <NewModal 
+         open={settingsModalShown}
+         onCancel={() => setSettingsModalShown(false)}
+         onAccept={(cells: CellQueryValue[]) => console.log(cells)}
+         selected={[]}
       />
       <g className="encode-fetal-brain">
         <rect y={10} height={55} fill="none" width={1400} />
@@ -242,7 +247,6 @@ export const TitledTrack: React.FC<{
           svgRef={props.svgRef}
           data={data.data}
           transform={`translate(0,${i * 70})`}
-          //Need to add the color here
           color={bulkAtacColors[cTracks[i][0]]}
         />
       ))}

@@ -1,11 +1,9 @@
 //Home Page
 
 "use client"
-import { Box, Divider, FormControl, MenuItem, Stack, Typography } from "@mui/material"
+import { Box, Button, Divider, FormControl, MenuItem, Stack, Typography } from "@mui/material"
 import React, { useState } from "react"
-
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-// Grid v2 isn't declared stable yet, but using it now as it's what MUI is currently developing out
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { GeneAutoComplete } from "../common/components/mainsearch/GeneAutocomplete";
 import { SnpAutoComplete } from "../common/components/mainsearch/SnpAutocomplete";
@@ -13,7 +11,7 @@ import { CcreAutoComplete } from "../common/components/mainsearch/CcreAutocomple
 import Image from 'next/image'
 import MainSearch from "../common/components/mainsearch/MainSearch";
 import GenomicRegion from "../common/components/mainsearch/genomicregion";
-import { ExpandMore, ArrowRight } from "@mui/icons-material";
+import { ExpandMore } from "@mui/icons-material";
 
 const Home = () => {
   const [selectedPortal, setSelectedPortal] = useState<string>("Genes");
@@ -82,26 +80,13 @@ const Home = () => {
                 <Grid2 container xs={12} justifyContent={"space-between"}>
                   <Grid2 xs={12} md={5} order={{ xs: 2, md: 1 }}>
                     <Typography variant="h4">Gene Portal</Typography>
-                    <Typography>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sem nulla, fermentum in neque ut, tincidunt pellentesque eros. Ut vel ex vel tellus facilisis sodales ac ac risus.</Typography>
-                    <Stack direction="row">
-                      <ArrowRight />
-                      <Typography>This is a statistic</Typography>
-                    </Stack>
-                    <Stack direction="row">
-                      <ArrowRight />
-                      <Typography>This is a statistic</Typography>
-                    </Stack>
-                    <Stack direction="row" mb={2}>
-                      <ArrowRight />
-                      <Typography>This is a statistic</Typography>
-                    </Stack>
+                    <Typography mb={2}>Explore gene expression across immune cell types at bulk and single-cell resolution for 63 cell types across 305 experiments.</Typography>
                     <GeneAutoComplete textColor={"black"} assembly={"GRCh38"} />
                   </Grid2>
                   <Grid2 container xs={12} md={7} order={{ xs: 1, md: 2 }} minHeight={250}>
                     <Box position={"relative"} height={"100%"} width={'100%'} sx={{ objectPosition: { md: "right bottom", xs: "left bottom" } }}>
                       <Image
-                        objectFit="contain"
-                        objectPosition="inherit"
+                        style={{ objectFit: "contain", objectPosition: "inherit" }}
                         src="/assets/gene-bcre.png"
                         fill
                         alt="igSCREEN logo"
@@ -121,9 +106,8 @@ const Home = () => {
                   <Grid2 container xs={12} md={7} order={{ xs: 1, md: 1 }} minHeight={250}>
                     <Box position={"relative"} height={"100%"} width={'100%'} sx={{ objectPosition: { md: "left bottom", xs: "left bottom" } }}>
                       <Image
-                        objectFit="contain"
-                        objectPosition="inherit"
-                        src="/assets/snp-qtl.png"
+                        style={{ objectFit: "contain", objectPosition: "inherit" }}
+                        src="/assets/disease-trait.png"
                         fill
                         alt="igSCREEN logo"
                       />
@@ -131,20 +115,8 @@ const Home = () => {
                   </Grid2>
                   <Grid2 xs={12} md={5} order={{ xs: 1, md: 1 }}>
                     <Typography variant="h4">Element Portal</Typography>
-                    <Typography>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sem nulla, fermentum in neque ut, tincidunt pellentesque eros. Ut vel ex vel tellus facilisis sodales ac ac risus.</Typography>
-                    <Stack direction="row">
-                      <ArrowRight />
-                      <Typography>This is a statistic</Typography>
-                    </Stack>
-                    <Stack direction="row">
-                      <ArrowRight />
-                      <Typography>This is a statistic</Typography>
-                    </Stack>
-                    <Stack direction="row" mb={2}>
-                      <ArrowRight />
-                      <Typography>This is a statistic</Typography>
-                    </Stack>
-                    <FormControl variant="standard" sx={{mb: 2}}>
+                    <Typography>Explore regulatory element activity (immune cCREs) across immune cell types at bulk and single-cell resolution for 63 cell types across 305 experiments.</Typography>
+                    <FormControl variant="standard" sx={{ mb: 2 }}>
                       <Select
                         id="portal_Select"
                         value={elementSearch}
@@ -172,31 +144,45 @@ const Home = () => {
                 <Grid2 container xs={12} justifyContent={"space-between"}>
                   <Grid2 xs={12} md={5} order={{ xs: 2, md: 1 }}>
                     <Typography variant="h4">SNP Portal</Typography>
-                    <Typography>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sem nulla, fermentum in neque ut, tincidunt pellentesque eros. Ut vel ex vel tellus facilisis sodales ac ac risus.</Typography>
-                    <Stack direction="row">
-                      <ArrowRight />
-                      <Typography>This is a statistic</Typography>
-                    </Stack>
-                    <Stack direction="row">
-                      <ArrowRight />
-                      <Typography>This is a statistic</Typography>
-                    </Stack>
-                    <Stack direction="row" mb={2}>
-                      <ArrowRight />
-                      <Typography>This is a statistic</Typography>
-                    </Stack>
+                    <Typography mb={2}>Search SNPs of interest and explore their impact on gene expression, chromatin accessibility, transcription factor (TF) binding and other molecular traits in immune cells.</Typography>
                     <SnpAutoComplete textColor={"black"} assembly={"GRCh38"} />
                   </Grid2>
                   <Grid2 container xs={12} md={7} order={{ xs: 1, md: 2 }} minHeight={250}>
                     <Box position={"relative"} height={"100%"} width={'100%'} sx={{ objectPosition: { md: "right bottom", xs: "left bottom" } }}>
                       <Image
-                        objectFit="contain"
-                        objectPosition="inherit"
-                        src="/assets/disease-trait.png"
+                        style={{ objectFit: "contain", objectPosition: "inherit" }}
+                        src="/assets/snp-qtl.png"
                         fill
                         alt="igSCREEN logo"
                       />
                     </Box>
+                  </Grid2>
+                </Grid2>
+              </div>
+            </Grid2>
+            <Grid2 xs={12}>
+              <Divider />
+            </Grid2>
+            <Grid2 xs={12}>
+              {/* Phenotype Portal */}
+              <div>
+                <Grid2 container xs={12} justifyContent={"space-between"}>
+                  <Grid2 container xs={12} md={7} order={{ xs: 1, md: 1 }} minHeight={250}>
+                    <Box position={"relative"} height={"100%"} width={'100%'} sx={{ objectPosition: { md: "left bottom", xs: "left bottom" } }}>
+                      <Image
+                        style={{ objectFit: "contain", objectPosition: "inherit" }}
+                        src="/assets/snp-qtl.png"
+                        fill
+                        alt="igSCREEN logo"
+                      />
+                    </Box>
+                  </Grid2>
+                  <Grid2 xs={12} md={5} order={{ xs: 1, md: 1 }}>
+                    <Typography variant="h4">Phenotype Portal</Typography>
+                    <Typography mb={2}>Explore heritability enrichment for 280+ traits within gene regulatory features, such as immune cCREs.</Typography>
+                    <Button variant="contained" href="/phenotype">
+                      Explore Phenotypes
+                    </Button>
                   </Grid2>
                 </Grid2>
               </div>

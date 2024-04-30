@@ -63,10 +63,8 @@ const ChromBPNetAtacTracks: React.FC<ChromBPNetBulkAtacTrackProps> = ({
   defaultcelltypes
 }) => {
 
-  console.log(defaultcelltypes)
   //Given a query value I want the corresponding list of studies
   const r = defaultcelltypes && CalderonBigWigTracksMetadata.filter(c => defaultcelltypes.includes(c.celltype_name))
-  console.log(r)
 
 
   const chrombpnetColors: {[key:string]: string} = {}
