@@ -10,8 +10,6 @@ export const StyledTab = styled(Tab)({
   textTransform: "none",
 })
 
-
-
 //https://stackoverflow.com/questions/3426404/create-a-hexadecimal-colour-based-on-a-string-with-javascript
 //generate uniq color based on given string
 export const stringToColour = (str: string) => {

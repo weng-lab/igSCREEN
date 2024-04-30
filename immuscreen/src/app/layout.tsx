@@ -3,7 +3,8 @@ import { Inter } from "next/font/google"
 import AppBar from "../common/components/HomeAppBar"
 import Footer from "../common/components/Footer"
 import { Suspense } from "react"
-import { CssBaseline } from "@mui/material"
+import { CssBaseline, ThemeProvider } from "@mui/material"
+import { defaultTheme } from "../common/lib/themes"
 
 const inter = Inter({ subsets: ["latin"] })
 

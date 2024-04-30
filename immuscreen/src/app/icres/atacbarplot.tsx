@@ -76,7 +76,7 @@ const CellTypesLegends = ({ title, plottitle, children }: { title: string; plott
 
 
 export const AtacBarPlot: React.FC<{ plottitle?: string, byct?: boolean, study: string, barplotdata: { color: string, ct_description?: string, celltype: string, class: string, subclass: string, description: string, order: number, value: number, name: string, study: string, group: string, grouping: string, stimulation: string }[] }> = (props) => {
-  const width = 800
+  const width = 1000
   const height = 700
   const margin = { top: 40, right: 8, bottom: 40, left: 60 };
   const xMax = width - margin.left - margin.right;
@@ -202,7 +202,16 @@ export const AtacBarPlot: React.FC<{ plottitle?: string, byct?: boolean, study: 
             x2={xMax}
             stroke="#000000"
           />
-
+          {yScale.domain()[1] > 1.64 &&
+            <line
+              y1={yScale(1.64)}
+              y2={yScale(1.64)}
+              x1={0}
+              x2={xMax}
+              stroke="#000000"
+              strokeDasharray={'5 7'}
+            />
+          }
         </Group>
         <AxisBottom
           left={margin.left}
@@ -235,6 +244,7 @@ export const AtacBarPlot: React.FC<{ plottitle?: string, byct?: boolean, study: 
           }}
           tickFormat={yScaleTickFormat}
           tickValues={ticks}
+          label="ATAC Signal Z-Score"
         />
         <Group top={margin.top} left={margin.left}>
           {/* Axis Break */}

@@ -110,7 +110,6 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (props: Genom
   )
   const l = useCallback((c) => ((c - coordinates.start) * 1400) / (coordinates.end - coordinates.start), [coordinates])
 
-  console.log(svgRef.current?.clientHeight)
   return (
     <>
       <Grid2 container spacing={3} sx={{ mt: "1rem", mb: "1rem" }}>
@@ -169,10 +168,10 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (props: Genom
                * @todo Need to make sure chrombpnet tracks also include Corces 
                */
             }
-            <ChromBPNetAtacTracks
+            {/* <ChromBPNetAtacTracks
               domain={coordinates}
               defaultcelltypes={props.defaultcelltypes}
-            />
+            /> */}
           </GenomeBrowser>
           </Box>
           
