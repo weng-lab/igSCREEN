@@ -40,9 +40,8 @@ export default function Icres() {
   const [value, setValue] = useState(0)
   const router = useRouter()
   const [searchvalue, setSearchValue] = useState("")
-  const [study, setStudy] = useState("Calderon")
   const [selectedPortal, setSelectedPortal] = useState<string>("Genomic Region");
-  const [zscoreValue, setzscoreValue] = useState(0)
+  const [tabVal, setTabVal] = useState<"Aggregate" | "Calderon" | "Corces">("Aggregate")
   const [colorScheme, setcolorScheme] = useState('Zscore');
 
   const handleColorSchemeChange = (
@@ -58,8 +57,8 @@ export default function Icres() {
   const handleChange = (_, newValue: number) => {
     setValue(newValue)
   }
-  const handleZscoreChange = (_, newValue: number) => {
-    setzscoreValue(newValue)
+  const handleTabChange = (_, newValue: "Aggregate" | "Calderon" | "Corces") => {
+    setTabVal(newValue)
   }
   const handleSearchChange = (event: { target: { value: React.SetStateAction<string> } }) => {
     setSearchValue(event.target.value)
@@ -67,7 +66,7 @@ export default function Icres() {
 
   /**
    * 
-   * @todo replace this with the updated region parsing code from SCREEN 2.0. Also probably should make the genomic region input a component in library
+   * @todo replace this with the updated region parsing code from SCREEN 2.0. Should make the genomic region input a component in library
    */
   function handleSubmit() {
     //if submitted with empty value, use default search
@@ -88,28 +87,23 @@ export default function Icres() {
       accession: searchParams.get("accession")
     },
     skip: !searchParams.get("accession"),
-    fetchPolicy: "cache-and-network",
-    nextFetchPolicy: "cache-first",
     client,
   })
+
   const { loading: icrezscoreloading, data: icrezscoredata } = useQuery(ICRES_CT_ZSCORES_QUERY, {
     variables: {
       accession: searchParams.get('accession'),
-      study: [study]
+      study: [tabVal]
     },
-    skip: !searchParams.get('accession'),
-    fetchPolicy: "cache-and-network",
-    nextFetchPolicy: "cache-first",
+    skip: !searchParams.get('accession') || tabVal === "Aggregate",
     client,
   })
+
   const { loading: icrebyctzscoreloading, data: icrebyctzscoredata } = useQuery(ICRES_BYCT_ZSCORES_QUERY, {
     variables: {
       accession: searchParams.get('accession'),
-      study: [study]
     },
     skip: !searchParams.get('accession'),
-    fetchPolicy: "cache-and-network",
-    nextFetchPolicy: "cache-first",
     client,
   })
 
@@ -118,8 +112,6 @@ export default function Icres() {
       accession: searchParams.get('accession')
     },
     skip: !(searchParams && searchParams.get("accession")),
-    fetchPolicy: "cache-and-network",
-    nextFetchPolicy: "cache-first",
     client,
   })
 
@@ -128,8 +120,6 @@ export default function Icres() {
       accession: searchParams.get('accession') ? [searchParams.get('accession')] : []
     },
     skip: !searchParams.get('accession'),
-    fetchPolicy: "cache-and-network",
-    nextFetchPolicy: "cache-first",
     client,
   })
 
@@ -283,8 +273,6 @@ export default function Icres() {
             <br />
             <UmapPlot colorScheme={colorScheme} data={atacumapdata.calderonAtacUmapQuery} plottitle={"ZScore"} />
           </Grid2>
-
-
         }
         {value === 2 && ebidata &&
           <Grid2 container>
@@ -346,65 +334,29 @@ export default function Icres() {
         }
         {value === 3 &&
           <Grid2 xs={12} lg={12}>
-            <FormControl>
-              <InputLabel id="select-study-label">Study</InputLabel>
-              <Select
-                labelId="select-study-label"
-                id="select-study"
-                value={study}
-                label="Study"
-                onChange={(event: SelectChangeEvent) => {
-                  setStudy(event.target.value as string)
-                  if (event.target.value === "Corces" && zscoreValue === 1) {
-                    setzscoreValue(0)
-                  }
-                }}
-              >
-                <MenuItem value={'Calderon'}>Calderon</MenuItem>
-                <MenuItem value={'Corces'}>Corces</MenuItem>
-              </Select>
-            </FormControl>
-            <br />
-            <br />
-          </Grid2>}
-        {value === 3 &&
-          <Grid2 xs={12} lg={12}>
-            <Tabs aria-label="icres_tabs" value={zscoreValue} onChange={handleZscoreChange}>
-              <StyledTab label="By Experiment" />
-              {study === 'Calderon' && <StyledTab label="By Celltype" />}
+            <Tabs aria-label="icres_tabs" value={tabVal} onChange={handleTabChange}>
+              <StyledTab value="Aggregate" label="Aggregate ATAC by Celltype" />
+              <StyledTab value="Calderon" label="Calderon" />
+              <StyledTab value="Corces" label="Corces" />
             </Tabs>
-          </Grid2>
-        }
-        {value === 3 && zscoreValue === 0 && icrezscoredata && icrezscoredata.calderoncorcesAtacQuery.length > 0 && barplotdata &&
-          <>
-            <Grid2 container>
-              {barplotdata.filter(b => b.grouping === 'Lymphoid') && <Grid2 xs={6} lg={6}>
-                <AtacBarPlot study={study} plottitle="Lymphoid" barplotdata={barplotdata.filter(b => b.grouping === 'Lymphoid')} />
-              </Grid2>}
-              <Grid2 xs={1} lg={1}></Grid2>
-              {barplotdata.filter(b => b.grouping === 'Myeloid') && <Grid2 xs={5} lg={5}>
-                <AtacBarPlot study={study} plottitle="Myeloid" barplotdata={barplotdata.filter(b => b.grouping === 'Myeloid')} />
-              </Grid2>}
-            </Grid2>
-            {study === 'Corces' &&
-              <Grid2 container>
-                {barplotdata.filter(b => b.grouping === 'Leukemic') && <Grid2 xs={6} lg={6}>
-                  <AtacBarPlot study={study} plottitle="Leukemic" barplotdata={barplotdata.filter(b => b.grouping === 'Leukemic')} />
-                </Grid2>}
-                <Grid2 xs={1} lg={1}></Grid2>
-                {barplotdata.filter(b => b.grouping === 'Progenitors') && <Grid2 xs={5} lg={5}>
-                  <AtacBarPlot study={study} plottitle="Progenitors" barplotdata={barplotdata.filter(b => b.grouping === 'Progenitors')} />
-                </Grid2>}
-              </Grid2>
-            }
-          </>
-        }
-        {
-          value === 3 && zscoreValue === 1 && icrebyctzscoredata && icrebyctzscoredata.calderoncorcesByCtAtacQuery.length > 0 && barplotbyctdata &&
-          <Grid2 container>
-            <Grid2 xs={12} lg={12}>
-              <AtacBarPlot study={study} barplotdata={barplotbyctdata} byct />
-            </Grid2>
+            {tabVal === "Aggregate" && (
+              icrebyctzscoreloading ?
+                <CircularProgress />
+                :
+                icrebyctzscoredata?.calderoncorcesByCtAtacQuery.length > 0 && barplotbyctdata &&
+                <Grid2 container>
+                  <Grid2 xs={12} lg={12}>
+                    <AtacBarPlot study={tabVal} barplotdata={barplotbyctdata} />
+                  </Grid2>
+                </Grid2>
+            )}
+            {(tabVal === "Calderon" || tabVal === "Corces") && (
+              icrezscoreloading ?
+                <CircularProgress />
+                :
+                icrezscoredata?.calderoncorcesAtacQuery.length > 0 && barplotdata &&
+                <AtacBarPlot study={tabVal} barplotdata={barplotdata} />
+            )}
           </Grid2>
         }
         {value === 4 &&
