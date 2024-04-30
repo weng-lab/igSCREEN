@@ -42,7 +42,7 @@ export default function Icres() {
   const [searchvalue, setSearchValue] = useState("")
   const [selectedPortal, setSelectedPortal] = useState<string>("Genomic Region");
   const [tabVal, setTabVal] = useState<"Aggregate" | "Calderon" | "Corces">("Aggregate")
-  const [colorScheme, setcolorScheme] = useState('Zscore');
+  const [colorScheme, setcolorScheme] = useState('ZScore');
 
   const handleColorSchemeChange = (
     event: React.MouseEvent<HTMLElement>,
@@ -229,7 +229,7 @@ export default function Icres() {
           <Grid2 xs={12} lg={12}>
             <Tabs aria-label="icres_tabs" value={value} onChange={handleChange}>
               <StyledTab label="Genome Browser" />
-              <StyledTab label="Calderon Zscore UMAP" />
+              <StyledTab label="Z-Score UMAP" />
               <StyledTab label="EBI Associations" />
               <StyledTab label="Cell type specific zscores" />
               <StyledTab label="View Activity in Cell Lineage" />

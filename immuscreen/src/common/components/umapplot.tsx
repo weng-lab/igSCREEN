@@ -9,8 +9,8 @@ import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { Legend, LegendLinear,LegendItem,LegendLabel,
 } from "@visx/legend";
 import { GlyphTriangle,GlyphCircle } from "@visx/glyph";
-import { CellTypeStaticInfo } from "../../app/celllineage/types";
-import { getCellColor } from "../../app/celllineage/utils";
+import { CellQueryValue, CellTypeStaticInfo } from "../../app/celllineage/types";
+import { getCellColor, getCellDisplayName } from "../../app/celllineage/utils";
 import { cellTypeStaticInfo } from "../consts";
 
 
@@ -203,7 +203,7 @@ export const UmapPlot = (props) => {
               style={{ ...defaultTooltipStyles, backgroundColor: '#283238', color: 'white' }}
             >
               <div style={{ maxWidth: "20rem" }}>
-                <p><b>Celltype:</b> {cellTypeStaticInfo[tooltipData.celltype].displayName }</p>              
+                <p><b>Celltype:</b> {getCellDisplayName(tooltipData.celltype as CellQueryValue, true)}</p>              
               </div>            
               <div>
                 <p><b>Name:</b> {tooltipData.name}</p>
