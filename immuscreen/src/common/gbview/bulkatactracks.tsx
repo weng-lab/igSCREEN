@@ -2,72 +2,12 @@ import { gql, useQuery } from "@apollo/client";
 import { BigWigData, BigBedData, BigZoomData } from "bigwig-reader";
 import React, { RefObject, useEffect, useMemo, useState } from "react";
 import { DenseBigBed, EmptyTrack, FullBigWig } from "umms-gb";
-import { BigRequest, RequestError, } from "umms-gb/dist/components/tracks/trackset/types";
+import { RequestError, } from "umms-gb/dist/components/tracks/trackset/types";
 import { ValuedPoint } from "umms-gb/dist/utils/types";
 import { client } from "../utils"
-import BulkAtacTrackModal from "./bulkatacmodal";
-import { BulkAtacCelltypeTrack, CalderonCellTypesMetadata } from "./consts";
 import { CellQueryValue } from "../../app/celllineage/types";
 import { getCellColor, getCellDisplayName } from "../../app/celllineage/utils";
-import NewModal from "./newModal";
-
-export const DEFAULT_TRACKS = (
-  assembly: string
-): Map<string, { url: string }> =>
-  new Map([
-    [
-      "adult bCREs",
-      {
-        url: "gs://gcp.wenglab.org/GTEx-psychscreen/tracks/data/adult_bCREs.bigBed",
-      },
-    ],
-    [
-      "PsychSCREEN aggregated NeuN+ ATAC-seq",
-      {
-        url: "gs://gcp.wenglab.org/GTEx-psychscreen/tracks/data/all-NeuN+-ATAC.bigWig",
-      },
-    ],
-    [
-      "PsychSCREEN aggregated NeuN- ATAC-seq",
-      {
-        url: "gs://gcp.wenglab.org/GTEx-psychscreen/tracks/data/all-NeuN--ATAC.bigWig",
-      },
-    ],
-    [
-      "PsychSCREEN aggregated non-sorted ATAC-seq",
-      {
-        url: "gs://gcp.wenglab.org/GTEx-psychscreen/tracks/data/all-mixed-ATAC.bigWig",
-      },
-    ],
-    [
-      "motifs",
-      { url: "gs://gcp.wenglab.org/all-conserved-motifs.merged.bigBed" },
-    ],
-  ]);
-
-export const TRACK_ORDER = [
-  "adult bCREs",
-  "PsychSCREEN aggregated NeuN+ ATAC-seq",
-  "PsychSCREEN aggregated NeuN- ATAC-seq",
-  "PsychSCREEN aggregated non-sorted ATAC-seq",
-  "motifs",
-];
-
-export const COLOR_MAP: Map<string, string> = new Map([
-  ["PsychSCREEN aggregated NeuN+ ATAC-seq", "#0d825d"],
-  ["PsychSCREEN aggregated NeuN- ATAC-seq", "#164182"],
-  ["PsychSCREEN aggregated non-sorted ATAC-seq", "#1c8099"],
-]);
-
-
-export const tracks = (assembly: string, pos: GenomicRange) =>
-  TRACK_ORDER.map((x) => ({
-    chr1: pos.chromosome!,
-    start: pos.start,
-    end: pos.end,
-    ...DEFAULT_TRACKS(assembly).get(x)!,
-    preRenderedWidth: 1400,
-  }));
+import BulkAtacModal from "./bulkAtacSelector";
 
 export const BIG_QUERY = gql`
   query BigRequests($bigRequests: [BigRequest!]!) {
@@ -103,7 +43,6 @@ export type BigQueryResponse = {
 };
 
 type BulkAtacTrackProps = {
-  //tracks: BigRequest[];
   domain: GenomicRange;
   onHeightChanged?: (i: number) => void;
   cCREHighlight?: GenomicRange;
@@ -179,37 +118,47 @@ export const TitledTrack: React.FC<{
     );
   };
 
-  const BulkAtacTracks: React.FC<BulkAtacTrackProps> = (props: BulkAtacTrackProps) => {
+const BulkAtacTracks: React.FC<BulkAtacTrackProps> = (props: BulkAtacTrackProps) => {
+  const [selectedCells, setSelectedCells] = useState<CellQueryValue[]>(props.defaultcelltypes as CellQueryValue[] || [])
 
-  const bulkAtacColors: {[key:string]: string} = {}
-  const defaultTracks: [string, string][] = props.defaultcelltypes?.map((cell: CellQueryValue) => {
-    bulkAtacColors[getCellDisplayName(cell, true, true)] = getCellColor(cell)
-    return [getCellDisplayName(cell, true, true), `https://downloads.wenglab.org/${cell}.bigWig`]
-  }) || []
-  
-  defaultTracks.sort()
-  defaultTracks.unshift(["All Immune Cells (Aggregate Signal)", "https://downloads.wenglab.org/all_immune.bigWig"])
+  // tracks -> [track name, track URL, track color]
+  const tracks: [string, string, string][] = useMemo(() => {
+    const x: [string, string, string][] = selectedCells.map(cell => {
+      return (
+        [
+          getCellDisplayName(cell, true, true) + (["HSC", "CD34_Cord_Blood", "CD34_Bone_Marrow"].find(x => x === cell) ? ` (${cell})` : ''),
+          `https://downloads.wenglab.org/${cell}.bigWig`,
+          getCellColor(cell)
+        ]
+      )
+    }) || []
+    x.sort()
+    x.unshift(["All Immune Cells (Aggregate Signal)", "https://downloads.wenglab.org/all_immune.bigWig", "#000000"])
+    return x
+  }, [selectedCells])
 
-  const [cTracks, setTracks] = useState<[string, string][]>(defaultTracks);
+
   const [settingsMousedOver, setSettingsMousedOver] = useState(false);
   const [settingsModalShown, setSettingsModalShown] = useState(false);
 
-  const height = useMemo(() => cTracks.length * 80, [cTracks]);
+  const height = useMemo(() => tracks.length * 80, [tracks]);
   const bigRequests = useMemo(
     () =>
-      cTracks.map((x) => ({
+      tracks.map((x) => ({
         chr1: props.domain.chromosome!,
         start: props.domain.start,
         end: props.domain.end,
         preRenderedWidth: 1400,
         url: x[1],
       })),
-    [cTracks, props]
+    [tracks, props]
   );
+
   const { data, loading } = useQuery<BigQueryResponse>(BIG_QUERY, {
     variables: { bigRequests },
     client
   });
+
   useEffect(() => {
     props.onHeightChanged && props.onHeightChanged(height);
   }, [props.onHeightChanged, height, props]);
@@ -218,21 +167,11 @@ export const TitledTrack: React.FC<{
     <EmptyTrack width={1400} height={40} transform="" id="" text="Loading..." />
   ) : (
     <>
-      {/* <BulkAtacTrackModal
+      <BulkAtacModal
         open={settingsModalShown}
         onCancel={() => setSettingsModalShown(false)}
-        onAccept={(x) => {
-          console.log(x)
-          setTracks(x);
-          setSettingsModalShown(false);
-        }}
-        initialSelection={cTracks}
-      /> */}
-      <NewModal 
-         open={settingsModalShown}
-         onCancel={() => setSettingsModalShown(false)}
-         onAccept={(cells: CellQueryValue[]) => console.log(cells)}
-         selected={[]}
+        onAccept={(cells: CellQueryValue[]) => setSelectedCells(cells)}
+        selected={selectedCells}
       />
       <g className="encode-fetal-brain">
         <rect y={10} height={55} fill="none" width={1400} />
@@ -241,13 +180,13 @@ export const TitledTrack: React.FC<{
         <TitledTrack
           key={i}
           height={40}
-          url={cTracks[i][1]}
+          url={tracks[i][1]}
           domain={props.domain}
-          title={cTracks[i][0]}
+          title={tracks[i][0]}
           svgRef={props.svgRef}
           data={data.data}
           transform={`translate(0,${i * 70})`}
-          color={bulkAtacColors[cTracks[i][0]]}
+          color={tracks[i][2]}
         />
       ))}
       <g className="tf-motifs">
@@ -288,7 +227,7 @@ export const TitledTrack: React.FC<{
         textAnchor="middle"
         fill="#194023"
       >
-        Bulk Atac Tracks
+        Bulk ATAC
       </text>
     </>
   );

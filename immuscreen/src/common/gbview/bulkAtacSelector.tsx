@@ -1,4 +1,4 @@
-import { ChangeEvent, useMemo, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { CellQueryValue, CellTypeStaticInfo } from "../../app/celllineage/types";
 import { extractQueryValues, getCellDisplayName } from "../../app/celllineage/utils";
 import { cellTypeStaticInfo } from "../consts";
@@ -11,18 +11,23 @@ type ModalProps = {
   selected: CellQueryValue[];
 }
 
-const NewModal: React.FC<ModalProps> = (props: ModalProps) => {
-  const initialSelection = {}
-  Object.values(cellTypeStaticInfo).forEach((cellInfo: CellTypeStaticInfo) => {
-    const queryVals = extractQueryValues(cellInfo, "B")
-    queryVals.forEach(queryVal => {
-      initialSelection[queryVal] = !!props.selected.find(x => x === queryVal)
+const BulkAtacModal: React.FC<ModalProps> = (props: ModalProps) => {
+  const currentlySelected = useMemo(() => {
+    const x = {}
+    Object.values(cellTypeStaticInfo).forEach((cellInfo: CellTypeStaticInfo) => {
+      const queryVals = extractQueryValues(cellInfo, "B")
+      queryVals.forEach(queryVal => {
+        x[queryVal] = !!props.selected.find(x => x === queryVal)
+      })
     })
-  })
+    return x as { [key in CellQueryValue]: boolean }
+  }, [cellTypeStaticInfo, props.selected])
 
-  const [selectedCells, setSelectedCells] = useState<{ [key in CellQueryValue]: boolean }>(initialSelection as { [key in CellQueryValue]: boolean })
+  const [selectedCells, setSelectedCells] = useState<{ [key in CellQueryValue]: boolean }>(currentlySelected)
 
-  const handleClose = () => {
+  //Set back state of selectedCells before closing
+  const handleCancel = () => {
+    setSelectedCells(currentlySelected)
     props.onCancel()
   };
 
@@ -35,12 +40,21 @@ const NewModal: React.FC<ModalProps> = (props: ModalProps) => {
 
   const handleAccept = () => {
     props.onAccept([...Object.entries(selectedCells).filter(x => x[1]).map(x => x[0] as CellQueryValue)])
+    props.onCancel()
+  }
+
+  const handleDeselectAll = () => {
+    setSelectedCells(
+      Object.fromEntries(
+        Object.entries(selectedCells).map(x => [x[0], false])
+      ) as { [key in CellQueryValue]: boolean }
+    )
   }
 
   return (
     <Dialog
       open={props.open}
-      onClose={handleClose}
+      onClose={handleCancel}
     >
       <DialogTitle>Select Bulk ATAC tracks</DialogTitle>
       <DialogContent>
@@ -59,15 +73,15 @@ const NewModal: React.FC<ModalProps> = (props: ModalProps) => {
               />
             )
           }
-          
         </FormGroup>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
+        <Button onClick={handleDeselectAll} disabled={Object.values(selectedCells).every(x => x === false)}>Deselect All</Button>
+        <Button onClick={handleCancel}>Cancel</Button>
         <Button onClick={handleAccept}>Accept</Button>
       </DialogActions>
     </Dialog>
   )
 };
 
-export default NewModal
+export default BulkAtacModal
