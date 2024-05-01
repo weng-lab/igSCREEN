@@ -207,7 +207,7 @@ const Gene = () => {
           <br />
           <br />
           <br />
-          {<GeneAutoComplete textColor={"black"} assembly={"GRCh38"} />}
+          {<GeneAutoComplete assembly={"GRCh38"} />}
         </Grid2>
       </Grid2>
   )
