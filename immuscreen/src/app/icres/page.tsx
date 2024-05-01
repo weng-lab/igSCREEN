@@ -336,8 +336,8 @@ export default function Icres() {
           <Grid2 xs={12} lg={12}>
             <Tabs aria-label="icres_tabs" value={tabVal} onChange={handleTabChange}>
               <StyledTab value="Aggregate" label="Aggregate ATAC by Celltype" />
-              <StyledTab value="Calderon" label="Calderon" />
-              <StyledTab value="Corces" label="Corces" />
+              <StyledTab value="Calderon" label="Study: Calderon" />
+              <StyledTab value="Corces" label="Study: Corces" />
             </Tabs>
             {tabVal === "Aggregate" && (
               icrebyctzscoreloading ?
