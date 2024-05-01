@@ -450,6 +450,7 @@ export default function UpSet() {
 
   const Checkboxes = () =>
     <>
+      <Typography variant="h6">Immune cCRE classes to Include:</Typography>
       <FormControlLabel
         label="All Classes"
         control={
@@ -479,7 +480,7 @@ export default function UpSet() {
       <Typography variant="h4">UpSet Generator</Typography>
       <Typography mb={1}>Generate UpSet plots of immune cCREs active in selected cell types.</Typography>
       <Typography variant="h6">How to Use:</Typography>
-      <List disablePadding dense>
+      <List disablePadding dense sx={{mb: 2}}>
           <ListItem disablePadding>
               <ListItemIcon>
                 <ArrowRight  />
@@ -532,7 +533,7 @@ export default function UpSet() {
     </Box>
 
   const GenerateUpsetButton = () =>
-    <LoadingButton loading={loading_count} loadingPosition="end" disabled={noneSelected} endIcon={data_count ? <Sync /> : <BarChartOutlinedIcon />} sx={{ textTransform: "none", m: 1 }} variant="contained" onClick={handleGenerateUpSet}>
+    <LoadingButton loading={loading_count} loadingPosition="end" disabled={noneSelected} endIcon={data_count ? <Sync /> : <BarChartOutlinedIcon />} sx={{ textTransform: "none", mt: 2 }} variant="contained" onClick={handleGenerateUpSet}>
       <span>{loading_count ? "Generating" : noneSelected ? "Select Cells to Generate UpSet" : "Generate UpSet"}</span>
     </LoadingButton>
 
