@@ -26,7 +26,7 @@ const Home = () => {
   };
 
   return (
-    <Grid2 container pt={3} maxWidth={{ xl: "60%", lg: "75%", md: "85%", sm: "90%", xs: "95%" }} margin={"auto"} rowSpacing={10}>
+    <Grid2 container pt={3} maxWidth={{ xl: "60%", lg: "75%", md: "85%", sm: "90%", xs: "95%" }} margin={"auto"}>
       <Grid2 xs={12}>
         <Image
           src="/igSCREEN_red_light.png"
@@ -55,7 +55,7 @@ const Home = () => {
                 : <CcreAutoComplete textColor={"black"} assembly={"GRCh38"} />
         }
       </Grid2>
-      <Grid2 xs={12}>
+      <Grid2 xs={12} mt={10} mb={5}>
         <Divider>
           <Stack
             alignItems={"center"}
@@ -71,19 +71,19 @@ const Home = () => {
         </Divider>
       </Grid2>
       {/* Portals */}
-      <Grid2 xs={12}>
+      <Grid2 xs={12} mb={5}>
         <div>
-          <Grid2 container rowSpacing={8}>
+          <Grid2 container rowSpacing={10}>
             <Grid2 xs={12}>
               {/* Gene Portal */}
               <div>
-                <Grid2 container xs={12} justifyContent={"space-between"}>
-                  <Grid2 xs={12} md={5} order={{ xs: 2, md: 1 }}>
+                <Grid2 container xs={12} justifyContent={"space-between"} spacing={3}>
+                  <Grid2 xs={12} md={6} order={{ xs: 2, md: 1 }} alignSelf={"center"}>
                     <Typography variant="h4">Gene Portal</Typography>
                     <Typography mb={2}>Explore gene expression across immune cell types at bulk and single-cell resolution for 63 cell types across 305 experiments.</Typography>
                     <GeneAutoComplete assembly={"GRCh38"} />
                   </Grid2>
-                  <Grid2 container xs={12} md={7} order={{ xs: 1, md: 2 }} minHeight={250}>
+                  <Grid2 xs={12} md={6} order={{ xs: 1, md: 2 }} minHeight={300}>
                     <Box position={"relative"} height={"100%"} width={'100%'} sx={{ objectPosition: { md: "right bottom", xs: "left bottom" } }}>
                       <Image
                         style={{ objectFit: "contain", objectPosition: "inherit" }}
@@ -102,8 +102,8 @@ const Home = () => {
             <Grid2 xs={12}>
               {/* Element Portal */}
               <div>
-                <Grid2 container xs={12} justifyContent={"space-between"}>
-                  <Grid2 container xs={12} md={7} order={{ xs: 1, md: 1 }} minHeight={250}>
+                <Grid2 container xs={12} justifyContent={"space-between"} spacing={3}>
+                  <Grid2 xs={12} md={6} order={{ xs: 1, md: 1 }} minHeight={300}>
                     <Box position={"relative"} height={"100%"} width={'100%'} sx={{ objectPosition: { md: "left bottom", xs: "left bottom" } }}>
                       <Image
                         style={{ objectFit: "contain", objectPosition: "inherit" }}
@@ -113,7 +113,7 @@ const Home = () => {
                       />
                     </Box>
                   </Grid2>
-                  <Grid2 xs={12} md={5} order={{ xs: 1, md: 1 }}>
+                  <Grid2 xs={12} md={6} order={{ xs: 1, md: 1 }} alignSelf={"center"}>
                     <Typography variant="h4">Element Portal</Typography>
                     <Typography>Explore regulatory element activity (immune cCREs) across immune cell types at bulk and single-cell resolution for 63 cell types across 305 experiments.</Typography>
                     <FormControl variant="standard" sx={{ mb: 2 }}>
@@ -141,13 +141,13 @@ const Home = () => {
             <Grid2 xs={12}>
               {/* SNP Portal */}
               <div>
-                <Grid2 container xs={12} justifyContent={"space-between"}>
-                  <Grid2 xs={12} md={5} order={{ xs: 2, md: 1 }}>
+                <Grid2 container xs={12} justifyContent={"space-between"} spacing={3}>
+                  <Grid2 xs={12} md={6} order={{ xs: 2, md: 1 }} alignSelf={"center"}>
                     <Typography variant="h4">SNP Portal</Typography>
                     <Typography mb={2}>Search SNPs of interest and explore their impact on gene expression, chromatin accessibility, transcription factor (TF) binding and other molecular traits in immune cells.</Typography>
                     <SnpAutoComplete assembly={"GRCh38"} />
                   </Grid2>
-                  <Grid2 container xs={12} md={7} order={{ xs: 1, md: 2 }} minHeight={250}>
+                  <Grid2 xs={12} md={6} order={{ xs: 1, md: 2 }} minHeight={300}>
                     <Box position={"relative"} height={"100%"} width={'100%'} sx={{ objectPosition: { md: "right bottom", xs: "left bottom" } }}>
                       <Image
                         style={{ objectFit: "contain", objectPosition: "inherit" }}
@@ -164,25 +164,52 @@ const Home = () => {
               <Divider />
             </Grid2>
             <Grid2 xs={12}>
-              {/* Phenotype Portal */}
+              {/* LDSC Portal */}
               <div>
-                <Grid2 container xs={12} justifyContent={"space-between"}>
-                  <Grid2 container xs={12} md={7} order={{ xs: 1, md: 1 }} minHeight={250}>
+                <Grid2 container xs={12} justifyContent={"space-between"} spacing={3}>
+                  <Grid2 xs={12} md={6} order={{ xs: 1, md: 1 }} minHeight={300}>
                     <Box position={"relative"} height={"100%"} width={'100%'} sx={{ objectPosition: { md: "left bottom", xs: "left bottom" } }}>
                       <Image
                         style={{ objectFit: "contain", objectPosition: "inherit" }}
-                        src="/assets/snp-qtl.png"
+                        src="/assets/phenotype.png"
                         fill
                         alt="igSCREEN logo"
                       />
                     </Box>
                   </Grid2>
-                  <Grid2 xs={12} md={5} order={{ xs: 1, md: 1 }}>
+                  <Grid2 xs={12} md={6} order={{ xs: 1, md: 1 }} alignSelf={"center"}>
                     <Typography variant="h4">Phenotype Portal</Typography>
                     <Typography mb={2}>Explore heritability enrichment for 280+ traits within gene regulatory features, such as immune cCREs.</Typography>
                     <Button variant="contained" href="/phenotype">
                       Explore Phenotypes
                     </Button>
+                  </Grid2>
+                </Grid2>
+              </div>
+            </Grid2>
+            <Grid2 xs={12}>
+              <Divider />
+            </Grid2>
+            <Grid2 xs={12}>
+              {/* Cell Activity Portal */}
+              <div>
+                <Grid2 container xs={12} justifyContent={"space-between"} spacing={3}>
+                  <Grid2 xs={12} md={6} order={{ xs: 2, md: 1 }} alignSelf={"center"}>
+                    <Typography variant="h4">Immunce cCRE Activity by Cell Type</Typography>
+                    <Typography mb={2}>Generate UpSet plots to compare immune cCRE activity between selected immune cell types.</Typography>
+                    <Button variant="contained" href="/celllineage">
+                      Explore cCRE activity
+                    </Button>
+                  </Grid2>
+                  <Grid2 xs={12} md={6} order={{ xs: 1, md: 2 }} minHeight={300}>
+                    <Box position={"relative"} height={"100%"} width={'100%'} sx={{ objectPosition: { md: "right bottom", xs: "left bottom" } }}>
+                      <Image
+                        style={{ objectFit: "contain", objectPosition: "inherit" }}
+                        src="/assets/upset.png"
+                        fill
+                        alt="igSCREEN logo"
+                      />
+                    </Box>
                   </Grid2>
                 </Grid2>
               </div>
