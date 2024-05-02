@@ -153,7 +153,7 @@ export default function UpSetPlot({ width, height, data, handleDownload, referen
         }
         {/* The set size plot */}
         <Group left={0} top={intersectionPlotTotalHeight}>
-          <AxisBottom left={spaceForCellCounts} top={setSizePlotBarsHeight} scale={setSizePlotWidthScale} label='Set Size' tickValues={[0, 100000]} />
+          <AxisBottom left={spaceForCellCounts} top={setSizePlotBarsHeight} scale={setSizePlotWidthScale} label='Set Size' numTicks={2}/>
           <GridColumns left={spaceForCellCounts} top={0} scale={setSizePlotWidthScale} height={setSizePlotBarsHeight} tickValues={[0, 100000]} stroke="#e0e0e0" />
           {setSizeData.map((d, i) => {
             const barWidth = setSizePlotBarsWidth - (setSizePlotWidthScale(d.count) ?? 0);
@@ -213,7 +213,7 @@ export default function UpSetPlot({ width, height, data, handleDownload, referen
         </Group>
         {/* The intersection plot and circles */}
         <Group left={setSizePlotTotalWidth} top={spaceForTextTop}>
-          <AxisLeft label='Intersection Size' scale={intersectionPlotHeightScale} />
+          <AxisLeft label='Intersection Size' scale={intersectionPlotHeightScale} labelOffset={45} />
           <GridRows scale={intersectionPlotHeightScale} width={intersectionPlotWidth} height={intersectionPlotBarsHeight} stroke="#e0e0e0" />
           {intersectionData.map((d) => {
             const barWidth = intersectionPlotWidthScale.bandwidth();
