@@ -149,7 +149,7 @@ const Snp = () => {
         <br />
         <br />
         <br />
-        <SnpAutoComplete textColor={"black"} assembly={"GRCh38"} />
+        <SnpAutoComplete assembly={"GRCh38"} />
       </Grid2>
     </Grid2>
   </main>) : (
