@@ -229,14 +229,13 @@ export default function Icres() {
           <Grid2 xs={12} lg={12}>
             <Tabs aria-label="icres_tabs" value={value} onChange={handleChange}>
               <StyledTab label="Genome Browser" />
-              <StyledTab label="Z-Score UMAP" />
-              <StyledTab label="EBI Associations" />
-              <StyledTab label="Cell type specific zscores" />
-              <StyledTab label="View Activity in Cell Lineage" />
+              <StyledTab label="Activity UMAP" />
+              <StyledTab label="GWAS Associations" />
+              <StyledTab label="Cell Type Specific Activity" />
+              <StyledTab label="Activity in Cell Lineage" />
             </Tabs>
           </Grid2>
         </Grid2>
-
         {value === 0 && adata &&
           <Grid2 xs={12} lg={12}>
             <GenomeBrowserView

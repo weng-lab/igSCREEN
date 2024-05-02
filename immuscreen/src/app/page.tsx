@@ -34,7 +34,7 @@ const Home = () => {
           height={150}
           alt="igSCREEN logo"
         />
-        <Typography variant="h6" mb={1}>Search <em>immune</em> Candidate cis-Regulatory Elements by ENCODE</Typography>
+        <Typography variant="h6" mb={1}>Search <em>immune</em> Candidate cis-Regulatory Elements</Typography>
         <FormControl variant="standard" sx={{ mb: 2 }}>
           {/* todo, replace this with the Main Search component from SCREEN */}
           <Select
