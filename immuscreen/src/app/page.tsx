@@ -49,8 +49,8 @@ const Home = () => {
           </Select>
         </FormControl>
         {
-          selectedPortal === "Genes" ? <GeneAutoComplete textColor={"black"} assembly={"GRCh38"} />
-            : selectedPortal === "SNPs" ? <SnpAutoComplete textColor={"black"} assembly={"GRCh38"} />
+          selectedPortal === "Genes" ? <GeneAutoComplete assembly={"GRCh38"} />
+            : selectedPortal === "SNPs" ? <SnpAutoComplete assembly={"GRCh38"} />
               : selectedPortal === "Genomic Region" ? <GenomicRegion assembly="GRCh38" />
                 : <CcreAutoComplete textColor={"black"} assembly={"GRCh38"} />
         }
@@ -81,7 +81,7 @@ const Home = () => {
                   <Grid2 xs={12} md={5} order={{ xs: 2, md: 1 }}>
                     <Typography variant="h4">Gene Portal</Typography>
                     <Typography mb={2}>Explore gene expression across immune cell types at bulk and single-cell resolution for 63 cell types across 305 experiments.</Typography>
-                    <GeneAutoComplete textColor={"black"} assembly={"GRCh38"} />
+                    <GeneAutoComplete assembly={"GRCh38"} />
                   </Grid2>
                   <Grid2 container xs={12} md={7} order={{ xs: 1, md: 2 }} minHeight={250}>
                     <Box position={"relative"} height={"100%"} width={'100%'} sx={{ objectPosition: { md: "right bottom", xs: "left bottom" } }}>
@@ -145,7 +145,7 @@ const Home = () => {
                   <Grid2 xs={12} md={5} order={{ xs: 2, md: 1 }}>
                     <Typography variant="h4">SNP Portal</Typography>
                     <Typography mb={2}>Search SNPs of interest and explore their impact on gene expression, chromatin accessibility, transcription factor (TF) binding and other molecular traits in immune cells.</Typography>
-                    <SnpAutoComplete textColor={"black"} assembly={"GRCh38"} />
+                    <SnpAutoComplete assembly={"GRCh38"} />
                   </Grid2>
                   <Grid2 container xs={12} md={7} order={{ xs: 1, md: 2 }} minHeight={250}>
                     <Box position={"relative"} height={"100%"} width={'100%'} sx={{ objectPosition: { md: "right bottom", xs: "left bottom" } }}>

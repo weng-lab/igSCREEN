@@ -6,6 +6,7 @@ import { DenseBigBed, EmptyTrack, FullBigWig } from "umms-gb"
 import { client } from "../utils"
 import { BIG_QUERY } from "./queries"
 import { GenomicRange, BigQueryResponse, BigResponseData } from "./types"
+import { Tooltip } from "@mui/material"
 
 
 type DefaultTracksProps = {
@@ -75,7 +76,17 @@ export const TitledTrack: React.FC<{
             svgRef={svgRef}
             onMouseOver={(x) => oncCREMousedOver && x.name && oncCREMousedOver(cCRECoordinateMap.get(x.name))}
             onMouseOut={oncCREMousedOut}
-            
+            tooltipContent={(rect) => {
+              return (
+                <div style={{ border: "1px solid", padding: "0.75em", background: "#ffffff" }}>
+                  <svg height={18} width={160}>
+                    <text x={16} y={12}>
+                      {rect.name}
+                    </text>
+                  </svg>
+                </div>
+              )
+            }}
           />
         ) : (
           <FullBigWig
@@ -96,7 +107,7 @@ export const TitledTrack: React.FC<{
 const DefaultTracks: React.FC<DefaultTracksProps> = (props) => {
   const [cTracks, setTracks] = useState<[string, string][]>(
     [
-      ["All iCREs", "https://downloads.wenglab.org/Calderon-Corces_activeCREs_iSCREEN_withcolors.bigBed"],
+      ["All immune cCREs", "https://downloads.wenglab.org/Calderon-Corces_activeCREs_iSCREEN_withcolors.bigBed"],
     ]
   )
   const height = useMemo(() => cTracks.length * 80, [cTracks])

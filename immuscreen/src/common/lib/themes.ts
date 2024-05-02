@@ -1,4 +1,5 @@
-import { ThemeProvider, createTheme } from "@mui/material/styles"
+'use client'
+import { createTheme } from "@mui/material/styles"
 
 // temp theme for toolbar color and accordion outline - UMass blue / empty secondary
 export const defaultTheme = createTheme({

@@ -1,16 +1,16 @@
-import * as React from "react"
+import React, { useState, useEffect, useCallback } from "react"
 import Box from "@mui/material/Box"
 import TextField from "@mui/material/TextField"
 import Autocomplete from "@mui/material/Autocomplete"
-import Grid from "@mui/material/Grid"
+import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import Typography from "@mui/material/Typography"
 import { debounce } from "@mui/material/utils"
-import { useRouter } from "next/navigation"
-import SearchIcon from "@mui/icons-material/Search"
-export type QueryResponse = [number, string[], any, [string, string, string, string, string, string][], string[]]
+import { IconButton, Stack } from "@mui/material"
+import { Search } from "@mui/icons-material"
+type QueryResponse = [number, string[], any, [string, string, string, string, string, string][], string[]]
 
 const GENE_AUTOCOMPLETE_QUERY = `
-query ($assembly: String!, $name_prefix: [String!], $limit: Int,  $version: Int) {
+query ($assembly: String!, $name_prefix: [String!], $limit: Int, $version: Int) {
     gene(assembly: $assembly, name_prefix: $name_prefix, limit: $limit, version: $version) {
       name
       id
@@ -23,16 +23,15 @@ query ($assembly: String!, $name_prefix: [String!], $limit: Int,  $version: Int)
   }  
  `
 
-export const GeneAutoComplete = (props) => {
-  const [value, setValue] = React.useState<any>(null)
-  const [inputValue, setInputValue] = React.useState("")
-  const [options, setOptions] = React.useState<string[]>([])
-  const [geneids, setGeneIds] = React.useState<{ chrom: string; start: number; end: number; id: string; name: string }[]>([])
+export const GeneAutoComplete: React.FC<{ assembly: string, header?: boolean }> = (props) => {
+  const [value, setValue] = useState(null)
+  const [inputValue, setInputValue] = useState("")
+  const [options, setOptions] = useState<string[]>([])
+  const [geneids, setGeneIds] = useState<{ chrom: string; start: number; end: number; id: string; name: string }[]>([])
 
-  const router = useRouter()
-  const [geneDesc, setgeneDesc] = React.useState<{ name: string; desc: string }[]>()
+  const [geneDesc, setgeneDesc] = useState<{ name: string; desc: string }[]>()
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       let f = await Promise.all(
         options.map((gene) =>
@@ -56,16 +55,16 @@ export const GeneAutoComplete = (props) => {
     options && fetchData()
   }, [options])
 
-  const onSearchChange = async (value: string) => {
+  const onSearchChange = async (value: string, assembly: string) => {
     setOptions([])
     const response = await fetch("https://ga.staging.wenglab.org/graphql", {
       method: "POST",
       body: JSON.stringify({
         query: GENE_AUTOCOMPLETE_QUERY,
         variables: {
-          assembly: "GRCh38",
+          assembly: assembly.toLowerCase(),
           name_prefix: value,
-          version: 40,
+          version: assembly.toLowerCase()==="grch38" ? 40 : 25,
           limit: 1000
         },
       }),
@@ -91,105 +90,94 @@ export const GeneAutoComplete = (props) => {
     }
   }
 
-  const debounceFn = React.useCallback(debounce(onSearchChange, 500), [])
-  const gridsize = props.gridsize || 5.5
+  const debounceFn = useCallback(debounce(onSearchChange, 500), [])
+
+  const handleSubmit = () => {
+    if (value) {
+      let chrom = geneids.find((g) => g.name === value)?.chrom
+      let start = geneids.find((g) => g.name === value)?.start
+      let end = geneids.find((g) => g.name === value)?.end
+      let geneid = geneids.find((g) => g.name === value)?.id.split(".")[0]
+      return (`gene?gene=${value}&geneid=${geneid}&chromosome=${chrom}&start=${start}&end=${end}`)
+    }
+  }
+
   return (
-    <Grid container sx={{ mr: "1em" }}>
-      {props.showTitle && (
-        <Grid item sm={12} md={12} lg={12} xl={12}>
-          <Typography>Search gene:</Typography>
-          <br />
-        </Grid>
-      )}
-      <Grid item sm={gridsize} md={gridsize} lg={gridsize} xl={gridsize}>
-        <Autocomplete
-          id="gene-autocomplete"
-          sx={{ width: 300, paper: { height: 200 } }}
-          options={options}
-          ListboxProps={{
-            style: {
-              maxHeight: "180px",
-            },
-          }}
-          onKeyDown={(event) => {
-            if (event.key === "Enter") {
-              event.defaultPrevented = true
-              
-              value &&
-                props.onSelected &&
-                props.onSelected({
-                  geneid: geneids.find((g) => g.name === value)?.id.split(".")[0],
-                  chromosome: geneids.find((g) => g.name === value)?.chrom,
-                  start: geneids.find((g) => g.name === value)?.start,
-                  end: geneids.find((g) => g.name === value)?.end,
-                })
-              if (value) {
-                let chrom = geneids.find((g) => g.name === value)?.chrom
-                let start = geneids.find((g) => g.name === value)?.start
-                let end = geneids.find((g) => g.name === value)?.end
-                let geneid = geneids.find((g) => g.name === value)?.id.split(".")[0]
-                router.push(`gene?gene=${value}&geneid=${geneid}&chromosome=${chrom}&start=${start}&end=${end}`)
-                
-              }
-            }
-          }}
-          value={value}
-          onChange={(_: any, newValue: string | null) => {
-            setValue(newValue)
-          }}
-          inputValue={inputValue}
-          onInputChange={(event, newInputValue) => {
-            if (newInputValue != "") {
-              debounceFn(newInputValue)
-            }
-            setInputValue(newInputValue)
-          }}
-          noOptionsText="e.g TGFB1, IL2"
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Enter a gene name"
-              InputLabelProps={{ shrink: true, style: { color: props.textColor || "black" } }}
- 
-              placeholder="e.g TGFB1,IL2"
-              fullWidth
-             sx={{ fieldset: { borderColor: props.textColor || "black"}, '& .MuiInput-underline:after': {
-              borderBottomColor: props.textColor || "black",
-            },
-            '& .MuiOutlinedInput-root': {
-              '& fieldset': {
-                borderColor: props.textColor || "black",
+    <Stack direction="row" spacing={2}>
+      <Autocomplete
+        size={props.header ? "small" : "medium"}
+        id="gene-autocomplete"
+        sx={{ width: 300, paper: { height: 200 } }}
+        options={options.sort()}
+        ListboxProps={{
+          style: {
+            maxHeight: "180px",
+          },
+        }}
+        onKeyDown={(event) => {
+          if (event.key === "Enter") {
+            event.defaultPrevented = true
+            window.open(handleSubmit(), "_self")
+          }
+        }}
+        value={value}
+        onChange={(_, newValue: string | null) => {
+          setValue(newValue)
+        }}
+        inputValue={inputValue}
+        onInputChange={(_, newInputValue) => {
+          if (newInputValue != "") {
+            debounceFn(newInputValue, props.assembly)
+          }
+
+          setInputValue(newInputValue)
+        }}
+        noOptionsText="No genes found"
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Enter a gene name"
+            InputLabelProps={{ shrink: true, style: props.header ? {color: "white"} : { color: "black" } }}
+            placeholder={props.assembly === "mm10" ? "e.g Scml2,Dbt" : "e.g TGBF1, IL2"}
+            fullWidth
+            sx={{
+              //Border at rest
+              fieldset: props.header ? { borderColor: "white" } : { borderColor: "black" },
+              '& .MuiOutlinedInput-root': {
+                //hover border color
+                '&:hover fieldset': props.header ? { borderColor: "white" } : { borderColor: "black" },
+                //focused border color
+                '&.Mui-focused fieldset': props.header ? { borderColor: "white" } : { borderColor: "black" },
               },
-              '&:hover fieldset': {
-                borderColor: props.textColor || "black"
-                
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: props.textColor || "black",
-              },
-            }}}
-            />
-          )}
-          renderOption={(props, option) => {
-            return (
-              <li {...props} key={props.id}>
-                <Grid container alignItems="center">
-                  <Grid item sx={{ width: "calc(100% - 44px)" }}>
-                    <Box component="span" sx={{ fontWeight: "regular" }}>
-                      {option}
-                    </Box>
-                    {geneDesc && geneDesc.find((g) => g.name === option) && (
-                      <Typography variant="body2" color="text.secondary">
-                        {geneDesc.find((g) => g.name === option)?.desc}
-                      </Typography>
-                    )}
-                  </Grid>
-                </Grid>
-              </li>
-            )
-          }}
-        />
-      </Grid>
-    </Grid>
+              //Text
+              '& .MuiOutlinedInput-input': props.header && { color: "white" },
+              //Icon
+              '& .MuiSvgIcon-root': props.header && { fill: "white"}
+            }}
+          />
+        )}
+        renderOption={(props, option) => {
+          return (
+            <li {...props} key={props.id}>
+              <Grid2 container alignItems="center">
+                <Grid2 sx={{ width: "100%" }}>
+                  <Box component="span" sx={{ fontWeight: "regular" }}>
+                    {option}
+                  </Box>
+                  {geneDesc && geneDesc.find((g) => g.name === option) && (
+                    <Typography variant="body2" color="text.secondary">
+                      {geneDesc.find((g) => g.name === option)?.desc}
+                    </Typography>
+                  )}
+                </Grid2>
+              </Grid2>
+            </li>
+          )
+        }}
+      />
+      <IconButton aria-label="Search" type="submit" href={handleSubmit()} sx={{ color: `${props.header ? "white" : "black"}`, maxHeight: "100%" }}>
+        <Search />
+      </IconButton>
+    </Stack>
   )
 }
