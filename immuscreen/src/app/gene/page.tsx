@@ -77,7 +77,7 @@ const Gene = () => {
   return (
     searchParams.get('gene') ?
       // Gene Selected View
-      <Grid2 container sx={{ maxWidth: "80%", mr: "auto", ml: "auto", mt: "3rem" }}>
+      <Grid2 container sx={{ maxWidth: "90%", mr: "auto", ml: "auto", mt: "3rem" }}>
         <Grid2 container spacing={3} sx={{ mt: "2rem", mb: "1rem" }}>
           <Grid2 xs={12} lg={12}>
             {searchParams.get("gene") && <Typography variant="h4">Gene Details: {searchParams.get("gene")}</Typography>}
@@ -86,7 +86,7 @@ const Gene = () => {
             <Tabs aria-label="basic tabs example" value={value} onChange={handleChange}>
               <StyledTab label="Genome Browser" />
               <StyledTab label="eQTLs" />
-              <StyledTab label="Gene Expression UMAP" />
+              <StyledTab label="Gene Expression" />
             </Tabs>
           </Grid2>
         </Grid2>
@@ -190,8 +190,8 @@ const Gene = () => {
               onChange={handleColorSchemeChange}
               aria-label="Platform"
             >
-              <ToggleButton value="geneexp">Gene Expression</ToggleButton>
-              <ToggleButton value="celltype">CellType Cluster</ToggleButton>
+              <ToggleButton sx={{textTransform: 'none'}} value="geneexp">Gene Expression</ToggleButton>
+              <ToggleButton sx={{textTransform: 'none'}} value="celltype">Cell Type Cluster</ToggleButton>
             </ToggleButtonGroup>
             <br />
             <br />
@@ -207,7 +207,7 @@ const Gene = () => {
           <br />
           <br />
           <br />
-          {<GeneAutoComplete textColor={"black"} assembly={"GRCh38"} />}
+          {<GeneAutoComplete assembly={"GRCh38"} />}
         </Grid2>
       </Grid2>
   )

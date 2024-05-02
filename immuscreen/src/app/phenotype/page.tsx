@@ -107,6 +107,10 @@ export default function Phenotype() {
     <Grid2 container mt={3}>
       <Grid2 xs={12}>
         <Box margin={"auto"} maxWidth={600} display={"flex"} flexDirection={"column"} gap={2}>
+          <Box>
+            <Typography variant="h4">LD Score Regression by Phenotype</Typography>
+          </Box>
+          <Typography>Select a phenotype to explore its heritability enrichment (calculated by LD score regression) within 305 immune cell experiments.</Typography>
           <Autocomplete
             fullWidth
             options={studies ?? []}

@@ -35,6 +35,7 @@ const tooltipStyles = {
 const legendGlyphSize = 15;
 
 
+//This should eventually be redone. It feels wrong to style the tooltip this way
 const CellTypesLegends = ({ title, plottitle, children }: { title: string; plottitle?: string; children: React.ReactNode }) => {
   return (
     <div className="legend">
@@ -72,8 +73,6 @@ const CellTypesLegends = ({ title, plottitle, children }: { title: string; plott
     </div>
   );
 }
-
-
 
 export const AtacBarPlot: React.FC<{ plottitle?: string, byct?: boolean, study: string, barplotdata: { color: string, ct_description?: string, celltype: string, class: string, subclass: string, description: string, order: number, value: number, name: string, study: string, group: string, grouping: string, stimulation: string }[] }> = (props) => {
   const width = 1000
@@ -139,7 +138,7 @@ export const AtacBarPlot: React.FC<{ plottitle?: string, byct?: boolean, study: 
   });
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div style={{display: "flex", flexWrap: "wrap", alignItems: "center"}}>
       <svg width={width} height={height} ref={containerRef}>
         <Group top={margin.top} left={margin.left}>
           <BarGroup
@@ -271,10 +270,10 @@ export const AtacBarPlot: React.FC<{ plottitle?: string, byct?: boolean, study: 
         </Group>
       </svg>
       <div className="legends">
-        <CellTypesLegends title={props.byct ? "Immune Cell Types" : `${props.study} Immune Cell Types`} plottitle={props.plottitle}>
-          <LegendOrdinal scale={ordinalColorScale} labelFormat={(label: CellDisplayName) => label}>
+        <CellTypesLegends title={"Immune Cell Types"} plottitle={props.plottitle}>
+          <LegendOrdinal scale={ordinalColorScale}>
             {(labels) => (
-              <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '10px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap', gap: '10px', maxHeight: '500px' }}>
                 {labels.map((label, i) => {
                   return (
                     <LegendItem
@@ -284,7 +283,7 @@ export const AtacBarPlot: React.FC<{ plottitle?: string, byct?: boolean, study: 
                       <svg width={legendGlyphSize} height={legendGlyphSize}>
                         <rect fill={label.value} width={legendGlyphSize} height={legendGlyphSize} />
                       </svg>
-                      <LegendLabel align="left" margin="0 0 0 4px" color={"#ff0000"}>
+                      <LegendLabel align="left" margin="0 10px 0 4px" color={"#ff0000"}>
                         <p className={"labelcolor"}>
                           {label.text}
                         </p>
@@ -296,15 +295,13 @@ export const AtacBarPlot: React.FC<{ plottitle?: string, byct?: boolean, study: 
             )}
           </LegendOrdinal>
         </CellTypesLegends>
+        {/* Why is the styling being done like this, not readable. Why is there also styling above in CellTypeLegends? */}
         <style>
           {`
             .legends {
               display: flex;
-              font-family: arial;
-              font-weight: 900;        
-              border-radius: 14px;        
-              margin-left: 50px;        
-              
+              font-family: arial;       
+              border-radius: 14px;
             }
             .labelcolor {
               color:  #000000;

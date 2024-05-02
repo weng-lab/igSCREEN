@@ -19,7 +19,7 @@ interface CellNode extends CellTypeStaticInfo, DynamicCellTypeInfo {
 
 const uninteractiveNode = {
   id: null,
-  unstimImagePath: null,
+  unstimImagePath: '/cellTypes/MPP.png',
   selected: false,
   selectable: false,
   stimulated: "U" as "U" | "S" | "B",
@@ -45,6 +45,7 @@ type CellTypeTreeProps = {
   orientation: "vertical" | "horizontal"
   selectionLimit?: number | "none"
   triggerAlert?: (message: string) => void
+  noneSelectedOpacity?: "filled" | "translucent"
 }
 
 const stimulateCursor = "url(/stimulateCursor.png) 5 30, cell"
@@ -52,7 +53,7 @@ const stimulateCursor = "url(/stimulateCursor.png) 5 30, cell"
 /**
  * Cell Lineage Tree. Optional Props only optional if the tree isn't interactive (generateCellLineageTreeState called with param #2 set to false).
  */
-export default function CellTypeTree({ width: totalWidth, height: totalHeight, orientation, cellTypeState, setCellTypeState, stimulateMode = false, setStimulateMode, selectionLimit = "none", triggerAlert }: CellTypeTreeProps) {
+export default function CellTypeTree({ width: totalWidth, height: totalHeight, orientation, cellTypeState, setCellTypeState, stimulateMode = false, setStimulateMode, selectionLimit = "none", triggerAlert, noneSelectedOpacity = "filled" }: CellTypeTreeProps) {
 
   const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip, updateTooltip } = useTooltip<TooltipData>();
 
@@ -136,10 +137,6 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
                     ...cellTypeState.GMP,
                     ...cellTypeStaticInfo.GMP,
                     children: [
-                      // {
-                      //   displayName: 'Neutrophil',
-                      //   ...uninteractiveNode,
-                      // },
                       {
                         ...cellTypeState.pDCs,
                         ...cellTypeStaticInfo.pDCs,  
@@ -205,7 +202,7 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
                             ...cellTypeStaticInfo.Gamma_delta_T,
                           },
                           {
-                            treeDisplayName: 'CD4 immature single-positive cell',
+                            treeDisplayName: 'CD4 immature/single-positive cell',
                             ...uninteractiveNode,
                             children: [
                               {
@@ -351,7 +348,8 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
         left={left}
       >
         <text
-          y={-60 - ((fontSize + 2) * (node.data.treeDisplayName.split('/').length - 1))}
+          //Create vertical offset based on how many lines display name will take up (including extra line for stimulation status if applicable)
+          y={-60 - ((fontSize + 2) * (node.data.treeDisplayName.split('/').length - (node.data.stimulable ? 1 : 2)))}
           fontSize={fontSize}
           fontFamily="Arial"
           textAnchor="middle"
@@ -362,13 +360,13 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
               <tspan key={i} x="0" dy={fontSize + 2}>{str}</tspan>
             )
           })}
-          <tspan x="0" dy={fontSize + 2}>
+          {node.data.stimulable && <tspan x="0" dy={fontSize + 2}>
             {(node.data.stimulated === "S" ? '(Stim)' : node.data.stimulated === "B" ? '(Unstim + Stim)' : '(Unstim)')}
-          </tspan>
+          </tspan>}
         </text>
         <Group
           cursor={node.data.selectable ? (stimulateMode ? node.data.stimulable ? stimulateCursor : "not-allowed" : "pointer") : undefined}
-          opacity={(node.data.selected || Object.values(cellTypeState).every(cellType => cellType.selected === false)) ? 1 : fadedCellOpacity}
+          opacity={(node.data.id !== null && (node.data.selected || (Object.values(cellTypeState).every(cellType => cellType.selected === false) && noneSelectedOpacity === "filled"))) ? 1 : fadedCellOpacity}
           onClick={() => {
             const numberSelected = Object.values(cellTypeState).reduce((count, cellInfo: DynamicCellTypeInfo) => cellInfo.selected ? cellInfo.stimulated === "B" ? count + 2 : count + 1 : count, 0)
             if (stimulateMode) {

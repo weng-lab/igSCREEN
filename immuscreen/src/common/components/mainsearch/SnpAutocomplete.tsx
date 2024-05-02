@@ -1,11 +1,12 @@
-import * as React from "react"
+import React, { useState, useCallback } from "react"
 import Box from "@mui/material/Box"
 import TextField from "@mui/material/TextField"
 import Autocomplete from "@mui/material/Autocomplete"
-import Grid from "@mui/material/Grid"
 import Typography from "@mui/material/Typography"
 import { debounce } from "@mui/material/utils"
-import { useRouter } from "next/navigation"
+import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
+import { IconButton, Stack } from "@mui/material"
+import { Search } from "@mui/icons-material"
 
 const SNP_AUTOCOMPLETE_QUERY = `
 query snpAutocompleteQuery($snpid: String!, $assembly: String!) {
@@ -19,21 +20,21 @@ query snpAutocompleteQuery($snpid: String!, $assembly: String!) {
     }
 }
 `
-export const SnpAutoComplete = (props) => {
-  const [value, setValue] = React.useState<any>(null)
-  const [inputValue, setInputValue] = React.useState("")
-  const [options, setOptions] = React.useState<any[]>([])
-  const [snpids, setSnpIds] = React.useState<any[]>([])
-  const router = useRouter()
 
-  const onSearchChange = async (value: any) => {
+export const SnpAutoComplete: React.FC<{ assembly: string, header?: boolean }> = (props) => {
+  const [value, setValue] = useState(null)
+  const [inputValue, setInputValue] = useState("")
+  const [options, setOptions] = useState([])
+  const [snpids, setSnpIds] = useState([])
+
+  const onSearchChange = async (value: string, assembly: string) => {
     setOptions([])
     const response = await fetch("https://ga.staging.wenglab.org/graphql", {
       method: "POST",
       body: JSON.stringify({
         query: SNP_AUTOCOMPLETE_QUERY,
         variables: {
-          assembly: "grch38",
+          assembly: props.assembly.toLowerCase(),
           snpid: value,
         },
       }),
@@ -41,11 +42,11 @@ export const SnpAutoComplete = (props) => {
     })
     const snpSuggestion = (await response.json()).data?.snpAutocompleteQuery
     if (snpSuggestion && snpSuggestion.length > 0) {
-      const r = snpSuggestion.map((g: any) => g.id)
-      const snp = snpSuggestion.map((g: any) => {
+      const r = snpSuggestion.map((g: { id: string }) => g.id)
+      const snp = snpSuggestion.map((g: { id: string, coordinates: { chromosome: string, start: number, end: number } }) => {
         return {
           chrom: g.coordinates.chromosome,
-          start: g.coordinates.start,
+          start: g.coordinates.end,
           end: g.coordinates.end,
           id: g.id,
         }
@@ -56,94 +57,97 @@ export const SnpAutoComplete = (props) => {
       setOptions([])
       setSnpIds([])
     }
-    //setgeneCards([]);
+
   }
 
-  const debounceFn = React.useCallback(debounce(onSearchChange, 500), [])
+  const debounceFn = useCallback(debounce(onSearchChange, 500), [])
+
+  const handleSubmit = () => {
+    if (value) {
+      let chromosome = snpids.find((g) => g.id === value)?.chrom
+      let start = snpids.find((g) => g.id === value)?.start
+      let end = snpids.find((g) => g.id === value)?.end
+      return (
+        `snp?rsid=${value}`
+      )
+    }
+  }
 
   return (
-    <Grid container sx={{ mr: "1em" }}>
-      <Grid item sm={5.5} md={5.5} lg={5.5} xl={5.5}>
-        <Autocomplete
-          id="snp-autocomplete"
-          sx={{ width: 300, paper: { height: 200 } }}
-          options={options}
-          ListboxProps={{
-            style: {
-              maxHeight: "180px",
-            },
-          }}
-          onKeyDown={(event) => {
-            if (event.key === "Enter") {
-              event.defaultPrevented = true
-
-              if (value) {
-                let chromosome = snpids.find((g) => g.id === value)?.chrom
-                let start = snpids.find((g) => g.id === value)?.end - 2000
-                let end = snpids.find((g) => g.id === value)?.end + 2000
-                router.push(
-                  `/snp?rsid=${value}`
-                )
-              }
-            }
-          }}
-          value={value}
-          onChange={(_: any, newValue: string | null) => {
-            setValue(newValue)
-          }}
-          inputValue={inputValue}
-          onInputChange={(event, newInputValue) => {
-            if (newInputValue != "") {
-              debounceFn(newInputValue)
-            }
-            setInputValue(newInputValue)
-          }}
-          noOptionsText="e.g. rs11669173"
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Enter a snp rsId"
-              InputLabelProps={{ shrink: true, style: { color: props.textColor || "black" } }}
-             // InputProps={{ style: { color: props.textColor || "black" } }}
-              placeholder="e.g. rs11669173"
-              fullWidth
-              sx={{ fieldset: { borderColor: props.textColor || "black"}, '& .MuiInput-underline:after': {
-                borderBottomColor: props.textColor || "black",
-              },
+    <Stack direction="row" spacing={2}>
+      <Autocomplete
+        size={props.header ? "small" : "medium"}
+        id="snp-autocomplete"
+        sx={{ width: 300, paper: { height: 200 } }}
+        options={options}
+        ListboxProps={{
+          style: {
+            maxHeight: "180px",
+          },
+        }}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" && value) {
+            event.defaultPrevented = true
+            window.open(handleSubmit(), "_self")
+          }
+        }}
+        value={value}
+        onChange={(_, newValue: string | null) => {
+          setValue(newValue)
+        }}
+        inputValue={inputValue}
+        onInputChange={(_, newInputValue) => {
+          if (newInputValue != "") {
+            debounceFn(newInputValue, props.assembly)
+          }
+          setInputValue(newInputValue)
+        }}
+        noOptionsText="e.g. rs11669173"
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Enter a SNP rsId"
+            InputLabelProps={{ shrink: true, style: props.header ? {color: "white"} : { color: "black" } }}
+            placeholder="e.g. rs11669173"
+            fullWidth
+            sx={{
+              //Border at rest
+              fieldset: props.header ? { borderColor: "white" } : { borderColor: "black" },
               '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderColor: props.textColor || "black",
-                },
-                '&:hover fieldset': {
-                  borderColor: props.textColor || "black"
-                  
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: props.textColor || "black",
-                },
-              }}}
-            />
-          )}
-          renderOption={(props, option) => {
-            return (
-              <li {...props} key={props.id}>
-                <Grid container alignItems="center">
-                  <Grid item sx={{ width: "calc(100% - 44px)", wordWrap: "break-word" }}>
-                    <Box component="span" sx={{ fontWeight: "regular" }}>
-                      {option}
-                    </Box>
-                    {snpids && snpids.find((g) => g.id === option) && (
-                      <Typography variant="body2" color="text.secondary">
-                        {`${snpids.find((g) => g.id === option)?.chrom}:${snpids.find((g) => g.id === option)?.end}`}
-                      </Typography>
-                    )}
-                  </Grid>
-                </Grid>
-              </li>
-            )
-          }}
-        />
-      </Grid>
-    </Grid>
+                //hover border color
+                '&:hover fieldset': props.header ? { borderColor: "white" } : { borderColor: "black" },
+                //focused border color
+                '&.Mui-focused fieldset': props.header ? { borderColor: "white" } : { borderColor: "black" },
+              },
+              //Text
+              '& .MuiOutlinedInput-input': props.header && { color: "white" },
+              //Icon
+              '& .MuiSvgIcon-root': props.header && { fill: "white"}
+            }}
+          />
+        )}
+        renderOption={(props, option) => {
+          return (
+            <li {...props} key={props.id}>
+              <Grid2 container alignItems="center">
+                <Grid2 sx={{ width: "calc(100%)", wordWrap: "break-word" }}>
+                  <Box component="span" sx={{ fontWeight: "regular" }}>
+                    {option}
+                  </Box>
+                  {snpids && snpids.find((g) => g.id === option) && (
+                    <Typography variant="body2" color="text.secondary">
+                      {`${snpids.find((g) => g.id === option)?.chrom}:${snpids.find((g) => g.id === option)?.end}`}
+                    </Typography>
+                  )}
+                </Grid2>
+              </Grid2>
+            </li>
+          )
+        }}
+      />
+      <IconButton aria-label="Search" type="submit" href={handleSubmit()} sx={{ color: `${props.header ? "white" : "black"}`, maxHeight: "100%" }}>
+        <Search />
+      </IconButton>
+    </Stack>
   )
 }

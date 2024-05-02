@@ -147,11 +147,11 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (props: Genom
               {props.accession && <rect fill="#FAA4A4" fillOpacity={0.3} height={'100%'} x={l(props.accession.start)} width={l(props.accession.end) - l(props.accession.start)} />
               }
             </>
-            {props.gene && <EGeneTracks
+            <EGeneTracks
               genes={groupedTranscripts || []}
               expandedCoordinates={coordinates}
               squish={coordinates.end - coordinates.start >= 500000 ? true : false}
-            />}
+            />
             <DefaultTracks
               assembly={props.assembly}
               domain={coordinates}

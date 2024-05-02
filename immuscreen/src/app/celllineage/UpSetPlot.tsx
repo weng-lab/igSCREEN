@@ -205,7 +205,7 @@ export default function UpSetPlot({ width, height, data, handleDownload, referen
                     {d.name.length > 12 ? d.name.substring(0, 9).replaceAll('_', ' ') + '...' : d.name.replaceAll('_', ' ')}
                   </Text>
                   {/* this expands clickable area for download */}
-                  <rect x={spaceForTextRight} y={barY} width={setSizePlotTotalWidth} height={barHeight} fill="rgba(0, 255, 0, 0)" />
+                  <rect x={spaceForTextRight} y={barY} width={setSizePlotTotalWidth} height={barHeight} fill="none" />
                 </Group>
               </Group>
             );
@@ -262,7 +262,7 @@ export default function UpSetPlot({ width, height, data, handleDownload, referen
                   />
                 </Group>
                 {/* this expands clickable area for download */}
-                <rect x={barX} y={barY} width={barWidth} height={barHeight + setSizePlotBarsHeight} fill="rgba(255, 0, 0, 0)" />
+                <rect x={barX} y={barY} width={barWidth} height={barHeight + setSizePlotBarsHeight} fill="none" />
                 {Array.from(d.name).map((char, index) => (
                   <Circle
                     key={`circle-${index}`}

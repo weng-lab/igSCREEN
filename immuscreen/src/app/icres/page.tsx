@@ -221,7 +221,7 @@ export default function Icres() {
       <IcresByRegion />
     ) : (
     <main>
-      <Grid2 container sx={{ maxWidth: "80%", mr: "auto", ml: "auto", mt: "3rem" }}>
+      <Grid2 container sx={{ maxWidth: "90%", mr: "auto", ml: "auto", mt: "3rem" }}>
         <Grid2 container sx={{ ml: "0.5em", mt: "4rem", mb: "2rem" }}>
           <Grid2 xs={12} lg={12}>
             {searchParams.get("accession") && <Typography variant="h4">Accession Details: {searchParams.get("accession")}</Typography>}
@@ -266,12 +266,12 @@ export default function Icres() {
               onChange={handleColorSchemeChange}
               aria-label="Platform"
             >
-              <ToggleButton value="ZScore">Zscore</ToggleButton>
-              <ToggleButton value="celltype">CellType Cluster</ToggleButton>
+              <ToggleButton sx={{textTransform: 'none'}} value="ZScore">Z-score</ToggleButton>
+              <ToggleButton sx={{textTransform: 'none'}} value="celltype">Cell Type Cluster</ToggleButton>
             </ToggleButtonGroup>
             <br />
             <br />
-            <UmapPlot colorScheme={colorScheme} data={atacumapdata.calderonAtacUmapQuery} plottitle={"ZScore"} />
+            <UmapPlot colorScheme={colorScheme} data={atacumapdata.calderonAtacUmapQuery} plottitle={"Z-score"} />
           </Grid2>
         }
         {value === 2 && ebidata &&
@@ -336,8 +336,8 @@ export default function Icres() {
           <Grid2 xs={12} lg={12}>
             <Tabs aria-label="icres_tabs" value={tabVal} onChange={handleTabChange}>
               <StyledTab value="Aggregate" label="Aggregate ATAC by Celltype" />
-              <StyledTab value="Calderon" label="Calderon" />
-              <StyledTab value="Corces" label="Corces" />
+              <StyledTab value="Calderon" label="Study: Calderon" />
+              <StyledTab value="Corces" label="Study: Corces" />
             </Tabs>
             {tabVal === "Aggregate" && (
               icrebyctzscoreloading ?
@@ -381,6 +381,7 @@ export default function Icres() {
                 height={1100}
                 orientation="vertical"
                 cellTypeState={generateCellLineageTreeState(adata?.iCREQuery[0].celltypes || [], false)}
+                noneSelectedOpacity='translucent'
               />
             </Stack>
           )

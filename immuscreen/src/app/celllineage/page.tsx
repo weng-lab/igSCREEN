@@ -3,7 +3,7 @@ import * as React from "react"
 import CellTypeTree from "../../common/components/cellTypeTree"
 import { Ref, forwardRef, useCallback, useEffect, useMemo, useRef, useState } from "react"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
-import { Box, Button, Checkbox, CircularProgress, FormControlLabel, Snackbar, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Checkbox, CircularProgress, FormControlLabel, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Snackbar, Stack, Tooltip, Typography } from "@mui/material";
 import { gql, useLazyQuery } from "@apollo/client";
 import { client } from "../../common/utils";
 import UpSetPlot from "./UpSetPlot";
@@ -16,7 +16,7 @@ import FlashOffOutlinedIcon from '@mui/icons-material/FlashOffOutlined';
 import FlashAutoIcon from '@mui/icons-material/FlashAuto';
 import UndoOutlinedIcon from '@mui/icons-material/UndoOutlined';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { Download, Sync } from "@mui/icons-material";
+import { ArrowRight, Circle, Download, Sync } from "@mui/icons-material";
 import { downloadSVG, extractQueryValues, generateCellLineageTreeState } from "./utils";
 import { CellQueryValue, CellLineageTreeState, CellName, DynamicCellTypeInfo } from "./types";
 import { cellTypeStaticInfo } from "../../common/consts";
@@ -174,7 +174,7 @@ export default function UpSet() {
           const a = document.createElement('a');
           const blobUrl = URL.createObjectURL(blob);
           a.href = blobUrl;
-          a.download = `${(downloadKey[0] === '0' || downloadKey[0] === '1') ? `Intersect(${cellGroupings.intersect.map(vals => vals[0]).flat().join(',')})${cellGroupings.exclude.length > 0 ? `Except(${cellGroupings.exclude.map(vals => vals[0]).flat().join(',')})` : ''}` : downloadKey}.bed`
+          a.download = `${(downloadKey[0] === '0' || downloadKey[0] === '1') ? `Intersect_${cellGroupings.intersect.map(vals => vals[0]).flat().join('_')}_${cellGroupings.exclude.length > 0 ? `Except_${cellGroupings.exclude.map(vals => vals[0]).flat().join('_')}` : ''}` : downloadKey}.bed`
           a.click();
           URL.revokeObjectURL(blobUrl);
         })
@@ -450,6 +450,7 @@ export default function UpSet() {
 
   const Checkboxes = () =>
     <>
+      <Typography variant="h6">Immune cCRE classes to Include:</Typography>
       <FormControlLabel
         label="All Classes"
         control={
@@ -475,15 +476,64 @@ export default function UpSet() {
     </>
 
   const HeaderAbout = () =>
-    <>
-      <Typography variant="h5">UpSet Generator</Typography>
-      <Typography variant="body1" paragraph maxWidth={cellTypeTreeWidth}>
-        Select Up to 6 cells to generate an UpSet plot. For stimulable cells, hold Option/Command (MacOS) or Alt/Windows (Windows) and click to stimulate cell. By default, all cells are unstimulated. Stimulable cells can be unstimulated, stimulated, or both (counts as two selections). Stimulating a cell does not automatically select it. The more cells types that are selected, the longer it will take to generate. Click any bar/count in UpSet plot to download set (.BED)
-      </Typography>
-    </>
+    <Box maxWidth={cellTypeTreeWidth}>
+      <Typography variant="h4">UpSet Generator</Typography>
+      <Typography mb={1}>Generate UpSet plots of immune cCREs active in selected cell types.</Typography>
+      <Typography variant="h6">How to Use:</Typography>
+      <List disablePadding dense sx={{mb: 2}}>
+          <ListItem disablePadding>
+              <ListItemIcon>
+                <ArrowRight  />
+              </ListItemIcon>
+              <ListItemText>
+                Click to select up to 6 cells.
+              </ListItemText>
+          </ListItem>
+          <ListItem disablePadding>
+              <ListItemIcon>
+                <ArrowRight  />
+              </ListItemIcon>
+              <ListItemText>
+              For stimulable cells, hold Option/Command (MacOS) or Alt/Windows (Windows) and click to stimulate cell.
+              </ListItemText>
+          </ListItem>
+          <ListItem disablePadding>
+              <ListItemIcon>
+                <ArrowRight  />
+              </ListItemIcon>
+              <ListItemText>
+              Stimulating a cell does not automatically select it.
+              </ListItemText>
+          </ListItem>
+          <ListItem disablePadding>
+              <ListItemIcon>
+                <ArrowRight  />
+              </ListItemIcon>
+              <ListItemText>
+              By default, all cells are unstimulated. Stimulable cells can be unstimulated, stimulated, or both (counts as two selections).
+              </ListItemText>
+          </ListItem>
+          <ListItem disablePadding>
+              <ListItemIcon>
+                <ArrowRight  />
+              </ListItemIcon>
+              <ListItemText>
+              The more cells types that are selected, the longer it will take to generate.
+              </ListItemText>
+          </ListItem>
+          <ListItem disablePadding>
+              <ListItemIcon>
+                <ArrowRight  />
+              </ListItemIcon>
+              <ListItemText>
+              Click any bar/count in UpSet plot to download set (.BED)
+              </ListItemText>
+          </ListItem>
+        </List>
+    </Box>
 
   const GenerateUpsetButton = () =>
-    <LoadingButton loading={loading_count} loadingPosition="end" disabled={noneSelected} endIcon={data_count ? <Sync /> : <BarChartOutlinedIcon />} sx={{ textTransform: "none", m: 1 }} variant="contained" onClick={handleGenerateUpSet}>
+    <LoadingButton loading={loading_count} loadingPosition="end" disabled={noneSelected} endIcon={data_count ? <Sync /> : <BarChartOutlinedIcon />} sx={{ textTransform: "none", mt: 2, mb: 2, mr: 2 }} variant="contained" onClick={handleGenerateUpSet}>
       <span>{loading_count ? "Generating" : noneSelected ? "Select Cells to Generate UpSet" : "Generate UpSet"}</span>
     </LoadingButton>
 
@@ -495,7 +545,7 @@ export default function UpSet() {
   
   return (
     <>
-      <Grid2 container mt={3}>
+      <Grid2 container mt={3} ml={3} mr={3}>
         <Grid2 xs={12} xl={5} container justifyContent={"center"}>
           {/* Display header, checkboxes and UpSet on left on big screen */}
           <Box display={{ xs: "none", xl: "block" }}>
