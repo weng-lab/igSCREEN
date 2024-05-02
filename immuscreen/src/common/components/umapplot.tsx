@@ -158,7 +158,10 @@ export const UmapPlot = (props) => {
     range: ["#ffcd00", "#ff0000"],
   });
 
-  let uniqcelltypes = [...new Set([...props.data].sort((a, b) => experimentInfo[a.name].order - experimentInfo[b.name].order).map(c => getCellDisplayName(c.celltype as any)))]
+  let uniqcelltypes = [...new Set([...props.data].sort((a, b) => {
+    if (!experimentInfo[a.name]?.order) console.log(a.name) //some experiments returned in gene expression umap are not in experiment list?
+    return experimentInfo[a.name]?.order - experimentInfo[b.name]?.order
+  }).map(c => getCellDisplayName(c.celltype as any)))]
 
   let ordinalColorScale = uniqcelltypes && scaleOrdinal({
     domain: uniqcelltypes,

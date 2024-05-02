@@ -77,7 +77,7 @@ const Gene = () => {
   return (
     searchParams.get('gene') ?
       // Gene Selected View
-      <Grid2 container sx={{ maxWidth: "80%", mr: "auto", ml: "auto", mt: "3rem" }}>
+      <Grid2 container sx={{ maxWidth: "90%", mr: "auto", ml: "auto", mt: "3rem" }}>
         <Grid2 container spacing={3} sx={{ mt: "2rem", mb: "1rem" }}>
           <Grid2 xs={12} lg={12}>
             {searchParams.get("gene") && <Typography variant="h4">Gene Details: {searchParams.get("gene")}</Typography>}

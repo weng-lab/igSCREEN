@@ -221,7 +221,7 @@ export default function Icres() {
       <IcresByRegion />
     ) : (
     <main>
-      <Grid2 container sx={{ maxWidth: "80%", mr: "auto", ml: "auto", mt: "3rem" }}>
+      <Grid2 container sx={{ maxWidth: "90%", mr: "auto", ml: "auto", mt: "3rem" }}>
         <Grid2 container sx={{ ml: "0.5em", mt: "4rem", mb: "2rem" }}>
           <Grid2 xs={12} lg={12}>
             {searchParams.get("accession") && <Typography variant="h4">Accession Details: {searchParams.get("accession")}</Typography>}
