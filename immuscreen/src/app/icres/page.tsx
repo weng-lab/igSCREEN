@@ -228,11 +228,11 @@ export default function Icres() {
           </Grid2>
           <Grid2 xs={12} lg={12}>
             <Tabs aria-label="icres_tabs" value={value} onChange={handleChange}>
-              <StyledTab label="Genome Browser" />
-              <StyledTab label="Activity UMAP" />
-              <StyledTab label="GWAS Associations" />
-              <StyledTab label="Cell Type Specific Activity" />
-              <StyledTab label="Activity in Cell Lineage" />
+              <StyledTab value={0} label="Genome Browser" />
+              <StyledTab value={1} label="Activity UMAP" />
+              {/* <StyledTab value={2} label="GWAS Associations" /> */}
+              <StyledTab value={3} label="Cell Type Specific Activity" />
+              <StyledTab value={4} label="Activity in Cell Lineage" />
             </Tabs>
           </Grid2>
         </Grid2>
