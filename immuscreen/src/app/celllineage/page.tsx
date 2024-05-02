@@ -533,7 +533,7 @@ export default function UpSet() {
     </Box>
 
   const GenerateUpsetButton = () =>
-    <LoadingButton loading={loading_count} loadingPosition="end" disabled={noneSelected} endIcon={data_count ? <Sync /> : <BarChartOutlinedIcon />} sx={{ textTransform: "none", mt: 2 }} variant="contained" onClick={handleGenerateUpSet}>
+    <LoadingButton loading={loading_count} loadingPosition="end" disabled={noneSelected} endIcon={data_count ? <Sync /> : <BarChartOutlinedIcon />} sx={{ textTransform: "none", mt: 2, mb: 2, mr: 2 }} variant="contained" onClick={handleGenerateUpSet}>
       <span>{loading_count ? "Generating" : noneSelected ? "Select Cells to Generate UpSet" : "Generate UpSet"}</span>
     </LoadingButton>
 

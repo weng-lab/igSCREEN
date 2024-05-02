@@ -106,7 +106,7 @@ export const SnpAutoComplete: React.FC<{ assembly: string, header?: boolean }> =
         renderInput={(params) => (
           <TextField
             {...params}
-            label="Enter a snp rsId"
+            label="Enter a SNP rsId"
             InputLabelProps={{ shrink: true, style: props.header ? {color: "white"} : { color: "black" } }}
             placeholder="e.g. rs11669173"
             fullWidth

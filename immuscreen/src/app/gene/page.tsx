@@ -86,7 +86,7 @@ const Gene = () => {
             <Tabs aria-label="basic tabs example" value={value} onChange={handleChange}>
               <StyledTab label="Genome Browser" />
               <StyledTab label="eQTLs" />
-              <StyledTab label="Gene Expression UMAP" />
+              <StyledTab label="Gene Expression" />
             </Tabs>
           </Grid2>
         </Grid2>

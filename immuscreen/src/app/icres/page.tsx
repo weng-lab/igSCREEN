@@ -381,6 +381,7 @@ export default function Icres() {
                 height={1100}
                 orientation="vertical"
                 cellTypeState={generateCellLineageTreeState(adata?.iCREQuery[0].celltypes || [], false)}
+                noneSelectedOpacity='translucent'
               />
             </Stack>
           )

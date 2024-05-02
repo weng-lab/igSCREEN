@@ -45,6 +45,7 @@ type CellTypeTreeProps = {
   orientation: "vertical" | "horizontal"
   selectionLimit?: number | "none"
   triggerAlert?: (message: string) => void
+  noneSelectedOpacity?: "filled" | "translucent"
 }
 
 const stimulateCursor = "url(/stimulateCursor.png) 5 30, cell"
@@ -52,7 +53,7 @@ const stimulateCursor = "url(/stimulateCursor.png) 5 30, cell"
 /**
  * Cell Lineage Tree. Optional Props only optional if the tree isn't interactive (generateCellLineageTreeState called with param #2 set to false).
  */
-export default function CellTypeTree({ width: totalWidth, height: totalHeight, orientation, cellTypeState, setCellTypeState, stimulateMode = false, setStimulateMode, selectionLimit = "none", triggerAlert }: CellTypeTreeProps) {
+export default function CellTypeTree({ width: totalWidth, height: totalHeight, orientation, cellTypeState, setCellTypeState, stimulateMode = false, setStimulateMode, selectionLimit = "none", triggerAlert, noneSelectedOpacity = "filled" }: CellTypeTreeProps) {
 
   const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip, updateTooltip } = useTooltip<TooltipData>();
 
@@ -364,8 +365,8 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
           </tspan>}
         </text>
         <Group
-          cursor={node.data.selectable ? (stimulateMode ? node.data.stimulable ? stimulateCursor : "not-allowed" : "pointer") : "not-allowed"}
-          opacity={(node.data.id !== null && (node.data.selected || Object.values(cellTypeState).every(cellType => cellType.selected === false))) ? 1 : fadedCellOpacity}
+          cursor={node.data.selectable ? (stimulateMode ? node.data.stimulable ? stimulateCursor : "not-allowed" : "pointer") : undefined}
+          opacity={(node.data.id !== null && (node.data.selected || (Object.values(cellTypeState).every(cellType => cellType.selected === false) && noneSelectedOpacity === "filled"))) ? 1 : fadedCellOpacity}
           onClick={() => {
             const numberSelected = Object.values(cellTypeState).reduce((count, cellInfo: DynamicCellTypeInfo) => cellInfo.selected ? cellInfo.stimulated === "B" ? count + 2 : count + 1 : count, 0)
             if (stimulateMode) {
