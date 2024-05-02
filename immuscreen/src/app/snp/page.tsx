@@ -159,7 +159,8 @@ const Snp = () => {
           {snp && <Typography variant="h4">SNP Details: {snp}{dataSNP && " - " + dataSNP.snpQuery[0].coordinates.chromosome + ":" + dataSNP.snpQuery[0].coordinates.end}</Typography>}
           <Tabs aria-label="snps_tabs" value={value} onChange={handleChange}>
             <StyledTab label="Nearby iCREs" />
-            <StyledTab label="eQTLs + GWAS Variants" />
+            <StyledTab label="eQTLs" />
+            {/* <StyledTab label="eQTLs + GWAS Variants" /> */}
           </Tabs>
         </Grid2>
         {value === 0 &&
@@ -168,7 +169,8 @@ const Snp = () => {
           </Grid2>
         }
         {value === 1 &&
-          <><Grid2 xs={12} lg={12}>
+          <>
+          <Grid2 xs={12} lg={12}>
             <DataTable
               columns={[
                 {
@@ -192,7 +194,7 @@ const Snp = () => {
               rows={data?.icreeQTLQuery || []}
               itemsPerPage={10} />
           </Grid2>
-            <Grid2 xs={12} lg={12}>
+            {/* <Grid2 xs={12} lg={12}>
               <DataTable
                 columns={[
                   {
@@ -240,7 +242,8 @@ const Snp = () => {
                 rows={ebidata?.ebiAssociationsQuery || []}
                 sortColumn={3}
                 itemsPerPage={10} />
-            </Grid2></>
+            </Grid2> */}
+            </>
         }
       </Grid2>
     </main>
