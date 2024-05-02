@@ -195,8 +195,8 @@ const Home = () => {
               <div>
                 <Grid2 container xs={12} justifyContent={"space-between"} spacing={3}>
                   <Grid2 xs={12} md={6} order={{ xs: 2, md: 1 }} alignSelf={"center"}>
-                    <Typography variant="h4">Immunce cCRE Activity by Cell Type</Typography>
-                    <Typography mb={2}>Generate UpSet plots to compare immune cCRE activity between selected immune cell types.</Typography>
+                    <Typography variant="h4">Immune cCRE Activity by Cell Type</Typography>
+                    <Typography mb={2}>Compare immune cCRE activity between immune cell types.</Typography>
                     <Button variant="contained" href="/celllineage">
                       Explore cCRE activity
                     </Button>

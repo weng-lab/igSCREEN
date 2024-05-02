@@ -477,8 +477,8 @@ export default function UpSet() {
 
   const HeaderAbout = () =>
     <Box maxWidth={cellTypeTreeWidth}>
-      <Typography variant="h4">Immunce cCRE Activity by Cell Type</Typography>
-      <Typography mb={1}>Generate UpSet plots to compare immune cCRE activity between selected immune cell types.</Typography>
+      <Typography variant="h4">Immune cCRE Activity by Cell Type</Typography>
+      <Typography mb={1}>Compare immune cCRE activity between selected immune cell types.</Typography>
       <Typography variant="h6">How to Use:</Typography>
       <List disablePadding dense sx={{mb: 2}}>
           <ListItem disablePadding>
