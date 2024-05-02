@@ -153,10 +153,10 @@ export const UmapPlot = (props) => {
   const maxValue = Math.max(...props.data.map(a => a.value))
   const minValue = Math.min(...props.data.map(a => a.value))
 
-  const linearScale = scaleLinear({
-    domain: [minValue, maxValue],
-    range: ["#ffcd00", "#ff0000"],
-  });
+  // const linearScale = scaleLinear({
+  //   domain: [minValue, maxValue],
+  //   range: ["#ffcd00", "#ff0000"],
+  // });
 
   let uniqcelltypes = [...new Set([...props.data].sort((a, b) => {
     if (!experimentInfo[a.name]?.order) console.log(a.name) //some experiments returned in gene expression umap are not in experiment list?
@@ -190,7 +190,7 @@ export const UmapPlot = (props) => {
             numTicks={4}
             scale={xScale}
           />
-          {props.data.map(point => {
+          {[... props.data].sort((a,b) => a.value - b.value).map(point => {
             return (
               <Group key={`datapoint-${point.umap_1}-${point.umap_2}`}>
                 {point.stimulation === 'S' ?
@@ -201,7 +201,7 @@ export const UmapPlot = (props) => {
                     rotate={90}
                     onMouseOver={(event) => handleHover(event, point)}
                     onMouseLeave={(event) => handleLeaveHover(event, point)}
-                    fill={(props.colorScheme === 'geneexp' || props.colorScheme === 'ZScore') ? linearScale(point.value) : getCellColor(point.celltype)}
+                    fill={(props.colorScheme === 'geneexp' || props.colorScheme === 'ZScore') ? point.value > 1.64 ? 'red' : 'yellow' : getCellColor(point.celltype)}
                     stroke={tooltipData && tooltipData.celltype === point.celltype ? 'black' : ''}
                   /> :
                   <Circle
@@ -211,7 +211,7 @@ export const UmapPlot = (props) => {
                     onMouseOver={(event) => handleHover(event, point)}
                     onMouseLeave={(event) => handleLeaveHover(event, point)}
                     //fill= {`${linearScale(point.value)}`}
-                    fill={(props.colorScheme === 'geneexp' || props.colorScheme === 'ZScore') ? linearScale(point.value) : getCellColor(point.celltype)}
+                    fill={(props.colorScheme === 'geneexp' || props.colorScheme === 'ZScore') ?  point.value > 1.64 ? 'red' : 'yellow' : getCellColor(point.celltype)}
                     stroke={tooltipData && tooltipData.celltype === point.celltype ? 'black' : ''}
                   />
                 }
@@ -241,39 +241,40 @@ export const UmapPlot = (props) => {
       )}
       <div className="legends">
         {(props.colorScheme === 'geneexp' || props.colorScheme === 'ZScore') ?
-          <UMAPPlotLegend title={props.plottitle}>
-            <LegendLinear
-              scale={linearScale}
-              labelFormat={(d, i) => (+d).toFixed(2)}
-            >
-              {(labels) =>
-                labels.sort((a, b) => b.index - a.index).map((label, i) => (
-                  <LegendItem
-                    key={`legend-linear-${i}`}
-                    onClick={() => {
-                      //if (events) alert(`clicked: ${JSON.stringify(label)}`);
-                    }}
-                  >
-                    <svg
-                      width={legendGlyphSize}
-                      height={legendGlyphSize}
-                      style={{ margin: "2px 0" }}
-                    >
-                      <circle
-                        fill={label.value}
-                        r={legendGlyphSize / 2}
-                        cx={legendGlyphSize / 2}
-                        cy={legendGlyphSize / 2}
-                      />
-                    </svg>
-                    <LegendLabel align="left" margin="0 4px">
-                      {label.text}
-                    </LegendLabel>
-                  </LegendItem>
-                ))
-              }
-            </LegendLinear>
-          </UMAPPlotLegend>
+          // <UMAPPlotLegend title={props.plottitle}>
+          //   <LegendLinear
+          //     scale={linearScale}
+          //     labelFormat={(d, i) => (+d).toFixed(2)}
+          //   >
+          //     {(labels) =>
+          //       labels.sort((a, b) => b.index - a.index).map((label, i) => (
+          //         <LegendItem
+          //           key={`legend-linear-${i}`}
+          //           onClick={() => {
+          //             //if (events) alert(`clicked: ${JSON.stringify(label)}`);
+          //           }}
+          //         >
+          //           <svg
+          //             width={legendGlyphSize}
+          //             height={legendGlyphSize}
+          //             style={{ margin: "2px 0" }}
+          //           >
+          //             <circle
+          //               fill={label.value}
+          //               r={legendGlyphSize / 2}
+          //               cx={legendGlyphSize / 2}
+          //               cy={legendGlyphSize / 2}
+          //             />
+          //           </svg>
+          //           <LegendLabel align="left" margin="0 4px">
+          //             {label.text}
+          //           </LegendLabel>
+          //         </LegendItem>
+          //       ))
+          //     }
+          //   </LegendLinear>
+          // </UMAPPlotLegend>
+          <></>
           :
           <CellTypesLegends title={"Immune Cell Types"} plottitle={props.plottitle}>
             <LegendOrdinal scale={ordinalColorScale}>
