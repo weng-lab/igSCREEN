@@ -5,14 +5,14 @@ import { scaleLinear, scaleOrdinal } from "@visx/scale";
 import { Group } from "@visx/group";
 import { defaultStyles as defaultTooltipStyles, useTooltip, TooltipWithBounds } from '@visx/tooltip';
 import { MouseEvent } from "react";
-import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
+import { Text } from '@visx/text';
 import {
-  Legend, LegendLinear, LegendItem, LegendLabel,
+  Legend, LegendLinear, LegendItem, LegendLabel, LegendOrdinal,
 } from "@visx/legend";
 import { GlyphTriangle, GlyphCircle } from "@visx/glyph";
-import { CellQueryValue, CellTypeStaticInfo } from "../../app/celllineage/types";
+import { CellName, CellQueryValue, CellTypeStaticInfo } from "../../app/celllineage/types";
 import { getCellColor, getCellDisplayName } from "../../app/celllineage/utils";
-import { cellTypeStaticInfo } from "../consts";
+import { cellTypeStaticInfo, experimentInfo } from "../consts";
 
 
 export type UmapPoint = {
@@ -46,11 +46,9 @@ function UMAPPlotLegend({ title, children }: { title: string; children: React.Re
             color: #000000;
             font-size: 15px;
             font-family: arial;
-            padding: 10px 10px;
             float: left;
             border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 8px;
-            margin-top: 150px;
           }
           .title {
             font-size: 15px;
@@ -61,6 +59,46 @@ function UMAPPlotLegend({ title, children }: { title: string; children: React.Re
     </div>
   );
 }
+
+//This should eventually be redone. It feels wrong to style the tooltip this way
+const CellTypesLegends = ({ title, plottitle, children }: { title: string; plottitle?: string; children: React.ReactNode }) => {
+  return (
+    <div className="legend">
+      <div className="title">{title}</div>
+      {children}
+      <style>{`
+          .legend {
+            line-height: 0.9em;
+            color: #efefef;
+            font_Size: 10px;
+            font-family: arial;
+            padding: 10px 10px;
+            float: left;
+            border: 1px solid rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            margin: 5px 5px;
+          }
+          .title {
+            font_Size: 12px;
+            margin-bottom: 10px;
+            font-weight: 900;
+            color:  #000000;
+          }
+          .maintitle {
+            font-Size: 24px;
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: 1400;
+            color:  #000000;
+          }
+        `}</style>
+    </div>
+  );
+}
+
+/**
+ * @todo this file needs to be typed. Also the manual css injection with <style> is not great IMO -J
+ */
 export const UmapPlot = (props) => {
 
   const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip } = useTooltip<TooltipData>();
@@ -120,105 +158,87 @@ export const UmapPlot = (props) => {
     range: ["#ffcd00", "#ff0000"],
   });
 
-  const valueLinearScale = scaleLinear({
-    domain: [minValue, maxValue],
-    range: [0.1, 1],
-  });
+  let uniqcelltypes = [...new Set([...props.data].sort((a, b) => experimentInfo[a.name].order - experimentInfo[b.name].order).map(c => getCellDisplayName(c.celltype as any)))]
 
-  const shapeScale = scaleOrdinal<string, React.FC | React.ReactNode>({
-    domain: ["unstimulated", "stimulated"],
-    range: [
-      <GlyphCircle
-        key="unstimulated"
-        size={50}
-        top={50 / 6}
-        left={50 / 6}
-        fill="black"
-      />,
-      <GlyphTriangle
-        key="stimulated"
-        size={50}
-        top={50 / 6}
-        left={50 / 6}
-        fill="black"
-      />
-    ],
-  });
+  let ordinalColorScale = uniqcelltypes && scaleOrdinal({
+    domain: uniqcelltypes,
+    //Duplicates?
+    range: uniqcelltypes.map((c) => getCellColor(c as CellName)),
+
+  })
 
   const legendGlyphSize = 15;
   return (
-    <Grid2 container>
-      <Grid2 xs={8}>
-        <svg width={width} height={height}>
-          <rect width={width} height={height} rx={14} fill="none" stroke="black" />
-          <Group top={paddingTop} left={spaceForAxis}>
-            <AxisLeft
-              label="UMAP-1"
-              labelProps={{ fontSize: 14 }}
-              scale={yScale}
-              numTicks={4}
-            />
-            <AxisBottom
-              top={height - paddingBottom}
-              label="UMAP-2"
-              labelProps={{ fontSize: 14 }}
-              numTicks={4}
-              scale={xScale}
-            />
-            {props.data.map(point => {
-              return (
-                <Group key={`datapoint-${point.umap_1}-${point.umap_2}`}>
-                  {point.stimulation === 'S' ?
-                    <Polygon
-                      center={{ x: xScale(point.umap_1), y: yScale(point.umap_2) }}
-                      sides={3}
-                      size={6}
-                      rotate={90}
-                      onMouseOver={(event) => handleHover(event, point)}
-                      onMouseLeave={(event) => handleLeaveHover(event, point)}
-                      fill={(props.colorScheme === 'geneexp' || props.colorScheme === 'ZScore') ? linearScale(point.value) : getCellColor(point.celltype)}
-                      stroke={tooltipData && tooltipData.celltype === point.celltype ? 'black' : ''}
-                    /> :
-                    <Circle
-                      r={5}
-                      cx={xScale(point.umap_1)}
-                      cy={yScale(point.umap_2)}
-                      onMouseOver={(event) => handleHover(event, point)}
-                      onMouseLeave={(event) => handleLeaveHover(event, point)}
-                      //fill= {`${linearScale(point.value)}`}
-                      fill={(props.colorScheme === 'geneexp' || props.colorScheme === 'ZScore') ? linearScale(point.value) : getCellColor(point.celltype)}
-                      stroke={tooltipData && tooltipData.celltype === point.celltype ? 'black' : ''}
-
-                    />
-                  }
-                </Group>)
-            })}
-          </Group>
-        </svg>
-        {tooltipOpen && tooltipData && (
-          <TooltipWithBounds
-            top={tooltipTop}
-            left={tooltipLeft}
-            style={{ ...defaultTooltipStyles, backgroundColor: '#283238', color: 'white' }}
-          >
-            <div style={{ maxWidth: "20rem" }}>
-              <p><b>Celltype:</b> {getCellDisplayName(tooltipData.celltype as CellQueryValue, true)}</p>
-            </div>
-            <div>
-              <p><b>Name:</b> {tooltipData.name}</p>
-            </div>
-            <div>
-              <p><b>Class</b> {tooltipData.class}</p>
-            </div>
-            <div>
-              <p><b>Value</b> {tooltipData.value.toFixed(2)}</p>
-            </div>
-          </TooltipWithBounds>
-        )}
-      </Grid2>
-      <Grid2 xs={4}>
-        <div className="legends">
-          {(props.colorScheme === 'geneexp' || props.colorScheme === 'ZScore') && <UMAPPlotLegend title={props.plottitle}>
+    <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: '40px' }}>
+      <svg width={width} height={height}>
+        <rect width={width} height={height} rx={14} fill="none" stroke="black" />
+        <Group top={paddingTop} left={spaceForAxis}>
+          <Text x={width - 80} y={0} textAnchor="end" fontSize={12}>{"\u25EF unstimulated, \u25B3 stimulated "}</Text>
+          <AxisLeft
+            label="UMAP-1"
+            labelProps={{ fontSize: 14 }}
+            scale={yScale}
+            numTicks={4}
+          />
+          <AxisBottom
+            top={height - paddingBottom}
+            label="UMAP-2"
+            labelProps={{ fontSize: 14 }}
+            numTicks={4}
+            scale={xScale}
+          />
+          {props.data.map(point => {
+            return (
+              <Group key={`datapoint-${point.umap_1}-${point.umap_2}`}>
+                {point.stimulation === 'S' ?
+                  <Polygon
+                    center={{ x: xScale(point.umap_1), y: yScale(point.umap_2) }}
+                    sides={3}
+                    size={6}
+                    rotate={90}
+                    onMouseOver={(event) => handleHover(event, point)}
+                    onMouseLeave={(event) => handleLeaveHover(event, point)}
+                    fill={(props.colorScheme === 'geneexp' || props.colorScheme === 'ZScore') ? linearScale(point.value) : getCellColor(point.celltype)}
+                    stroke={tooltipData && tooltipData.celltype === point.celltype ? 'black' : ''}
+                  /> :
+                  <Circle
+                    r={5}
+                    cx={xScale(point.umap_1)}
+                    cy={yScale(point.umap_2)}
+                    onMouseOver={(event) => handleHover(event, point)}
+                    onMouseLeave={(event) => handleLeaveHover(event, point)}
+                    //fill= {`${linearScale(point.value)}`}
+                    fill={(props.colorScheme === 'geneexp' || props.colorScheme === 'ZScore') ? linearScale(point.value) : getCellColor(point.celltype)}
+                    stroke={tooltipData && tooltipData.celltype === point.celltype ? 'black' : ''}
+                  />
+                }
+              </Group>)
+          })}
+        </Group>
+      </svg>
+      {tooltipOpen && tooltipData && (
+        <TooltipWithBounds
+          top={tooltipTop}
+          left={tooltipLeft}
+          style={{ ...defaultTooltipStyles, backgroundColor: '#283238', color: 'white' }}
+        >
+          <div style={{ maxWidth: "20rem" }}>
+            <p><b>Celltype:</b> {getCellDisplayName(tooltipData.celltype as CellQueryValue, true)}</p>
+          </div>
+          <div>
+            <p><b>Name:</b> {tooltipData.name}</p>
+          </div>
+          <div>
+            <p><b>Class</b> {tooltipData.class}</p>
+          </div>
+          <div>
+            <p><b>Value</b> {tooltipData.value.toFixed(2)}</p>
+          </div>
+        </TooltipWithBounds>
+      )}
+      <div className="legends">
+        {(props.colorScheme === 'geneexp' || props.colorScheme === 'ZScore') ?
+          <UMAPPlotLegend title={props.plottitle}>
             <LegendLinear
               scale={linearScale}
               labelFormat={(d, i) => (+d).toFixed(2)}
@@ -250,72 +270,47 @@ export const UmapPlot = (props) => {
                 ))
               }
             </LegendLinear>
-          </UMAPPlotLegend>}
-          <div className="shapelegends">
-            <UMAPPlotLegend title="">
-              <Legend scale={shapeScale}>
-                {(labels) => (
-                  <>
-                    {labels.map((label, i) => {
-
-                      const shape = shapeScale(label.datum);
-                      const isValidElement = React.isValidElement(shape);
-                      return (
-                        <LegendItem
-                          key={`legend-quantile-${i}`}
-                          margin="0 4px 0 0"
-                          flexDirection="row"
-
-                        >
-                          <svg
-                            width={legendGlyphSize}
-                            height={legendGlyphSize}
-                            style={{ margin: "0 5px 2px 0" }}
-                          >
-                            {isValidElement
-                              ? React.cloneElement(shape as React.ReactElement)
-                              : React.createElement(
-                                shape as React.ComponentType<{ fill: string }>,
-                                {
-                                  fill: "black",
-                                }
-                              )}
-                          </svg>
-
-                          <LegendLabel align="left" margin={0}>
+          </UMAPPlotLegend>
+          :
+          <CellTypesLegends title={"Immune Cell Types"} plottitle={props.plottitle}>
+            <LegendOrdinal scale={ordinalColorScale}>
+              {(labels) => (
+                <div style={{ display: 'flex', flexDirection: 'column', flexWrap: 'wrap', gap: '10px', maxHeight: '500px' }}>
+                  {labels.map((label, i) => {
+                    return (
+                      <LegendItem
+                        key={`legend-quantile-${i}`}
+                        margin="0 5px"
+                      >
+                        <svg width={legendGlyphSize} height={legendGlyphSize}>
+                          <rect fill={label.value} width={legendGlyphSize} height={legendGlyphSize} />
+                        </svg>
+                        <LegendLabel align="left" margin="0 10px 0 4px" color={"#ff0000"}>
+                          <p className={"labelcolor"}>
                             {label.text}
-                          </LegendLabel>
-                        </LegendItem>
-                      );
-                    })}
-                  </>
-                )}
-              </Legend>
-            </UMAPPlotLegend>
-          </div>
-          <style jsx>
-            {`
-              .legends {
-                font-family: arial;
-                font-weight: 100;
-                background-color: white;
-                border-radius: 14px;       
-                overflow-y: auto;
-                flex-grow: 1;
-                
-              }
-              .shapelegends {
-                margin-top: 30px;
-                font-weight: 100;                
-              }
-            `}
-          </style>
-        </div>
-      </Grid2>
-    </Grid2>
+                          </p>
+                        </LegendLabel>
+                      </LegendItem>
+                    )
+                  })}
+                </div>
+              )}
+            </LegendOrdinal>
+          </CellTypesLegends>
+        }
+        <style>
+          {`
+            .legends {
+              display: flex;
+              font-family: arial;       
+              border-radius: 14px;      
+            }
+            .labelcolor {
+              color:  #000000;
+            }
+          `}
+        </style>
+      </div>
+    </div>
   )
 }
-
-
-
-

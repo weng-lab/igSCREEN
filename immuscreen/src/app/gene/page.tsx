@@ -190,8 +190,8 @@ const Gene = () => {
               onChange={handleColorSchemeChange}
               aria-label="Platform"
             >
-              <ToggleButton value="geneexp">Gene Expression</ToggleButton>
-              <ToggleButton value="celltype">CellType Cluster</ToggleButton>
+              <ToggleButton sx={{textTransform: 'none'}} value="geneexp">Gene Expression</ToggleButton>
+              <ToggleButton sx={{textTransform: 'none'}} value="celltype">Cell Type Cluster</ToggleButton>
             </ToggleButtonGroup>
             <br />
             <br />

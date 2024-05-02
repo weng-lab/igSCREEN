@@ -4,10 +4,6 @@ import { Typography } from "@mui/material"
 
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 
-
-
-//Need better text styling
-
 export default function About() {
   return (
     <main>

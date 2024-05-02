@@ -266,12 +266,12 @@ export default function Icres() {
               onChange={handleColorSchemeChange}
               aria-label="Platform"
             >
-              <ToggleButton value="ZScore">Zscore</ToggleButton>
-              <ToggleButton value="celltype">CellType Cluster</ToggleButton>
+              <ToggleButton sx={{textTransform: 'none'}} value="ZScore">Z-score</ToggleButton>
+              <ToggleButton sx={{textTransform: 'none'}} value="celltype">Cell Type Cluster</ToggleButton>
             </ToggleButtonGroup>
             <br />
             <br />
-            <UmapPlot colorScheme={colorScheme} data={atacumapdata.calderonAtacUmapQuery} plottitle={"ZScore"} />
+            <UmapPlot colorScheme={colorScheme} data={atacumapdata.calderonAtacUmapQuery} plottitle={"Z-score"} />
           </Grid2>
         }
         {value === 2 && ebidata &&
