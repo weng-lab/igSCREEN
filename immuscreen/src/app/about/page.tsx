@@ -7,7 +7,7 @@ import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 export default function About() {
   return (
     <main>
-      <Grid2 container spacing={4} sx={{ maxWidth: "70%", mr: "auto", ml: "auto", mt: "3rem" }}>
+      <Grid2 container spacing={4} sx={{ maxWidth: "70%", mr: "auto", ml: "auto", mt: '3rem' }}>
         <Grid2 xs={12}>
           <Typography paragraph variant="h3">About igSCREEN</Typography>
           <Typography paragraph variant="h5">Search <i>immune</i> Candidate cis-Regulatory Elements</Typography>
