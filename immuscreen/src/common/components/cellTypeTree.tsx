@@ -503,10 +503,10 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
       </svg>
       {tooltipOpen && tooltipData && (
           <TooltipWithBounds
-          top={tooltipTop}
-          left={tooltipLeft}
-          style={{ ...defaultTooltipStyles, backgroundColor: '#283238', color: 'white' }}
-        >
+            top={tooltipTop}
+            left={tooltipLeft}
+            style={{ ...defaultTooltipStyles, backgroundColor: '#283238', color: 'white' }}
+          >
           <div>
             <strong>{tooltipData.name.replace(' ', '\u00A0').replace('-', '\u2011')}</strong>
           </div>
