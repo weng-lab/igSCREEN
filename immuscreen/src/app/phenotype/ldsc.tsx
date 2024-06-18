@@ -10,6 +10,7 @@ import { Text } from '@visx/text';
 import { MouseEvent } from "react";
 import { getCellColor } from "../celllineage/utils";
 import { CellName, CellQueryValue } from "../celllineage/types";
+import { toScientificNotation } from "../../common/utils";
 
 type Props = {
   width: number;
@@ -174,7 +175,7 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
             <p><b>Enrichment:</b> {tooltipData.enrichment.toFixed(2)}</p>
           </div>
           <div>
-            <p><b>Enrichment <i>P</i>:</b> {tooltipData.enrichmentP.toPrecision(2)}</p>
+            <p><b>Enrichment <i>P</i> :</b> {toScientificNotation(tooltipData.enrichmentP, 2)}</p>
           </div>
           <div>
             <p><b>Enrichment Std Error:</b> {tooltipData.enrichmentStdErr.toFixed(2)}</p>

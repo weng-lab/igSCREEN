@@ -1,7 +1,7 @@
 "use client"
 import React, { useState } from "react"
 import { Tabs, Tab, Typography, colors } from "@mui/material"
-import { client } from "../../common/utils"
+import { client, toScientificNotation } from "../../common/utils"
 import { StyledTab } from "../../common/utils"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { useQuery } from "@apollo/client"
@@ -114,12 +114,12 @@ const Gene = () => {
                   {
                     header: "Nominal P",
                     HeaderRender: () => <Typography variant="body2">Nominal <i>P</i></Typography>,
-                    value: (row) => row.pval_nominal && row.pval_nominal.toExponential(2) || 0,
+                    value: (row) => row.pval_nominal && toScientificNotation(row.pval_nominal, 2) || 0,
                   },
                   {
                     header: "Beta P",
                     HeaderRender: () => <Typography variant="body2">Beta <i>P</i></Typography>,
-                    value: (row) => row.pval_beta && row.pval_beta.toExponential(2) || 0,
+                    value: (row) => row.pval_beta && toScientificNotation(row.pval_beta, 2) || 0,
                   }
                 ]}
                 tableTitle={`GTEX whole-blood eQTLs for ${searchParams.get('gene')}:`}
@@ -137,12 +137,12 @@ const Gene = () => {
                   {
                     header: "P",
                     HeaderRender: () => <Typography variant="body2"><i>P</i></Typography>,
-                    value: (row) => row.pvalue && row.pvalue.toExponential(2) || 0,
+                    value: (row) => row.pvalue && toScientificNotation(row.pvalue, 2) || 0,
                   },
                   {
                     header: "Q",
                     HeaderRender: () => <Typography variant="body2"><i>Q</i></Typography>,
-                    value: (row) => row.qvalue && row.qvalue.toExponential(2) || 0,
+                    value: (row) => row.qvalue && toScientificNotation(row.qvalue, 2) || 0,
                   },
                   {
                     header: "Celltype",
@@ -165,12 +165,12 @@ const Gene = () => {
                   {
                     header: "Nominal P",
                     HeaderRender: () => <Typography variant="body2">Nominal <i>P</i></Typography>,
-                    value: (row) => row.pval_nominal && row.pval_nominal.toExponential(2) || 0,
+                    value: (row) => row.pval_nominal && toScientificNotation(row.pval_nominal, 2) || 0,
                   },
                   {
                     header: "Beta P",
                     HeaderRender: () => <Typography variant="body2">Beta <i>P</i></Typography>,
-                    value: (row) => row.pval_beta && row.pval_beta.toExponential(2) || 0,
+                    value: (row) => row.pval_beta && toScientificNotation(row.pval_beta, 2) || 0,
                   },
                   {
                     header: "Celltype",

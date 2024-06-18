@@ -1,7 +1,7 @@
 "use client"
 import React, { useState } from "react"
 import { useRouter } from "next/navigation"
-import { StyledTab } from "../../common/utils"
+import { StyledTab, toScientificNotation } from "../../common/utils"
 import { client } from "../../common/utils"
 import SearchIcon from "@mui/icons-material/Search"
 import { Box, CircularProgress, Collapse, List, ListItemButton, ListItemText, Stack, ToggleButtonGroup, Typography } from "@mui/material"
@@ -298,7 +298,7 @@ export default function Icres() {
                   {
                     header: "P",
                     HeaderRender: () => <Typography variant="body2"><i>P</i></Typography>,
-                    value: (row) => row.p_value && row.p_value || 0,
+                    value: (row) => row.p_value && toScientificNotation(row.p_value, 2) || 0,
                   },
                   {
                     header: "Study",
