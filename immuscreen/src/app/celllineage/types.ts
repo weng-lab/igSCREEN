@@ -68,7 +68,7 @@ export type CellDisplayName =
   | "Multipotent progenitor"
   | "Common myeloid progenitor"
   | "Megakaryocyte-erythroid progenitor"
-  | "Erythrocyte"
+  | "Erythroblast"
   | "Granulocyte-monocyte progenitors"
   | "Lymphocyte-primed multipotent progenitor"
   | "Common lymphoid progenitor"
