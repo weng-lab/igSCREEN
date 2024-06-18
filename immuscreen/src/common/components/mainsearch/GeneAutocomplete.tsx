@@ -138,7 +138,7 @@ export const GeneAutoComplete: React.FC<{ assembly: string, header?: boolean }> 
             {...params}
             label="Enter a gene name"
             InputLabelProps={{ shrink: true, style: props.header ? {color: "white"} : { color: "black" } }}
-            placeholder={props.assembly === "mm10" ? "e.g Scml2,Dbt" : "e.g TGBF1, IL2"}
+            placeholder={props.assembly === "mm10" ? "e.g Scml2,Dbt" : "e.g TGFB1, IL2"}
             fullWidth
             sx={{
               //Border at rest
