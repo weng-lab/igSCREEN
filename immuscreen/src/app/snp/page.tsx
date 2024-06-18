@@ -178,11 +178,13 @@ const Snp = () => {
                   value: (row) => row.geneid || "",
                 },
                 {
-                  header: "P-Value",
+                  header: "P",
+                  HeaderRender: () => <Typography variant="body2"><i>P</i></Typography>,
                   value: (row) => row.pvalue && row.pvalue.toExponential(2) || 0,
                 },
                 {
-                  header: "Q-Value",
+                  header: "Q",
+                  HeaderRender: () => <Typography variant="body2"><i>Q</i></Typography>,
                   value: (row) => row.qvalue && row.qvalue.toExponential(2) || 0,
                 },
                 {

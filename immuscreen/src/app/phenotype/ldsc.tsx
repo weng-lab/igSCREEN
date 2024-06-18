@@ -174,7 +174,7 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
             <p><b>Enrichment:</b> {tooltipData.enrichment.toFixed(2)}</p>
           </div>
           <div>
-            <p><b>Enrichment p-value:</b> {tooltipData.enrichmentP.toPrecision(2)}</p>
+            <p><b>Enrichment <i>P</i>:</b> {tooltipData.enrichmentP.toPrecision(2)}</p>
           </div>
           <div>
             <p><b>Enrichment Std Error:</b> {tooltipData.enrichmentStdErr.toFixed(2)}</p>

@@ -80,7 +80,7 @@ const Gene = () => {
       <Grid2 container sx={{ maxWidth: "90%", mr: "auto", ml: "auto", mt: "3rem" }}>
         <Grid2 container spacing={3} sx={{ mt: "2rem", mb: "1rem" }}>
           <Grid2 xs={12} lg={12}>
-            {searchParams.get("gene") && <Typography variant="h4">Gene Details: {searchParams.get("gene")}</Typography>}
+            {searchParams.get("gene") && <Typography variant="h4">Gene Details: <i>{searchParams.get("gene")}</i></Typography>}
           </Grid2>
           <Grid2 xs={12} lg={12}>
             <Tabs aria-label="basic tabs example" value={value} onChange={handleChange}>
@@ -104,7 +104,7 @@ const Gene = () => {
         }
         {value === 1 && !loading && !soskicLoading && !yazarLoading &&
           <Grid2 container spacing={3}>
-            <Grid2 xs={6} lg={6}>
+            <Grid2 xs={12}>
               <DataTable
                 columns={[
                   {
@@ -112,11 +112,13 @@ const Gene = () => {
                     value: (row) => row.variant_id || "",
                   },
                   {
-                    header: "Nominal P-Value",
+                    header: "Nominal P",
+                    HeaderRender: () => <Typography variant="body2">Nominal <i>P</i></Typography>,
                     value: (row) => row.pval_nominal && row.pval_nominal.toExponential(2) || 0,
                   },
                   {
-                    header: "Beta P-Value",
+                    header: "Beta P",
+                    HeaderRender: () => <Typography variant="body2">Beta <i>P</i></Typography>,
                     value: (row) => row.pval_beta && row.pval_beta.toExponential(2) || 0,
                   }
                 ]}
@@ -125,7 +127,7 @@ const Gene = () => {
                 itemsPerPage={10}
               />
             </Grid2>
-            <Grid2 xs={6} lg={6}>
+            <Grid2 xs={12}>
               <DataTable
                 columns={[
                   {
@@ -133,11 +135,13 @@ const Gene = () => {
                     value: (row) => row.rsid || "",
                   },
                   {
-                    header: "P-Value",
+                    header: "P",
+                    HeaderRender: () => <Typography variant="body2"><i>P</i></Typography>,
                     value: (row) => row.pvalue && row.pvalue.toExponential(2) || 0,
                   },
                   {
-                    header: "Q-Value",
+                    header: "Q",
+                    HeaderRender: () => <Typography variant="body2"><i>Q</i></Typography>,
                     value: (row) => row.qvalue && row.qvalue.toExponential(2) || 0,
                   },
                   {
@@ -151,7 +155,7 @@ const Gene = () => {
                 itemsPerPage={10}
               />
             </Grid2>
-            <Grid2 xs={6} lg={6}>
+            <Grid2 xs={12}>
               <DataTable
                 columns={[
                   {
@@ -159,11 +163,13 @@ const Gene = () => {
                     value: (row) => row.variant_id || "",
                   },
                   {
-                    header: "Nominal P-Value",
+                    header: "Nominal P",
+                    HeaderRender: () => <Typography variant="body2">Nominal <i>P</i></Typography>,
                     value: (row) => row.pval_nominal && row.pval_nominal.toExponential(2) || 0,
                   },
                   {
-                    header: "Beta P-Value",
+                    header: "Beta P",
+                    HeaderRender: () => <Typography variant="body2">Beta <i>P</i></Typography>,
                     value: (row) => row.pval_beta && row.pval_beta.toExponential(2) || 0,
                   },
                   {

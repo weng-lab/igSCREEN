@@ -119,7 +119,7 @@ export default function Phenotype() {
             onChange={(_, value) => setSelectedStudy(value)}
           />
           <Box>
-            <FormLabel>P-value Cutoff</FormLabel>
+            <FormLabel><i>P</i> Cutoff</FormLabel>
             <Slider
               min={0} //Min/Max is 0/4 since that is the true value of the marks above
               max={4}

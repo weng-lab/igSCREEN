@@ -162,7 +162,7 @@ export const GeneAutoComplete: React.FC<{ assembly: string, header?: boolean }> 
               <Grid2 container alignItems="center">
                 <Grid2 sx={{ width: "100%" }}>
                   <Box component="span" sx={{ fontWeight: "regular" }}>
-                    {option}
+                    <i>{option}</i>
                   </Box>
                   {geneDesc && geneDesc.find((g) => g.name === option) && (
                     <Typography variant="body2" color="text.secondary">

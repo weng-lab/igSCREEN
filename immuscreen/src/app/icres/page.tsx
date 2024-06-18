@@ -296,7 +296,8 @@ export default function Icres() {
 
                   },
                   {
-                    header: "P-Value",
+                    header: "P",
+                    HeaderRender: () => <Typography variant="body2"><i>P</i></Typography>,
                     value: (row) => row.p_value && row.p_value || 0,
                   },
                   {
