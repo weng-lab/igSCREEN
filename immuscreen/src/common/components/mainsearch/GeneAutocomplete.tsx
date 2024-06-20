@@ -138,7 +138,7 @@ export const GeneAutoComplete: React.FC<{ assembly: string, header?: boolean }> 
             {...params}
             label="Enter a gene name"
             InputLabelProps={{ shrink: true, style: props.header ? {color: "white"} : { color: "black" } }}
-            placeholder={props.assembly === "mm10" ? "e.g Scml2,Dbt" : "e.g TGBF1, IL2"}
+            placeholder={props.assembly === "mm10" ? "e.g Scml2,Dbt" : "e.g TGFB1, IL2"}
             fullWidth
             sx={{
               //Border at rest
@@ -162,7 +162,7 @@ export const GeneAutoComplete: React.FC<{ assembly: string, header?: boolean }> 
               <Grid2 container alignItems="center">
                 <Grid2 sx={{ width: "100%" }}>
                   <Box component="span" sx={{ fontWeight: "regular" }}>
-                    {option}
+                    <i>{option}</i>
                   </Box>
                   {geneDesc && geneDesc.find((g) => g.name === option) && (
                     <Typography variant="body2" color="text.secondary">

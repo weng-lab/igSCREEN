@@ -2,7 +2,7 @@
 import React, { useMemo, useState } from "react"
 import { DataTable } from "@weng-lab/psychscreen-ui-components"
 import { CircularProgress, Tabs, Typography } from "@mui/material"
-import { client } from "../../common/utils"
+import { client, toScientificNotation } from "../../common/utils"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { ReadonlyURLSearchParams, useSearchParams, usePathname } from "next/navigation"
 
@@ -178,12 +178,14 @@ const Snp = () => {
                   value: (row) => row.geneid || "",
                 },
                 {
-                  header: "P-Value",
-                  value: (row) => row.pvalue && row.pvalue.toExponential(2) || 0,
+                  header: "P",
+                  HeaderRender: () => <Typography variant="body2"><i>P</i></Typography>,
+                  value: (row) => row.pvalue && toScientificNotation(row.pvalue, 2) || 0,
                 },
                 {
-                  header: "Q-Value",
-                  value: (row) => row.qvalue && row.qvalue.toExponential(2) || 0,
+                  header: "Q",
+                  HeaderRender: () => <Typography variant="body2"><i>Q</i></Typography>,
+                  value: (row) => row.qvalue && toScientificNotation(row.qvalue, 2) || 0,
                 },
                 {
                   header: "Celltype",

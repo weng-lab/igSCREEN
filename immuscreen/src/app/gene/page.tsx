@@ -1,7 +1,7 @@
 "use client"
 import React, { useState } from "react"
 import { Tabs, Tab, Typography, colors } from "@mui/material"
-import { client } from "../../common/utils"
+import { client, toScientificNotation } from "../../common/utils"
 import { StyledTab } from "../../common/utils"
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 import { useQuery } from "@apollo/client"
@@ -80,7 +80,7 @@ const Gene = () => {
       <Grid2 container sx={{ maxWidth: "90%", mr: "auto", ml: "auto", mt: "3rem" }}>
         <Grid2 container spacing={3} sx={{ mt: "2rem", mb: "1rem" }}>
           <Grid2 xs={12} lg={12}>
-            {searchParams.get("gene") && <Typography variant="h4">Gene Details: {searchParams.get("gene")}</Typography>}
+            {searchParams.get("gene") && <Typography variant="h4">Gene Details: <i>{searchParams.get("gene")}</i></Typography>}
           </Grid2>
           <Grid2 xs={12} lg={12}>
             <Tabs aria-label="basic tabs example" value={value} onChange={handleChange}>
@@ -104,7 +104,7 @@ const Gene = () => {
         }
         {value === 1 && !loading && !soskicLoading && !yazarLoading &&
           <Grid2 container spacing={3}>
-            <Grid2 xs={6} lg={6}>
+            <Grid2 xs={12}>
               <DataTable
                 columns={[
                   {
@@ -112,12 +112,14 @@ const Gene = () => {
                     value: (row) => row.variant_id || "",
                   },
                   {
-                    header: "Nominal P-Value",
-                    value: (row) => row.pval_nominal && row.pval_nominal.toExponential(2) || 0,
+                    header: "Nominal P",
+                    HeaderRender: () => <Typography variant="body2">Nominal <i>P</i></Typography>,
+                    value: (row) => row.pval_nominal && toScientificNotation(row.pval_nominal, 2) || 0,
                   },
                   {
-                    header: "Beta P-Value",
-                    value: (row) => row.pval_beta && row.pval_beta.toExponential(2) || 0,
+                    header: "Beta P",
+                    HeaderRender: () => <Typography variant="body2">Beta <i>P</i></Typography>,
+                    value: (row) => row.pval_beta && toScientificNotation(row.pval_beta, 2) || 0,
                   }
                 ]}
                 tableTitle={`GTEX whole-blood eQTLs for ${searchParams.get('gene')}:`}
@@ -125,7 +127,7 @@ const Gene = () => {
                 itemsPerPage={10}
               />
             </Grid2>
-            <Grid2 xs={6} lg={6}>
+            <Grid2 xs={12}>
               <DataTable
                 columns={[
                   {
@@ -133,12 +135,14 @@ const Gene = () => {
                     value: (row) => row.rsid || "",
                   },
                   {
-                    header: "P-Value",
-                    value: (row) => row.pvalue && row.pvalue.toExponential(2) || 0,
+                    header: "P",
+                    HeaderRender: () => <Typography variant="body2"><i>P</i></Typography>,
+                    value: (row) => row.pvalue && toScientificNotation(row.pvalue, 2) || 0,
                   },
                   {
-                    header: "Q-Value",
-                    value: (row) => row.qvalue && row.qvalue.toExponential(2) || 0,
+                    header: "Q",
+                    HeaderRender: () => <Typography variant="body2"><i>Q</i></Typography>,
+                    value: (row) => row.qvalue && toScientificNotation(row.qvalue, 2) || 0,
                   },
                   {
                     header: "Celltype",
@@ -151,7 +155,7 @@ const Gene = () => {
                 itemsPerPage={10}
               />
             </Grid2>
-            <Grid2 xs={6} lg={6}>
+            <Grid2 xs={12}>
               <DataTable
                 columns={[
                   {
@@ -159,12 +163,14 @@ const Gene = () => {
                     value: (row) => row.variant_id || "",
                   },
                   {
-                    header: "Nominal P-Value",
-                    value: (row) => row.pval_nominal && row.pval_nominal.toExponential(2) || 0,
+                    header: "Nominal P",
+                    HeaderRender: () => <Typography variant="body2">Nominal <i>P</i></Typography>,
+                    value: (row) => row.pval_nominal && toScientificNotation(row.pval_nominal, 2) || 0,
                   },
                   {
-                    header: "Beta P-Value",
-                    value: (row) => row.pval_beta && row.pval_beta.toExponential(2) || 0,
+                    header: "Beta P",
+                    HeaderRender: () => <Typography variant="body2">Beta <i>P</i></Typography>,
+                    value: (row) => row.pval_beta && toScientificNotation(row.pval_beta, 2) || 0,
                   },
                   {
                     header: "Celltype",
