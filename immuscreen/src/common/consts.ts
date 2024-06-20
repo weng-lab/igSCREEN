@@ -413,15 +413,15 @@ export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
   },
   Ery: {
     id: "Ery",
-    displayName: "Erythrocyte",
-    unstimImagePath: '/cellTypes/Erythrocyte.png',
+    displayName: "Erythroblast",
+    unstimImagePath: '/cellTypes/Erythroblast.png',
     stimulable: false,
     queryValues: {
       unstimulated: { Corces: "Ery" }
     },
     unstimCount: 56267,
     color: "#684fda",
-    treeDisplayName: "Erythrocyte"
+    treeDisplayName: "Erythroblast"
   },
   GMP: {
     id: "GMP",
@@ -553,14 +553,14 @@ export const experimentInfo: { [key: string]: {order: number, description: strin
   '6792-MEP-SRX1427809': { order: 29, description: 'Megakaryocyte Erythroid Progenitor in donor 6792', displayName: 'Megakaryocyte Erythroid Progenitor', group: 'Progenitors', study: 'Corces et al', pmid: '27526324' },
   '7256-MEP-SRX1427863': { order: 30, description: 'Megakaryocyte Erythroid Progenitor in donor 7256', displayName: 'Megakaryocyte Erythroid Progenitor', group: 'Progenitors', study: 'Corces et al', pmid: '27526324' },
   '7256-MEP-SRX1427864': { order: 31, description: 'Megakaryocyte Erythroid Progenitor in donor 7256', displayName: 'Megakaryocyte Erythroid Progenitor', group: 'Progenitors', study: 'Corces et al', pmid: '27526324' },
-  '2596-Ery-SRX1427825': { order: 32, description: 'Erythrocyte in donor 2596', displayName: 'Erythrocyte', group: 'Myeloid', study: 'Corces et al', pmid: '27526324' },
-  '2596-Ery-SRX1427826': { order: 33, description: 'Erythrocyte in donor 2596', displayName: 'Erythrocyte', group: 'Myeloid', study: 'Corces et al', pmid: '27526324' },
-  '2596-Ery-SRX1427827': { order: 34, description: 'Erythrocyte in donor 2596', displayName: 'Erythrocyte', group: 'Myeloid', study: 'Corces et al', pmid: '27526324' },
-  '5483-Ery-SRX1427846': { order: 35, description: 'Erythrocyte in donor 5483', displayName: 'Erythrocyte', group: 'Myeloid', study: 'Corces et al', pmid: '27526324' },
-  '5483-Ery-SRX1427847': { order: 36, description: 'Erythrocyte in donor 5483', displayName: 'Erythrocyte', group: 'Myeloid', study: 'Corces et al', pmid: '27526324' },
-  '5483-Ery-SRX1427848': { order: 37, description: 'Erythrocyte in donor 5483', displayName: 'Erythrocyte', group: 'Myeloid', study: 'Corces et al', pmid: '27526324' },
-  '6926-Ery-SRX1427852': { order: 38, description: 'Erythrocyte in donor 6926', displayName: 'Erythrocyte', group: 'Myeloid', study: 'Corces et al', pmid: '27526324' },
-  '6926-Ery-SRX1427853': { order: 39, description: 'Erythrocyte in donor 6926', displayName: 'Erythrocyte', group: 'Myeloid', study: 'Corces et al', pmid: '27526324' },
+  '2596-Ery-SRX1427825': { order: 32, description: 'Erythroblast in donor 2596', displayName: 'Erythroblast', group: 'Myeloid', study: 'Corces et al', pmid: '27526324' },
+  '2596-Ery-SRX1427826': { order: 33, description: 'Erythroblast in donor 2596', displayName: 'Erythroblast', group: 'Myeloid', study: 'Corces et al', pmid: '27526324' },
+  '2596-Ery-SRX1427827': { order: 34, description: 'Erythroblast in donor 2596', displayName: 'Erythroblast', group: 'Myeloid', study: 'Corces et al', pmid: '27526324' },
+  '5483-Ery-SRX1427846': { order: 35, description: 'Erythroblast in donor 5483', displayName: 'Erythroblast', group: 'Myeloid', study: 'Corces et al', pmid: '27526324' },
+  '5483-Ery-SRX1427847': { order: 36, description: 'Erythroblast in donor 5483', displayName: 'Erythroblast', group: 'Myeloid', study: 'Corces et al', pmid: '27526324' },
+  '5483-Ery-SRX1427848': { order: 37, description: 'Erythroblast in donor 5483', displayName: 'Erythroblast', group: 'Myeloid', study: 'Corces et al', pmid: '27526324' },
+  '6926-Ery-SRX1427852': { order: 38, description: 'Erythroblast in donor 6926', displayName: 'Erythroblast', group: 'Myeloid', study: 'Corces et al', pmid: '27526324' },
+  '6926-Ery-SRX1427853': { order: 39, description: 'Erythroblast in donor 6926', displayName: 'Erythroblast', group: 'Myeloid', study: 'Corces et al', pmid: '27526324' },
   '2596-GMP-SRX1427828': { order: 40, description: 'Granulocyte-Monocyte Progenitors in donor 2596', displayName: 'Granulocyte-Monocyte Progenitors', group: 'Progenitors', study: 'Corces et al', pmid: '27526324' },
   '4983-GMP-SRX1427794': { order: 41, description: 'Granulocyte-Monocyte Progenitors in donor 4983', displayName: 'Granulocyte-Monocyte Progenitors', group: 'Progenitors', study: 'Corces et al', pmid: '27526324' },
   '4983-GMP-SRX1427795': { order: 42, description: 'Granulocyte-Monocyte Progenitors in donor 4983', displayName: 'Granulocyte-Monocyte Progenitors', group: 'Progenitors', study: 'Corces et al', pmid: '27526324' },
