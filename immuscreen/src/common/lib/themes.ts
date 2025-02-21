@@ -8,7 +8,8 @@ export const defaultTheme = createTheme({
     primary: {
       // main: "#000F9F",
       main: "#494d6b",
-    }, 
+      contrastText: "#FFFFFF",
+    },
   },
   components: {
     MuiAccordion: {

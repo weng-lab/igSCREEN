@@ -1,6 +1,6 @@
 "use client"
 import * as React from "react"
-import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Button, MenuItem, Paper } from "@mui/material"
+import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Button, MenuItem, Paper, Link as MuiLink } from "@mui/material"
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
 import MenuIcon from "@mui/icons-material/Menu"
 import { ThemeProvider } from "@mui/material/styles"
@@ -63,24 +63,13 @@ const ResponsiveAppBar = () => {
         <Container maxWidth={false}>
           <Toolbar sx={{ justifyContent: "space-between" }}>
             {/* Display Icon on left when >=900px */}
-            <Box
-              component="a"
-              href={"/"}
-              sx={{
-                mr: 2,
-                ml: 1,
-                display: { xs: "flex" },
-                fontFamily: "monospace",
-                fontWeight: 700,
-                letterSpacing: ".3rem",
-                color: "inherit",
-                textDecoration: "none",
-              }}>
+            <Box component={Link} href={'/'} height={45} width={110} position={"relative"}>
               <Image
+                priority
                 src="/igSCREEN_red.png"
-                width={110}
-                height={55}
+                fill
                 alt="igSCREEN logo"
+                style={{ objectFit: "contain", objectPosition: 'left center' }}
               />
             </Box>
             {/* Main navigation items for desktop */}
@@ -97,12 +86,9 @@ const ResponsiveAppBar = () => {
                     endIcon={page.subPages && <ArrowDropDownIcon />}
                     onMouseEnter={page.subPages ? (event) => handleOpenNavMenu_Dropdown(event, page.dropdownID) : undefined}
                   >
-                    {/* Wrap in next/link to enable dyanic link changing from basePath in next.config.js */}
-                    <Link href={page.link}>
-                      <Typography variant="body1">
-                        {page.pageName}
-                      </Typography>
-                    </Link>
+                    <MuiLink component={Link} href={page.link} variant="body1" sx={{color: theme => theme.palette.primary.contrastText}}>
+                      {page.pageName}
+                    </MuiLink>
                   </Button>
                   {/* Create popup menu if page has subpages */}
                   {page.subPages && (
@@ -132,9 +118,9 @@ const ResponsiveAppBar = () => {
                           page.subPages.map((subPage) => (
                             <MenuItem key={subPage.pageName} onClick={() => handleCloseNavMenu_Dropdown(page.dropdownID)}>
                               {/* Wrap in next/link to enable dyanic link changing from basePath in next.config.js */}
-                              <Link href={subPage.link}>
-                                <Typography textAlign="center">{subPage.pageName}</Typography>
-                              </Link>
+                              <MuiLink component={Link} textAlign={"center"} href={subPage.link}>
+                                {subPage.pageName}
+                              </MuiLink>
                             </MenuItem>
                           ))}
                       </Paper>
