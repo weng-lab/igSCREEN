@@ -1,7 +1,7 @@
 "use client"
 import { gql, useQuery } from "@apollo/client";
 import { Autocomplete, Box, CircularProgress, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Slider, Stack, TextField, Typography } from "@mui/material";
-import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
+import Grid2 from "@mui/material/Grid2";
 import { useState } from "react";
 import { client } from "../../common/utils";
 import ChangeHistoryTwoToneIcon from '@mui/icons-material/ChangeHistoryTwoTone';
@@ -104,8 +104,8 @@ export default function Phenotype() {
   };
 
   return (
-    <Grid2 container mt={3}>
-      <Grid2 xs={12}>
+    (<Grid2 container mt={3}>
+      <Grid2 size={12}>
         <Box margin={"auto"} maxWidth={600} display={"flex"} flexDirection={"column"} gap={2}>
           <Box>
             <Typography variant="h4">LD Score Regression by Phenotype</Typography>
@@ -184,6 +184,6 @@ export default function Phenotype() {
           rawData && <LDSCplot width={1200} height={600} data={rawData} pValCutoff={pValCutoff} stimView={stimView} />
         }
       </Grid2>
-    </Grid2>
-  )
+    </Grid2>)
+  );
 }

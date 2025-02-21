@@ -1,6 +1,6 @@
 "use client"
 import React, { useMemo, useState, useRef, useCallback, useEffect } from "react"
-import Grid2 from "../mui-client-wrappers/Grid2"
+import Grid2 from "@mui/material/Grid2"
 import { RulerTrack, GenomeBrowser } from "umms-gb"
 import Controls from "./controls"
 import { gql, useQuery } from "@apollo/client"
@@ -110,73 +110,75 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (props: Genom
   )
   const l = useCallback((c) => ((c - coordinates.start) * 1400) / (coordinates.end - coordinates.start), [coordinates])
 
-  return (
-    <>
-      <Grid2 container spacing={3} sx={{ mt: "1rem", mb: "1rem" }}>
-        <Grid2 xs={12} lg={12}>
-          <br />
-          <CytobandView innerWidth={1000} height={15} chromosome={coordinates.chromosome!} assembly={"hg38"} position={coordinates} />
-          <br />
-          <div style={{ textAlign: "center" }}>
-            <Controls onDomainChanged={onDomainChanged} domain={coordinates || props.coordinates} />
-          </div>
-          <br />
-          <br />
-          <Box id="GB">
-            <GenomeBrowser
-            svgRef={svgRef}      
-            domain={coordinates}
-            innerWidth={1400}
-            width="100%"
-            noMargin
-            onDomainChanged={(x) => {
-              if (Math.ceil(x.end) - Math.floor(x.start) > 10) {
-                setCoordinates({
-                  chromosome: coordinates.chromosome,
-                  start: Math.floor(x.start),
-                  end: Math.ceil(x.end),
-                })
-              }
-            }}
-          >
-            {highlight && (
-              <rect fill="#8ec7d1" fillOpacity={0.5} height={'100%'} x={l(highlight.start)} width={l(highlight.end) - l(highlight.start)} />
-            )}
-            <RulerTrack domain={coordinates} height={30} width={1400} />
-            <>
-              {props.accession && <rect fill="#FAA4A4" fillOpacity={0.3} height={'100%'} x={l(props.accession.start)} width={l(props.accession.end) - l(props.accession.start)} />
-              }
-            </>
-            <EGeneTracks
-              genes={groupedTranscripts || []}
-              expandedCoordinates={coordinates}
-              squish={coordinates.end - coordinates.start >= 500000 ? true : false}
-            />
-            <DefaultTracks
-              assembly={props.assembly}
-              domain={coordinates}
-              oncCREMousedOver={(x) => x && setHighlight(x)}
-              oncCREMousedOut={() => setHighlight(null)}
-            />
-            <BulkAtacTracks
-              assembly="GRCh38"
-              domain={coordinates}
-              defaultcelltypes={props.defaultcelltypes}
-            />
-            {
-              /**
-               * @todo Need to make sure chrombpnet tracks also include Corces 
-               */
+  return (<>
+    <Grid2 container spacing={3} sx={{ mt: "1rem", mb: "1rem" }}>
+      <Grid2
+        size={{
+          xs: 12,
+          lg: 12
+        }}>
+        <br />
+        <CytobandView innerWidth={1000} height={15} chromosome={coordinates.chromosome!} assembly={"hg38"} position={coordinates} />
+        <br />
+        <div style={{ textAlign: "center" }}>
+          <Controls onDomainChanged={onDomainChanged} domain={coordinates || props.coordinates} />
+        </div>
+        <br />
+        <br />
+        <Box id="GB">
+          <GenomeBrowser
+          svgRef={svgRef}      
+          domain={coordinates}
+          innerWidth={1400}
+          width="100%"
+          noMargin
+          onDomainChanged={(x) => {
+            if (Math.ceil(x.end) - Math.floor(x.start) > 10) {
+              setCoordinates({
+                chromosome: coordinates.chromosome,
+                start: Math.floor(x.start),
+                end: Math.ceil(x.end),
+              })
             }
-            {/* <ChromBPNetAtacTracks
-              domain={coordinates}
-              defaultcelltypes={props.defaultcelltypes}
-            /> */}
-          </GenomeBrowser>
-          </Box>
-          
-        </Grid2>
+          }}
+        >
+          {highlight && (
+            <rect fill="#8ec7d1" fillOpacity={0.5} height={'100%'} x={l(highlight.start)} width={l(highlight.end) - l(highlight.start)} />
+          )}
+          <RulerTrack domain={coordinates} height={30} width={1400} />
+          <>
+            {props.accession && <rect fill="#FAA4A4" fillOpacity={0.3} height={'100%'} x={l(props.accession.start)} width={l(props.accession.end) - l(props.accession.start)} />
+            }
+          </>
+          <EGeneTracks
+            genes={groupedTranscripts || []}
+            expandedCoordinates={coordinates}
+            squish={coordinates.end - coordinates.start >= 500000 ? true : false}
+          />
+          <DefaultTracks
+            assembly={props.assembly}
+            domain={coordinates}
+            oncCREMousedOver={(x) => x && setHighlight(x)}
+            oncCREMousedOut={() => setHighlight(null)}
+          />
+          <BulkAtacTracks
+            assembly="GRCh38"
+            domain={coordinates}
+            defaultcelltypes={props.defaultcelltypes}
+          />
+          {
+            /**
+             * @todo Need to make sure chrombpnet tracks also include Corces 
+             */
+          }
+          {/* <ChromBPNetAtacTracks
+            domain={coordinates}
+            defaultcelltypes={props.defaultcelltypes}
+          /> */}
+        </GenomeBrowser>
+        </Box>
+        
       </Grid2>
-    </>
-  )
+    </Grid2>
+  </>);
 }

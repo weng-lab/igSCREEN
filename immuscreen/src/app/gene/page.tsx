@@ -3,7 +3,7 @@ import React, { useState } from "react"
 import { Tabs, Tab, Typography, colors } from "@mui/material"
 import { client, toScientificNotation } from "../../common/utils"
 import { StyledTab } from "../../common/utils"
-import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
+import Grid2 from "@mui/material/Grid2"
 import { useQuery } from "@apollo/client"
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation"
 import { DataTable } from "@weng-lab/psychscreen-ui-components"
@@ -74,149 +74,156 @@ const Gene = () => {
     client,
   })
 
-  return (
-    searchParams.get('gene') ?
-      // Gene Selected View
-      <Grid2 container sx={{ maxWidth: "90%", mr: "auto", ml: "auto", mt: "3rem" }}>
-        <Grid2 container spacing={3} sx={{ mt: "2rem", mb: "1rem" }}>
-          <Grid2 xs={12} lg={12}>
-            {searchParams.get("gene") && <Typography variant="h4">Gene Details: <i>{searchParams.get("gene")}</i></Typography>}
-          </Grid2>
-          <Grid2 xs={12} lg={12}>
-            <Tabs aria-label="basic tabs example" value={value} onChange={handleChange}>
-              <StyledTab label="Genome Browser" />
-              <StyledTab label="eQTLs" />
-              <StyledTab label="Gene Expression" />
-            </Tabs>
-          </Grid2>
-        </Grid2>
-        {value === 0 &&
-          <Grid2 xs={12}>
-            <GenomeBrowserView
-              gene={searchParams.get('gene')}
-              assembly={"GRCh38"}
-              coordinates={{
-                start: +searchParams.get("start") - 20000, end: +searchParams.get("end") + 20000,
-                chromosome: searchParams.get("chromosome")
-              }}
-            />
-          </Grid2>
-        }
-        {value === 1 && !loading && !soskicLoading && !yazarLoading &&
-          <Grid2 container spacing={3}>
-            <Grid2 xs={12}>
-              <DataTable
-                columns={[
-                  {
-                    header: "Variant Id",
-                    value: (row) => row.variant_id || "",
-                  },
-                  {
-                    header: "Nominal P",
-                    HeaderRender: () => <Typography variant="body2">Nominal <i>P</i></Typography>,
-                    value: (row) => row.pval_nominal && toScientificNotation(row.pval_nominal, 2) || 0,
-                  },
-                  {
-                    header: "Beta P",
-                    HeaderRender: () => <Typography variant="body2">Beta <i>P</i></Typography>,
-                    value: (row) => row.pval_beta && toScientificNotation(row.pval_beta, 2) || 0,
-                  }
-                ]}
-                tableTitle={`GTEX whole-blood eQTLs for ${searchParams.get('gene')}:`}
-                rows={data?.icreeQTLQuery || []}
-                itemsPerPage={10}
-              />
-            </Grid2>
-            <Grid2 xs={12}>
-              <DataTable
-                columns={[
-                  {
-                    header: "SNP",
-                    value: (row) => row.rsid || "",
-                  },
-                  {
-                    header: "P",
-                    HeaderRender: () => <Typography variant="body2"><i>P</i></Typography>,
-                    value: (row) => row.pvalue && toScientificNotation(row.pvalue, 2) || 0,
-                  },
-                  {
-                    header: "Q",
-                    HeaderRender: () => <Typography variant="body2"><i>Q</i></Typography>,
-                    value: (row) => row.qvalue && toScientificNotation(row.qvalue, 2) || 0,
-                  },
-                  {
-                    header: "Celltype",
-                    value: (row) => row.celltype || "",
-                  }
-                ]}
-                tableTitle={`Yazar.Powell eQTLs for ${searchParams.get('gene')}:`}
-                rows={(yazarData.icreeQTLQuery) || []}
-                sortColumn={3}
-                itemsPerPage={10}
-              />
-            </Grid2>
-            <Grid2 xs={12}>
-              <DataTable
-                columns={[
-                  {
-                    header: "Variant Id",
-                    value: (row) => row.variant_id || "",
-                  },
-                  {
-                    header: "Nominal P",
-                    HeaderRender: () => <Typography variant="body2">Nominal <i>P</i></Typography>,
-                    value: (row) => row.pval_nominal && toScientificNotation(row.pval_nominal, 2) || 0,
-                  },
-                  {
-                    header: "Beta P",
-                    HeaderRender: () => <Typography variant="body2">Beta <i>P</i></Typography>,
-                    value: (row) => row.pval_beta && toScientificNotation(row.pval_beta, 2) || 0,
-                  },
-                  {
-                    header: "Celltype",
-                    value: (row) => row.celltype || "",
-                  }
-                ]}
-                tableTitle={`Soskic.Trynka eQTLs for ${searchParams.get('gene')}:`}
-                rows={(soskicData.icreeQTLQuery) || []}
-                sortColumn={3}
-                itemsPerPage={10}
-              />
-            </Grid2>
-          </Grid2>
-        }
-        {value === 2 && rnumapdata && !rnaumaploading && rnumapdata.calderonRnaUmapQuery.length > 0 &&
-          <Grid2 xs={12} lg={12}>
-            Color Scheme:
-            <br /><br />
-            <ToggleButtonGroup
-              color="primary"
-              value={colorScheme}
-              exclusive
-              onChange={handleColorSchemeChange}
-              aria-label="Platform"
-            >
-              <ToggleButton sx={{textTransform: 'none'}} value="geneexp">Gene Expression</ToggleButton>
-              <ToggleButton sx={{textTransform: 'none'}} value="celltype">Cell Type Cluster</ToggleButton>
-            </ToggleButtonGroup>
-            <br />
-            <br />
-            <UmapPlot colorScheme={colorScheme} data={rnumapdata.calderonRnaUmapQuery.map(d => { return { ...d, value: Math.log(d.value + 0.01) } })} plottitle={"log10 TPM"} />
-          </Grid2>
-        }
+  return (searchParams.get('gene') ? // Gene Selected View
+  <Grid2 container sx={{ maxWidth: "90%", mr: "auto", ml: "auto", mt: "3rem" }}>
+    <Grid2 container spacing={3} sx={{ mt: "2rem", mb: "1rem" }}>
+      <Grid2
+        size={{
+          xs: 12,
+          lg: 12
+        }}>
+        {searchParams.get("gene") && <Typography variant="h4">Gene Details: <i>{searchParams.get("gene")}</i></Typography>}
       </Grid2>
-      :
-      //Gene Not Selected View
-      <Grid2 container spacing={6} sx={{ mr: "auto", ml: "auto", mt: "3rem" }}>
-        <Grid2 xs={6} sx={{ mt: "5em", ml: "2em" }}>
-          <Typography variant="h3">Gene Portal</Typography>
-          <br />
-          <br />
-          <br />
-          {<GeneAutoComplete assembly={"GRCh38"} />}
+      <Grid2
+        size={{
+          xs: 12,
+          lg: 12
+        }}>
+        <Tabs aria-label="basic tabs example" value={value} onChange={handleChange}>
+          <StyledTab label="Genome Browser" />
+          <StyledTab label="eQTLs" />
+          <StyledTab label="Gene Expression" />
+        </Tabs>
+      </Grid2>
+    </Grid2>
+    {value === 0 &&
+      <Grid2 size={12}>
+        <GenomeBrowserView
+          gene={searchParams.get('gene')}
+          assembly={"GRCh38"}
+          coordinates={{
+            start: +searchParams.get("start") - 20000, end: +searchParams.get("end") + 20000,
+            chromosome: searchParams.get("chromosome")
+          }}
+        />
+      </Grid2>
+    }
+    {value === 1 && !loading && !soskicLoading && !yazarLoading &&
+      <Grid2 container spacing={3}>
+        <Grid2 size={12}>
+          <DataTable
+            columns={[
+              {
+                header: "Variant Id",
+                value: (row: any) => row.variant_id || "",
+              },
+              {
+                header: "Nominal P",
+                HeaderRender: () => <Typography variant="body2">Nominal <i>P</i></Typography>,
+                value: (row: any) => row.pval_nominal && toScientificNotation(row.pval_nominal, 2) || 0,
+              },
+              {
+                header: "Beta P",
+                HeaderRender: () => <Typography variant="body2">Beta <i>P</i></Typography>,
+                value: (row: any) => row.pval_beta && toScientificNotation(row.pval_beta, 2) || 0,
+              }
+            ]}
+            tableTitle={`GTEX whole-blood eQTLs for ${searchParams.get('gene')}:`}
+            rows={data?.icreeQTLQuery || []}
+            itemsPerPage={10}
+          />
+        </Grid2>
+        <Grid2 size={12}>
+          <DataTable
+            columns={[
+              {
+                header: "SNP",
+                value: (row: any) => row.rsid || "",
+              },
+              {
+                header: "P",
+                HeaderRender: () => <Typography variant="body2"><i>P</i></Typography>,
+                value: (row: any) => row.pvalue && toScientificNotation(row.pvalue, 2) || 0,
+              },
+              {
+                header: "Q",
+                HeaderRender: () => <Typography variant="body2"><i>Q</i></Typography>,
+                value: (row: any) => row.qvalue && toScientificNotation(row.qvalue, 2) || 0,
+              },
+              {
+                header: "Celltype",
+                value: (row: any) => row.celltype || "",
+              }
+            ]}
+            tableTitle={`Yazar.Powell eQTLs for ${searchParams.get('gene')}:`}
+            rows={(yazarData.icreeQTLQuery) || []}
+            sortColumn={3}
+            itemsPerPage={10}
+          />
+        </Grid2>
+        <Grid2 size={12}>
+          <DataTable
+            columns={[
+              {
+                header: "Variant Id",
+                value: (row: any) => row.variant_id || "",
+              },
+              {
+                header: "Nominal P",
+                HeaderRender: () => <Typography variant="body2">Nominal <i>P</i></Typography>,
+                value: (row: any) => row.pval_nominal && toScientificNotation(row.pval_nominal, 2) || 0,
+              },
+              {
+                header: "Beta P",
+                HeaderRender: () => <Typography variant="body2">Beta <i>P</i></Typography>,
+                value: (row: any) => row.pval_beta && toScientificNotation(row.pval_beta, 2) || 0,
+              },
+              {
+                header: "Celltype",
+                value: (row: any) => row.celltype || "",
+              }
+            ]}
+            tableTitle={`Soskic.Trynka eQTLs for ${searchParams.get('gene')}:`}
+            rows={(soskicData.icreeQTLQuery) || []}
+            sortColumn={3}
+            itemsPerPage={10}
+          />
         </Grid2>
       </Grid2>
-  )
+    }
+    {value === 2 && rnumapdata && !rnaumaploading && rnumapdata.calderonRnaUmapQuery.length > 0 &&
+      <Grid2
+        size={{
+          xs: 12,
+          lg: 12
+        }}>
+        Color Scheme:
+        <br /><br />
+        <ToggleButtonGroup
+          color="primary"
+          value={colorScheme}
+          exclusive
+          onChange={handleColorSchemeChange}
+          aria-label="Platform"
+        >
+          <ToggleButton sx={{textTransform: 'none'}} value="geneexp">Gene Expression</ToggleButton>
+          <ToggleButton sx={{textTransform: 'none'}} value="celltype">Cell Type Cluster</ToggleButton>
+        </ToggleButtonGroup>
+        <br />
+        <br />
+        <UmapPlot colorScheme={colorScheme} data={rnumapdata.calderonRnaUmapQuery.map(d => { return { ...d, value: Math.log(d.value + 0.01) } })} plottitle={"log10 TPM"} />
+      </Grid2>
+    }
+  </Grid2> : //Gene Not Selected View
+  <Grid2 container spacing={6} sx={{ mr: "auto", ml: "auto", mt: "3rem" }}>
+    <Grid2 sx={{ mt: "5em", ml: "2em" }} size={6}>
+      <Typography variant="h3">Gene Portal</Typography>
+      <br />
+      <br />
+      <br />
+      {<GeneAutoComplete assembly={"GRCh38"} />}
+    </Grid2>
+  </Grid2>);
 }
 
 export default Gene;

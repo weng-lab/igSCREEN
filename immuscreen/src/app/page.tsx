@@ -4,7 +4,7 @@
 import { Box, Button, Divider, FormControl, MenuItem, Stack, Typography } from "@mui/material"
 import React, { useState } from "react"
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
+import Grid2 from "@mui/material/Grid2"
 import { GeneAutoComplete } from "../common/components/mainsearch/GeneAutocomplete";
 import { SnpAutoComplete } from "../common/components/mainsearch/SnpAutocomplete";
 import { CcreAutoComplete } from "../common/components/mainsearch/CcreAutocomplete";
@@ -26,8 +26,8 @@ const Home = () => {
   };
 
   return (
-    <Grid2 container pt={3} maxWidth={{ xl: "60%", lg: "75%", md: "85%", sm: "90%", xs: "95%" }} margin={"auto"}>
-      <Grid2 xs={12}>
+    (<Grid2 container pt={3} maxWidth={{ xl: "60%", lg: "75%", md: "85%", sm: "90%", xs: "95%" }} margin={"auto"}>
+      <Grid2 size={12}>
         <Image
           src="/igSCREEN_red_light.png"
           width={400}
@@ -55,7 +55,7 @@ const Home = () => {
                 : <CcreAutoComplete textColor={"black"} assembly={"GRCh38"} />
         }
       </Grid2>
-      <Grid2 xs={12} mt={10} mb={5}>
+      <Grid2 mt={10} mb={5} size={12}>
         <Divider>
           <Stack
             alignItems={"center"}
@@ -71,19 +71,31 @@ const Home = () => {
         </Divider>
       </Grid2>
       {/* Portals */}
-      <Grid2 xs={12} mb={5}>
+      <Grid2 mb={5} size={12}>
         <div>
           <Grid2 container rowSpacing={10}>
-            <Grid2 xs={12}>
+            <Grid2 size={12}>
               {/* Gene Portal */}
               <div>
-                <Grid2 container xs={12} justifyContent={"space-between"} spacing={3}>
-                  <Grid2 xs={12} md={6} order={{ xs: 2, md: 1 }} alignSelf={"center"}>
+                <Grid2 container justifyContent={"space-between"} spacing={3} size={12}>
+                  <Grid2
+                    order={{ xs: 2, md: 1 }}
+                    alignSelf={"center"}
+                    size={{
+                      xs: 12,
+                      md: 6
+                    }}>
                     <Typography variant="h4">Gene Portal</Typography>
                     <Typography mb={2}>Explore gene expression across immune cell types at bulk and single-cell resolution for 63 cell types across 305 experiments.</Typography>
                     <GeneAutoComplete assembly={"GRCh38"} />
                   </Grid2>
-                  <Grid2 xs={12} md={6} order={{ xs: 1, md: 2 }} minHeight={300}>
+                  <Grid2
+                    order={{ xs: 1, md: 2 }}
+                    minHeight={300}
+                    size={{
+                      xs: 12,
+                      md: 6
+                    }}>
                     <Box position={"relative"} height={"100%"} width={'100%'} sx={{ objectPosition: { md: "right bottom", xs: "left bottom" } }}>
                       <Image
                         style={{ objectFit: "contain", objectPosition: "inherit" }}
@@ -96,14 +108,20 @@ const Home = () => {
                 </Grid2>
               </div>
             </Grid2>
-            <Grid2 xs={12}>
+            <Grid2 size={12}>
               <Divider />
             </Grid2>
-            <Grid2 xs={12}>
+            <Grid2 size={12}>
               {/* Element Portal */}
               <div>
-                <Grid2 container xs={12} justifyContent={"space-between"} spacing={3}>
-                  <Grid2 xs={12} md={6} order={{ xs: 1, md: 1 }} minHeight={300}>
+                <Grid2 container justifyContent={"space-between"} spacing={3} size={12}>
+                  <Grid2
+                    order={{ xs: 1, md: 1 }}
+                    minHeight={300}
+                    size={{
+                      xs: 12,
+                      md: 6
+                    }}>
                     <Box position={"relative"} height={"100%"} width={'100%'} sx={{ objectPosition: { md: "left bottom", xs: "left bottom" } }}>
                       <Image
                         style={{ objectFit: "contain", objectPosition: "inherit" }}
@@ -113,7 +131,13 @@ const Home = () => {
                       />
                     </Box>
                   </Grid2>
-                  <Grid2 xs={12} md={6} order={{ xs: 1, md: 1 }} alignSelf={"center"}>
+                  <Grid2
+                    order={{ xs: 1, md: 1 }}
+                    alignSelf={"center"}
+                    size={{
+                      xs: 12,
+                      md: 6
+                    }}>
                     <Typography variant="h4">Element Portal</Typography>
                     <Typography>Explore regulatory element activity (immune cCREs) across immune cell types at bulk and single-cell resolution for 63 cell types across 305 experiments.</Typography>
                     <FormControl variant="standard" sx={{ mb: 2 }}>
@@ -135,19 +159,31 @@ const Home = () => {
                 </Grid2>
               </div>
             </Grid2>
-            <Grid2 xs={12}>
+            <Grid2 size={12}>
               <Divider />
             </Grid2>
-            <Grid2 xs={12}>
+            <Grid2 size={12}>
               {/* SNP Portal */}
               <div>
-                <Grid2 container xs={12} justifyContent={"space-between"} spacing={3}>
-                  <Grid2 xs={12} md={6} order={{ xs: 2, md: 1 }} alignSelf={"center"}>
+                <Grid2 container justifyContent={"space-between"} spacing={3} size={12}>
+                  <Grid2
+                    order={{ xs: 2, md: 1 }}
+                    alignSelf={"center"}
+                    size={{
+                      xs: 12,
+                      md: 6
+                    }}>
                     <Typography variant="h4">SNP Portal</Typography>
                     <Typography mb={2}>Search SNPs of interest and explore their impact on gene expression, chromatin accessibility, transcription factor (TF) binding and other molecular traits in immune cells.</Typography>
                     <SnpAutoComplete assembly={"GRCh38"} />
                   </Grid2>
-                  <Grid2 xs={12} md={6} order={{ xs: 1, md: 2 }} minHeight={300}>
+                  <Grid2
+                    order={{ xs: 1, md: 2 }}
+                    minHeight={300}
+                    size={{
+                      xs: 12,
+                      md: 6
+                    }}>
                     <Box position={"relative"} height={"100%"} width={'100%'} sx={{ objectPosition: { md: "right bottom", xs: "left bottom" } }}>
                       <Image
                         style={{ objectFit: "contain", objectPosition: "inherit" }}
@@ -160,14 +196,20 @@ const Home = () => {
                 </Grid2>
               </div>
             </Grid2>
-            <Grid2 xs={12}>
+            <Grid2 size={12}>
               <Divider />
             </Grid2>
-            <Grid2 xs={12}>
+            <Grid2 size={12}>
               {/* LDSC Portal */}
               <div>
-                <Grid2 container xs={12} justifyContent={"space-between"} spacing={3}>
-                  <Grid2 xs={12} md={6} order={{ xs: 1, md: 1 }} minHeight={300}>
+                <Grid2 container justifyContent={"space-between"} spacing={3} size={12}>
+                  <Grid2
+                    order={{ xs: 1, md: 1 }}
+                    minHeight={300}
+                    size={{
+                      xs: 12,
+                      md: 6
+                    }}>
                     <Box position={"relative"} height={"100%"} width={'100%'} sx={{ objectPosition: { md: "left bottom", xs: "left bottom" } }}>
                       <Image
                         style={{ objectFit: "contain", objectPosition: "inherit" }}
@@ -177,7 +219,13 @@ const Home = () => {
                       />
                     </Box>
                   </Grid2>
-                  <Grid2 xs={12} md={6} order={{ xs: 1, md: 1 }} alignSelf={"center"}>
+                  <Grid2
+                    order={{ xs: 1, md: 1 }}
+                    alignSelf={"center"}
+                    size={{
+                      xs: 12,
+                      md: 6
+                    }}>
                     <Typography variant="h4">Phenotype Portal</Typography>
                     <Typography mb={2}>Explore heritability enrichment for 280+ traits within gene regulatory features, such as immune cCREs.</Typography>
                     <Button variant="contained" href="/phenotype">
@@ -187,21 +235,33 @@ const Home = () => {
                 </Grid2>
               </div>
             </Grid2>
-            <Grid2 xs={12}>
+            <Grid2 size={12}>
               <Divider />
             </Grid2>
-            <Grid2 xs={12}>
+            <Grid2 size={12}>
               {/* Cell Activity Portal */}
               <div>
-                <Grid2 container xs={12} justifyContent={"space-between"} spacing={3}>
-                  <Grid2 xs={12} md={6} order={{ xs: 2, md: 1 }} alignSelf={"center"}>
+                <Grid2 container justifyContent={"space-between"} spacing={3} size={12}>
+                  <Grid2
+                    order={{ xs: 2, md: 1 }}
+                    alignSelf={"center"}
+                    size={{
+                      xs: 12,
+                      md: 6
+                    }}>
                     <Typography variant="h4">Immune cCRE Activity by Cell Type</Typography>
                     <Typography mb={2}>Compare immune cCRE activity between immune cell types.</Typography>
                     <Button variant="contained" href="/celllineage">
                       Explore cCRE activity
                     </Button>
                   </Grid2>
-                  <Grid2 xs={12} md={6} order={{ xs: 1, md: 2 }} minHeight={300}>
+                  <Grid2
+                    order={{ xs: 1, md: 2 }}
+                    minHeight={300}
+                    size={{
+                      xs: 12,
+                      md: 6
+                    }}>
                     <Box position={"relative"} height={"100%"} width={'100%'} sx={{ objectPosition: { md: "right bottom", xs: "left bottom" } }}>
                       <Image
                         style={{ objectFit: "contain", objectPosition: "inherit" }}
@@ -217,8 +277,8 @@ const Home = () => {
           </Grid2>
         </div>
       </Grid2>
-    </Grid2>
-  )
+    </Grid2>)
+  );
 }
 
 export default Home;
