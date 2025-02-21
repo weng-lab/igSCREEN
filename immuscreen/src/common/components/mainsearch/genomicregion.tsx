@@ -1,7 +1,7 @@
 import { TextField, IconButton, Stack, Select, MenuItem, SelectChangeEvent, FormControl, InputLabel, Typography, FormControlLabel, Radio, RadioGroup } from "@mui/material"
 import { useState, SetStateAction, useEffect, useMemo } from "react"
 import { Search } from "@mui/icons-material"
-import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
+import Grid2 from "@mui/material/Grid2"
 import { parseGenomicRegion } from "./parsegenomicregion"
 import Link from "next/link"
 
@@ -45,8 +45,8 @@ const GenomicRegion = (props: { assembly: "mm10" | "GRCh38", header?: boolean })
   }, [value, inputType, props.assembly, chromosome, start, end])
 
   return (
-    <Grid2 container spacing={2}>
-      {!props.header && <Grid2 xs={12} pt={0}>
+    (<Grid2 container spacing={2}>
+      {!props.header && <Grid2 pt={0} size={12}>
         <FormControl>
           {/* <FormLabel id="demo-row-radio-buttons-group-label">Input Format</FormLabel> */}
           <RadioGroup
@@ -61,7 +61,7 @@ const GenomicRegion = (props: { assembly: "mm10" | "GRCh38", header?: boolean })
           </RadioGroup>
         </FormControl>
       </Grid2>}
-      <Grid2 xs={12}>
+      <Grid2 size={12}>
         <Stack direction="row" alignItems="center">
           {inputType === "Separated" ?
             //Separated Input
@@ -192,8 +192,8 @@ const GenomicRegion = (props: { assembly: "mm10" | "GRCh38", header?: boolean })
           </IconButton>
         </Stack>
       </Grid2>
-    </Grid2>
-  )
+    </Grid2>)
+  );
 }
 
 export default GenomicRegion

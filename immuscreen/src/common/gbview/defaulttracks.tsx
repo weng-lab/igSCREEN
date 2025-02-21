@@ -62,11 +62,11 @@ export const TitledTrack: React.FC<{
     useEffect(() => onHeightChanged && onHeightChanged(height + 40), [height, onHeightChanged])
 
     return (
-      <g transform={transform}>
+      (<g transform={transform}>
         <EmptyTrack height={40} width={1400} transform="translate(0,8)" id="" text={title} />
         {url.endsWith(".bigBed") || url.endsWith(".bigbed") ? (
           //This is the cCRE track
-          <DenseBigBed
+          (<DenseBigBed
             width={1400}
             height={height}
             domain={domain}
@@ -87,7 +87,7 @@ export const TitledTrack: React.FC<{
                 </div>
               )
             }}
-          />
+          />)
         ) : (
           <FullBigWig
             transform="translate(0,40)"
@@ -100,8 +100,8 @@ export const TitledTrack: React.FC<{
             noTransparency
           />
         )}
-      </g>
-    )
+      </g>)
+    );
   }
 
 const DefaultTracks: React.FC<DefaultTracksProps> = (props) => {

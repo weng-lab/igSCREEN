@@ -8,7 +8,7 @@ import { debounce } from "@mui/material/utils"
 import { useRouter } from "next/navigation"
 import { Search } from "@mui/icons-material"
 import { Stack, IconButton } from "@mui/material"
-import Grid2 from "@mui/material/Unstable_Grid2"
+import Grid2 from "@mui/material/Grid2"
 
 ///search?assembly=GRCh38&chromosome=chr11&start=5205263&end=5381894&accession=EH38E1516972
 
