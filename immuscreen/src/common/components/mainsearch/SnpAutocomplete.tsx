@@ -4,7 +4,7 @@ import TextField from "@mui/material/TextField"
 import Autocomplete from "@mui/material/Autocomplete"
 import Typography from "@mui/material/Typography"
 import { debounce } from "@mui/material/utils"
-import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
+import Grid2 from "@mui/material/Grid2"
 import { IconButton, Stack } from "@mui/material"
 import { Search } from "@mui/icons-material"
 

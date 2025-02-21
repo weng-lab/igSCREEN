@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from "react"
-import Grid2 from "../../mui-client-wrappers/Grid2"
+import Grid2 from "@mui/material/Grid2"
 import { Stack, TextField, IconButton, InputAdornment, InputBaseProps, createTheme } from "@mui/material"
 import SearchIcon from "@mui/icons-material/Search"
 import GenomeSwitch from "../GenomeSwitch"

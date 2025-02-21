@@ -6,7 +6,7 @@ import { client } from "../../common/utils"
 import SearchIcon from "@mui/icons-material/Search"
 import { Box, CircularProgress, Collapse, List, ListItemButton, ListItemText, Stack, ToggleButtonGroup, Typography } from "@mui/material"
 import { Tabs } from "@mui/material"
-import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
+import Grid2 from "@mui/material/Grid2"
 import { TextField, IconButton, InputAdornment } from "@mui/material"
 import { FormControl, MenuItem } from "@mui/material"
 import { ApolloError, useQuery } from "@apollo/client"
@@ -172,7 +172,7 @@ export default function Icres() {
   return !searchParams.get('accession') && !searchParams.get('chromosome') ? (
     <main>
       <Grid2 container spacing={6} sx={{ mr: "auto", ml: "auto", mt: "3rem" }}>
-        <Grid2 xs={6}>
+        <Grid2 size={6}>
           <Typography variant="h3">iCRE Portal</Typography>
           <br />
           <FormControl variant="standard">
@@ -223,10 +223,18 @@ export default function Icres() {
     <main>
       <Grid2 container sx={{ maxWidth: "90%", mr: "auto", ml: "auto", mt: "3rem" }}>
         <Grid2 container sx={{ ml: "0.5em", mt: "4rem", mb: "2rem" }}>
-          <Grid2 xs={12} lg={12}>
+          <Grid2
+            size={{
+              xs: 12,
+              lg: 12
+            }}>
             {searchParams.get("accession") && <Typography variant="h4">Accession Details: {searchParams.get("accession")}</Typography>}
           </Grid2>
-          <Grid2 xs={12} lg={12}>
+          <Grid2
+            size={{
+              xs: 12,
+              lg: 12
+            }}>
             <Tabs aria-label="icres_tabs" value={value} onChange={handleChange}>
               <StyledTab value={0} label="Genome Browser" />
               <StyledTab value={1} label="Activity UMAP" />
@@ -237,7 +245,11 @@ export default function Icres() {
           </Grid2>
         </Grid2>
         {value === 0 && adata &&
-          <Grid2 xs={12} lg={12}>
+          <Grid2
+            size={{
+              xs: 12,
+              lg: 12
+            }}>
             <GenomeBrowserView
               accession={
                 {
@@ -254,7 +266,11 @@ export default function Icres() {
         }
         {value === 1 && searchParams.get("accession") && !atacumaploading && atacumapdata && atacumapdata.calderonAtacUmapQuery.length > 0 &&
 
-          <Grid2 xs={12} lg={12}>
+          <Grid2
+            size={{
+              xs: 12,
+              lg: 12
+            }}>
             Color Scheme:
             <br /><br />
             <ToggleButtonGroup
@@ -275,50 +291,54 @@ export default function Icres() {
         }
         {value === 2 && ebidata &&
           <Grid2 container>
-            <Grid2 xs={12} lg={12}>
+            <Grid2
+              size={{
+                xs: 12,
+                lg: 12
+              }}>
               <DataTable
                 columns={[
                   {
                     header: "Chromosome",
-                    value: (row) => row.chromosome,
+                    value: (row: any) => row.chromosome,
                   },
                   {
                     header: "Position",
-                    value: (row) => row.position,
+                    value: (row: any) => row.position,
                   },
                   {
                     header: "Strongest snp risk allele",
-                    value: (row) => row.strongest_snp_risk_allele,
+                    value: (row: any) => row.strongest_snp_risk_allele,
                   },
                   {
                     header: "Risk Allele Frequency",
-                    value: (row) => row.risk_allele_frequency,
+                    value: (row: any) => row.risk_allele_frequency,
 
                   },
                   {
                     header: "P",
                     HeaderRender: () => <Typography variant="body2"><i>P</i></Typography>,
-                    value: (row) => row.p_value && toScientificNotation(row.p_value, 2) || 0,
+                    value: (row: any) => row.p_value && toScientificNotation(row.p_value, 2) || 0,
                   },
                   {
                     header: "Study",
-                    value: (row) => row.study,
+                    value: (row: any) => row.study,
                   },
                   {
                     header: "Region",
-                    value: (row) => row.region,
+                    value: (row: any) => row.region,
                   },
                   {
                     header: "Immu screen trait",
-                    value: (row) => row.immu_screen_trait
+                    value: (row: any) => row.immu_screen_trait
                   },
                   {
                     header: "mapped_trait",
-                    value: (row) => row.mapped_trait
+                    value: (row: any) => row.mapped_trait
                   },
                   {
                     header: "Pubmed Id",
-                    value: (row) => row.pubmedid
+                    value: (row: any) => row.pubmedid
 
                   }
 
@@ -333,7 +353,11 @@ export default function Icres() {
           </Grid2>
         }
         {value === 3 &&
-          <Grid2 xs={12} lg={12}>
+          <Grid2
+            size={{
+              xs: 12,
+              lg: 12
+            }}>
             <Tabs aria-label="icres_tabs" value={tabVal} onChange={handleTabChange}>
               <StyledTab value="Aggregate" label="Aggregate ATAC by Celltype" />
               <StyledTab value="Calderon" label="Study: Calderon" />
@@ -345,7 +369,11 @@ export default function Icres() {
                 :
                 icrebyctzscoredata?.calderoncorcesByCtAtacQuery.length > 0 && barplotbyctdata &&
                 <Grid2 container>
-                  <Grid2 xs={12} lg={12}>
+                  <Grid2
+                    size={{
+                      xs: 12,
+                      lg: 12
+                    }}>
                     <AtacBarPlot study={tabVal} barplotdata={barplotbyctdata} />
                   </Grid2>
                 </Grid2>
@@ -388,5 +416,5 @@ export default function Icres() {
         }
       </Grid2>
     </main>
-  )
+  );
 }

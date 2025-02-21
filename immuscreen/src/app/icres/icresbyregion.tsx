@@ -4,7 +4,7 @@ import { DataTable } from "@weng-lab/psychscreen-ui-components"
 import React, { useState } from "react"
 import { ApolloError, useQuery } from "@apollo/client"
 import { ReadonlyURLSearchParams, useSearchParams, useRouter } from "next/navigation"
-import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
+import Grid2 from "@mui/material/Grid2"
 import { StyledTab } from "../../common/utils"
 import { CircularProgress, Collapse, List, ListItemButton, ListItemText, Stack, Tooltip, Typography } from "@mui/material"
 import { Tabs } from "@mui/material"
@@ -69,13 +69,21 @@ export const IcresByRegion = (props) => {
   })
 
   return (
-    <main>
+    (<main>
       <Grid2 container sx={{ maxWidth: "80%", mr: "auto", ml: "auto", mt: "1rem" }}>
         <Grid2 container sx={{ ml: "0.5em", mt: "4rem", mb: "2rem" }}>
-          <Grid2 xs={12} lg={12}>
+          <Grid2
+            size={{
+              xs: 12,
+              lg: 12
+            }}>
             {searchParams.get("chromosome") && <Typography variant="h5">{`Showing immune Candidate cis-Regulatory Elements (cCREs) in the region ${searchParams.get('chromosome')}:${searchParams.get('start')}-${searchParams.get('end')}`}</Typography>}
           </Grid2>
-          <Grid2 xs={12} lg={12}>
+          <Grid2
+            size={{
+              xs: 12,
+              lg: 12
+            }}>
             <Tabs aria-label="icres_region_tabs" value={value} onChange={handleChange}>
               <StyledTab label="Table View" />
             </Tabs>
@@ -171,6 +179,6 @@ export const IcresByRegion = (props) => {
           />
         }
       </Grid2>
-    </main>
-  )
+    </main>)
+  );
 }

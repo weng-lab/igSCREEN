@@ -3,7 +3,7 @@ import React, { useMemo, useState } from "react"
 import { DataTable } from "@weng-lab/psychscreen-ui-components"
 import { CircularProgress, Tabs, Typography } from "@mui/material"
 import { client, toScientificNotation } from "../../common/utils"
-import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
+import Grid2 from "@mui/material/Grid2"
 import { ReadonlyURLSearchParams, useSearchParams, usePathname } from "next/navigation"
 
 import { gql } from "@apollo/client"
@@ -94,8 +94,8 @@ const Snp = () => {
         columns={[
           {
             header: "Distance to SNP",
-            value: (row) => Math.abs(row.coordinates.start - dataSNP?.snpQuery[0].coordinates.end),
-            FunctionalRender: (row) => {
+            value: (row: any) => Math.abs(row.coordinates.start - dataSNP?.snpQuery[0].coordinates.end),
+            FunctionalRender: (row: any) => {
               return (
                 loadingSNP ? <CircularProgress />
                   : errorSNP ? <Typography>Error fetching SNP location</Typography>
@@ -105,32 +105,32 @@ const Snp = () => {
           },
           {
             header: "Accession",
-            value: (row) => row.accession,
+            value: (row: any) => row.accession,
           },
           {
             header: "rDHS",
-            value: (row) => row.rdhs,
+            value: (row: any) => row.rdhs,
           },
           {
             header: "Chromosome",
-            value: (row) => row.coordinates.chromosome,
+            value: (row: any) => row.coordinates.chromosome,
           },
           {
             header: "Start",
-            value: (row) => row.coordinates.start,
+            value: (row: any) => row.coordinates.start,
           },
           {
             header: "End",
-            value: (row) => row.coordinates.end,
+            value: (row: any) => row.coordinates.end,
           },
           {
             header: "Class",
-            value: (row) => row.group,
+            value: (row: any) => row.group,
           },
           {
             header: "Cell Type Specific Activity",
-            value: (row) => row.celltypes.length,
-            FunctionalRender: (row) => <ActiveCellTypesList celltypes={row.celltypes} />
+            value: (row: any) => row.celltypes.length,
+            FunctionalRender: (row: any) => <ActiveCellTypesList celltypes={row.celltypes} />
           },
         ]}
         tableTitle={`iCREs within 2kbp of ${snp}`}
@@ -144,7 +144,7 @@ const Snp = () => {
   return !snp ? (<main>
 
     <Grid2 container spacing={6} sx={{ mr: "auto", ml: "auto", mt: "3rem" }}>
-      <Grid2 xs={6} sx={{ mt: "5em", ml: "2em" }}>
+      <Grid2 sx={{ mt: "5em", ml: "2em" }} size={6}>
         <Typography variant="h3">SNP Portal</Typography>
         <br />
         <br />
@@ -155,7 +155,11 @@ const Snp = () => {
   </main>) : (
     <main>
       <Grid2 container spacing={4} sx={{ maxWidth: "70%", mr: "auto", ml: "auto", mt: "3rem" }}>
-        <Grid2 xs={12} lg={12}>
+        <Grid2
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
           {snp && <Typography variant="h4">SNP Details: {snp}{dataSNP && " - " + dataSNP.snpQuery[0].coordinates.chromosome + ":" + dataSNP.snpQuery[0].coordinates.end}</Typography>}
           <Tabs aria-label="snps_tabs" value={value} onChange={handleChange}>
             <StyledTab label="Nearby iCREs" />
@@ -164,32 +168,40 @@ const Snp = () => {
           </Tabs>
         </Grid2>
         {value === 0 &&
-          <Grid2 xs={12} lg={12}>
+          <Grid2
+            size={{
+              xs: 12,
+              lg: 12
+            }}>
             <NearbyICREs />
           </Grid2>
         }
         {value === 1 &&
           <>
-          <Grid2 xs={12} lg={12}>
+          <Grid2
+            size={{
+              xs: 12,
+              lg: 12
+            }}>
             <DataTable
               columns={[
                 {
                   header: "Gene Id",
-                  value: (row) => row.geneid || "",
+                  value: (row: any) => row.geneid || "",
                 },
                 {
                   header: "P",
                   HeaderRender: () => <Typography variant="body2"><i>P</i></Typography>,
-                  value: (row) => row.pvalue && toScientificNotation(row.pvalue, 2) || 0,
+                  value: (row: any) => row.pvalue && toScientificNotation(row.pvalue, 2) || 0,
                 },
                 {
                   header: "Q",
                   HeaderRender: () => <Typography variant="body2"><i>Q</i></Typography>,
-                  value: (row) => row.qvalue && toScientificNotation(row.qvalue, 2) || 0,
+                  value: (row: any) => row.qvalue && toScientificNotation(row.qvalue, 2) || 0,
                 },
                 {
                   header: "Celltype",
-                  value: (row) => row.celltype || "",
+                  value: (row: any) => row.celltype || "",
                 }
               ]}
               tableTitle={`Yazar.Powell eQTLs for ${searchParams.get('rsid')}`}
@@ -249,7 +261,7 @@ const Snp = () => {
         }
       </Grid2>
     </main>
-  )
+  );
 }
 
 export default Snp;

@@ -82,7 +82,7 @@ export const TitledTrack: React.FC<{
       [height, onHeightChanged]
     );
     return (
-      <g transform={transform}>
+      (<g transform={transform}>
         <EmptyTrack
           height={40}
           width={1400}
@@ -103,7 +103,7 @@ export const TitledTrack: React.FC<{
           />
         ) : (
           // This is the bulk atac
-          <FullBigWig
+          (<FullBigWig
             transform="translate(0,40)"
             width={1400}
             height={height}
@@ -112,9 +112,9 @@ export const TitledTrack: React.FC<{
             color={color}
             data={data as BigWigData[]}
             noTransparency
-          />
+          />)
         )}
-      </g>
+      </g>)
     );
   };
 

@@ -2,7 +2,7 @@
 import * as React from "react"
 import CellTypeTree from "../../common/components/cellTypeTree"
 import { Ref, forwardRef, useCallback, useEffect, useMemo, useRef, useState } from "react"
-import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
+import Grid2 from "@mui/material/Grid2";
 import { Box, Button, Checkbox, CircularProgress, FormControlLabel, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Snackbar, Stack, Tooltip, Typography } from "@mui/material";
 import { gql, useLazyQuery } from "@apollo/client";
 import { client } from "../../common/utils";
@@ -15,7 +15,6 @@ import FlashOnOutlinedIcon from '@mui/icons-material/FlashOnOutlined';
 import FlashOffOutlinedIcon from '@mui/icons-material/FlashOffOutlined';
 import FlashAutoIcon from '@mui/icons-material/FlashAuto';
 import UndoOutlinedIcon from '@mui/icons-material/UndoOutlined';
-import LoadingButton from '@mui/lab/LoadingButton';
 import { ArrowRight, Circle, Download, Sync } from "@mui/icons-material";
 import { downloadSVG, extractQueryValues, generateCellLineageTreeState } from "./utils";
 import { CellQueryValue, CellLineageTreeState, CellName, DynamicCellTypeInfo } from "./types";
@@ -291,9 +290,8 @@ export default function UpSet() {
     if (queryGroup.union) {
       return (
         //All passed as one nested array to get union of all
-        `celltypes: [[\"${queryGroup.union.join('\", \"')}\"]]`
-        + `group: [\"${classes.join('\", \"')}\"]`
-      )
+        (`celltypes: [[\"${queryGroup.union.join('\", \"')}\"]]` + `group: [\"${classes.join('\", \"')}\"]`)
+      );
     } else if (queryGroup.intersect && !queryGroup.union) {
       return (
         `celltypes: [${queryGroup.intersect.map((vals: string[]) => `["${vals.join('", "')}"]`).join(', ')}]`
@@ -533,9 +531,9 @@ export default function UpSet() {
     </Box>
 
   const GenerateUpsetButton = () =>
-    <LoadingButton loading={loading_count} loadingPosition="end" disabled={noneSelected} endIcon={data_count ? <Sync /> : <BarChartOutlinedIcon />} sx={{ textTransform: "none", mt: 2, mb: 2, mr: 2 }} variant="contained" onClick={handleGenerateUpSet}>
+    <Button loading={loading_count} loadingPosition="end" disabled={noneSelected} endIcon={data_count ? <Sync /> : <BarChartOutlinedIcon />} sx={{ textTransform: "none", mt: 2, mb: 2, mr: 2 }} variant="contained" onClick={handleGenerateUpSet}>
       <span>{loading_count ? "Generating" : noneSelected ? "Select Cells to Generate UpSet" : "Generate UpSet"}</span>
-    </LoadingButton>
+    </Button>
 
   const StimulationWarning = () => 
     <Typography>Tip: Stimulating a cell does not automatically select it! Exit Stimulation Mode and click to select.</Typography>
@@ -543,67 +541,77 @@ export default function UpSet() {
   const DownloadUpsetButton = () =>
     data_count && <Button variant="text" endIcon={<Download />} sx={{ textTransform: "none" }} onClick={() => downloadSVG(svgRef, "UpSet.svg")}>Download UpSet Plot</Button>
   
-  return (
-    <>
-      <Grid2 container mt={3} ml={3} mr={3}>
-        <Grid2 xs={12} xl={5} container justifyContent={"center"}>
-          {/* Display header, checkboxes and UpSet on left on big screen */}
-          <Box display={{ xs: "none", xl: "block" }}>
-            <HeaderAbout />
-            <Box>
-              <Checkboxes />
-              <GenerateUpsetButton />
-              <DownloadUpsetButton />
-              {noneSelected && !noneStimulated && <StimulationWarning />}
-              <Box>
-                {/* {upSet} */}
-                <UpSetWithRef data_count={data_count} upSetWidth={upSetWidth} handleUpsetDownload={handleUpsetDownload} downloading={downloading} ref={svgRef} />
-              </Box>
-            </Box>
-          </Box>
-        </Grid2>
-        <Grid2 xs={12} xl={7} container justifyContent={"center"}>
+  return (<>
+    <Grid2 container mt={3} ml={3} mr={3}>
+      <Grid2
+        container
+        justifyContent={"center"}
+        size={{
+          xs: 12,
+          xl: 5
+        }}>
+        {/* Display header, checkboxes and UpSet on left on big screen */}
+        <Box display={{ xs: "none", xl: "block" }}>
+          <HeaderAbout />
           <Box>
-            {/* On smaller screen display header on top */}
-            <Box display={{ xs: "block", xl: "none" }}>
-              <HeaderAbout />
-            </Box>
-            <Stack spacing={1} direction="row" mb={3}>
-              <Tooltip title="Tip: Holding Option/Command (MacOS) or Alt/Windows (Windows) will enter stimulate mode. Stimulating a cell does NOT select it.">
-                <Button endIcon={stimulateMode ? <CancelOutlinedIcon /> : <AddBoxOutlinedIcon />} sx={{ textTransform: "none" }} variant="outlined" onClick={handleToggleStimulateMode}>{stimulateMode ? 'Exit Stimulate Mode' : 'Enter Stimulate Mode'}</Button>
-              </Tooltip>
-              <Tooltip title="Note: Not all cells are stimulable">
-                <Button disabled={allStimulated} endIcon={<FlashOnOutlinedIcon />} sx={{ textTransform: "none" }} variant="outlined" onClick={() => handleStimulateAll("S")}>Stimulate All</Button>
-              </Tooltip>
-              <Button disabled={noneStimulated} endIcon={<FlashOffOutlinedIcon />} sx={{ textTransform: "none" }} variant="outlined" onClick={() => handleStimulateAll("U")}>Unstimulate All</Button>
-              <Tooltip title="Note: Not all cells are stimulable">
-                <Button disabled={allBothStimulated} endIcon={<FlashAutoIcon />} sx={{ textTransform: "none" }} variant="outlined" onClick={() => handleStimulateAll("B")}>Stim + Unstim All</Button>
-              </Tooltip>
-              <Button disabled={noneSelected} endIcon={<UndoOutlinedIcon />} sx={{ textTransform: "none" }} variant="outlined" onClick={handleUnselectAll}>Unselect All</Button>
-            </Stack>
-            {cellTypeTree}
-            {/* On smaller screen display checkboxes and UpSet plot on bottom of tree */}
-            <Box display={{ xs: "block", xl: "none" }}>
-              <Checkboxes />
-              <GenerateUpsetButton />
-              <DownloadUpsetButton />
-              {noneSelected && !noneStimulated && <StimulationWarning />}
-              <Box>
-                {/* {upSet} */}
-                <UpSetWithRef data_count={data_count} upSetWidth={upSetWidth} handleUpsetDownload={handleUpsetDownload} downloading={downloading}  ref={svgRef} />
-              </Box>
+            <Checkboxes />
+            <GenerateUpsetButton />
+            <DownloadUpsetButton />
+            {noneSelected && !noneStimulated && <StimulationWarning />}
+            <Box>
+              {/* {upSet} */}
+              <UpSetWithRef data_count={data_count} upSetWidth={upSetWidth} handleUpsetDownload={handleUpsetDownload} downloading={downloading} ref={svgRef} />
             </Box>
           </Box>
-        </Grid2>
+        </Box>
       </Grid2>
-      <Snackbar
-        sx={{ "& .MuiSnackbarContent-message": { margin: "auto" } }}
-        open={openSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        autoHideDuration={2000}
-        onClose={handleCloseSnackbar}
-        message={snackbarMessage}
-      />
-    </>
-  )
+      <Grid2
+        container
+        justifyContent={"center"}
+        size={{
+          xs: 12,
+          xl: 7
+        }}>
+        <Box>
+          {/* On smaller screen display header on top */}
+          <Box display={{ xs: "block", xl: "none" }}>
+            <HeaderAbout />
+          </Box>
+          <Stack spacing={1} direction="row" mb={3}>
+            <Tooltip title="Tip: Holding Option/Command (MacOS) or Alt/Windows (Windows) will enter stimulate mode. Stimulating a cell does NOT select it.">
+              <Button endIcon={stimulateMode ? <CancelOutlinedIcon /> : <AddBoxOutlinedIcon />} sx={{ textTransform: "none" }} variant="outlined" onClick={handleToggleStimulateMode}>{stimulateMode ? 'Exit Stimulate Mode' : 'Enter Stimulate Mode'}</Button>
+            </Tooltip>
+            <Tooltip title="Note: Not all cells are stimulable">
+              <Button disabled={allStimulated} endIcon={<FlashOnOutlinedIcon />} sx={{ textTransform: "none" }} variant="outlined" onClick={() => handleStimulateAll("S")}>Stimulate All</Button>
+            </Tooltip>
+            <Button disabled={noneStimulated} endIcon={<FlashOffOutlinedIcon />} sx={{ textTransform: "none" }} variant="outlined" onClick={() => handleStimulateAll("U")}>Unstimulate All</Button>
+            <Tooltip title="Note: Not all cells are stimulable">
+              <Button disabled={allBothStimulated} endIcon={<FlashAutoIcon />} sx={{ textTransform: "none" }} variant="outlined" onClick={() => handleStimulateAll("B")}>Stim + Unstim All</Button>
+            </Tooltip>
+            <Button disabled={noneSelected} endIcon={<UndoOutlinedIcon />} sx={{ textTransform: "none" }} variant="outlined" onClick={handleUnselectAll}>Unselect All</Button>
+          </Stack>
+          {cellTypeTree}
+          {/* On smaller screen display checkboxes and UpSet plot on bottom of tree */}
+          <Box display={{ xs: "block", xl: "none" }}>
+            <Checkboxes />
+            <GenerateUpsetButton />
+            <DownloadUpsetButton />
+            {noneSelected && !noneStimulated && <StimulationWarning />}
+            <Box>
+              {/* {upSet} */}
+              <UpSetWithRef data_count={data_count} upSetWidth={upSetWidth} handleUpsetDownload={handleUpsetDownload} downloading={downloading}  ref={svgRef} />
+            </Box>
+          </Box>
+        </Box>
+      </Grid2>
+    </Grid2>
+    <Snackbar
+      sx={{ "& .MuiSnackbarContent-message": { margin: "auto" } }}
+      open={openSnackbar}
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      autoHideDuration={2000}
+      onClose={handleCloseSnackbar}
+      message={snackbarMessage}
+    />
+  </>);
 }
