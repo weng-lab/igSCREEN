@@ -1,12 +1,9 @@
 "use client"
 import * as React from "react"
-import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Button, MenuItem, Paper, Link as MuiLink } from "@mui/material"
+import { AppBar, Box, Toolbar, Menu, Container, Button, MenuItem, Paper, Link as MuiLink } from "@mui/material"
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
-import MenuIcon from "@mui/icons-material/Menu"
 import { ThemeProvider } from "@mui/material/styles"
 import Link from "next/link"
-import nextConfig from "../../../next.config"
-import { defaultTheme } from "../lib/themes"
 import Image from 'next/image'
 
 const pageLinks = [
@@ -58,7 +55,7 @@ const ResponsiveAppBar = () => {
 
 
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <>
       <AppBar position="fixed">
         <Container maxWidth={false}>
           <Toolbar sx={{ justifyContent: "space-between" }}>
@@ -133,7 +130,7 @@ const ResponsiveAppBar = () => {
         </Container>
       </AppBar>
       <Toolbar />
-    </ThemeProvider>
+    </>
   )
 }
 export default ResponsiveAppBar

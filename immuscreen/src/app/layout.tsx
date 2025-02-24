@@ -5,7 +5,7 @@ import Footer from "../common/components/Footer"
 import { Suspense } from "react"
 import { CssBaseline } from "@mui/material"
 import { ThemeProvider } from '@mui/material/styles';
-import { defaultTheme } from "../common/lib/themes"
+import { theme } from "../common/lib/themes"
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 
 const inter = Inter({ subsets: ["latin"] })
@@ -21,7 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={inter.className} id="page-container">
         <Suspense>
           <AppRouterCacheProvider>
-            <ThemeProvider theme={defaultTheme}>
+            <ThemeProvider theme={theme}>
               <div id="content-wrapper">
                 <CssBaseline />
                 <AppBar />

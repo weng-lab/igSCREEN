@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "graphql-codegen -w && next dev",
+    "build": "graphql-codegen && next build",
     "start": "next start",
-    "export": "next export"
+    "export": "next export",
+    "compile": "graphql-codegen",
+    "watch": "graphql-codegen -w"
   },
   "dependencies": {
     "@apollo/client": "^3",
@@ -31,7 +33,7 @@
     "@visx/shape": "^3",
     "@visx/text": "^3",
     "@visx/tooltip": "^3",
-    "@weng-lab/psychscreen-ui-components": "^2.0.10",
+    "@weng-lab/psychscreen-ui-components": "^2.0.11",
     "bpnet-ui": "^0.3.8",
     "eslint": "^8",
     "eslint-config-next": "^14",
@@ -47,6 +49,7 @@
     "@graphql-codegen/cli": "^5",
     "@graphql-codegen/client-preset": "^4",
     "@graphql-typed-document-node/core": "^3",
+    "@parcel/watcher": "^2.5.1",
     "graphql": "^16",
     "typescript": "^5"
   },

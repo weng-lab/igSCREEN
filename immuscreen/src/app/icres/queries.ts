@@ -20,7 +20,7 @@ query atacUmapQuery($accession: String!)
 
 `
 export const ICRES_CT_ZSCORES_QUERY= gql`
-query calderoncorceszscoreAtacQuery($accession: [String], $study: [String]) {
+query calderoncorceszscoreAtacQuery1($accession: [String], $study: [String]) {
   calderoncorcesAtacQuery(accession: $accession,study: $study) {
     class
     celltype
