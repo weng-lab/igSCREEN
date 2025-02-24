@@ -9,7 +9,6 @@ import { GeneAutoComplete } from "../common/components/mainsearch/GeneAutocomple
 import { SnpAutoComplete } from "../common/components/mainsearch/SnpAutocomplete";
 import { CcreAutoComplete } from "../common/components/mainsearch/CcreAutocomplete";
 import Image from 'next/image'
-import MainSearch from "../common/components/mainsearch/MainSearch";
 import GenomicRegion from "../common/components/mainsearch/genomicregion";
 import { ExpandMore } from "@mui/icons-material";
 

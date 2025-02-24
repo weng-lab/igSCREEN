@@ -12,7 +12,7 @@ export const BIG_QUERY = gql`
 `
 
 export const BIOSAMPLE_QUERY = gql`
-  query q($assembly: String!) {
+  query bioampleQuery($assembly: String!) {
     ccREBiosampleQuery(assembly: $assembly) {
       biosamples {
         name

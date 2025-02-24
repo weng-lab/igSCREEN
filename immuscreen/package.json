@@ -3,26 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "graphql-codegen -w && next dev",
+    "build": "graphql-codegen && next build",
     "start": "next start",
-    "export": "next export"
-  },
-  "configureWebpack": {
-    "resolve": {
-      "extensions": [
-        "*",
-        ".mjs",
-        ".js",
-        ".jsx",
-        ".json",
-        ".gql",
-        ".graphql",
-        ".jpeg",
-        ".jpg",
-        ".png"
-      ]
-    }
+    "export": "next export",
+    "compile": "graphql-codegen",
+    "watch": "graphql-codegen -w"
   },
   "dependencies": {
     "@apollo/client": "^3",
@@ -47,25 +33,25 @@
     "@visx/shape": "^3",
     "@visx/text": "^3",
     "@visx/tooltip": "^3",
-    "@weng-lab/psychscreen-ui-components": "^2.0.10",
+    "@weng-lab/psychscreen-ui-components": "^2.0.11",
     "bpnet-ui": "^0.3.8",
     "eslint": "^8",
     "eslint-config-next": "^14",
-    "graphql": "^16",
     "logojs-react": "^2.1.1",
     "next": "^14",
     "queryz": "^0.0.3",
     "react": "^18",
     "react-dom": "^18",
-    "typescript": "^5",
     "umms-gb": "^3.9.14",
     "uuid": "^10.0.0"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
-  "packageManager": "yarn@3.5.0"
+  "devDependencies": {
+    "@graphql-codegen/cli": "^5",
+    "@graphql-codegen/client-preset": "^4",
+    "@graphql-typed-document-node/core": "^3",
+    "@parcel/watcher": "^2.5.1",
+    "graphql": "^16",
+    "typescript": "^5"
+  },
+  "packageManager": "yarn@3.5.0+sha512.2dc70be5fce9f66756d25b00a888f3ca66f86b502b76750e72ba54cec89da767b938c54124595e26f868825688e0fe3552c26c76a330673343057acadd5cfcf2"
 }
