@@ -91,8 +91,8 @@ const Gene = () => {
         }}>
         <Tabs aria-label="basic tabs example" value={value} onChange={handleChange}>
           <StyledTab label="Genome Browser" />
-          <StyledTab label="eQTLs" />
           <StyledTab label="Gene Expression" />
+          <StyledTab label="eQTLs" />
         </Tabs>
       </Grid2>
     </Grid2>
@@ -108,7 +108,30 @@ const Gene = () => {
         />
       </Grid2>
     }
-    {value === 1 && !loading && !soskicLoading && !yazarLoading &&
+    {value === 1 && rnumapdata && !rnaumaploading && rnumapdata.calderonRnaUmapQuery.length > 0 &&
+      <Grid2
+        size={{
+          xs: 12,
+          lg: 12
+        }}>
+        Color Scheme:
+        <br /><br />
+        <ToggleButtonGroup
+          color="primary"
+          value={colorScheme}
+          exclusive
+          onChange={handleColorSchemeChange}
+          aria-label="Platform"
+        >
+          <ToggleButton sx={{textTransform: 'none'}} value="geneexp">Gene Expression</ToggleButton>
+          <ToggleButton sx={{textTransform: 'none'}} value="celltype">Cell Type Cluster</ToggleButton>
+        </ToggleButtonGroup>
+        <br />
+        <br />
+        <UmapPlot colorScheme={colorScheme} data={rnumapdata.calderonRnaUmapQuery.map(d => { return { ...d, value: Math.log(d.value + 0.01) } })} plottitle={"log10 TPM"} />
+      </Grid2>
+    }
+    {value === 2 && !loading && !soskicLoading && !yazarLoading &&
       <Grid2 container spacing={3}>
         <Grid2 size={12}>
           <DataTable
@@ -189,29 +212,6 @@ const Gene = () => {
             itemsPerPage={10}
           />
         </Grid2>
-      </Grid2>
-    }
-    {value === 2 && rnumapdata && !rnaumaploading && rnumapdata.calderonRnaUmapQuery.length > 0 &&
-      <Grid2
-        size={{
-          xs: 12,
-          lg: 12
-        }}>
-        Color Scheme:
-        <br /><br />
-        <ToggleButtonGroup
-          color="primary"
-          value={colorScheme}
-          exclusive
-          onChange={handleColorSchemeChange}
-          aria-label="Platform"
-        >
-          <ToggleButton sx={{textTransform: 'none'}} value="geneexp">Gene Expression</ToggleButton>
-          <ToggleButton sx={{textTransform: 'none'}} value="celltype">Cell Type Cluster</ToggleButton>
-        </ToggleButtonGroup>
-        <br />
-        <br />
-        <UmapPlot colorScheme={colorScheme} data={rnumapdata.calderonRnaUmapQuery.map(d => { return { ...d, value: Math.log(d.value + 0.01) } })} plottitle={"log10 TPM"} />
       </Grid2>
     }
   </Grid2> : //Gene Not Selected View
