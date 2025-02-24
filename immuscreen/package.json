@@ -8,22 +8,6 @@
     "start": "next start",
     "export": "next export"
   },
-  "configureWebpack": {
-    "resolve": {
-      "extensions": [
-        "*",
-        ".mjs",
-        ".js",
-        ".jsx",
-        ".json",
-        ".gql",
-        ".graphql",
-        ".jpeg",
-        ".jpg",
-        ".png"
-      ]
-    }
-  },
   "dependencies": {
     "@apollo/client": "^3",
     "@apollo/experimental-nextjs-app-support": "^0.11",
@@ -61,11 +45,5 @@
     "umms-gb": "^3.9.14",
     "uuid": "^10.0.0"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
   "packageManager": "yarn@3.5.0"
 }
