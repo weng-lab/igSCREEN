@@ -15,7 +15,7 @@ import { getCellDisplayName } from "../celllineage/utils"
 import { ActiveCellTypesList } from "../icres/utils"
 
 const EQTL_QUERY = gql`
-  query iCREeQTLQuery($study: String!, $rsid: String) {
+  query SNPeQTLQuery($study: String!, $rsid: String) {
     icreeQTLQuery(study:$study, rsid:$rsid) {
       variant_id
       pvalue

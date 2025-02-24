@@ -40,7 +40,7 @@ function UMAPPlotLegend({ title, children }: { title: string; children: React.Re
     <div className="legend">
       <div className="title">{title}</div>
       {children}
-      <style jsx>{`
+      <style>{`
           .legend {
             line-height: 0.9em;
             color: #000000;
