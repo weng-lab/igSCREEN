@@ -1,5 +1,5 @@
 "use client"
-import React, { useMemo, useState } from "react"
+import React, { useMemo, useRef, useState } from "react"
 import { Tabs, Tab, Typography, colors, Stack, Box } from "@mui/material"
 import { client, toScientificNotation } from "../../common/utils"
 import { StyledTab } from "../../common/utils"
@@ -22,6 +22,7 @@ const Gene = () => {
 
   const [value, setValue] = useState(0)
   const [colorScheme, setcolorScheme] = useState('geneexp');
+  const graphContainerRef = useRef(null);
 
   const handleColorSchemeChange = (
     event: React.MouseEvent<HTMLElement>,
@@ -77,7 +78,12 @@ const Gene = () => {
   })
 
   const map = {
-    show: false
+    defaultOpen: true,
+    position: {
+      right: 50,
+      bottom: 50,
+    },
+    ref: graphContainerRef
   };
 
   const scatterData: Point<PointMetaData>[] = useMemo(() => {
@@ -156,7 +162,7 @@ const Gene = () => {
         </ToggleButtonGroup>
         <br />
         <br />
-        <Box overflow={"hidden"} padding={1} sx={{ border: '2px solid', borderColor: 'grey.400', borderRadius: '8px', height: '57vh', position: 'relative' }}>
+        <Box overflow={"hidden"} padding={1} sx={{ border: '2px solid', borderColor: 'grey.400', borderRadius: '8px', height: '57vh', position: 'relative' }} ref={graphContainerRef}>
             <ParentSize>
               {({ width, height }) => {
                 const squareSize = Math.min(width, height);
