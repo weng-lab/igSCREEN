@@ -1,5 +1,5 @@
 "use client"
-import React, { useMemo, useRef, useState } from "react"
+import React, { useEffect, useMemo, useRef, useState } from "react"
 import { Tabs, Tab, Typography, colors, Stack, Box } from "@mui/material"
 import { client, toScientificNotation } from "../../common/utils"
 import { StyledTab } from "../../common/utils"
@@ -16,6 +16,7 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { PointMetaData } from "./types"
 import { getCellColor } from "../../app/celllineage/utils";
 import { ParentSize } from '@visx/responsive';
+import { Text } from '@visx/text';
 
 const Gene = () => {
   const searchParams: ReadonlyURLSearchParams = useSearchParams()!
@@ -78,7 +79,7 @@ const Gene = () => {
   })
 
   const map = {
-    defaultOpen: true,
+    defaultOpen: false,
     position: {
       right: 50,
       bottom: 50,
@@ -107,6 +108,23 @@ const Gene = () => {
       };
     });
   }, [rnumapdata, colorScheme]);
+
+  useEffect(() => {
+    const graphElement = graphContainerRef.current;
+
+    const handleWheel = (event: WheelEvent) => {
+      // Prevent default scroll behavior when using the wheel in the graph
+      event.preventDefault();
+    };
+    if (graphElement) {
+      graphElement.addEventListener('wheel', handleWheel, { passive: false });
+    }
+    return () => {
+      if (graphElement) {
+        graphElement.removeEventListener('wheel', handleWheel);
+      }
+    };
+  }, []);
 
   return (searchParams.get('gene') ? // Gene Selected View
   <Grid2 container sx={{ maxWidth: "90%", mr: "auto", ml: "auto", mt: "3rem" }}>
@@ -143,47 +161,62 @@ const Gene = () => {
       </Grid2>
     }
     {value === 1 && rnumapdata && !rnaumaploading && rnumapdata.calderonRnaUmapQuery.length > 0 &&
-      <Grid2
-        size={{
-          xs: 12,
-          lg: 12
-        }}>
-        Color Scheme:
-        <br /><br />
-        <ToggleButtonGroup
-          color="primary"
-          value={colorScheme}
-          exclusive
-          onChange={handleColorSchemeChange}
-          aria-label="Platform"
-        >
-          <ToggleButton sx={{textTransform: 'none'}} value="geneexp">Gene Expression</ToggleButton>
-          <ToggleButton sx={{textTransform: 'none'}} value="celltype">Cell Type Cluster</ToggleButton>
-        </ToggleButtonGroup>
-        <br />
-        <br />
-        <Box overflow={"hidden"} padding={1} sx={{ border: '2px solid', borderColor: 'grey.400', borderRadius: '8px', height: '57vh', position: 'relative' }} ref={graphContainerRef}>
-            <ParentSize>
-              {({ width, height }) => {
-                const squareSize = Math.min(width, height);
+    <>
+        <Grid2
+          size={{
+            xs: 12,
+            lg: 12
+          }}>
+          <Grid2 size={6}>
+            Color Scheme:
+            <br /><br />
+            <ToggleButtonGroup
+              color="primary"
+              value={colorScheme}
+              exclusive
+              onChange={handleColorSchemeChange}
+              aria-label="Platform"
+            >
+              <ToggleButton sx={{ textTransform: 'none' }} value="geneexp">Gene Expression</ToggleButton>
+              <ToggleButton sx={{ textTransform: 'none' }} value="celltype">Cell Type Cluster</ToggleButton>
+            </ToggleButtonGroup>
+            <br />
+            <br />
+            <Box overflow={"hidden"} padding={1} sx={{ border: '2px solid', borderColor: 'grey.400', borderRadius: '8px', height: '60vh', position: 'relative' }} ref={graphContainerRef}>
+              <ParentSize>
+                {({ width, height }) => {
+                  const squareSize = Math.min(width, height);
 
-                return (
-                  <ScatterPlot
-                    width={squareSize}
-                    height={squareSize}
-                    pointData={scatterData}
-                    loading={rnaumaploading}
-                    leftAxisLable="UMAP-2"
-                    bottomAxisLabel="UMAP-1"
-                    miniMap={map}
-                    groupPointsAnchor="cellType"
-                  />
-                )
-              }}
-            </ParentSize>
-          </Box>
+                  return (
+                    <>
+                      <svg
+                        width={width}
+                        height={30}
+                        style={{ position: "absolute", top: 0, left: 0, pointerEvents: "none" }}
+                      >
+                        <Text x={width - 10} y={20} textAnchor="end" fontSize={12}>
+                          {"\u25EF unstimulated, \u25B3 stimulated "}
+                        </Text>
+                      </svg>
+                      <ScatterPlot
+                        width={squareSize}
+                        height={squareSize}
+                        pointData={scatterData}
+                        loading={rnaumaploading}
+                        leftAxisLable="UMAP-2"
+                        bottomAxisLabel="UMAP-1"
+                        miniMap={map}
+                        groupPointsAnchor="cellType"
+                      />
+                    </>
+                  )
+                }}
+              </ParentSize>
+            </Box>
+          </Grid2>
+        </Grid2>
         <UmapPlot colorScheme={colorScheme} data={rnumapdata.calderonRnaUmapQuery.map(d => { return { ...d, value: Math.log(d.value + 0.01) } })} plottitle={"log10 TPM"} />
-      </Grid2>
+        </>
     }
     {value === 2 && !loading && !soskicLoading && !yazarLoading &&
       <Grid2 container spacing={3}>
