@@ -7,8 +7,8 @@
     "build": "graphql-codegen && next build",
     "start": "next start",
     "export": "next export",
-    "compile": "graphql-codegen",
-    "watch": "graphql-codegen -w"
+    "gen-types": "graphql-codegen",
+    "gen-types -w": "graphql-codegen -w"
   },
   "dependencies": {
     "@apollo/client": "^3",

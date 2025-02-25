@@ -2,11 +2,12 @@ import "./globals.css"
 import { Inter } from "next/font/google"
 import AppBar from "../common/components/HomeAppBar"
 import Footer from "../common/components/Footer"
-import { Suspense } from "react"
 import { CssBaseline } from "@mui/material"
 import { ThemeProvider } from '@mui/material/styles';
-import { theme } from "../common/lib/themes"
+import { theme } from "./theme"
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
+import { ApolloWrapper } from "common/apollo/apollo-wrapper"
+import { Suspense } from "react"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -20,16 +21,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={inter.className} id="page-container">
         <Suspense>
-          <AppRouterCacheProvider>
-            <ThemeProvider theme={theme}>
-              <div id="content-wrapper">
-                <CssBaseline />
-                <AppBar />
-                <div id="body-wrapper">{children}</div>
-              </div>
-              <Footer />
-            </ThemeProvider>
-          </AppRouterCacheProvider>
+          <ApolloWrapper>
+            <AppRouterCacheProvider>
+              <ThemeProvider theme={theme}>
+                <div id="content-wrapper">
+                  <CssBaseline />
+                  <AppBar />
+                  <div id="body-wrapper">{children}</div>
+                </div>
+                <Footer />
+              </ThemeProvider>
+            </AppRouterCacheProvider>
+          </ApolloWrapper>
         </Suspense>
       </body>
     </html>

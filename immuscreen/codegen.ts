@@ -5,7 +5,7 @@ const config: CodegenConfig = {
   schema: Config.API.CcreAPI,
   documents: ['src/**/*.{ts,tsx}'],
   generates: {
-    './src/types/': {
+    './src/types/generated/': {
       preset: 'client',
       plugins: [],
       presetConfig: {

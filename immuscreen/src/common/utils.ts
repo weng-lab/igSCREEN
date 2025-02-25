@@ -1,6 +1,14 @@
 import { ApolloClient, InMemoryCache } from "@apollo/client"
 import styled from "@emotion/styled"
 import { Tab } from "@mui/material"
+
+/**
+ * @todo cleanup and merge with utility.ts. This file calls client-only code so needed some helpers separate
+ */
+
+/**
+ * @deprecated
+ */
 export const client = new ApolloClient({
   uri: "https://factorbook.api.wenglab.org/graphql",
   cache: new InMemoryCache(),
