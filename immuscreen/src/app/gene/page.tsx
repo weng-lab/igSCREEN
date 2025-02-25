@@ -1,19 +1,21 @@
 "use client"
-import React, { useState } from "react"
-import { Tabs, Tab, Typography, colors } from "@mui/material"
+import React, { useMemo, useState } from "react"
+import { Tabs, Tab, Typography, colors, Stack, Box } from "@mui/material"
 import { client, toScientificNotation } from "../../common/utils"
 import { StyledTab } from "../../common/utils"
 import Grid2 from "@mui/material/Grid2"
 import { useQuery } from "@apollo/client"
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation"
-import { DataTable } from "@weng-lab/psychscreen-ui-components"
+import { DataTable, DataTableColumn, ScatterPlot, Point } from "@weng-lab/psychscreen-ui-components"
 import { GenomeBrowserView } from "../../common/gbview/genomebrowserview"
 import { GeneAutoComplete } from "../../common/components/mainsearch/GeneAutocomplete"
 import { UmapPlot } from "../../common/components/umapplot"
 import { RNA_UMAP_QUERY, EQTL_QUERY } from "./queries"
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-
+import { PointMetaData } from "./types"
+import { getCellColor } from "../../app/celllineage/utils";
+import { ParentSize } from '@visx/responsive';
 
 const Gene = () => {
   const searchParams: ReadonlyURLSearchParams = useSearchParams()!
@@ -74,6 +76,32 @@ const Gene = () => {
     client,
   })
 
+  const map = {
+    show: false
+  };
+
+  const scatterData: Point<PointMetaData>[] = useMemo(() => {
+    if (!rnumapdata) return [];
+    console.log(rnumapdata.calderonRnaUmapQuery)
+
+    return rnumapdata.calderonRnaUmapQuery.map((x) => {
+
+      return {
+        x: x.umap_1,
+        y: x.umap_2,
+        r: 5,
+        color: (colorScheme === 'geneexp' || colorScheme === 'ZScore') ?  x.value > 1.64 ? 'red' : 'yellow' : getCellColor(x.celltype),
+        shape: (x.stimulation === "U" ? "circle" : "triangle"),
+        metaData: {
+          cellType: x.celltype,
+          name: x.name,
+          class: x.class,
+          value: Math.log(x.value + 0.01)
+        }
+      };
+    });
+  }, [rnumapdata, colorScheme]);
+
   return (searchParams.get('gene') ? // Gene Selected View
   <Grid2 container sx={{ maxWidth: "90%", mr: "auto", ml: "auto", mt: "3rem" }}>
     <Grid2 container spacing={3} sx={{ mt: "2rem", mb: "1rem" }}>
@@ -128,6 +156,26 @@ const Gene = () => {
         </ToggleButtonGroup>
         <br />
         <br />
+        <Box overflow={"hidden"} padding={1} sx={{ border: '2px solid', borderColor: 'grey.400', borderRadius: '8px', height: '57vh', position: 'relative' }}>
+            <ParentSize>
+              {({ width, height }) => {
+                const squareSize = Math.min(width, height);
+
+                return (
+                  <ScatterPlot
+                    width={squareSize}
+                    height={squareSize}
+                    pointData={scatterData}
+                    loading={rnaumaploading}
+                    leftAxisLable="UMAP-2"
+                    bottomAxisLabel="UMAP-1"
+                    miniMap={map}
+                    groupPointsAnchor="cellType"
+                  />
+                )
+              }}
+            </ParentSize>
+          </Box>
         <UmapPlot colorScheme={colorScheme} data={rnumapdata.calderonRnaUmapQuery.map(d => { return { ...d, value: Math.log(d.value + 0.01) } })} plottitle={"log10 TPM"} />
       </Grid2>
     }
