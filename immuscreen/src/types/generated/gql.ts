@@ -26,6 +26,7 @@ type Documents = {
     "\n  query calderoncorceszscoreAtacQuery($accession: [String]) {\n    calderoncorcesAtacQuery(accession: $accession) {\n      grouping\n      description\n      name\n      start\n      value\n    }\n  }\n": typeof types.CalderoncorceszscoreAtacQueryDocument,
     "\n    query LDSC(\n      $study: [String]\n    ){\n      iCRELdrQuery(study: $study) {\n        snps\n        study\n        h2\n        enrichment\n        enrichment_p\n        enrichment_std_error\n        coefficient\n        coefficient_zscore\n        coefficient_std_error\n        celltype\n      }\n    }\n  ": typeof types.LdscDocument,
     "\n  query IntersectingIcres($coordinates: [GenomicRangeInput!]) {\n    iCREQuery(coordinates: $coordinates) {\n      accession\n      group\n      celltypes\n      coordinates {\n        start\n        end\n        chromosome\n      }\n    }\n  }\n": typeof types.IntersectingIcresDocument,
+    "\n  query IcresActiveExperiments($accession: [String]) {\n    calderoncorcesAtacQuery(accession: $accession) {\n      grouping\n      description\n      name\n      value\n      icre\n    }\n  }\n": typeof types.IcresActiveExperimentsDocument,
     "\n  query SNPeQTLQuery($study: String!, $rsid: String) {\n    icreeQTLQuery(study:$study, rsid:$rsid) {\n      variant_id\n      pvalue\n      qvalue\n      geneid          \n      celltype\n      study\n      rsid\n      pval_beta\n    }\n  }\n": typeof types.SnPeQtlQueryDocument,
     "\n  query SNP($snpids: [String]) {\n    snpQuery(assembly: \"GRCh38\", snpids: $snpids) {\n      id\n      coordinates {\n        chromosome\n        start\n        end\n      }\n    }\n  }\n": typeof types.SnpDocument,
     "\n  query BigRequests($bigRequests: [BigRequest!]!) {\n    bigRequests(requests: $bigRequests) {\n      data\n      error {\n        errortype\n        message\n      }\n    }\n  }\n": typeof types.BigRequestsDocument,
@@ -46,6 +47,7 @@ const documents: Documents = {
     "\n  query calderoncorceszscoreAtacQuery($accession: [String]) {\n    calderoncorcesAtacQuery(accession: $accession) {\n      grouping\n      description\n      name\n      start\n      value\n    }\n  }\n": types.CalderoncorceszscoreAtacQueryDocument,
     "\n    query LDSC(\n      $study: [String]\n    ){\n      iCRELdrQuery(study: $study) {\n        snps\n        study\n        h2\n        enrichment\n        enrichment_p\n        enrichment_std_error\n        coefficient\n        coefficient_zscore\n        coefficient_std_error\n        celltype\n      }\n    }\n  ": types.LdscDocument,
     "\n  query IntersectingIcres($coordinates: [GenomicRangeInput!]) {\n    iCREQuery(coordinates: $coordinates) {\n      accession\n      group\n      celltypes\n      coordinates {\n        start\n        end\n        chromosome\n      }\n    }\n  }\n": types.IntersectingIcresDocument,
+    "\n  query IcresActiveExperiments($accession: [String]) {\n    calderoncorcesAtacQuery(accession: $accession) {\n      grouping\n      description\n      name\n      value\n      icre\n    }\n  }\n": types.IcresActiveExperimentsDocument,
     "\n  query SNPeQTLQuery($study: String!, $rsid: String) {\n    icreeQTLQuery(study:$study, rsid:$rsid) {\n      variant_id\n      pvalue\n      qvalue\n      geneid          \n      celltype\n      study\n      rsid\n      pval_beta\n    }\n  }\n": types.SnPeQtlQueryDocument,
     "\n  query SNP($snpids: [String]) {\n    snpQuery(assembly: \"GRCh38\", snpids: $snpids) {\n      id\n      coordinates {\n        chromosome\n        start\n        end\n      }\n    }\n  }\n": types.SnpDocument,
     "\n  query BigRequests($bigRequests: [BigRequest!]!) {\n    bigRequests(requests: $bigRequests) {\n      data\n      error {\n        errortype\n        message\n      }\n    }\n  }\n": types.BigRequestsDocument,
@@ -116,6 +118,10 @@ export function gql(source: "\n    query LDSC(\n      $study: [String]\n    ){\n
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  query IntersectingIcres($coordinates: [GenomicRangeInput!]) {\n    iCREQuery(coordinates: $coordinates) {\n      accession\n      group\n      celltypes\n      coordinates {\n        start\n        end\n        chromosome\n      }\n    }\n  }\n"): (typeof documents)["\n  query IntersectingIcres($coordinates: [GenomicRangeInput!]) {\n    iCREQuery(coordinates: $coordinates) {\n      accession\n      group\n      celltypes\n      coordinates {\n        start\n        end\n        chromosome\n      }\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query IcresActiveExperiments($accession: [String]) {\n    calderoncorcesAtacQuery(accession: $accession) {\n      grouping\n      description\n      name\n      value\n      icre\n    }\n  }\n"): (typeof documents)["\n  query IcresActiveExperiments($accession: [String]) {\n    calderoncorcesAtacQuery(accession: $accession) {\n      grouping\n      description\n      name\n      value\n      icre\n    }\n  }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

@@ -6,9 +6,9 @@ import { experimentInfo } from "../../common/consts";
 import { CellQueryValue } from "../celllineage/types";
 import { getCellDisplayName } from "../celllineage/utils";
 
-type GroupListProps = { exps: Experiment_Data[], grouping: string }
+type GroupListProps = { exps: { description: string, name: string, value: number }[], grouping: string }
 
-const ExperimentGroupList: React.FC<GroupListProps> = (props: GroupListProps) => {
+const ExperimentGroupList = (props: GroupListProps) => {
   const [openGroup, setOpenGroup] = useState(false)
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -40,9 +40,9 @@ const ExperimentGroupList: React.FC<GroupListProps> = (props: GroupListProps) =>
   )
 }
 
-type ActiveExperimentListProps = { activeExps: { [key: string]: Experiment_Data[] } }
+type ActiveExperimentListProps = { activeExps: { [tissue: string]: { description: string, name: string, value: number }[] } }
 
-export const ActiveExperimentList: React.FC<ActiveExperimentListProps> = (props: ActiveExperimentListProps) => {
+export const ActiveExperimentList = (props: ActiveExperimentListProps) => {
   const [open, setOpen] = useState(false)
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -59,7 +59,7 @@ export const ActiveExperimentList: React.FC<ActiveExperimentListProps> = (props:
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List sx={{ pl: 2 }} component="div" disablePadding>
           {
-            Object.entries(props.activeExps).map(([grouping, exps]: [string, Experiment_Data[]]) =>
+            Object.entries(props.activeExps).map(([grouping, exps]: [string, { description: string, name: string, value: number }[]]) =>
               <ExperimentGroupList key={grouping} exps={exps} grouping={grouping} />
             )
           }
