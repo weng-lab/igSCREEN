@@ -10,15 +10,11 @@ import { SnpAutoComplete } from "../common/components/mainsearch/SnpAutocomplete
 import { CcreAutoComplete } from "../common/components/mainsearch/CcreAutocomplete";
 import Image from 'next/image'
 import GenomicRegion from "../common/components/mainsearch/genomicregion";
-import { ExpandMore } from "@mui/icons-material";
+import { ExpandMore, Search } from "@mui/icons-material";
+import AutoComplete from "../common/components/mainsearch/autocomplete";
 
 const Home = () => {
-  const [selectedPortal, setSelectedPortal] = useState<string>("Genes");
   const [elementSearch, setElementSearch] = useState<string>("Genomic Region")
-
-  const handleChange = (event: SelectChangeEvent) => {
-    setSelectedPortal(event.target.value);
-  };
 
   const handleSetElementSearch = (event: SelectChangeEvent) => {
     setElementSearch(event.target.value);
@@ -33,26 +29,14 @@ const Home = () => {
           height={150}
           alt="igSCREEN logo"
         />
-        <Typography variant="h6" mb={1}>Search <em>immune</em> Candidate cis-Regulatory Elements</Typography>
-        <FormControl variant="standard" sx={{ mb: 2 }}>
-          {/* todo, replace this with the Main Search component from SCREEN */}
-          <Select
-            id="portal-select"
-            value={selectedPortal}
-            onChange={handleChange}
-          >
-            <MenuItem value={"Genes"}>Genes</MenuItem>
-            <MenuItem value={"iCREs"}>iCREs</MenuItem>
-            <MenuItem value={"Genomic Region"}>Genomic Region</MenuItem>
-            <MenuItem value={"SNPs"}>SNPs</MenuItem>
-          </Select>
-        </FormControl>
-        {
-          selectedPortal === "Genes" ? <GeneAutoComplete assembly={"GRCh38"} />
-            : selectedPortal === "SNPs" ? <SnpAutoComplete assembly={"GRCh38"} />
-              : selectedPortal === "Genomic Region" ? <GenomicRegion assembly="GRCh38" />
-                : <CcreAutoComplete textColor={"black"} assembly={"GRCh38"} />
-        }
+        <Typography variant="h6" mb={1}>Search <em>immune</em> Candidate cis-Regulatory Elements, Genes, SNPs or a Genomic Region</Typography>
+        <AutoComplete
+          style={{ width: 400 }}
+          slotProps={{
+            button: { variant: "text", children: <Search />, color: "primary" },
+            box: { gap: 0 }
+          }}
+        />
       </Grid2>
       <Grid2 mt={10} mb={5} size={12}>
         <Divider>
