@@ -262,9 +262,9 @@ const Gene = () => {
                 <Button variant="outlined" sx={{position: "absolute", bottom: 10, left: 10, textTransform: "none"}} onClick={() => setShowLegend(!showLegend)}>Toggle Legend</Button>
               </Box>
             </Grid2>
+            {/* legend */}
             {showLegend && (
               <Grid2 size={12}>
-                {/* legend section */}
                 <Box mt={2} sx={{ display: 'flex', flexDirection: 'column' }}>
                   <Typography mb={1}><b>Legend</b></Typography>
                   <Box sx={{ display: 'flex', justifyContent: legendEntries.length / 6 >= 3 ? "space-between" : "flex-start", gap: legendEntries.length / 6 >= 4 ? 0 : 10 }}>
