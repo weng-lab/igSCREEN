@@ -25,9 +25,9 @@ const RegionSearchTabs = (props: { region: GenomicRange }) => {
   }, [currentTab, value])
 
   return (
-    <Box sx={{ width: { xs: "95%", md: "85%", xl: "75%" }, maxWidth: "1500px" }}>
-      <Typography variant='h4'>
-        {`Searching Region ${props.region.chromosome}:${props.region.start.toLocaleString()}-${props.region.end.toLocaleString()}`}
+    <Box>
+      <Typography variant='h4' sx={{mb: 2}}>
+        {`Searching ${props.region.chromosome}:${props.region.start.toLocaleString()}-${props.region.end.toLocaleString()}`}
       </Typography>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">

@@ -1,6 +1,16 @@
-export default async function Page(){
+import { parseGenomicRangeString } from "common/utility";
+import IntersectingSNPs from "./IntersectingSNPs";
+
+
+export default function SNPs({
+  params
+}: {
+  params: { region: string }
+}) {
+
+  const region = parseGenomicRangeString(params.region)
 
   return (
-   <p>This is the SNP page</p>
+    <IntersectingSNPs region={region} />
   )
 }

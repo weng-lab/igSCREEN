@@ -1,6 +1,16 @@
-export default async function Genes({ params }: { params: { region: string } }){
+import { parseGenomicRangeString } from "common/utility";
+import IntersectingSNPs from "./IntersectingGenes";
+
+
+export default function Genes({
+  params
+}: {
+  params: { region: string }
+}) {
+
+  const region = parseGenomicRangeString(params.region)
 
   return (
-   <p>This is the gene page</p>
+    <IntersectingSNPs region={region} />
   )
 }
