@@ -29,7 +29,7 @@ const pageLinks = [
 
 const StyledTextField = styled(TextField)({
   '& .MuiOutlinedInput-root': {
-    height: "50px",
+    height: "50px ",
     backgroundColor: '#ffffff',
     '& fieldset': {
       border: 'none',
