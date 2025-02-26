@@ -17,6 +17,8 @@ import { PointMetaData } from "./types"
 import { getCellColor } from "../../app/celllineage/utils";
 import { ParentSize } from '@visx/responsive';
 import { Text } from '@visx/text';
+import { scaleLinear } from "d3-scale";
+import { interpolateRgb } from "d3-interpolate";
 
 const Gene = () => {
   const searchParams: ReadonlyURLSearchParams = useSearchParams()!
@@ -87,27 +89,35 @@ const Gene = () => {
     ref: graphContainerRef
   };
 
+  const colorInterpolator = interpolateRgb("yellow", "red");
+
+  const colorScale = scaleLinear<number, number>()
+    .domain([1.64, 3, 6, 12])
+    .range([0, 0.3, 0.7, 1]) // Maps to interpolation percentages
+    .clamp(true);
+
   const scatterData: Point<PointMetaData>[] = useMemo(() => {
     if (!rnumapdata) return [];
     console.log(rnumapdata.calderonRnaUmapQuery)
 
     return rnumapdata.calderonRnaUmapQuery.map((x) => {
+      const gradientColor = Math.log(x.value + 0.01) < 1.64 ? "#808080" : colorInterpolator(colorScale(Math.log(x.value + 0.01)));
 
       return {
         x: x.umap_1,
         y: x.umap_2,
         r: 5,
-        color: (colorScheme === 'geneexp' || colorScheme === 'ZScore') ?  x.value > 1.64 ? 'red' : 'yellow' : getCellColor(x.celltype),
+        color: (colorScheme === 'geneexp' || colorScheme === 'ZScore') ?  gradientColor : getCellColor(x.celltype),
         shape: (x.stimulation === "U" ? "circle" : "triangle"),
         metaData: {
           cellType: x.celltype,
           name: x.name,
           class: x.class,
-          value: Math.log(x.value + 0.01)
+          value: Math.log(x.value + 0.01).toFixed(2)
         }
       };
     });
-  }, [rnumapdata, colorScheme]);
+  }, [rnumapdata, colorInterpolator, colorScale, colorScheme]);
 
   useEffect(() => {
     const graphElement = graphContainerRef.current;
