@@ -50,6 +50,7 @@
     "@visx/tooltip": "^3",
     "@weng-lab/psychscreen-ui-components": "^2.0.13",
     "bpnet-ui": "^0.3.8",
+    "d3-scale-chromatic": "^3.1.0",
     "eslint": "^8",
     "eslint-config-next": "^14",
     "graphql": "^16",
