@@ -29,6 +29,7 @@ const pageLinks = [
 
 const StyledTextField = styled(TextField)({
   '& .MuiOutlinedInput-root': {
+    height: "50px",
     backgroundColor: '#ffffff',
     '& fieldset': {
       border: 'none',
@@ -152,7 +153,7 @@ const ResponsiveAppBar = () => {
                 ))}
               </Box>
               <AutoComplete
-                style={{ width: 400, height: "auto" }}
+                style={{ width: 400 }}
                 slots={{
                   input: <StyledTextField label="Search" />,
                 }}
