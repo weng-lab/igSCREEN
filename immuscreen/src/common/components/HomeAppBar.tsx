@@ -12,6 +12,7 @@ import {
   Link as MuiLink,
   TextField,
   styled,
+  IconButton,
 } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { ThemeProvider } from "@mui/material/styles";
@@ -218,28 +219,13 @@ const ResponsiveAppBar = () => {
               </Box>
               <AutoComplete
                 style={{ width: 400 }}
-                // slots={{
-                //   input: <StyledTextField label="Search" />,
-                // }}
+                slots={{
+                  button: <IconButton sx={{ color: "white" }}>
+                    <Search />
+                  </IconButton>,
+                }}
                 slotProps={{
-                  button: {
-                    variant: "contained",
-                    children: <Search />,
-                    color: "primary",
-                    sx: {
-                      color: "white",
-                      borderColor: "white",
-                      "&:hover": {
-                        color: "gray",
-                        borderColor: "gray",
-                      },
-                      "&:focus": {
-                        color: "gray",
-                        borderColor: "gray",
-                      },
-                    },
-                  },
-                  box: { gap: 0 },
+                  box: { gap: 1 },
                   input: {
                     size: "small",
                     sx: {
@@ -277,3 +263,20 @@ const ResponsiveAppBar = () => {
   );
 };
 export default ResponsiveAppBar;
+
+
+// variant: "contained",
+// children: <Search />,
+// color: "primary",
+// sx: {
+//   color: "white",
+//   borderColor: "white",
+//   "&:hover": {
+//     color: "gray",
+//     borderColor: "gray",
+//   },
+//   "&:focus": {
+//     color: "gray",
+//     borderColor: "gray",
+//   },
+// },
