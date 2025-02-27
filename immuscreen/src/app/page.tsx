@@ -1,7 +1,7 @@
 //Home Page
 
 "use client"
-import { Box, Button, Divider, FormControl, MenuItem, Stack, Typography } from "@mui/material"
+import { Box, Button, Divider, FormControl, IconButton, MenuItem, Stack, Typography } from "@mui/material"
 import React, { useState } from "react"
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Grid2 from "@mui/material/Grid2"
@@ -32,9 +32,13 @@ const Home = () => {
         <Typography variant="h6" mb={1}>Search <em>immune</em> Candidate cis-Regulatory Elements, Genes, SNPs or a Genomic Region</Typography>
         <AutoComplete
           style={{ width: 400 }}
+          slots={{
+            button: <IconButton color="primary">
+            <Search />
+          </IconButton>,
+          }}
           slotProps={{
-            button: { variant: "text", children: <Search />, color: "primary" },
-            box: { gap: 0 }
+            box: { gap: 2 }
           }}
         />
       </Grid2>
