@@ -1,4 +1,4 @@
-import { Stack } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import RegionSearchTabs from './RegionSearchTabs';
 import { parseGenomicRangeString } from 'common/utility';
 
@@ -13,9 +13,14 @@ export default function RegionSearchLayout({
   const region = parseGenomicRangeString(params.region)
 
   return (
-    <Stack sx={{p: 4, gap: 4}}>
-      <RegionSearchTabs region={region} />
+    <Box sx={{ p: 4 }}>
+      <Box sx={{ mb: 4 }}>
+        <Typography variant='h4' sx={{mb: 1}}>
+          {`Searching ${region.chromosome}:${region.start.toLocaleString()}-${region.end.toLocaleString()}`}
+        </Typography>
+        <RegionSearchTabs />
+      </Box>
       <main>{children}</main>
-    </Stack>
+    </Box>
   )
 }

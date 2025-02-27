@@ -1,12 +1,11 @@
 'use client'
 
-import { Box, Typography, Tabs, Tab } from "@mui/material";
+import { Box, Tabs, Tab } from "@mui/material";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect } from "react";
-import { GenomicRange } from "types/globalTypes";
 
-const RegionSearchTabs = () => {
+const SnpDetailsTabs = () => {
   const pathname = usePathname();
   const currentTab = pathname.substring(pathname.lastIndexOf('/') + 1);
   const basepath = pathname.substring(0, pathname.lastIndexOf('/'))
@@ -26,13 +25,12 @@ const RegionSearchTabs = () => {
 
   return (
     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-      <Tabs value={value} onChange={handleChange} aria-label="Nearby Features Tabs">
-        <Tab label="iCREs" value="icres" LinkComponent={Link} href={basepath + '/' + 'icres'} />
-        <Tab label="Genes" value="genes" LinkComponent={Link} href={basepath + '/' + 'genes'} />
-        <Tab label="SNPs" value="snps" LinkComponent={Link} href={basepath + '/' + 'snps'} />
+      <Tabs value={value} onChange={handleChange} aria-label="SNP Details Tabs">
+        <Tab label="eQTLs" value="eQTLs" LinkComponent={Link} href={basepath + '/' + 'eQTLs'} />
+        <Tab label="Nearby Genomic Features" value="nearby" LinkComponent={Link} href={basepath + '/' + 'nearby'} />
       </Tabs>
     </Box>
   )
 }
 
-export default RegionSearchTabs
+export default SnpDetailsTabs
