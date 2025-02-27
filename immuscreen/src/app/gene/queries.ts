@@ -1,5 +1,6 @@
 
 import { gql } from "@apollo/client"
+
 export const RNA_UMAP_QUERY = gql`
 query rnaUmapQuery($gene_id: String!) 
 {
@@ -17,7 +18,7 @@ query rnaUmapQuery($gene_id: String!)
 
 `
 export const EQTL_QUERY = gql`
-  query iCREeQTLQuery($study: String!, $geneid: String) 
+  query GeneeQTLQuery($study: String!, $geneid: String) 
     {
         icreeQTLQuery(study:$study, geneid:$geneid) {
           variant_id
