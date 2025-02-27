@@ -2,7 +2,7 @@
 import React from "react"
 import { useQuery } from "@apollo/client"
 import Grid from "@mui/material/Grid2"
-import { Typography, Link as MuiLink } from "@mui/material"
+import { Typography, Link as MuiLink, Skeleton } from "@mui/material"
 import { DataTable } from "@weng-lab/psychscreen-ui-components"
 import { gql } from "types/generated/gql"
 import { GenomicRange } from "types/globalTypes"
@@ -146,29 +146,36 @@ const NearbyGenomicFeatures = ({ coordinates }: { coordinates: GenomicRange }) =
   return (
     <Grid container spacing={4}>
       <Grid size={{ xs: 12, md: 6, xl: 4 }} >
-        <DataTable
-          columns={[
-            {
-              header: "Symbol",
-              value: (row) => row.name,
-              render: (row) => <MuiLink component={Link} href={'/gene/' + row.name}>{row.name}</MuiLink>
-            },
-            {
-              header: "Distance to Nearest TSS (in bp)",
-              value: (row) => row.distance,
-              render: (row) => row.distance.toLocaleString("en-US"),
-            },
-          ]}
-          rows={genes || []}
-          sortColumn={1}
-          tableTitle="Nearby Genes"
-          itemsPerPage={10}
-          searchable
-          sortDescending={true}
-        />
+        {loading ?
+          <Skeleton variant="rounded" width={"100%"} height={705} />
+          :
+          <DataTable
+            columns={[
+              {
+                header: "Symbol",
+                value: (row) => row.name,
+                render: (row) => <MuiLink component={Link} href={'/gene/' + row.name}><i>{row.name}</i></MuiLink>
+              },
+              {
+                header: "Distance to Nearest TSS (in bp)",
+                value: (row) => row.distance,
+                render: (row) => row.distance.toLocaleString("en-US"),
+              },
+            ]}
+            rows={genes || []}
+            sortColumn={1}
+            tableTitle="Nearby Genes"
+            itemsPerPage={10}
+            searchable
+            sortDescending={true}
+          />
+        }
       </Grid>
       <Grid size={{ xs: 12, md: 6, xl: 4 }} >
-        <DataTable
+        {loading ?
+          <Skeleton variant="rounded" width={"100%"} height={705} />
+          :
+          <DataTable
           columns={[
             {
               header: "Accession",
@@ -187,30 +194,32 @@ const NearbyGenomicFeatures = ({ coordinates }: { coordinates: GenomicRange }) =
           itemsPerPage={10}
           searchable
           sortDescending={true}
-        />
+        />}
       </Grid>
-      <Grid
-        size={{ xs: 12, md: 6, xl: 4 }}>
-        <DataTable
-          columns={[
-            {
-              header: "SNP ID",
-              value: (row) => row.id,
-              render: (row) => <MuiLink component={Link} href={'/snp/' + row.id}>{row.id}</MuiLink>
-            },
-            {
-              header: "Distance (in bp)",
-              value: (row) => row.distance,
-              render: (row) => row.distance.toLocaleString("en-US"),
-            },
-          ]}
-          sortColumn={1}
-          tableTitle="Nearby SNPs"
-          rows={snps || []}
-          itemsPerPage={10}
-          searchable
-          sortDescending={true}
-        />
+      <Grid size={{ xs: 12, md: 6, xl: 4 }}>
+        {loading ?
+          <Skeleton variant="rounded" width={"100%"} height={705} />
+          :
+          <DataTable
+            columns={[
+              {
+                header: "SNP ID",
+                value: (row) => row.id,
+                render: (row) => <MuiLink component={Link} href={'/snp/' + row.id}>{row.id}</MuiLink>
+              },
+              {
+                header: "Distance (in bp)",
+                value: (row) => row.distance,
+                render: (row) => row.distance.toLocaleString("en-US"),
+              },
+            ]}
+            sortColumn={1}
+            tableTitle="Nearby SNPs"
+            rows={snps || []}
+            itemsPerPage={10}
+            searchable
+            sortDescending={true}
+          />}
       </Grid>
     </Grid>
   );

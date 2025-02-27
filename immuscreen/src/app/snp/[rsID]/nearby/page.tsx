@@ -15,17 +15,11 @@ const SNP_Query = gql(`
   }
 `)
 
-function delay(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 export default async function SnpNearby({
   params
 }: {
   params: { rsID: string }
 }) {
-  // Introduce a delay of 3 seconds
-  await delay(3000);
 
   const { data } = await query({
     query: SNP_Query,
