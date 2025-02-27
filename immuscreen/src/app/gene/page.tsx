@@ -157,21 +157,23 @@ const Gene = () => {
   }, [scatterData, colorScheme]);
 
   useEffect(() => {
-    const graphElement = graphContainerRef.current;
-
-    const handleWheel = (event: WheelEvent) => {
-      // Prevent default scroll behavior when using the wheel in the graph
-      event.preventDefault();
-    };
-    if (graphElement) {
-      graphElement.addEventListener('wheel', handleWheel, { passive: false });
-    }
-    return () => {
+    if (value === 1) {
+      const graphElement = graphContainerRef.current;
+  
+      const handleWheel = (event: WheelEvent) => {
+        // Prevent default scroll behavior when using the wheel in the graph
+        event.preventDefault();
+      };
       if (graphElement) {
-        graphElement.removeEventListener('wheel', handleWheel);
+        graphElement.addEventListener('wheel', handleWheel, { passive: false });
       }
-    };
-  }, []);
+      return () => {
+        if (graphElement) {
+          graphElement.removeEventListener('wheel', handleWheel);
+        }
+      };
+    }
+  }, [value]);
 
   return (searchParams.get('gene') ? // Gene Selected View
     <Grid2 container sx={{ maxWidth: "90%", mr: "auto", ml: "auto", mt: "3rem" }}>
