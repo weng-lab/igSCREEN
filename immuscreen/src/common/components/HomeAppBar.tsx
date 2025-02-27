@@ -241,9 +241,9 @@ const ResponsiveAppBar = () => {
                   },
                   box: { gap: 0 },
                   input: {
+                    size: "small",
                     sx: {
                       "& .MuiOutlinedInput-root": {
-                        height: "45px ",
                         backgroundColor: "#ffffff",
                         "& fieldset": {
                           border: "none",
