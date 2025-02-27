@@ -33,7 +33,7 @@
     "@visx/shape": "^3",
     "@visx/text": "^3",
     "@visx/tooltip": "^3",
-    "@weng-lab/psychscreen-ui-components": "^2.0.11",
+    "@weng-lab/psychscreen-ui-components": "^2.0.13",
     "bpnet-ui": "^0.3.8",
     "eslint": "^8",
     "eslint-config-next": "^14",
