@@ -129,7 +129,7 @@ const ResponsiveAppBar = () => {
           </Toolbar>
         </Container>
       </AppBar>
-      <Toolbar />
+      {/* <Toolbar /> */}
     </>
   )
 }

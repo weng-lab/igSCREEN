@@ -1,15 +1,11 @@
-import "./globals.css"
-import { Inter } from "next/font/google"
 import AppBar from "../common/components/HomeAppBar"
 import Footer from "../common/components/Footer"
-import { CssBaseline } from "@mui/material"
+import { Box, CssBaseline, Stack, Toolbar } from "@mui/material"
 import { ThemeProvider } from '@mui/material/styles';
 import { theme } from "./theme"
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 import { ApolloWrapper } from "common/apollo/apollo-wrapper"
 import { Suspense } from "react"
-
-const inter = Inter({ subsets: ["latin"] })
 
 export const metadata = {
   title: "igSCREEN: Search Immune Candidate cis-Regulatory Elements by ENCODE",
@@ -18,18 +14,21 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className={inter.className} id="page-container">
+    <html lang="en" style={{height: '100%'}}>
+      <body style={{height: '100%'}}>
         <Suspense>
           <ApolloWrapper>
             <AppRouterCacheProvider>
               <ThemeProvider theme={theme}>
-                <div id="content-wrapper">
-                  <CssBaseline />
-                  <AppBar />
-                  <div id="body-wrapper">{children}</div>
-                </div>
-                <Footer />
+                <CssBaseline />
+                <AppBar />
+                <Stack justifyContent={"space-between"} minHeight={"100vh"} height={'100%'}>
+                  <Toolbar /> {/* used to bump content below header */}
+                  <Box flexGrow={1}>
+                    {children}
+                  </Box>
+                  <Footer />
+                </Stack>
               </ThemeProvider>
             </AppRouterCacheProvider>
           </ApolloWrapper>

@@ -1,5 +1,9 @@
-import { Box, Typography } from '@mui/material';
+'use client'
+
+import { Box, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
 import SnpDetailsTabs from './SnpDetailsTabs';
+import SnpHeader from './SnpHeader';
+import SnpBreadcrumbs from './SnpBreadcrumbs';
 
 export default function RegionSearchLayout({
   children,
@@ -8,16 +12,22 @@ export default function RegionSearchLayout({
   children: React.ReactNode,
   params: { rsID: string }
 }) {
+  const theme = useTheme()
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
 
   return (
-    <Box sx={{ p: 4 }}>
-      <Box sx={{ mb: 4 }}>
-        <Typography variant='h4' sx={{mb: 1}}>
-          {`${params.rsID} details`}
-        </Typography>
+    <Stack height={'100%'} direction={ isDesktop ? 'row' : 'column' }>
+      {/* Tabs */}
+      <Box order={isDesktop ? 1 : 2}>
         <SnpDetailsTabs />
+        {!isDesktop && children}
       </Box>
-      <main>{children}</main>
-    </Box>
+      {/* Title */}
+      <Stack order={isDesktop ? 2 : 1} sx={{gap: 2, m: 2}}>
+        <SnpBreadcrumbs rsID={params.rsID} />
+        <SnpHeader rsID={params.rsID} />
+        {isDesktop && children}
+      </Stack>
+    </Stack>
   )
 }
