@@ -1,6 +1,11 @@
 import { Box, Typography } from "@mui/material"
 
-const SnpHeader = ({rsID}: {rsID: string}) => {
+export type ElementDetailsHeaderProps = {
+  elementType: "SNP" | "Gene" | "iCRE"
+  elementName: string
+}
+
+const ElementDetailsHeader = ({elementType, elementName}: ElementDetailsHeaderProps) => {
 
   return (
     <Box
@@ -9,13 +14,13 @@ const SnpHeader = ({rsID}: {rsID: string}) => {
       borderRadius={2}
     >
       <Typography variant="subtitle1">
-        SNP Details
+        {elementType} Details
       </Typography>
       <Typography variant='h4'>
-        {rsID}
+        {elementName}
       </Typography>
     </Box>
   )
 }
 
-export default SnpHeader
+export default ElementDetailsHeader

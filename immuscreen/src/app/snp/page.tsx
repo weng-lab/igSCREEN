@@ -5,12 +5,10 @@ import { SnpAutoComplete } from "../../common/components/mainsearch/SnpAutocompl
 
 const Snp = () => {
   return (
-    <main>
-      <Stack sx={{ p: 4, gap: 4 }}>
-        <Typography variant="h3">SNP Portal</Typography>
-        <SnpAutoComplete assembly={"GRCh38"} />
-      </Stack>
-    </main>
+    <Stack sx={{ p: 4, gap: 4 }}>
+      <Typography variant="h3">SNP Portal</Typography>
+      <SnpAutoComplete assembly={"GRCh38"} />
+    </Stack>
   )
 }
 

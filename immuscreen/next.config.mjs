@@ -17,7 +17,17 @@ const nextConfig = {
         source: '/region/:region',
         destination: '/region/:region/icres',
         permanent: true
-      }
+      },
+      {
+        source: '/icre/:accession',
+        destination: '/icre/:accession/activity',
+        permanent: true
+      },
+      {
+        source: '/snp/:rsID',
+        destination: '/snp/:rsID/eQTLs',
+        permanent: true
+      },
     ]
   }
 }

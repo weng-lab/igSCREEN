@@ -5,7 +5,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect } from "react";
 
-const SnpDetailsTabs = () => {
+export type ElementDetailsTabsProps = {
+  /**
+   * label will be displayed, href must match route for details page
+   */
+  tabs: {label: string, href: string}[]
+}
+
+const ElementDetailsTabs = ({tabs}: ElementDetailsTabsProps) => {
   const pathname = usePathname();
   const currentTab = pathname.substring(pathname.lastIndexOf('/') + 1);
   const basepath = pathname.substring(0, pathname.lastIndexOf('/'));
@@ -19,6 +26,7 @@ const SnpDetailsTabs = () => {
     setValue(newValue);
   };
 
+  //If we ever use parallel routes, this will probably break
   useEffect(() => {
     if (currentTab !== value) {
       setValue(currentTab)
@@ -58,21 +66,18 @@ const SnpDetailsTabs = () => {
           }
         }
       >
-        <Tab
-          label="eQTLs"
-          value="eQTLs"
-          LinkComponent={Link}
-          href={basepath + '/' + 'eQTLs'}
-        />
-        <Tab
-          label="Nearby Genomic Features"
-          value="nearby"
-          LinkComponent={Link}
-          href={basepath + '/' + 'nearby'}
-        />
+        {tabs.map((tab) => 
+          <Tab
+            label={tab.label}
+            value={tab.href}
+            LinkComponent={Link}
+            href={basepath + '/' + tab.href}
+            key={tab.href}
+          />
+        )}
       </Tabs>
     </Box>
   )
 }
 
-export default SnpDetailsTabs
+export default ElementDetailsTabs
