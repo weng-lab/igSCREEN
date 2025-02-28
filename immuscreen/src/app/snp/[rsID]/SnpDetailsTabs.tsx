@@ -35,12 +35,12 @@ const SnpDetailsTabs = () => {
       }}
     >
       {isDesktop &&
-        <>
+        <Box sx={{mb: 1}}>
           <Typography variant="h6">
             Contents
           </Typography>
           <Divider />
-        </>
+        </Box>
       }
       <Tabs
         value={value}

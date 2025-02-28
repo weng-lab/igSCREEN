@@ -15,15 +15,17 @@ export default function RegionSearchLayout({
   const theme = useTheme()
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
 
+  const spaceBetween = 2
+
   return (
     <Stack height={'100%'} direction={ isDesktop ? 'row' : 'column' }>
       {/* Tabs */}
-      <Box order={isDesktop ? 1 : 2}>
+      <Stack order={isDesktop ? 1 : 2} sx={!isDesktop && {gap: spaceBetween, m: spaceBetween}}>
         <SnpDetailsTabs />
         {!isDesktop && children}
-      </Box>
-      {/* Title */}
-      <Stack order={isDesktop ? 2 : 1} sx={{gap: 2, m: 2}}>
+      </Stack>
+      {/* Header */}
+      <Stack order={isDesktop ? 2 : 1} sx={{gap: spaceBetween, p: spaceBetween, width: '100%'}}>
         <SnpBreadcrumbs rsID={params.rsID} />
         <SnpHeader rsID={params.rsID} />
         {isDesktop && children}
