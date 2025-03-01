@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "graphql-codegen && next build",
+    "build": "next build",
     "start": "next start",
     "export": "next export",
     "gen-types": "graphql-codegen",
