@@ -1,19 +1,6 @@
-import { query } from "common/apollo/client"
+'use client'
 import NearbyGenomicFeatures from "common/components/NearbyGenomicFeatures"
-import { gql } from "types/generated/gql"
-
-const SNP_Query = gql(`
-  query SNP($snpids: [String]) {
-    snpQuery(assembly: "GRCh38", snpids: $snpids) {
-      id
-      coordinates {
-        chromosome
-        start
-        end
-      }
-    }
-  }
-`)
+import { useSnpData } from "common/hooks/useSnpData";
 
 export default async function SnpNearby({
   params
@@ -21,14 +8,9 @@ export default async function SnpNearby({
   params: { rsID: string }
 }) {
 
-  const { data } = await query({
-    query: SNP_Query,
-    variables: {
-      snpids: params.rsID
-    }
-  });
+  const {data: SnpData} = useSnpData(params.rsID)
 
   return (
-    <NearbyGenomicFeatures coordinates={data.snpQuery[0].coordinates} />
+    <NearbyGenomicFeatures coordinates={SnpData.coordinates} />
   );
 }

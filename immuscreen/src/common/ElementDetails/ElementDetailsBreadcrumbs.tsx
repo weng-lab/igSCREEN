@@ -29,12 +29,12 @@ const ElementDetailsBreadcrumbs = () => {
       {links.map((subpath, i) => {
         if (i === 0) {
           return (
-            <MuiLink underline="hover" color="inherit" href="/snp/">
+            <MuiLink underline="hover" color="inherit" href="/snp/" key={subpath}>
               {formatPortal(subpath)}
             </MuiLink>
           )
         } else return (
-          <Typography>
+          <Typography key={subpath}>
             {subpath}
           </Typography>
         )

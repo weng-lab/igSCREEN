@@ -1,5 +1,4 @@
 'use client'
-
 import { Stack, useMediaQuery, useTheme } from '@mui/material';
 import ElementDetailsBreadcrumbs from './ElementDetailsBreadcrumbs';
 import ElementDetailsTabs, { ElementDetailsTabsProps } from './ElementDetailsTabs';

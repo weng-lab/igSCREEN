@@ -1,7 +1,8 @@
 import { Box, Typography } from "@mui/material"
+import { PortalType } from "types/globalTypes"
 
 export type ElementDetailsHeaderProps = {
-  elementType: "SNP" | "Gene" | "iCRE"
+  elementType: PortalType
   elementName: string
 }
 

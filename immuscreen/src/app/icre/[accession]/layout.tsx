@@ -1,11 +1,11 @@
 import ElementDetailsLayout from "common/ElementDetails/ElementDetailsLayout"
 
-export default function SnpDetailsLayout({
+export default function IcreDetailsLayout({
   children,
   params,
 }: {
   children: React.ReactNode,
-  params: { rsID: string }
+  params: { accession: string }
 }) {
   return (
     <ElementDetailsLayout
@@ -13,14 +13,10 @@ export default function SnpDetailsLayout({
         {
           label: 'Nearby Genomic Features',
           href: 'nearby'
-        },
-        {
-          label: 'eQTLs',
-          href: 'eQTLs'
         }
       ]}
-      elementName={params.rsID}
-      elementType='SNP'
+      elementName={params.accession}
+      elementType='iCRE'
     >
       {children}
     </ElementDetailsLayout>

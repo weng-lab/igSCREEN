@@ -7,3 +7,5 @@ export interface GenomicRange {
   start: number;
   end: number;
 }
+
+export type PortalType = "SNP" | "Gene" | "iCRE"
