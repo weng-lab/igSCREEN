@@ -2,7 +2,7 @@
 import NearbyGenomicFeatures from "common/components/NearbyGenomicFeatures"
 import { useSnpData } from "common/hooks/useSnpData";
 
-export default async function SnpNearby({
+export default function SnpNearby({
   params
 }: {
   params: { rsID: string }
