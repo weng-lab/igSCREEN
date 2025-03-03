@@ -1,12 +1,12 @@
 import { Box, Typography } from "@mui/material"
-import { PortalType } from "types/globalTypes"
+import { GenomicElementType } from "types/globalTypes"
 
 export type ElementDetailsHeaderProps = {
-  elementType: PortalType
-  elementName: string
+  elementType: GenomicElementType
+  elementID: string
 }
 
-const ElementDetailsHeader = ({elementType, elementName}: ElementDetailsHeaderProps) => {
+const ElementDetailsHeader = ({elementType, elementID}: ElementDetailsHeaderProps) => {
 
   return (
     <Box
@@ -18,7 +18,7 @@ const ElementDetailsHeader = ({elementType, elementName}: ElementDetailsHeaderPr
         {elementType} Details
       </Typography>
       <Typography variant='h4'>
-        {elementName}
+        {elementID}
       </Typography>
     </Box>
   )

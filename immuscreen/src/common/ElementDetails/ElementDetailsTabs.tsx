@@ -3,16 +3,15 @@
 import { Box, Tabs, Tab, useMediaQuery, useTheme, Typography, Divider } from "@mui/material";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
+import { ElementDetailsTab, GenePortalTab, GenomicElementType, IcrePortalTab, SnpPortalTab } from "types/globalTypes";
+import { genePortalTabs, icrePortalTabs, sharedTabs, snpPortalTabs } from "./tabsConfig";
 
 export type ElementDetailsTabsProps = {
-  /**
-   * label will be displayed, href must match route for details page
-   */
-  tabs: {label: string, href: string}[]
+  elementType: GenomicElementType
 }
 
-const ElementDetailsTabs = ({tabs}: ElementDetailsTabsProps) => {
+const ElementDetailsTabs = ({ elementType }: ElementDetailsTabsProps) => {
   const pathname = usePathname();
   const currentTab = pathname.substring(pathname.lastIndexOf('/') + 1);
   const basepath = pathname.substring(0, pathname.lastIndexOf('/'));
@@ -32,6 +31,25 @@ const ElementDetailsTabs = ({tabs}: ElementDetailsTabsProps) => {
       setValue(currentTab)
     }
   }, [currentTab, value])
+
+  const tabs: ElementDetailsTab[] = useMemo(() => {
+    let elementSpecificTabs: SnpPortalTab[] | GenePortalTab[] | IcrePortalTab[];
+    switch (elementType) {
+      case ("gene"):
+        elementSpecificTabs = genePortalTabs
+        break
+      case ("snp"):
+        elementSpecificTabs = snpPortalTabs
+        break
+      case ("icre"):
+        elementSpecificTabs = icrePortalTabs
+        break
+    }
+    return [
+      ...sharedTabs,
+      ...elementSpecificTabs
+    ]
+  }, [elementType])
 
   return (
     <Box

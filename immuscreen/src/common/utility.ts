@@ -1,4 +1,4 @@
-import { GenomicRange } from "types/globalTypes"
+import { GenomicRange, PortalName } from "types/globalTypes"
 
 /**
  * @todo Merge with utility.ts
@@ -19,6 +19,11 @@ export function getClassDisplayname(input: string) {
   }
 }
 
+/**
+ * 
+ * @param input chr:start-end
+ * @returns Very dumb parser for genomic range. No input checking. Assumes proper formatting and no commas in values
+ */
 export function parseGenomicRangeString(input: string): GenomicRange {
   if (input.includes("%3A")) {
     return {
@@ -31,5 +36,19 @@ export function parseGenomicRangeString(input: string): GenomicRange {
     chromosome: input.split(":")[0],
     start: +input.split(":")[1].split("-")[0],
     end: +input.split(":")[1].split("-")[1],
+  }
+}
+
+/**
+ * 
+ * @param subpath 
+ * @returns A formatted portal name for the passed string. If no matching portal returns null
+ */
+export function formatPortal(subpath: string): PortalName | null {
+  switch (subpath) {
+    case ("snp"): return "SNP"
+    case ("gene"): return "Gene"
+    case ("icre"): return "iCRE"
+    default: return null
   }
 }

@@ -6,7 +6,7 @@ import ElementDetailsHeader, { ElementDetailsHeaderProps } from './ElementDetail
 
 export type ElementDetailsLayoutProps = ElementDetailsTabsProps & ElementDetailsHeaderProps & {children: React.ReactNode}
 
-export default function ElementDetailsLayout({tabs, elementName, elementType, children}: ElementDetailsLayoutProps) {
+export default function ElementDetailsLayout(props: ElementDetailsLayoutProps) {
   const theme = useTheme()
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   const spaceBetween = 2
@@ -15,14 +15,14 @@ export default function ElementDetailsLayout({tabs, elementName, elementType, ch
     <Stack height={'100%'} direction={isDesktop ? 'row' : 'column'}>
       {/* Tabs */}
       <Stack order={isDesktop ? 1 : 2} sx={!isDesktop && { gap: spaceBetween, m: spaceBetween }}>
-        <ElementDetailsTabs tabs={tabs} />
-        {!isDesktop && children}
+        <ElementDetailsTabs {...props} />
+        {!isDesktop && props.children}
       </Stack>
       {/* Header */}
       <Stack order={isDesktop ? 2 : 1} sx={{ gap: spaceBetween, p: spaceBetween, width: '100%' }}>
         <ElementDetailsBreadcrumbs />
-        <ElementDetailsHeader elementName={elementName} elementType={elementType} />
-        {isDesktop && children}
+        <ElementDetailsHeader {...props} />
+        {isDesktop && props.children}
       </Stack>
     </Stack>
   )

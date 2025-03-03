@@ -19,14 +19,19 @@ const nextConfig = {
         permanent: true
       },
       {
-        source: '/icre/:accession',
-        destination: '/icre/:accession/activity',
-        permanent: true
+        source: '/snp/:elementID',
+        destination: '/snp/:elementID/eQTLs',
+        permanent: true,
       },
       {
-        source: '/snp/:rsID',
-        destination: '/snp/:rsID/eQTLs',
-        permanent: true
+        source: '/icre/:elementID',
+        destination: '/icre/:elementID/activity',
+        permanent: true,
+      },
+      {
+        source: '/gene/:elementID',
+        destination: '/gene/:elementID/expression',
+        permanent: true,
       },
     ]
   }
