@@ -134,7 +134,7 @@ const ResponsiveAppBar = () => {
                       onMouseEnter={
                         page.subPages
                           ? (event) =>
-                              handleOpenNavMenu_Dropdown(event, page.dropdownID)
+                            handleOpenNavMenu_Dropdown(event, page.dropdownID)
                           : undefined
                       }
                     >

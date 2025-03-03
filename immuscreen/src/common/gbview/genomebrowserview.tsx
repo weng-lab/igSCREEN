@@ -1,5 +1,5 @@
 "use client"
-import React, { useMemo, useState, useEffect, useRef } from "react"
+import React, { useMemo, useState, useEffect, useRef, useCallback } from "react"
 import Grid2 from "@mui/material/Grid2"
 import { Box, Button, IconButton } from "@mui/material"
 import { BrowserActionType, TrackType, GQLCytobands, useBrowserState, TranscriptTrackProps, TranscriptHumanVersion, TranscriptMouseVersion, DefaultTranscript, DefaultBigBed, DisplayMode, BigBedTrackProps, GQLWrapper, DefaultBigWig, Controls, GenomeBrowser } from '@weng-lab/genomebrowser';
@@ -11,6 +11,7 @@ import { getCellColor } from "../../app/celllineage/utils"
 import { Search } from "@mui/icons-material"
 import { GenomeSearch, Result } from "@weng-lab/psychscreen-ui-components"
 import { GenomicRange } from "./types";
+import AutoComplete from "../components/mainsearch/autocomplete";
 
 type GenomeBrowserViewProps = {
   coordinates: {
@@ -68,13 +69,13 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (props: Genom
     })
   }, [initialBrowserCoords.chromosome, initialBrowserCoords.end, initialBrowserCoords.start])
 
-  const bedMouseOver = (item: Rect) => {
+  const bedMouseOver = useCallback((item: Rect) => {
     const newHighlight = { domain: { start: item.start + 150, end: item.end + 150 }, color: item.color || "red", id: item.name }
     browserDispatch({ type: BrowserActionType.ADD_HIGHLIGHT, highlight: newHighlight })
-  }
-  const bedMouseOut = () => {
+  }, [])
+  const bedMouseOut = useCallback(() => {
     browserDispatch({ type: BrowserActionType.REMOVE_LAST_HIGHLIGHT })
-  }
+  }, [])
 
   const initialTracks = useMemo(() => {
     if (!props.assembly) return []
@@ -118,7 +119,7 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (props: Genom
     }
 
     return [geneTrack, icreTrack, allImmuneBigWig]
-  }, [props.assembly])
+  }, [props.gene, props.assembly, bedMouseOver, bedMouseOut])
 
   const initialBrowserState = useMemo(() => {
     return {
@@ -193,7 +194,7 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (props: Genom
         browserDispatch({ type: BrowserActionType.ADD_TRACK, track })
       }
     })
-  }, [selectedCells, browserState.tracks])
+  }, [selectedCells, browserState.tracks, browserDispatch])
 
   const handeSearchSubmit = (r: Result) => {
     console.log(r)
@@ -204,16 +205,16 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (props: Genom
       <Grid2 container spacing={3} sx={{ mt: "0rem", mb: "1rem" }} ref={containerRef} justifyContent="center" alignItems="center">
         <Grid2 size={{ xs: 12, lg: 12 }} style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", marginTop: "0px" }}>
           <Box sx={{ width: "100%", display: "flex", justifyContent: "space-between", mb: 2 }}>
-            <Button variant="contained" onClick={() => setSettingsModalShown(true)}>
-              Add ATAC Tracks
-            </Button>
-            <GenomeSearch
+            <AutoComplete
               assembly="GRCh38"
               onSearchSubmit={handeSearchSubmit}
               queries={["gene", "snp", "icre"]}
               geneLimit={3}
               sx={{ width: "400px" }}
             />
+            <Button variant="contained" onClick={() => setSettingsModalShown(true)}>
+              Add more ATAC-seq data
+            </Button>
           </Box>
           <BulkAtacModal
             open={settingsModalShown}
@@ -227,6 +228,7 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (props: Genom
           <h3 style={{ marginBottom: "0px", marginTop: "0px" }}>
             {props.assembly} at {browserState.domain.chromosome}:{browserState.domain.start.toLocaleString()}-{browserState.domain.end.toLocaleString()}
           </h3>
+
           <svg id="cytobands" width={"700px"} height={20}>
             <GQLCytobands assembly={props.assembly === "GRCh38" ? "hg38" : "mm10"} chromosome={browserState.domain.chromosome} currentDomain={browserState.domain} />
           </svg>
