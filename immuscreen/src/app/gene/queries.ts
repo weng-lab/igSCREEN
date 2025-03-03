@@ -15,7 +15,6 @@ query rnaUmapQuery($gene_id: String!)
       value
     }
   }
-
 `
 export const EQTL_QUERY = gql`
   query GeneeQTLQuery($study: String!, $geneid: String) 

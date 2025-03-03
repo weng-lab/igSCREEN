@@ -48,6 +48,7 @@ const Gene = () => {
     nextFetchPolicy: "cache-first",
     client,
   })
+  
   const { loading: loading, data: data } = useQuery(EQTL_QUERY, {
     variables: {
       study: "GTEX",

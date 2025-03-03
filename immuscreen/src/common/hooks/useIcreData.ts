@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/client";
+import { ApolloError, useQuery } from "@apollo/client";
 import { gql } from "types/generated/gql";
 import { IcreQuery } from "types/generated/graphql";
 import { GenomicElementType, GenomicRange } from "types/globalTypes";
@@ -24,8 +24,8 @@ type UseIcreDataParams =
 
 export type UseIcreDataReturn<T extends UseIcreDataParams> = 
   T extends ({ coordinates: GenomicRange | GenomicRange[] } | { accession: string[] })
-  ? { data: IcreQuery["iCREQuery"] | undefined; loading: boolean; error: any }
-  : { data: IcreQuery["iCREQuery"][0] | undefined; loading: boolean; error: any };
+  ? { data: IcreQuery["iCREQuery"] | undefined; loading: boolean; error: ApolloError }
+  : { data: IcreQuery["iCREQuery"][0] | undefined; loading: boolean; error: ApolloError };
 
 export const useIcreData = <T extends UseIcreDataParams>({accession, coordinates, elementType}: T): UseIcreDataReturn<T> => {
 

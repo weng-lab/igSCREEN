@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/client";
+import { ApolloError, useQuery } from "@apollo/client";
 import { gql } from "types/generated/gql";
 import { GeneQuery } from "types/generated/graphql";
 import { GenomicElementType, GenomicRange } from "types/globalTypes";
@@ -7,6 +7,7 @@ const GENE_Query = gql(`
   query Gene($chromosome: String, $start: Int, $end: Int, $name: [String]) {
     gene(chromosome: $chromosome, start: $start, end: $end, assembly: "GRCh38", version: 40, name: $name) {
       name
+      id
       strand
       coordinates {
         chromosome
@@ -28,8 +29,8 @@ export type UseGeneDataParams =
 
 export type UseGeneDataReturn<T extends UseGeneDataParams> =
   T extends ({ coordinates: GenomicRange | GenomicRange[] } | { name: string[] })
-  ? { data: GeneQuery["gene"] | undefined; loading: boolean; error: any }
-  : { data: GeneQuery["gene"][0] | undefined; loading: boolean; error: any };
+  ? { data: GeneQuery["gene"] | undefined; loading: boolean; error: ApolloError }
+  : { data: GeneQuery["gene"][0] | undefined; loading: boolean; error: ApolloError };
 
 export const useGeneData = <T extends UseGeneDataParams>({name, coordinates, elementType}: T): UseGeneDataReturn<T> => {
 

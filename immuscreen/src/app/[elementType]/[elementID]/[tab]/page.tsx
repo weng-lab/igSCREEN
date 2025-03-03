@@ -6,6 +6,7 @@ import { GenomicRange } from "common/gbview/types"
 import { useElementMetadata, useElementMetadataReturn } from "common/hooks/useElementMetadata"
 import { GenomicElementType, isValidGeneTab, isValidIcreTab, isValidSnpTab, isValidTab } from "types/globalTypes"
 import SnpEQTLs from "./_SnpTabs/SnpEQTLs"
+import GeneEQTLs from "./_GeneTabs/GeneEQTLs"
 
 /**
  * @todo
@@ -37,7 +38,7 @@ export default function DetailsPage({
   }
 
   if (error){
-    throw new Error(error)
+    throw new Error(JSON.stringify(error))
   }
 
   //Handle shared tabs
@@ -45,6 +46,9 @@ export default function DetailsPage({
     return <NearbyGenomicFeatures coordinates={elementMetadata.coordinates} />
   }
   if (tab === "browser") {
+    /**
+     * @todo not properly passing in element details for highlight yet
+     */
     return <GenomeBrowserView assembly="GRCh38" coordinates={elementMetadata.coordinates} />
   }
 
@@ -69,7 +73,7 @@ export default function DetailsPage({
       const geneData = elementMetadata as useElementMetadataReturn<"gene">["data"]
 
       switch (tab) {
-        case ("eQTLs"): return <p>Viewing {tab} for {elementID} in {elementType} Portal</p>
+        case ("eQTLs"): return <GeneEQTLs name={geneData.name} id={geneData.id} />
         case ("linked"): return <p>Viewing {tab} for {elementID} in {elementType} Portal</p>
         case ("expression"): return <p>Viewing {tab} for {elementID} in {elementType} Portal</p>
       }

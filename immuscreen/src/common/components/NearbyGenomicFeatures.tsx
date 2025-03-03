@@ -2,15 +2,12 @@
 import React from "react"
 import { useQuery } from "@apollo/client"
 import Grid from "@mui/material/Grid2"
-import { Typography, Link as MuiLink, Skeleton } from "@mui/material"
+import { Link as MuiLink, Skeleton } from "@mui/material"
 import { DataTable } from "@weng-lab/psychscreen-ui-components"
 import { gql } from "types/generated/gql"
 import { GenomicRange } from "types/globalTypes"
 import Link from "next/link"
 
-/**
- * @todo transition this component to using new data fetching hooks
- */
 export const NEARBY_GENOMIC_FEATURES_QUERY = gql(`
   query nearbyGenomicFeatures($coordinates: [GenomicRangeInput!], $chromosome: String, $start: Int, $end: Int, $version: Int) {
     gene(chromosome: $chromosome, start: $start, end: $end, assembly: "GRCh38", version: $version) {
@@ -193,7 +190,7 @@ const NearbyGenomicFeatures = ({ coordinates }: { coordinates: GenomicRange }) =
           ]}
           rows={iCREs || []}
           sortColumn={1}
-          tableTitle="Nearby cCREs"
+          tableTitle="Nearby iCREs"
           itemsPerPage={10}
           searchable
           sortDescending={true}

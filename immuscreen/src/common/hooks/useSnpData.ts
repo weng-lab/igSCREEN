@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/client";
+import { ApolloError, useQuery } from "@apollo/client";
 import { gql } from "types/generated/gql";
 import { SnpQuery } from "types/generated/graphql";
 import { GenomicElementType, GenomicRange } from "types/globalTypes";
@@ -22,8 +22,8 @@ type UseSnpDataParams =
 
 export type UseSnpDataReturn<T extends UseSnpDataParams> =
   T extends ({ coordinates: GenomicRange | GenomicRange[] } | { rsID: string[] })
-  ? { data: SnpQuery["snpQuery"] | undefined; loading: boolean; error: any }
-  : { data: SnpQuery["snpQuery"][0] | undefined; loading: boolean; error: any };
+  ? { data: SnpQuery["snpQuery"] | undefined; loading: boolean; error: ApolloError }
+  : { data: SnpQuery["snpQuery"][0] | undefined; loading: boolean; error: ApolloError };
 
 export const useSnpData = <T extends UseSnpDataParams>({ rsID, coordinates, elementType }: T): UseSnpDataReturn<T> => {
   const { data, loading, error } = useQuery(
