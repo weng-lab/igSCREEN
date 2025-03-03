@@ -1,9 +1,9 @@
 export default function DetailsPage({
-  params,
+  params: { elementType, elementID, tab },
 }: {
-  params: { accession: string, detail: string }
+  params: { elementType: string, elementID: string, tab: string } 
 }){
   return(
-    <p>Viewing detail {params.detail} for {params.accession}</p>
+    <p>Viewing {tab} for {elementID} in {elementType} Portal</p>
   )
 }
