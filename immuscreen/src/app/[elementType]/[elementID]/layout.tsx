@@ -1,6 +1,10 @@
 import ElementDetailsLayout from "common/ElementDetails/ElementDetailsLayout"
-import { GenePortalTab, GenomicElementType, IcrePortalTab, isGenomicElementType, SharedTab, SnpPortalTab } from "types/globalTypes"
+import { isValidGenomicElement } from "types/globalTypes"
 
+/**
+ * Note: /[elementType]/[elementID] has no page.tsx since this route
+ * is redirected to a defined tab based on configuration in next.config.mjs
+ */
 export default function IcreDetailsLayout({
   children,
   params: { elementType, elementID },
@@ -9,7 +13,7 @@ export default function IcreDetailsLayout({
   params: { elementType: string, elementID: string } 
 }) {
 
-  if (!isGenomicElementType(elementType)) {
+  if (!isValidGenomicElement(elementType)) {
     throw new Error("Unknown genomic element type: " + elementType)
   }
 

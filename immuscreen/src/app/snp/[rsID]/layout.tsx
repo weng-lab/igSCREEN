@@ -9,18 +9,8 @@ export default function SnpDetailsLayout({
 }) {
   return (
     <ElementDetailsLayout
-      tabs={[
-        {
-          label: 'Nearby Genomic Features',
-          href: 'nearby'
-        },
-        {
-          label: 'eQTLs',
-          href: 'eQTLs'
-        }
-      ]}
-      elementName={params.rsID}
-      elementType='SNP'
+      elementID={params.rsID}
+      elementType='snp'
     >
       {children}
     </ElementDetailsLayout>

@@ -3,11 +3,11 @@ import { Stack, Typography } from "@mui/material";
 import { GenomeSearch, Result } from "@weng-lab/psychscreen-ui-components";
 import { formatPortal } from "common/utility";
 import { useRouter } from "next/navigation";
-import { isGenomicElementType } from "types/globalTypes";
+import { isValidGenomicElement } from "types/globalTypes";
 
 export default function PortalPage({ params: {elementType} }: { params: { elementType: string } }) {
 
-  if (!isGenomicElementType(elementType)) {
+  if (!isValidGenomicElement(elementType)) {
     throw new Error("Unknown genomic element type: " + elementType)
   }
 

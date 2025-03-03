@@ -8,6 +8,9 @@ import { gql } from "types/generated/gql"
 import { GenomicRange } from "types/globalTypes"
 import Link from "next/link"
 
+/**
+ * @todo transition this component to using new data fetching hooks
+ */
 export const NEARBY_GENOMIC_FEATURES_QUERY = gql(`
   query nearbyGenomicFeatures($coordinates: [GenomicRangeInput!], $chromosome: String, $start: Int, $end: Int, $version: Int) {
     gene(chromosome: $chromosome, start: $start, end: $end, assembly: "GRCh38", version: $version) {

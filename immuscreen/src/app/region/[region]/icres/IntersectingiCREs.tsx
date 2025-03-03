@@ -9,6 +9,9 @@ import { getClassDisplayname } from "common/utility"
 import { gql } from "types/generated/gql"
 import { GenomicRange } from "types/globalTypes"
 
+/**
+ * @todo look into using the useIcreMetadata hook here to deduplicate
+ */
 const ICRES_QUERY = gql(`
   query IntersectingIcres($coordinates: [GenomicRangeInput!]) {
     iCREQuery(coordinates: $coordinates) {

@@ -12,51 +12,59 @@ export type PortalName = "SNP" | "Gene" | "iCRE"
 
 export type GenomicElementType = "snp" | "gene" | "icre"
 
-export function isGenomicElementType(value: string): value is GenomicElementType {
+export function isValidGenomicElement(value: string): value is GenomicElementType {
   return value === "snp" || value === "gene" || value === "icre";
+}
+
+export type SharedRoute = "nearby" | "browser"
+
+export type SnpRoute = SharedRoute | "eQTLs"
+
+export type GeneRoute = SharedRoute | "eQTLs" | "linked" | "expression"
+
+export type IcreRoute = SharedRoute | "linked" | "activity";
+
+export function isValidSharedTab(tab: string): tab is SharedRoute {
+  return tab === "nearby" || tab === "browser"
+}
+
+export function isValidSnpTab(tab: string): tab is SnpRoute {
+  return isValidSharedTab(tab) || tab === "eQTLs"
+}
+
+export function isValidGeneTab(tab: string): tab is GeneRoute {
+  return isValidSharedTab(tab) || tab === "eQTLs" || tab === "linked" || tab === "expression"
+}
+
+export function isValidIcreTab(tab: string): tab is IcreRoute {
+  return isValidSharedTab(tab) || tab === "linked" || tab === "activity"
+}
+
+export function isValidTab(tab: string): tab is SharedRoute | SnpRoute | GeneRoute | IcreRoute {
+  return isValidSharedTab(tab) || isValidSnpTab(tab) || isValidGeneTab(tab) || isValidIcreTab(tab)
 }
 
 /**
  * label is for the display name of the tab.
  * href should match the final dynamic route for the tab.
- * Ex: ```snp/rs12345/nearby``` would be
- * ```jsx
- *  {
- *    label: 'Nearby Genomic Features',
- *    href: 'nearby'
- *  },
- * ```
  */
 export type ElementDetailsTab = {
-  /**
-   * The name to display on the tab
-   */
   label: string,
-  /**
-   * href should match the final dynamic route for the tab.
-   * Ex: ```snp/rs12345/nearby``` would be
-   * ```jsx
-   *  {
-   *    label: 'Nearby Genomic Features',
-   *    href: 'nearby'
-   *  },
-   * ```
-   */
-  href: string
+  href: SnpRoute | GeneRoute | IcreRoute
 }
 
 export interface SharedTab extends ElementDetailsTab {
-  href: "nearby" | "browser"
+  href: SharedRoute
 }
 
 export interface SnpPortalTab extends ElementDetailsTab {
-  href: "eQTLs"
+  href: SnpRoute
 }
 
 export interface GenePortalTab extends ElementDetailsTab {
-  href: "eQTLs" | "linked" | "expression"
+  href: GeneRoute
 }
 
 export interface IcrePortalTab extends ElementDetailsTab {
-  href: "linked" | "activity"
+  href: IcreRoute
 }
