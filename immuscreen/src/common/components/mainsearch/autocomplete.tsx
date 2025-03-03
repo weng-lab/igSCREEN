@@ -3,7 +3,7 @@ import { GenomeSearch, GenomeSearchProps, Result } from "@weng-lab/psychscreen-u
 import { ApolloProvider } from "@apollo/client";
 
 const client = new ApolloClient({
-    uri: "https://factorbook.api.wenglab.org/graphql",
+    uri: "https://screen.api.wenglab.org/graphql",
     cache: new InMemoryCache(),
 });
 
