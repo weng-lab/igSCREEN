@@ -8,7 +8,7 @@ type useElementMetadataParams<T extends GenomicElementType> = {
   elementID: string
 }
 
-type useElementMetadataReturn<T extends GenomicElementType> =
+export type useElementMetadataReturn<T extends GenomicElementType> =
   T extends "gene" ? UseGeneDataReturn<{ name: string }>
   : T extends "icre" ? UseIcreDataReturn<{ accession: string }>
   : UseSnpDataReturn<{ rsID: string }>

@@ -1,4 +1,5 @@
 import { Box, Typography } from "@mui/material"
+import { formatPortal } from "common/utility"
 import { GenomicElementType } from "types/globalTypes"
 
 export type ElementDetailsHeaderProps = {
@@ -15,7 +16,7 @@ const ElementDetailsHeader = ({elementType, elementID}: ElementDetailsHeaderProp
       borderRadius={2}
     >
       <Typography variant="subtitle1">
-        {elementType} Details
+        {formatPortal(elementType)} Details
       </Typography>
       <Typography variant='h4'>
         {elementID}

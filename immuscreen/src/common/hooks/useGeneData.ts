@@ -8,13 +8,10 @@ const GENE_Query = gql(`
     gene(chromosome: $chromosome, start: $start, end: $end, assembly: "GRCh38", version: 40, name: $name) {
       name
       strand
-      transcripts {
-        id
-        coordinates {
-          chromosome
-          start
-          end
-        }
+      coordinates {
+        chromosome
+        end
+        start
       }
     }
   }

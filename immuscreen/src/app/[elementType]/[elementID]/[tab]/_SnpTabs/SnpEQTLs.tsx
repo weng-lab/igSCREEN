@@ -1,17 +1,14 @@
-'use client'
-
 import { useQuery } from "@apollo/client"
 import { Typography } from "@mui/material"
 import { DataTable } from "@weng-lab/psychscreen-ui-components"
 import { toScientificNotation } from "common/utils"
 import { gql } from "types/generated/gql"
 
-export default function SNPeQTLs({
-  params
-}: {
-  params: { rsID: string }
-}) {
+type SnpEQTLsProps = {
+  rsid: string
+}
 
+const SnpEQTLs = ({rsid}: SnpEQTLsProps) => {
   const EQTL_QUERY = gql(`
     query SNPeQTLQuery($study: String!, $rsid: String) {
       icreeQTLQuery(study:$study, rsid:$rsid) {
@@ -30,10 +27,9 @@ export default function SNPeQTLs({
   const { loading: loading, data: data } = useQuery(EQTL_QUERY, {
     variables: {
       study: "Yazar.Powell",
-      rsid: params.rsID
+      rsid
     }
   })
-
 
   return (
     <DataTable
@@ -57,8 +53,10 @@ export default function SNPeQTLs({
           value: (row: any) => row.celltype || "",
         }
       ]}
-      tableTitle={`Yazar.Powell eQTLs for ${params.rsID}`}
+      tableTitle={`Yazar.Powell eQTLs for ${rsid}`}
       rows={data?.icreeQTLQuery || []}
       itemsPerPage={10} />
   )
 }
+
+export default SnpEQTLs

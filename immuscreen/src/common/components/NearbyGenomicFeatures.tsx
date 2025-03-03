@@ -218,6 +218,7 @@ const NearbyGenomicFeatures = ({ coordinates }: { coordinates: GenomicRange }) =
             ]}
             sortColumn={1}
             tableTitle="Nearby SNPs"
+            titleHoverInfo="Showing only common SNPs with allele frequency > 0.05"
             rows={snps || []}
             itemsPerPage={10}
             searchable

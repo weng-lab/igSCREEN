@@ -1,6 +1,11 @@
-
-import { useElementMetadata } from "common/hooks/useElementMetadata"
+'use client'
+import { CircularProgress, Typography } from "@mui/material"
+import NearbyGenomicFeatures from "common/components/NearbyGenomicFeatures"
+import { GenomeBrowserView } from "common/gbview/genomebrowserview"
+import { GenomicRange } from "common/gbview/types"
+import { useElementMetadata, useElementMetadataReturn } from "common/hooks/useElementMetadata"
 import { GenomicElementType, isValidGeneTab, isValidIcreTab, isValidSnpTab, isValidTab } from "types/globalTypes"
+import SnpEQTLs from "./_SnpTabs/SnpEQTLs"
 
 /**
  * @todo
@@ -21,15 +26,26 @@ export default function DetailsPage({
     throw new Error("Unknown tab: " + tab)
   }
 
-  const elementMetadata = useElementMetadata({elementType, elementID})
+  const {data: elementMetadata, loading, error} = useElementMetadata({elementType, elementID})
 
-  // Handle shared tabs
-  if (tab === "nearby") {
-    return <p>Viewing {tab} for {elementID} in {elementType} Portal</p>
+  if (loading) {
+    return <CircularProgress />
   }
 
+  if (!elementMetadata.coordinates){
+    return <Typography>Issue fetching data on {elementID}</Typography>
+  }
+
+  if (error){
+    throw new Error(error)
+  }
+
+  //Handle shared tabs
+  if (tab === "nearby") {
+    return <NearbyGenomicFeatures coordinates={elementMetadata.coordinates} />
+  }
   if (tab === "browser") {
-    return <p>Viewing {tab} for {elementID} in {elementType} Portal</p>
+    return <GenomeBrowserView assembly="GRCh38" coordinates={elementMetadata.coordinates} />
   }
 
   switch (elementType) {
@@ -37,24 +53,35 @@ export default function DetailsPage({
       if (!isValidSnpTab(tab)) {
         throw new Error("Unknown SNP details tab: " + tab)
       }
+
+      const snpData = elementMetadata as useElementMetadataReturn<"snp">["data"]
+
       switch (tab) {
-        case ("eQTLs"): return <p>Viewing {tab} for {elementID} in {elementType} Portal</p>
+        case ("eQTLs"): return <SnpEQTLs rsid={snpData.id} />
       }
     }
+
     case ("gene"): {
       if (!isValidGeneTab(tab)) {
         throw new Error("Unknown SNP details tab: " + tab)
       }
+
+      const geneData = elementMetadata as useElementMetadataReturn<"gene">["data"]
+
       switch (tab) {
         case ("eQTLs"): return <p>Viewing {tab} for {elementID} in {elementType} Portal</p>
         case ("linked"): return <p>Viewing {tab} for {elementID} in {elementType} Portal</p>
         case ("expression"): return <p>Viewing {tab} for {elementID} in {elementType} Portal</p>
       }
     }
+
     case ("icre"): {
       if (!isValidIcreTab(tab)) {
         throw new Error("Unknown SNP details tab: " + tab)
       }
+      
+      const icreData = elementMetadata as useElementMetadataReturn<"icre">["data"]
+
       switch (tab) {
         case ("linked"): return <p>Viewing {tab} for {elementID} in {elementType} Portal</p>
         case ("activity"): return <p>Viewing {tab} for {elementID} in {elementType} Portal</p>
