@@ -1,184 +1,411 @@
-"use client"
-import React, { useMemo, useState, useRef, useCallback, useEffect } from "react"
-import Grid2 from "@mui/material/Grid2"
-import { RulerTrack, GenomeBrowser } from "umms-gb"
-import Controls from "./controls"
-import { gql, useQuery } from "@apollo/client"
-import CytobandView, { GenomicRange } from "./cytobandview"
-import EGeneTracks from "./egenetracks"
-import { client } from "../utils"
-import DefaultTracks from "./defaulttracks"
-import BulkAtacTracks from "./bulkatactracks";
-import ChromBPNetAtacTracks from "./chrombpnetatactracks";
-import { Box } from "@mui/material"
+"use client";
+import React, {
+  useMemo,
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+} from "react";
+import Grid2 from "@mui/material/Grid2";
+import { Box, Button, IconButton, useTheme } from "@mui/material";
+import {
+  BrowserActionType,
+  TrackType,
+  GQLCytobands,
+  useBrowserState,
+  TranscriptTrackProps,
+  TranscriptHumanVersion,
+  TranscriptMouseVersion,
+  DefaultTranscript,
+  DefaultBigBed,
+  DisplayMode,
+  BigBedTrackProps,
+  GQLWrapper,
+  DefaultBigWig,
+  Controls,
+  GenomeBrowser,
+} from "@weng-lab/genomebrowser";
+import { Rect } from "umms-gb/dist/components/tracks/bigbed/types";
+import { CellQueryValue } from "../../app/celllineage/types";
+import BulkAtacModal from "./bulkAtacSelector";
+import { getCellDisplayName } from "../../app/celllineage/utils";
+import { getCellColor } from "../../app/celllineage/utils";
+import { Search } from "@mui/icons-material";
+import EditIcon from '@mui/icons-material/Edit';
+import { Result } from "@weng-lab/psychscreen-ui-components";
+import { GenomicRange } from "./types";
+import AutoComplete from "../components/mainsearch/autocomplete";
 
 type GenomeBrowserViewProps = {
   coordinates: {
-    start: number
-    end: number
-    chromosome?: string
-  }
-  biosample?: string
-  gene?: string
-  defaultcelltypes?: string[]
+    start: number;
+    end: number;
+    chromosome?: string;
+  };
+  biosample?: string;
+  gene?: string;
+  defaultcelltypes?: string[];
   accession?: {
-    name: string,
-    start: number,
-    end: number
-  },
-  assembly: string
-}
-const GENE_QUERY = gql`
-  query s($chromosome: String, $start: Int, $end: Int, $assembly: String!,  $version: Int) {
-    gene(chromosome: $chromosome, start: $start, end: $end, assembly: $assembly, version :$version) {
-      name
-      strand
-      transcripts {
-        name
-        strand
-        exons {
-          coordinates {
-            chromosome
-            start
-            end
-          }
-        }
-        coordinates {
-          chromosome
-          start
-          end
-        }
-      }
-    }
-  }
-`
+    name: string;
+    start: number;
+    end: number;
+  };
+  assembly: string;
+};
+
 export type Transcript = {
-  id: string
-  name: string
-  strand: string
-  coordinates: GenomicRange
-}
+  id: string;
+  name: string;
+  strand: string;
+  coordinates: GenomicRange;
+};
 export type SNPQueryResponse = {
   gene: {
-    name: string
-    strand: string
-    transcripts: Transcript[]
-  }[]
-}
-export function expandCoordinates(coordinates, l = 20000) {
+    name: string;
+    strand: string;
+    transcripts: Transcript[];
+  }[];
+};
+function expandCoordinates(coordinates, l = 20000) {
   return {
     chromosome: coordinates.chromosome,
     start: coordinates.start - l < 0 ? 0 : coordinates.start - l,
     end: coordinates.end + l,
-  }
+  };
 }
 
-export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (props: GenomeBrowserViewProps) => {
-  const svgRef = useRef<SVGSVGElement>(null)
-  const expandedCoordinates = useMemo(() => expandCoordinates(props.coordinates), [props.coordinates])
-  const [coordinates, setCoordinates] = useState<GenomicRange>(expandedCoordinates)
-  const [highlight, setHighlight] = useState(null)
-
-  const snpResponse = useQuery<SNPQueryResponse>(GENE_QUERY, {
-    variables: { ...coordinates, assembly: props.assembly, version: 40 },
-    fetchPolicy: "cache-and-network",
-    nextFetchPolicy: "cache-first",
-    client,
-  })
-
-  const groupedTranscripts = useMemo(
-    () =>
-      snpResponse.data?.gene.map((x) => ({
-        ...x,
-        transcripts: x.transcripts.map((xx) => ({
-          ...xx,
-          color: props.gene ? (x.name.includes(props.gene) ? "#880000" : "#aaaaaa") : "#aaaaaa",
-        })),
-      })),
-    [snpResponse, props.gene]
-  )
-  const onDomainChanged = useCallback(
-    (d: GenomicRange) => {
-      const chr = d.chromosome === undefined ? props.coordinates.chromosome : d.chromosome
-      const start = Math.round(d.start)
-      const end = Math.round(d.end)
-      if (end - start > 10) {
-        setCoordinates({ chromosome: chr, start, end })
-      }
-    },
+export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (
+  props: GenomeBrowserViewProps
+) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const expandedCoordinates = useMemo(
+    () => expandCoordinates(props.coordinates),
     [props.coordinates]
-  )
-  const l = useCallback((c) => ((c - coordinates.start) * 1400) / (coordinates.end - coordinates.start), [coordinates])
+  );
+  const [coordinates, setCoordinates] =
+    useState<GenomicRange>(expandedCoordinates);
 
-  return (<>
-    <Grid2 container spacing={3} sx={{ mt: "1rem", mb: "1rem" }}>
+  // Browser State
+  const initialBrowserCoords = useMemo(() => {
+    return coordinates;
+  }, [coordinates]);
+
+  const initialDomain = useMemo(() => {
+    return {
+      chromosome: initialBrowserCoords.chromosome,
+      start: initialBrowserCoords.start,
+      end: initialBrowserCoords.end,
+    };
+  }, [
+    initialBrowserCoords.chromosome,
+    initialBrowserCoords.end,
+    initialBrowserCoords.start,
+  ]);
+
+  const bedMouseOver = useCallback((item: Rect) => {
+    const newHighlight = {
+      domain: { start: item.start + 150, end: item.end + 150 },
+      color: item.color || "red",
+      id: item.name,
+    };
+    browserDispatch({
+      type: BrowserActionType.ADD_HIGHLIGHT,
+      highlight: newHighlight,
+    });
+  }, []);
+  const bedMouseOut = useCallback(() => {
+    browserDispatch({ type: BrowserActionType.REMOVE_LAST_HIGHLIGHT });
+  }, []);
+
+  const initialTracks = useMemo(() => {
+    if (!props.assembly) return [];
+    const geneTrack = {
+      ...DefaultTranscript,
+      titleSize: 16,
+      id: "default-gene",
+      title: "GENCODE genes",
+      height: 100,
+      color: "#AAAAAA",
+      version:
+        props.assembly.toLowerCase() === "mm10"
+          ? TranscriptMouseVersion.V25
+          : TranscriptHumanVersion.V47,
+      assembly: props.assembly,
+      queryType: "gene",
+      displayMode: DisplayMode.SQUISH,
+      geneName: props.gene,
+    } as TranscriptTrackProps;
+
+    const icreTrack = {
+      ...DefaultBigBed,
+      titleSize: 16,
+      id: "default-icre",
+      title: "All Immune cCres",
+      displayMode: DisplayMode.DENSE,
+      color: "#9378bc",
+      rowHeight: 20,
+      height: 75,
+      onMouseOver: bedMouseOver,
+      onMouseOut: bedMouseOut,
+      url: "https://downloads.wenglab.org/Calderon-Corces_activeCREs_iSCREEN_withcolors.bigBed",
+    } as BigBedTrackProps;
+
+    const allImmuneBigWig = {
+      ...DefaultBigWig,
+      title: "All Immune Cells (Aggregate Signal)",
+      url: "https://downloads.wenglab.org/all_immune.bigWig",
+      color: "#000000",
+      height: 75,
+      rowHeight: 12,
+      displayMode: DisplayMode.FULL,
+      id: "all-immune-bigwig",
+    };
+
+    return [geneTrack, icreTrack, allImmuneBigWig];
+  }, [props.gene, props.assembly, bedMouseOver, bedMouseOut]);
+
+  const initialBrowserState = useMemo(() => {
+    return {
+      domain: initialDomain,
+      width: 1500,
+      tracks: initialTracks,
+      highlights: [],
+    };
+  }, [initialDomain, initialTracks]);
+
+  const [browserState, browserDispatch] = useBrowserState(initialBrowserState);
+  const [browserInitialized, setBrowserInitialized] = useState(
+    props.coordinates ? true : false
+  );
+
+  //Initialize genome browser if coordinates were missing initially
+  useEffect(() => {
+    if (!browserInitialized && props.coordinates) {
+      const tracks = initialTracks;
+      browserDispatch({
+        type: BrowserActionType.SET_DOMAIN,
+        domain: initialDomain,
+      });
+      console.log(tracks);
+      tracks.forEach((track) => {
+        if (!browserState.tracks.find((t) => t.id === track.id)) {
+          browserDispatch({ type: BrowserActionType.ADD_TRACK, track });
+        }
+        if (track.trackType === TrackType.TRANSCRIPT) {
+          browserDispatch({
+            type: BrowserActionType.UPDATE_PROPS,
+            id: track.id,
+            props: {
+              geneName: props.gene,
+            },
+          });
+        }
+      });
+      // Mark as initialized
+      setBrowserInitialized(true);
+    }
+  }, [
+    browserDispatch,
+    browserInitialized,
+    browserState.tracks,
+    coordinates,
+    initialDomain,
+    initialTracks,
+    props.coordinates,
+    props.gene,
+  ]);
+
+  // Bulk ATAC Modal
+  const [settingsModalShown, setSettingsModalShown] = useState(false);
+  const [selectedCells, setSelectedCells] = useState<CellQueryValue[]>([]);
+
+  useEffect(() => {
+    // Remove only bulk ATAC tracks for deselected cells
+    console.log(selectedCells);
+    browserState.tracks.forEach((track) => {
+      if (
+        track.id === "all-immune-bigwig" ||
+        track.id === "default-icre" ||
+        track.id === "default-gene"
+      )
+        return;
+      if (!selectedCells.some((cell) => cell === track.id)) {
+        console.log("deleting", track.id);
+        browserDispatch({ type: BrowserActionType.DELETE_TRACK, id: track.id });
+      }
+    });
+    // Add tracks for selected cells
+    const x: [string, string, string][] =
+      selectedCells.map((cell) => {
+        return [
+          getCellDisplayName(cell, true, true) +
+            (["HSC", "CD34_Cord_Blood", "CD34_Bone_Marrow"].find(
+              (x) => x === cell
+            )
+              ? ` (${cell})`
+              : ""),
+          `https://downloads.wenglab.org/${cell}.bigWig`,
+          getCellColor(cell),
+        ];
+      }) || [];
+    x.map((cell, index) => {
+      if (!browserState.tracks.find((t) => t.id === selectedCells[index])) {
+        const track = {
+          ...DefaultBigWig,
+          title: cell[0],
+          url: cell[1],
+          color: cell[2],
+          height: 75,
+          displayMode: DisplayMode.FULL,
+          id: selectedCells[index],
+        };
+        console.log(track);
+        browserDispatch({ type: BrowserActionType.ADD_TRACK, track });
+      }
+    });
+  }, [selectedCells, browserState.tracks, browserDispatch]);
+
+  const handeSearchSubmit = (r: Result) => {
+    console.log(r);
+  };
+
+  const theme = useTheme();
+
+  return (
+    <GQLWrapper>
       <Grid2
-        size={{
-          xs: 12,
-          lg: 12
-        }}>
-        <br />
-        <CytobandView innerWidth={1000} height={15} chromosome={coordinates.chromosome!} assembly={"hg38"} position={coordinates} />
-        <br />
-        <div style={{ textAlign: "center" }}>
-          <Controls onDomainChanged={onDomainChanged} domain={coordinates || props.coordinates} />
-        </div>
-        <br />
-        <br />
-        <Box id="GB">
-          <GenomeBrowser
-          svgRef={svgRef}      
-          domain={coordinates}
-          innerWidth={1400}
-          width="100%"
-          noMargin
-          onDomainChanged={(x) => {
-            if (Math.ceil(x.end) - Math.floor(x.start) > 10) {
-              setCoordinates({
-                chromosome: coordinates.chromosome,
-                start: Math.floor(x.start),
-                end: Math.ceil(x.end),
-              })
-            }
+        container
+        spacing={3}
+        sx={{ mt: "0rem", mb: "1rem" }}
+        ref={containerRef}
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Grid2
+          size={{ xs: 12, lg: 12 }}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: "0px",
           }}
         >
-          {highlight && (
-            <rect fill="#8ec7d1" fillOpacity={0.5} height={'100%'} x={l(highlight.start)} width={l(highlight.end) - l(highlight.start)} />
-          )}
-          <RulerTrack domain={coordinates} height={30} width={1400} />
-          <>
-            {props.accession && <rect fill="#FAA4A4" fillOpacity={0.3} height={'100%'} x={l(props.accession.start)} width={l(props.accession.end) - l(props.accession.start)} />
+          <Box
+            sx={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "space-between",
+              mb: 2,
+            }}
+          >
+            <AutoComplete
+              assembly="GRCh38"
+              onSearchSubmit={handeSearchSubmit}
+              queries={["gene", "snp", "icre"]}
+              geneLimit={3}
+              sx={{ width: "400px" }}
+              slots={{
+                button: <IconButton sx={{ color: theme.palette.primary.main }}>
+                  <Search />
+                </IconButton>,
+              }}
+              slotProps={{
+                input: {
+                  label: "Change browser region",
+                  sx: {
+                    backgroundColor: "white",
+                    "& label.Mui-focused": {
+                      color: theme.palette.primary.main,
+                    },
+                    "& .MuiOutlinedInput-root": {
+                      "&.Mui-focused fieldset": {
+                        borderColor: theme.palette.primary.main,
+                      },
+                    },
+                  },
+                },
+              }}
+            />
+            <Button
+              variant="contained"
+              startIcon={<EditIcon />}
+              sx={{
+                backgroundColor: theme.palette.primary.main,
+                color: "white",
+              }}
+              onClick={() => setSettingsModalShown(true)}
+            >
+              Add more ATAC-seq data
+            </Button>
+          </Box>
+          <BulkAtacModal
+            open={settingsModalShown}
+            onCancel={() => setSettingsModalShown(false)}
+            onAccept={(cells: CellQueryValue[]) => {
+              setSelectedCells(cells);
+              setSettingsModalShown(false);
+            }}
+            selected={selectedCells}
+          />
+          <h3 style={{ marginBottom: "0px", marginTop: "0px" }}>
+            {props.assembly} at {browserState.domain.chromosome}:
+            {browserState.domain.start.toLocaleString()}-
+            {browserState.domain.end.toLocaleString()}
+          </h3>
+
+          <svg id="cytobands" width={"700px"} height={20}>
+            <GQLCytobands
+              assembly={props.assembly === "GRCh38" ? "hg38" : "mm10"}
+              chromosome={browserState.domain.chromosome}
+              currentDomain={browserState.domain}
+            />
+          </svg>
+        </Grid2>
+        <Grid2 size={{ xs: 12, lg: 12 }}>
+          <Controls
+            inputButtonComponent={
+              <IconButton
+                type="button"
+                sx={{
+                  color: "black",
+                  maxHeight: "100%",
+                  padding: "4px",
+                }}
+              >
+                <Search fontSize="small" />
+              </IconButton>
             }
-          </>
-          <EGeneTracks
-            genes={groupedTranscripts || []}
-            expandedCoordinates={coordinates}
-            squish={coordinates.end - coordinates.start >= 500000 ? true : false}
+            buttonComponent={
+              <Button
+                variant="outlined"
+                sx={{
+                  minWidth: "0px",
+                  width: { xs: "100%", sm: "80%" },
+                  maxWidth: "120px",
+                  fontSize: "0.8rem",
+                  padding: "4px 8px",
+                }}
+              />
+            }
+            domain={browserState.domain}
+            dispatch={browserDispatch}
+            withInput={false}
+            style={{
+              paddingBottom: "4px",
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "4px",
+              width: "100%",
+            }}
           />
-          <DefaultTracks
-            assembly={props.assembly}
-            domain={coordinates}
-            oncCREMousedOver={(x) => x && setHighlight(x)}
-            oncCREMousedOut={() => setHighlight(null)}
+          <GenomeBrowser
+            width={"100%"}
+            browserState={browserState}
+            browserDispatch={browserDispatch}
           />
-          <BulkAtacTracks
-            assembly="GRCh38"
-            domain={coordinates}
-            defaultcelltypes={props.defaultcelltypes}
-          />
-          {
-            /**
-             * @todo Need to make sure chrombpnet tracks also include Corces 
-             */
-          }
-          {/* <ChromBPNetAtacTracks
-            domain={coordinates}
-            defaultcelltypes={props.defaultcelltypes}
-          /> */}
-        </GenomeBrowser>
-        </Box>
-        
+        </Grid2>
       </Grid2>
-    </Grid2>
-  </>);
-}
+    </GQLWrapper>
+  );
+};
