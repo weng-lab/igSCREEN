@@ -134,7 +134,7 @@ const ResponsiveAppBar = () => {
                       onMouseEnter={
                         page.subPages
                           ? (event) =>
-                              handleOpenNavMenu_Dropdown(event, page.dropdownID)
+                            handleOpenNavMenu_Dropdown(event, page.dropdownID)
                           : undefined
                       }
                     >
@@ -228,6 +228,7 @@ const ResponsiveAppBar = () => {
                   box: { gap: 1 },
                   input: {
                     size: "small",
+                    label: "Enter a gene, snp, icre or locus",
                     sx: {
                       "& .MuiOutlinedInput-root": {
                         backgroundColor: "#ffffff",
