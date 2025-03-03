@@ -1,7 +1,7 @@
 //Home Page
 
 "use client"
-import { Box, Button, Divider, FormControl, IconButton, MenuItem, Stack, Typography } from "@mui/material"
+import { Box, Button, Divider, FormControl, IconButton, MenuItem, Stack, Typography, useTheme } from "@mui/material"
 import React, { useState } from "react"
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Grid2 from "@mui/material/Grid2"
@@ -19,6 +19,8 @@ const Home = () => {
   const handleSetElementSearch = (event: SelectChangeEvent) => {
     setElementSearch(event.target.value);
   };
+
+  const theme = useTheme();
 
   return (
     (<Grid2 container pt={3} maxWidth={{ xl: "60%", lg: "75%", md: "85%", sm: "90%", xs: "95%" }} margin={"auto"}>
@@ -38,7 +40,21 @@ const Home = () => {
           </IconButton>,
           }}
           slotProps={{
-            box: { gap: 2 }
+            box: { gap: 2 },
+            input: {
+              label: "Enter a gene, snp, icre or locus",
+              sx: {
+                backgroundColor: "white",
+                "& label.Mui-focused": {
+                  color: theme.palette.primary.main,
+                },
+                "& .MuiOutlinedInput-root": {
+                  "&.Mui-focused fieldset": {
+                    borderColor: theme.palette.primary.main,
+                  },
+                },
+              },
+            },
           }}
         />
       </Grid2>
