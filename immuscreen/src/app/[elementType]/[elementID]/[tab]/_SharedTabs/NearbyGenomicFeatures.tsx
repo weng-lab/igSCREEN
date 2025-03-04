@@ -123,7 +123,7 @@ const NearbyGenomicFeatures = ({ coordinates, elementType, elementID }: NearbyGe
         chromosome: coordinates.chromosome,
         start: coordinates.start - 1000000,
         end: coordinates.end + 1000000,
-        version: 40
+        version: 29
       },
     }
   )

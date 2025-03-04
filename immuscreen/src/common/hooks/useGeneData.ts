@@ -5,7 +5,7 @@ import { GenomicElementType, GenomicRange } from "types/globalTypes";
 
 const GENE_Query = gql(`
   query Gene($chromosome: String, $start: Int, $end: Int, $name: [String]) {
-    gene(chromosome: $chromosome, start: $start, end: $end, assembly: "GRCh38", version: 40, name: $name) {
+    gene(chromosome: $chromosome, start: $start, end: $end, assembly: "GRCh38", version: 29, name: $name) {
       name
       id
       strand

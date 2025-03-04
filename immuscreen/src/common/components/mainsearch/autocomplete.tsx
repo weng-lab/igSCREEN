@@ -30,6 +30,7 @@ export default function AutoComplete(props: Partial<GenomeSearchProps>) {
             assembly="GRCh38"
             onSearchSubmit={handleSearchSubmit}
             queries={["gene", "icre", "snp", "coordinate"]}
+            
         />
     )
 }

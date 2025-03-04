@@ -129,7 +129,7 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (
       version:
         props.assembly.toLowerCase() === "mm10"
           ? TranscriptMouseVersion.V25
-          : TranscriptHumanVersion.V47,
+          : TranscriptHumanVersion.V29,
       assembly: props.assembly,
       queryType: "gene",
       displayMode: DisplayMode.SQUISH,

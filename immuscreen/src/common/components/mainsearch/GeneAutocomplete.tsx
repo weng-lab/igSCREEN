@@ -64,7 +64,7 @@ export const GeneAutoComplete: React.FC<{ assembly: string, header?: boolean }> 
         variables: {
           assembly: assembly.toLowerCase(),
           name_prefix: value,
-          version: assembly.toLowerCase()==="grch38" ? 40 : 25,
+          version: assembly.toLowerCase()==="grch38" ? 29 : 25,
           limit: 1000
         },
       }),
