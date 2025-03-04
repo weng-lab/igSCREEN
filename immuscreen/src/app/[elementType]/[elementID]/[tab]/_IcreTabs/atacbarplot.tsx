@@ -4,14 +4,12 @@ import { Group } from "@visx/group";
 import { BarGroup } from "@visx/shape";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { scaleBand, scaleLinear } from "@visx/scale";
-import { stringToColour } from '../../common/utils';
 import { LegendOrdinal, LegendItem, LegendLabel } from '@visx/legend';
 import { scaleOrdinal } from '@visx/scale';
 import { useTooltip, useTooltipInPortal, defaultStyles } from '@visx/tooltip';
 import { localPoint } from '@visx/event';
-import { cellTypeStaticInfo } from "../../common/consts"
-import { getCellColor, getCellDisplayName } from "../celllineage/utils";
-import { CellDisplayName, CellName, CellQueryValue } from "../celllineage/types";
+import { getCellColor, getCellDisplayName } from "../../../../celllineage/utils";
+import { CellName } from "../../../../celllineage/types";
 
 type TooltipData = {
   bardata: { class: string, subclass: string, description: string, ct_description?: string, value: number }

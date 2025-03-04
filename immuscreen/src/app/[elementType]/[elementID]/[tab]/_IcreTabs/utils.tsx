@@ -2,9 +2,9 @@ import { useState } from "react";
 import { Experiment_Data } from "./types";
 import { ExpandLess, ExpandMore, InfoOutlined } from "@mui/icons-material";
 import { List, ListItemButton, ListItemText, Collapse, Tooltip, Stack } from "@mui/material";
-import { experimentInfo } from "../../common/consts";
-import { CellQueryValue } from "../celllineage/types";
-import { getCellDisplayName } from "../celllineage/utils";
+import { experimentInfo } from "../../../../../common/consts";
+import { CellQueryValue } from "../../../../celllineage/types";
+import { getCellDisplayName } from "../../../../celllineage/utils";
 
 type GroupListProps = { exps: { description: string, name: string, value: number }[], grouping: string }
 

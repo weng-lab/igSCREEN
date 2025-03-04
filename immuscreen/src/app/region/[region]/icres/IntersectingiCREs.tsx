@@ -4,10 +4,11 @@ import { useQuery } from "@apollo/client"
 import { CircularProgress } from "@mui/material"
 import { DataTable } from "@weng-lab/psychscreen-ui-components"
 import { CellQueryValue } from "app/celllineage/types"
-import { ActiveCellTypesList, ActiveExperimentList } from "app/icres/utils"
+import { ActiveCellTypesList, ActiveExperimentList } from "app/[elementType]/[elementID]/[tab]/_IcreTabs/utils"
 import { getClassDisplayname } from "common/utility"
 import { gql } from "types/generated/gql"
 import { GenomicRange } from "types/globalTypes"
+import { useRouter } from "next/navigation"
 
 /**
  * @todo look into using the useIcreMetadata hook here to deduplicate
@@ -59,6 +60,8 @@ type DataTableRow = {
 
 
 const IntersectingiCREs = (props: { region: GenomicRange }) => {
+
+  const router = useRouter()
 
   const { loading, data, error } = useQuery(ICRES_QUERY, {
     variables: {
@@ -138,7 +141,7 @@ const IntersectingiCREs = (props: { region: GenomicRange }) => {
         },
       ]}
       tableTitle="Intersecting iCREs"
-      onRowClick={(row) => window.alert("clicked" + row.accession)}
+      onRowClick={(row) => router.push(`/icre/${row.accession}` )}
       itemsPerPage={[10, 25, 50]}
     />
   )

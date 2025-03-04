@@ -1,41 +1,35 @@
-import { ApolloClient, InMemoryCache } from "@apollo/client";
+'use client'
 import { GenomeSearch, GenomeSearchProps, Result } from "@weng-lab/psychscreen-ui-components";
-import { ApolloProvider } from "@apollo/client";
-
-const client = new ApolloClient({
-    uri: "https://screen.api.wenglab.org/graphql",
-    cache: new InMemoryCache(),
-});
+import { useRouter } from "next/navigation";
 
 export default function AutoComplete(props: Partial<GenomeSearchProps>) {
-    return (
-        <ApolloProvider client={client}>
-            <GenomeSearch
-                {...props}
-                assembly="GRCh38"
-                onSearchSubmit={handleSearchSubmit}
-                queries={["gene", "icre", "snp", "coordinate"]}
-            />
-        </ApolloProvider>
-    )
-}
+    const router = useRouter()
 
-const handleSearchSubmit = (r: Result) => {
-    let url = ""
-    switch (r.type) {
-        case "gene":
-            let id = r.description.split("\n")[0]
-            url = `/gene?gene=${r.title}&geneid=${id}&chromosome=${r.domain.chromosome}&start=${r.domain.start}&end=${r.domain.end}`
-            break;
-        case "icre":
-            url = `/icres?accession=${r.title}`
-            break;
-        case "coordinate":
-            url = `/icres?chromosome=${r.domain.chromosome}&start=${r.domain.start}&end=${r.domain.end}`
-            break;
-        case "snp":
-            url = `/snp?rsid=${r.title}`
-            break;
+    const handleSearchSubmit = (r: Result) => {
+        let url = ""
+        switch (r.type) {
+            case "gene":
+                url = `/gene/${r.title}`
+                break;
+            case "icre":
+                url = `/icre/${r.title}`
+                break;
+            case "coordinate":
+                url = `/region/${r.domain.chromosome}:${r.domain.start}-${r.domain.end}`
+                break;
+            case "snp":
+                url = `/snp/${r.title}`
+                break;
+        }
+        router.push(url)
     }
-    window.open(url, "_self")
+
+    return (
+        <GenomeSearch
+            {...props}
+            assembly="GRCh38"
+            onSearchSubmit={handleSearchSubmit}
+            queries={["gene", "icre", "snp", "coordinate"]}
+        />
+    )
 }

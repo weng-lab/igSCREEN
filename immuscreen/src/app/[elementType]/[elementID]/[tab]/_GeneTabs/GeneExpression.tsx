@@ -49,12 +49,9 @@ const GeneExpression = ({ name }: GeneExpressionProps) => {
     setcolorScheme(newScheme);
   };
 
-  /**
-   * @todo check this works. The gene name is being send instead of the id (like before)
-   */
   const { loading: rnaumaploading, data: rnumapdata } = useQuery(RNA_UMAP_QUERY, {
     variables: {
-      gene_id: name
+      gene_id: name // argument is "gene_id" but actually only accepts gene name (symbol)
     },
   })
 
