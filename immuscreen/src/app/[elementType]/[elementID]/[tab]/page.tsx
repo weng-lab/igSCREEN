@@ -1,6 +1,6 @@
 'use client'
 import { CircularProgress, Typography } from "@mui/material"
-import NearbyGenomicFeatures from "common/components/NearbyGenomicFeatures"
+import NearbyGenomicFeatures from "app/[elementType]/[elementID]/[tab]/_SharedTabs/NearbyGenomicFeatures"
 import { GenomeBrowserView } from "common/gbview/genomebrowserview"
 import { GenomicRange } from "common/gbview/types"
 import { useElementMetadata, useElementMetadataReturn } from "common/hooks/useElementMetadata"
@@ -45,7 +45,7 @@ export default function DetailsPage({
 
   //Handle shared tabs
   if (tab === "nearby") {
-    return <NearbyGenomicFeatures coordinates={elementMetadata.coordinates} />
+    return <NearbyGenomicFeatures coordinates={elementMetadata.coordinates} elementID={elementID} elementType={elementType} />
   }
   if (tab === "browser") {
     /**

@@ -1,4 +1,5 @@
-import { Box, Typography } from "@mui/material"
+import { Box, Skeleton, Typography } from "@mui/material"
+import { useElementMetadata } from "common/hooks/useElementMetadata"
 import { formatPortal } from "common/utility"
 import { GenomicElementType } from "types/globalTypes"
 
@@ -8,6 +9,11 @@ export type ElementDetailsHeaderProps = {
 }
 
 const ElementDetailsHeader = ({elementType, elementID}: ElementDetailsHeaderProps) => {
+
+  const {data: elementMetadata, loading, error} = useElementMetadata({elementType, elementID})
+
+  const c = elementMetadata?.coordinates
+  const coordinatesDisplay = c && `${c.chromosome}:${c.start.toLocaleString()}-${c.end.toLocaleString()}`
 
   return (
     <Box
@@ -20,6 +26,9 @@ const ElementDetailsHeader = ({elementType, elementID}: ElementDetailsHeaderProp
       </Typography>
       <Typography variant='h4'>
         {elementID}
+      </Typography>
+      <Typography>
+        {loading ? <Skeleton width={300} /> : coordinatesDisplay}
       </Typography>
     </Box>
   )

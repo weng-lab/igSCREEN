@@ -1,21 +1,15 @@
 import { ApolloClient, InMemoryCache } from "@apollo/client"
-import styled from "@emotion/styled"
-import { Tab } from "@mui/material"
 
 /**
  * @todo cleanup and merge with utility.ts. This file calls client-only code so needed some helpers separate
  */
 
 /**
- * @deprecated
+ * @deprecated Can remove this as app is now wrapped with provider
  */
 export const client = new ApolloClient({
   uri: "https://factorbook.api.wenglab.org/graphql",
   cache: new InMemoryCache(),
-})
-
-export const StyledTab = styled(Tab)({
-  textTransform: "none",
 })
 
 //https://stackoverflow.com/questions/3426404/create-a-hexadecimal-colour-based-on-a-string-with-javascript

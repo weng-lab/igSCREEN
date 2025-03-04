@@ -5,7 +5,7 @@ import Grid from "@mui/material/Grid2"
 import { Link as MuiLink, Skeleton } from "@mui/material"
 import { DataTable } from "@weng-lab/psychscreen-ui-components"
 import { gql } from "types/generated/gql"
-import { GenomicRange } from "types/globalTypes"
+import { GenomicElementType, GenomicRange } from "types/globalTypes"
 import Link from "next/link"
 
 export const NEARBY_GENOMIC_FEATURES_QUERY = gql(`
@@ -101,7 +101,13 @@ export function calcDistRegionToRegion(coord1: { start: number, end: number }, c
   }
 }
 
-const NearbyGenomicFeatures = ({ coordinates }: { coordinates: GenomicRange }) => {
+export type NearbyGenomicFeaturesProps = {
+  coordinates: GenomicRange,
+  elementType: GenomicElementType,
+  elementID: string,
+}
+
+const NearbyGenomicFeatures = ({ coordinates, elementType, elementID }: NearbyGenomicFeaturesProps) => {
 
   const { loading, data, error } = useQuery(
     NEARBY_GENOMIC_FEATURES_QUERY,
@@ -127,6 +133,10 @@ const NearbyGenomicFeatures = ({ coordinates }: { coordinates: GenomicRange }) =
       ...gene,
       distance: calcDistToTSS(coordinates, gene.transcripts, gene.strand as "+" | "-")
     }
+  }).filter(gene => {
+    if (elementType === "gene") {
+      return gene.name !== elementID
+    } else return true
   })
 
   const iCREs = data?.iCREQuery.map((iCRE) => {
@@ -134,14 +144,22 @@ const NearbyGenomicFeatures = ({ coordinates }: { coordinates: GenomicRange }) =
       ...iCRE,
       distance: calcDistRegionToRegion(coordinates, iCRE.coordinates),
     }
+  }).filter(iCRE => {
+    if (elementType === "icre") {
+      return iCRE.accession !== elementID
+    } else return true
   })
 
   const snps = data?.snpQuery.map((snp) => {
     return {
       ...snp,
       distance: calcDistRegionToPosition(coordinates.start, coordinates.end, "closest", snp.coordinates.start),
-    };
-  });
+    }
+  }).filter(snp => {
+    if (elementType === "snp") {
+      return snp.id !== elementID
+    } else return true
+  })
 
   return (
     <Grid container spacing={4}>

@@ -1,7 +1,7 @@
 "use client"
 import React, { useState } from "react"
-import { StyledTab, toScientificNotation } from "common/utils"
-import { Box, CircularProgress, Stack, ToggleButtonGroup, Typography } from "@mui/material"
+import { toScientificNotation } from "common/utils"
+import { Box, CircularProgress, Stack, Tab, ToggleButtonGroup, Typography } from "@mui/material"
 import { Tabs } from "@mui/material"
 import Grid2 from "@mui/material/Grid2"
 import { ApolloError, useQuery } from "@apollo/client"
@@ -123,10 +123,10 @@ const IcreActivity = ({ accession }: IcreActivityProps) => {
             lg: 12
           }}>
           <Tabs aria-label="icres_tabs" value={value} onChange={handleChange}>
-            <StyledTab value={1} label="Activity UMAP" />
-              {/* <StyledTab value={2} label="GWAS Associations" /> */}
-            <StyledTab value={3} label="Cell Type Specific Activity" />
-            <StyledTab value={4} label="Activity in Cell Lineage" />
+            <Tab value={1} label="Activity UMAP" />
+              {/* <Tab value={2} label="GWAS Associations" /> */}
+            <Tab value={3} label="Cell Type Specific Activity" />
+            <Tab value={4} label="Activity in Cell Lineage" />
           </Tabs>
         </Grid2>
       </Grid2>
@@ -224,9 +224,9 @@ const IcreActivity = ({ accession }: IcreActivityProps) => {
             lg: 12
           }}>
           <Tabs aria-label="icres_tabs" value={tabVal} onChange={handleTabChange}>
-            <StyledTab value="Aggregate" label="Aggregate ATAC by Celltype" />
-            <StyledTab value="Calderon" label="Study: Calderon" />
-            <StyledTab value="Corces" label="Study: Corces" />
+            <Tab value="Aggregate" label="Aggregate ATAC by Celltype" />
+            <Tab value="Calderon" label="Study: Calderon" />
+            <Tab value="Corces" label="Study: Corces" />
           </Tabs>
           {tabVal === "Aggregate" && (
             icrebyctzscoreloading ?
