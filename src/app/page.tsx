@@ -10,8 +10,9 @@ import { SnpAutoComplete } from "../common/components/mainsearch/SnpAutocomplete
 import { CcreAutoComplete } from "../common/components/mainsearch/CcreAutocomplete";
 import Image from 'next/image'
 import GenomicRegion from "../common/components/mainsearch/genomicregion";
-import { ExpandMore, Search } from "@mui/icons-material";
+import { ArrowForwardIos, ExpandMore, Login, Search } from "@mui/icons-material";
 import AutoComplete from "../common/components/mainsearch/autocomplete";
+import Link from "next/link";
 
 const Home = () => {
   const [elementSearch, setElementSearch] = useState<string>("Genomic Region")
@@ -90,7 +91,7 @@ const Home = () => {
                     }}>
                     <Typography variant="h4">Gene Portal</Typography>
                     <Typography mb={2}>Explore gene expression across immune cell types at bulk and single-cell resolution for 63 cell types across 305 experiments.</Typography>
-                    <GeneAutoComplete assembly={"GRCh38"} />
+                    <Button LinkComponent={Link} href="/gene" variant="contained" endIcon={<ArrowForwardIos />}>Explore Genes</Button>
                   </Grid2>
                   <Grid2
                     order={{ xs: 1, md: 2 }}
@@ -142,22 +143,8 @@ const Home = () => {
                       md: 6
                     }}>
                     <Typography variant="h4">Element Portal</Typography>
-                    <Typography>Explore regulatory element activity (immune cCREs) across immune cell types at bulk and single-cell resolution for 63 cell types across 305 experiments.</Typography>
-                    <FormControl variant="standard" sx={{ mb: 2 }}>
-                      <Select
-                        id="portal_Select"
-                        value={elementSearch}
-                        onChange={handleSetElementSearch}
-                      >
-                        <MenuItem value={"Genomic Region"}>Genomic Region</MenuItem>
-                        <MenuItem value={"iCREs"}>iCREs</MenuItem>
-                      </Select>
-                    </FormControl>
-                    {elementSearch === "Genomic Region" ?
-                      <GenomicRegion assembly="GRCh38" />
-                      :
-                      <CcreAutoComplete textColor={"black"} assembly={"GRCh38"} />
-                    }
+                    <Typography mb={2}>Explore regulatory element activity (immune cCREs) across immune cell types at bulk and single-cell resolution for 63 cell types across 305 experiments.</Typography>
+                    <Button LinkComponent={Link} href="/icre" variant="contained" endIcon={<ArrowForwardIos />}>Explore iCREs</Button>
                   </Grid2>
                 </Grid2>
               </div>
@@ -178,7 +165,7 @@ const Home = () => {
                     }}>
                     <Typography variant="h4">SNP Portal</Typography>
                     <Typography mb={2}>Search SNPs of interest and explore their impact on gene expression, chromatin accessibility, transcription factor (TF) binding and other molecular traits in immune cells.</Typography>
-                    <SnpAutoComplete assembly={"GRCh38"} />
+                    <Button LinkComponent={Link} href="/snp" variant="contained" endIcon={<ArrowForwardIos />}>Explore SNPs</Button>
                   </Grid2>
                   <Grid2
                     order={{ xs: 1, md: 2 }}
@@ -231,7 +218,7 @@ const Home = () => {
                     }}>
                     <Typography variant="h4">Phenotype Portal</Typography>
                     <Typography mb={2}>Explore heritability enrichment for 280+ traits within gene regulatory features, such as immune cCREs.</Typography>
-                    <Button variant="contained" href="/phenotype">
+                    <Button LinkComponent={Link} variant="contained" href="/phenotype" endIcon={<ArrowForwardIos />}>
                       Explore Phenotypes
                     </Button>
                   </Grid2>
@@ -254,7 +241,7 @@ const Home = () => {
                     }}>
                     <Typography variant="h4">Immune cCRE Activity by Cell Type</Typography>
                     <Typography mb={2}>Compare immune cCRE activity between immune cell types.</Typography>
-                    <Button variant="contained" href="/celllineage">
+                    <Button LinkComponent={Link} variant="contained" href="/celllineage" endIcon={<ArrowForwardIos />}>
                       Explore cCRE activity
                     </Button>
                   </Grid2>
