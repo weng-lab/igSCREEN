@@ -28,7 +28,7 @@ const ElementDetailsHeader = ({elementType, elementID}: ElementDetailsHeaderProp
         {elementID}
       </Typography>
       <Typography>
-        {loading ? <Skeleton width={300} /> : coordinatesDisplay}
+        {loading ? <Skeleton width={215} /> : coordinatesDisplay}
       </Typography>
     </Box>
   )

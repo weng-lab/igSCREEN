@@ -70,7 +70,7 @@ const GeneEQTLs = ({ name, id }: GeneEQTLsProps) => {
   }
 
   return (
-    <Grid2 container spacing={3}>
+    <Grid2 container spacing={2}>
       <Grid2 size={12}>
         <DataTable
           columns={[
