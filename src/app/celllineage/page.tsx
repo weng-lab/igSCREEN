@@ -182,7 +182,7 @@ export default function UpSet() {
         });
       setDownloading(false)
     } catch (error) {
-      console.log("Something went wrong when attempting to download:\n" + error)
+      console.error("Something went wrong when attempting to download:\n" + error)
       setDownloading(false)
     }
   }, [setDownloading, upSetQueryGroups, upSetClasses, getiCREFileURL]);

@@ -94,7 +94,6 @@ const GeneExpression = ({ name }: GeneExpressionProps) => {
 
   const scatterData: Point<PointMetaData>[] = useMemo(() => {
     if (!rnumapdata) return [];
-    console.log(rnumapdata.calderonRnaUmapQuery)
 
     return rnumapdata.calderonRnaUmapQuery.map((x) => {
       const gradientColor = Math.log(x.value + 0.01) <= 0 ? "#808080" : interpolateYlOrRd(colorScale(Math.log(x.value + 0.01)));

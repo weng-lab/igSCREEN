@@ -60,7 +60,7 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
       if (experimentInfo[a.celltype] && experimentInfo[b.celltype]) {
         return (experimentInfo[a.celltype].order - experimentInfo[b.celltype].order)
       } else {
-        console.log("Couldn't find" + a.celltype + "or" + b.celltype)
+        console.error("Couldn't find" + a.celltype + "or" + b.celltype)
         return 0
       }
     })

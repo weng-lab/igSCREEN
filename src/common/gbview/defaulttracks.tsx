@@ -6,7 +6,6 @@ import { DenseBigBed, EmptyTrack, FullBigWig } from "umms-gb"
 import { client } from "../utils"
 import { BIG_QUERY } from "./queries"
 import { GenomicRange, BigQueryResponse, BigResponseData } from "./types"
-import { Tooltip } from "@mui/material"
 
 
 type DefaultTracksProps = {
@@ -20,12 +19,6 @@ type DefaultTracksProps = {
   oncCREMousedOver?: (coordinates?: GenomicRange) => void
   oncCREMousedOut?: () => void
   onSettingsClick?: () => void
-}
-
-const CCRETooltip = (props) => {
-  console.log(props, "icretoltip")
-  return (<>
-  </>)
 }
 
 export const TitledTrack: React.FC<{

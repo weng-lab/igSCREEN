@@ -372,7 +372,6 @@ export const CalderonCellTypesMetadata = CalderonCellTypes.map(c=>{
 })
 export const CalderonBigWigTracksMetadata = CalderonBigWigTracks.map(c=>{
  let r= CalderonCellTypes.find(s=>s[1].includes(c[1]))
- //console.log("test",r)
     return {
         name: c[0],
         celltype: c[1],

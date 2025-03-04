@@ -19,7 +19,7 @@ export const getCellColor = (cell: CellName | CellQueryValue | CellDisplayName):
  */
 export const getCellDisplayName = (cell: CellName | CellQueryValue, appendStim = false, appendStudy = false): string => {
   let name = Object.values(cellTypeStaticInfo).find((x: CellTypeStaticInfo) => x.id === cell || extractQueryValues(x, "B").includes(cell as CellQueryValue))?.displayName ?? cell
-  if (name === cell) console.log("Unable to find display name for " + cell)
+  if (name === cell) console.error("Unable to find display name for " + cell)
   if (appendStim && cell.slice(-2) === "-S") name += " (stimulated)"
   if (appendStudy && (cell.slice(-2) === "-S" || cell.slice(-2) === "-U")){
      name += " - Study: Calderon"
