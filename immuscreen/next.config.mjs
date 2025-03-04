@@ -20,17 +20,17 @@ const nextConfig = {
       },
       {
         source: '/snp/:elementID',
-        destination: '/snp/:elementID/eQTLs',
+        destination: '/snp/:elementID/nearby',
         permanent: true,
       },
       {
         source: '/icre/:elementID',
-        destination: '/icre/:elementID/activity',
+        destination: '/icre/:elementID/nearby',
         permanent: true,
       },
       {
         source: '/gene/:elementID',
-        destination: '/gene/:elementID/expression',
+        destination: '/gene/:elementID/nearby',
         permanent: true,
       },
     ]

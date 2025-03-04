@@ -33,7 +33,7 @@ const pageLinks = [
     subPages: [
       { pageName: "Gene", link: "/gene" },
       { pageName: "SNP", link: "/snp" },
-      { pageName: "iCREs", link: "/icres" },
+      { pageName: "iCREs", link: "/icre" },
       { pageName: "Cell Lineage", link: "/celllineage" },
       { pageName: "Phenotype", link: "/phenotype" },
     ],
