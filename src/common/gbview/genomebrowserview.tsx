@@ -20,7 +20,6 @@ import {
   DefaultBigBed,
   DisplayMode,
   BigBedTrackProps,
-  GQLWrapper,
   DefaultBigWig,
   Controls,
   GenomeBrowser,
@@ -31,7 +30,7 @@ import BulkAtacModal from "./bulkAtacSelector";
 import { getCellDisplayName } from "../../app/celllineage/utils";
 import { getCellColor } from "../../app/celllineage/utils";
 import { Search } from "@mui/icons-material";
-import EditIcon from '@mui/icons-material/Edit';
+import EditIcon from "@mui/icons-material/Edit";
 import { Result } from "@weng-lab/psychscreen-ui-components";
 import { GenomicRange } from "./types";
 import AutoComplete from "../components/mainsearch/autocomplete";
@@ -266,13 +265,26 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (
   }, [selectedCells, browserState.tracks, browserDispatch]);
 
   const handeSearchSubmit = (r: Result) => {
-    console.log(r);
+    if (r.type === "gene") {
+      browserDispatch({
+        type: BrowserActionType.UPDATE_PROPS,
+        id: "default-gene",
+        props: {
+          geneName: r.title,
+        },
+      });
+    }
+    const expandedCoordinates = expandCoordinates(r.domain);
+    browserDispatch({
+      type: BrowserActionType.SET_DOMAIN,
+      domain: expandedCoordinates,
+    });
   };
 
   const theme = useTheme();
 
   return (
-    <GQLWrapper>
+    <>
       <Grid2
         container
         spacing={3}
@@ -306,9 +318,11 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (
               geneLimit={3}
               sx={{ width: "400px" }}
               slots={{
-                button: <IconButton sx={{ color: theme.palette.primary.main }}>
-                  <Search />
-                </IconButton>,
+                button: (
+                  <IconButton sx={{ color: theme.palette.primary.main }}>
+                    <Search />
+                  </IconButton>
+                ),
               }}
               slotProps={{
                 input: {
@@ -406,6 +420,6 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (
           />
         </Grid2>
       </Grid2>
-    </GQLWrapper>
+    </>
   );
 };
