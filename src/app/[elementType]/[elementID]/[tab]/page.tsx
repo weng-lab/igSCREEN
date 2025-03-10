@@ -77,7 +77,7 @@ export default function DetailsPage({
       switch (tab) {
         case ("eQTLs"): return <GeneEQTLs name={geneData.name} id={geneData.id} />
         case ("linked"): return <p>Viewing {tab} for {elementID} in {elementType} Portal</p>
-        case ("expression"): return <GeneExpression name={geneData.name} />
+        case ("expression"): return <GeneExpression name={geneData.name} id={geneData.id} />
       }
     }
 

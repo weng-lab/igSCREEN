@@ -1,46 +1,41 @@
 import { useQuery } from "@apollo/client";
 import { Box, Button, Grid2, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
 import { ParentSize } from "@visx/responsive";
-import { Text } from '@visx/text';
 import { Point, ScatterPlot } from "@weng-lab/psychscreen-ui-components";
-import { CellName } from "app/celllineage/types";
-import { getCellColor, getCellDisplayName } from "app/celllineage/utils";
+import { getCellCategoryColor, getCellCategoryDisplayname } from "common/utility";
 import { scaleLinear } from "d3-scale";
 import { interpolateYlOrRd } from "d3-scale-chromatic";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { gql } from "types/generated";
+import { GeneExpressionQuery } from "types/generated/graphql";
 
-const RNA_UMAP_QUERY = gql(`
-  query RnaUmap($gene_id: String!) {
-    calderonRnaUmapQuery(gene_id: $gene_id){
-      name
-      donor
-      stimulation      
-      celltype
-      class
+const GET_GENE_EXPRESSION = gql(`
+  query GeneExpression($gene_id: String!) {
+    immuneRnaUmapQuery(gene_id: $gene_id) {
       umap_1
       umap_2
+      celltype
+      source
+      description
+      expid
+      name
+      tree_celltype
       value
+      stimulation
     }
   }
 `)
 
-type PointMetaData = {
-  cellType: string;
-  name: string;
-  class: string;
-  value: number;
-}
-
 type GeneExpressionProps = {
-  name: string
+  name: string,
+  id: string
 }
 
-const GeneExpression = ({ name }: GeneExpressionProps) => {
+type PointMetadata = GeneExpressionQuery["immuneRnaUmapQuery"][0]
+
+const GeneExpression = ({ name, id }: GeneExpressionProps) => {
   const [colorScheme, setcolorScheme] = useState('geneexp');
   const [showLegend, setShowLegend] = useState<boolean>(false);
-
-  const graphContainerRef = useRef(null);
 
   const handleColorSchemeChange = (
     event: React.MouseEvent<HTMLElement>,
@@ -48,13 +43,14 @@ const GeneExpression = ({ name }: GeneExpressionProps) => {
   ) => {
     setcolorScheme(newScheme);
   };
-
-  const { loading: rnaumaploading, data: rnumapdata } = useQuery(RNA_UMAP_QUERY, {
+  
+  const { loading, data } = useQuery(GET_GENE_EXPRESSION, {
     variables: {
-      gene_id: name // argument is "gene_id" but actually only accepts gene name (symbol)
+      gene_id: id.split('.')[0]
     },
   })
-
+  
+  const graphContainerRef = useRef(null);
 
   const map = {
     defaultOpen: false,
@@ -65,11 +61,15 @@ const GeneExpression = ({ name }: GeneExpressionProps) => {
     ref: graphContainerRef
   };
 
+  function logTransform(val: number) {
+    return Math.log10(val + 1)
+  }
+
   //find the max logTPM for the domain fo the gradient
   const maxValue = useMemo(() => {
-    if (!rnumapdata || rnumapdata.calderonRnaUmapQuery.length === 0) return 0;
-    return Math.max(...rnumapdata.calderonRnaUmapQuery.map((x) => Math.log(x.value + 0.01)));
-  }, [rnumapdata]);
+    if (!data || data.immuneRnaUmapQuery.length === 0) return 0;
+    return Math.max(...data.immuneRnaUmapQuery.map((x) => logTransform(x.value)));
+  }, [data]);
 
   //generate the domain for the gradient based on the max number
   const generateDomain = (max: number, steps: number) => {
@@ -92,27 +92,22 @@ const GeneExpression = ({ name }: GeneExpressionProps) => {
     return `#808080, ${stops.join(", ")}`;
   };
 
-  const scatterData: Point<PointMetaData>[] = useMemo(() => {
-    if (!rnumapdata) return [];
+  const scatterData: Point<PointMetadata>[] = useMemo(() => {
+    if (!data) return [];
 
-    return rnumapdata.calderonRnaUmapQuery.map((x) => {
+    return data.immuneRnaUmapQuery.map((x) => {
       const gradientColor = Math.log(x.value + 0.01) <= 0 ? "#808080" : interpolateYlOrRd(colorScale(Math.log(x.value + 0.01)));
 
       return {
         x: x.umap_1,
         y: x.umap_2,
-        r: 5,
-        color: (colorScheme === 'geneexp' || colorScheme === 'ZScore') ? gradientColor : getCellColor(x.celltype as CellName),
-        shape: (x.stimulation === "U" ? "circle" : "triangle"),
-        metaData: {
-          cellType: x.celltype,
-          name: x.name,
-          class: x.class,
-          value: +x.value.toFixed(2)
-        }
+        r: 4,
+        color: (colorScheme === 'geneexp' || colorScheme === 'ZScore') ? gradientColor : getCellCategoryColor(x.celltype),
+        shape: (x.stimulation === "unstimulated" ? "circle" : "triangle"),
+        metaData: x
       };
     });
-  }, [rnumapdata, colorScale, colorScheme]);
+  }, [data, colorScale, colorScheme]);
 
   const legendEntries = useMemo(() => {
     if (!scatterData) return [];
@@ -120,14 +115,14 @@ const GeneExpression = ({ name }: GeneExpressionProps) => {
     if (colorScheme === "celltype") {
       // Count occurrences of each unique cellType
       const cellTypeCounts = scatterData.reduce((acc, point) => {
-        const cellType = point.metaData.cellType;
+        const cellType = point.metaData.celltype;
         acc.set(cellType, (acc.get(cellType) || 0) + 1);
         return acc;
       }, new Map<string, number>());
 
       return Array.from(cellTypeCounts.entries()).map(([cellType, count]) => ({
-        label: getCellDisplayName(cellType as CellName),
-        color: getCellColor(cellType as CellName),
+        label: getCellCategoryDisplayname(cellType),
+        color: getCellCategoryColor(cellType),
         value: count
       }));
     }
@@ -150,6 +145,17 @@ const GeneExpression = ({ name }: GeneExpressionProps) => {
     };
   }, []);
 
+  const TooltipBody = (point: Point<PointMetadata>) => {
+    return(
+      <>
+        <Typography><b>Category:</b> {getCellCategoryDisplayname(point.metaData.celltype)}</Typography>
+        <Typography><b>Description:</b> {point.metaData.description}</Typography>
+        <Typography><b>Log<sub>10</sub>(TPM + 1):</b> {logTransform(point.metaData.value).toFixed(2)}</Typography>
+        <Typography><b>Source:</b> {point.metaData.source}</Typography>
+      </>
+    )
+  }
+
   return (
     <Grid2
       size={{
@@ -171,40 +177,26 @@ const GeneExpression = ({ name }: GeneExpressionProps) => {
         </ToggleButtonGroup>
         <br />
         <br />
-        <Box overflow={"hidden"} padding={1} sx={{ border: '2px solid', borderColor: 'grey.400', borderRadius: '8px', height: '60vh', position: 'relative' }} ref={graphContainerRef}>
+        <Box overflow={"hidden"} padding={1} sx={{ border: '2px solid', borderColor: 'grey.400', borderRadius: '8px', height: '600px', position: 'relative' }} ref={graphContainerRef}>
           <ParentSize>
             {({ width, height }) => {
               const squareSize = Math.min(width, height);
 
               return (
                 <>
-                  <svg
-                    width={width}
-                    height={30}
-                    style={{ position: "absolute", top: 0, left: 0, pointerEvents: "none" }}
-                  >
-                    <Text x={10} y={20} textAnchor="start" fontSize={12}>
-                      {"TPM"}
-                    </Text>
-                  </svg>
-                  <svg
-                    width={width}
-                    height={30}
-                    style={{ position: "absolute", top: 0, left: 0, pointerEvents: "none" }}
-                  >
-                    <Text x={width - 10} y={20} textAnchor="end" fontSize={12}>
-                      {"\u25EF unstimulated, \u25B3 stimulated "}
-                    </Text>
-                  </svg>
+                  <Typography variant="body2" align="right">
+                  {"\u25EF unstimulated, \u25B3 stimulated "}
+                  </Typography>
                   <ScatterPlot
-                    width={squareSize}
-                    height={squareSize}
+                    width={600}
+                    height={600}
                     pointData={scatterData}
-                    loading={rnaumaploading}
+                    loading={loading}
                     leftAxisLable="UMAP-2"
                     bottomAxisLabel="UMAP-1"
                     miniMap={map}
-                    groupPointsAnchor="cellType"
+                    groupPointsAnchor="celltype"
+                    tooltipBody={(point) => <TooltipBody {...point} />}
                   />
                 </>
               )
@@ -220,7 +212,7 @@ const GeneExpression = ({ name }: GeneExpressionProps) => {
             <Typography mb={1}><b>Legend</b></Typography>
             {colorScheme === "geneexp" ? (
               <>
-                <Typography>Colored by Log₁₀TPM</Typography>
+                <Typography>Log₁₀(TPM + 1)</Typography>
                 <Box sx={{ display: "flex", alignItems: "center", width: "200px" }}>
                   <Typography sx={{ mr: 1 }}>0</Typography>
                   <Box
