@@ -57,7 +57,7 @@ const GeneEQTLs = ({ name, id }: GeneEQTLsProps) => {
   
   const { loading, data, error } = useQuery(COMBINED_EQTL_QUERY, {
     variables: {
-      geneid: id
+      geneid: id.split(".")[0]
     },
   })
 

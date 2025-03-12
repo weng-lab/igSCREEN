@@ -19,7 +19,7 @@ const ElementDetailsHeader = ({elementType, elementID}: ElementDetailsHeaderProp
     <Box
       sx={{p: 1}}
       border={theme => `1px solid ${theme.palette.divider}`}
-      borderRadius={2}
+      borderRadius={1}
     >
       <Typography variant="subtitle1">
         {formatPortal(elementType)} Details

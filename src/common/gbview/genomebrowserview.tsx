@@ -265,7 +265,7 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (
   }, [selectedCells, browserState.tracks, browserDispatch]);
 
   const handeSearchSubmit = (r: Result) => {
-    if (r.type === "gene") {
+    if (r.type === "Gene") {
       browserDispatch({
         type: BrowserActionType.UPDATE_PROPS,
         id: "default-gene",
@@ -314,7 +314,7 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (
             <AutoComplete
               assembly="GRCh38"
               onSearchSubmit={handeSearchSubmit}
-              queries={["gene", "snp", "icre"]}
+              queries={["Gene", "SNP", "iCRE"]}
               geneLimit={3}
               sx={{ width: "400px" }}
               slots={{

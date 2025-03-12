@@ -7,7 +7,7 @@ import { useElementMetadata, useElementMetadataReturn } from "common/hooks/useEl
 import { GenomicElementType, isValidGeneTab, isValidIcreTab, isValidSnpTab, isValidTab } from "types/globalTypes"
 import SnpEQTLs from "./_SnpTabs/SnpEQTLs"
 import GeneEQTLs from "./_GeneTabs/GeneEQTLs"
-import GeneExpression from "./_GeneTabs/GeneExpression"
+import GeneExpression from "./_GeneTabs/_GeneExpression/GeneExpression"
 import IcreActivity from "./_IcreTabs/IcreActivity"
 
 /**
