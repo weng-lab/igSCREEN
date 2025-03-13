@@ -314,7 +314,7 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (
             <AutoComplete
               assembly="GRCh38"
               onSearchSubmit={handeSearchSubmit}
-              queries={["Gene", "SNP", "iCRE"]}
+              queries={["Gene", "SNP", "iCRE", "Coordinate"]}
               geneLimit={3}
               sx={{ width: "400px" }}
               slots={{

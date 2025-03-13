@@ -26,7 +26,7 @@ export default function PortalPage({ params: {elementType} }: { params: { elemen
       <GenomeSearch
         assembly="GRCh38"
         onSearchSubmit={handleSearchSubmit}
-        queries={[elementType == "gene" ? "Gene" : elementType === "icre" ? "iCRE" : "SNP"]} // TODO: Add more queries
+        queries={[elementType == "gene" ? "Gene" : elementType === "icre" ? "iCRE" : "SNP"]}
         fullWidth
       />
     </Stack>
