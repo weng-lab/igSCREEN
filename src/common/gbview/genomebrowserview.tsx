@@ -1,39 +1,39 @@
 "use client";
-import React, {
-  useMemo,
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-} from "react";
-import Grid2 from "@mui/material/Grid2";
-import { Box, Button, IconButton, useTheme } from "@mui/material";
-import {
-  BrowserActionType,
-  TrackType,
-  GQLCytobands,
-  useBrowserState,
-  TranscriptTrackProps,
-  TranscriptHumanVersion,
-  TranscriptMouseVersion,
-  DefaultTranscript,
-  DefaultBigBed,
-  DisplayMode,
-  BigBedTrackProps,
-  DefaultBigWig,
-  Controls,
-  GenomeBrowser,
-} from "@weng-lab/genomebrowser";
-import { Rect } from "umms-gb/dist/components/tracks/bigbed/types";
-import { CellQueryValue } from "../../app/celllineage/types";
-import BulkAtacModal from "./bulkAtacSelector";
-import { getCellDisplayName } from "../../app/celllineage/utils";
-import { getCellColor } from "../../app/celllineage/utils";
 import { Search } from "@mui/icons-material";
 import EditIcon from "@mui/icons-material/Edit";
+import { Box, Button, IconButton } from "@mui/material";
+import Grid2 from "@mui/material/Grid2";
+import { useTheme } from "@mui/material/styles";
+import {
+  BigBedTrackProps,
+  BrowserActionType,
+  DefaultBigBed,
+  DefaultBigWig,
+  DefaultTranscript,
+  DisplayMode,
+  GenomeBrowser,
+  GQLCytobands,
+  TrackType,
+  TranscriptHumanVersion,
+  TranscriptMouseVersion,
+  TranscriptTrackProps,
+  useBrowserState,
+} from "@weng-lab/genomebrowser";
 import { Result } from "@weng-lab/psychscreen-ui-components";
-import { GenomicRange } from "./types";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { Rect } from "umms-gb/dist/components/tracks/bigbed/types";
+import { CellQueryValue } from "../../app/celllineage/types";
+import { getCellColor, getCellDisplayName } from "../../app/celllineage/utils";
 import AutoComplete from "../components/mainsearch/autocomplete";
+import BulkAtacModal from "./bulkAtacSelector";
+import { GenomicRange } from "./types";
+import ControlButtons from "./controls";
 
 type GenomeBrowserViewProps = {
   coordinates: {
@@ -312,6 +312,7 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (
             }}
           >
             <AutoComplete
+              size="small"
               assembly="GRCh38"
               onSearchSubmit={handeSearchSubmit}
               queries={["Gene", "SNP", "iCRE", "Coordinate"]}
@@ -344,6 +345,7 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (
             <Button
               variant="contained"
               startIcon={<EditIcon />}
+              size="small"
               sx={{
                 backgroundColor: theme.palette.primary.main,
                 color: "white",
@@ -362,57 +364,34 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (
             }}
             selected={selectedCells}
           />
-          <h3 style={{ marginBottom: "0px", marginTop: "0px" }}>
-            {props.assembly} at {browserState.domain.chromosome}:
-            {browserState.domain.start.toLocaleString()}-
-            {browserState.domain.end.toLocaleString()}
-          </h3>
+          <Box
+            width={"100%"}
+            justifyContent={"space-between"}
+            flexDirection={"row"}
+            display={"flex"}
+            alignItems={"center"}
+          >
+            <h3 style={{ marginBottom: "0px", marginTop: "0px" }}>
+              {browserState.domain.chromosome}:
+              {browserState.domain.start.toLocaleString()}-
+              {browserState.domain.end.toLocaleString()}
+            </h3>
 
-          <svg id="cytobands" width={"700px"} height={20}>
-            <GQLCytobands
-              assembly={props.assembly === "GRCh38" ? "hg38" : "mm10"}
-              chromosome={browserState.domain.chromosome}
-              currentDomain={browserState.domain}
-            />
-          </svg>
+            <svg id="cytobands" width={"700px"} height={20}>
+              <GQLCytobands
+                assembly={props.assembly === "GRCh38" ? "hg38" : "mm10"}
+                chromosome={browserState.domain.chromosome}
+                currentDomain={browserState.domain}
+              />
+            </svg>
+            <h3 style={{ marginBottom: "0px", marginTop: "0px" }}>hg38</h3>
+          </Box>
+          <ControlButtons
+            browserState={browserState}
+            browserDispatch={browserDispatch}
+          />
         </Grid2>
         <Grid2 size={{ xs: 12, lg: 12 }}>
-          <Controls
-            inputButtonComponent={
-              <IconButton
-                type="button"
-                sx={{
-                  color: "black",
-                  maxHeight: "100%",
-                  padding: "4px",
-                }}
-              >
-                <Search fontSize="small" />
-              </IconButton>
-            }
-            buttonComponent={
-              <Button
-                variant="outlined"
-                sx={{
-                  minWidth: "0px",
-                  width: { xs: "100%", sm: "80%" },
-                  maxWidth: "120px",
-                  fontSize: "0.8rem",
-                  padding: "4px 8px",
-                }}
-              />
-            }
-            domain={browserState.domain}
-            dispatch={browserDispatch}
-            withInput={false}
-            style={{
-              paddingBottom: "4px",
-              display: "flex",
-              flexWrap: "wrap",
-              gap: "4px",
-              width: "100%",
-            }}
-          />
           <GenomeBrowser
             width={"100%"}
             browserState={browserState}
