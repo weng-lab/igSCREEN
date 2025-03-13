@@ -17,7 +17,7 @@ const COMBINED_EQTL_QUERY = gql(`
       rsid
       pval_beta
     }
-      SoskicTrynka: icreeQTLQuery(study: "Soskic.Trynka", geneid: $geneid) {
+      SoskicTrynka: icreeQTLQuery(study: "Soskic.Trynka", phenotype_id: $geneid) {
       variant_id
       pvalue
       qvalue

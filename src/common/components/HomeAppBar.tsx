@@ -18,7 +18,7 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { ThemeProvider } from "@mui/material/styles";
 import Link from "next/link";
 import Image from "next/image";
-import AutoComplete from "./mainsearch/autocomplete";
+import AutoComplete from "./autocomplete";
 import { Search } from "@mui/icons-material";
 
 const pageLinks = [

@@ -33,7 +33,7 @@ import { Search } from "@mui/icons-material";
 import EditIcon from "@mui/icons-material/Edit";
 import { Result } from "@weng-lab/psychscreen-ui-components";
 import { GenomicRange } from "./types";
-import AutoComplete from "../components/mainsearch/autocomplete";
+import AutoComplete from "../components/autocomplete";
 
 type GenomeBrowserViewProps = {
   coordinates: {

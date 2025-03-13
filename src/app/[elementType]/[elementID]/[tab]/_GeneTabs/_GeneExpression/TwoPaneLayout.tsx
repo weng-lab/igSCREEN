@@ -1,43 +1,58 @@
 import { ExpandMore } from "@mui/icons-material"
-import { Stack, Accordion, AccordionSummary, AccordionDetails, FormControl, InputLabel, MenuItem, Box, Grid2, Typography, Tabs } from "@mui/material"
-import { ParentSize } from "@visx/responsive"
-import { DataTableProps, ScatterPlot } from "@weng-lab/psychscreen-ui-components"
+import { Stack, Accordion, AccordionSummary, AccordionDetails, Box, Typography, Tabs, Tab, useMediaQuery, useTheme, Grid2 as Grid } from "@mui/material"
 import { useState } from "react"
 
 /**
  * type argument is type of the row object passed to table
  */
-type TwoPaneLayoutProps<T> = {
-  TableComponent: React.ComponentType<DataTableProps<T>>,
+export type TwoPaneLayoutProps = {
+  TableComponent: React.ReactNode
   plots: {
     tabTitle: string,
-    plotComponent: () => React.ReactNode
+    plotComponent: React.ReactNode
   }[]
 }
 
-const TwoPaneLayout = <T extends object>(props: TwoPaneLayoutProps<T>) => {
-  const [tab, setTab] = useState<string>(null)
+const TwoPaneLayout = ({TableComponent, plots}: TwoPaneLayoutProps) => {
+  const [tab, setTab] = useState<number>(0)
+  const handleSetTab = (_, newTab: number) => {
+    setTab(newTab)
+  }
+
+  const plotTabs = plots.map(x => x.tabTitle)
+  const figures = plots.map(x => x.plotComponent)
+
+  const theme = useTheme()
+  const isMd = useMediaQuery(theme.breakpoints.up("md"))
 
   return (
-    <Stack spacing={2} direction={{ xs: "column", md: "row" }}>
-      <div>
-        <Accordion>
+    <Grid container spacing={2}>
+      <Grid size={{xs: 12, lg: 6}} id={"accordion_container"}>
+        <Accordion defaultExpanded={isMd}>
           <AccordionSummary expandIcon={<ExpandMore />}>
             <Typography>Table View</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            {/* {<props.tableComponent/>} */}
+            {TableComponent}
           </AccordionDetails>
         </Accordion>
-      </div>
-      <Stack width={"100%"}>
-        <Tabs>
-
-        </Tabs>
-        {/* {props.plots.map(({tabTitle, plotComponent}, i) => {
-          return <plotComponent key={i} />
-        })} */}
-      </Stack>
-    </Stack>
+      </Grid>
+      <Grid size={{xs: 12, lg: 6}} id={"figure+tabs_container"}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }} id={"tabs_container"}>
+          <Tabs value={tab} onChange={handleSetTab}>
+            {plotTabs.map((tab, i) =>
+              <Tab label={tab} key={i} />)
+            }
+          </Tabs>
+        </Box>
+        {figures.map((Figure, i) =>
+          <Box display={tab === i ? "initial" : "none"} key={i} id={"figure_container"}>
+            {Figure}
+          </Box>
+        )}
+      </Grid>
+    </Grid>
   )
 }
+
+export default TwoPaneLayout
