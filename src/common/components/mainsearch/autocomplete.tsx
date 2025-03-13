@@ -12,16 +12,16 @@ export default function AutoComplete(props: Partial<GenomeSearchProps>) {
   const handleSearchSubmit = (r: Result) => {
     let url = "";
     switch (r.type) {
-      case "gene":
+      case "Gene":
         url = `/gene/${r.title}`;
         break;
-      case "icre":
+      case "iCRE":
         url = `/icre/${r.title}`;
         break;
-      case "coordinate":
+      case "Coordinate":
         url = `/region/${r.domain.chromosome}:${r.domain.start}-${r.domain.end}`;
         break;
-      case "snp":
+      case "SNP":
         url = `/snp/${r.title}`;
         break;
     }
@@ -32,7 +32,7 @@ export default function AutoComplete(props: Partial<GenomeSearchProps>) {
     <GenomeSearch
       assembly="GRCh38"
       onSearchSubmit={handleSearchSubmit}
-      queries={["gene", "icre", "snp", "coordinate"]}
+      queries={["Gene", "iCRE", "SNP", "Coordinate"]}
       {...props}
     />
   );
