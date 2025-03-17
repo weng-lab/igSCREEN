@@ -5,7 +5,7 @@ import React, {
   useState,
 } from "react";
 import { experimentInfo } from "../../consts";
-import TitledImportanceTrack from "./titledimportancetrack";
+// import TitledImportanceTrack from "./legacy/titledimportancetrack";
 import { BigBedData } from "bigwig-reader";
 import ChromBPNetAtacModal from "./chrombpnetatacmodal"
 import { CalderonBigWigTracksMetadata, CalderonCellTypesMetadata } from "../consts";
@@ -115,7 +115,7 @@ const ChromBPNetAtacTracks: React.FC<ChromBPNetBulkAtacTrackProps> = ({
       <g className="encode-fetal-brain">
         <rect y={10} height={55} fill="none" width={1400} />
       </g>
-      {displayedTracks
+      {/* {displayedTracks
         .map((x, i) => (
           <TitledImportanceTrack
             key={`${i}_${domain.start}`}
@@ -129,7 +129,7 @@ const ChromBPNetAtacTracks: React.FC<ChromBPNetBulkAtacTrackProps> = ({
             neutralRegions={[]}
             color={chrombpnetColors[x[0]]}
           />
-        ))}
+        ))} */}
       {settingsMousedOver && (
         <rect
           width={1400}
