@@ -18,12 +18,13 @@ const GeneExpressionBarPlot = ({name, id, onBarClicked}: GeneExpressionBarPlotPr
   const plotData: BarData<PointMetadata>[] = useMemo(() => {
     if (!data) return []
     return (
-      data.map(x => {
+      data.map((x, i) => {
         return (
           {
-            category: x.description,
-            label: `${x.value.toFixed(2)},`,
+            category: x.celltype,
+            label: `${x.value.toFixed(2)}, ${x.description.slice(0, 30) + (x.description.length > 30 ? "..." : "")}`,
             value: x.value,
+            id: i.toString(),
             color: getCellCategoryColor(x.celltype),
             metadata: x
           }

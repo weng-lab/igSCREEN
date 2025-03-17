@@ -136,7 +136,6 @@ const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selectedPoints,
       <Box padding={1} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, position: "relative" }} ref={graphContainerRef}>
         <ParentSize>
           {({ width, height }) => {
-            const squareSize = Math.min(width, height);
             return (
               <>
                 <Typography variant="body2" align="right">
@@ -144,8 +143,8 @@ const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selectedPoints,
                 </Typography>
                 <ScatterPlot
                   {...rest}
-                  width={squareSize}
-                  height={squareSize}
+                  width={width}
+                  height={width}
                   pointData={scatterData}
                   selectable
                   loading={loading}

@@ -1,5 +1,5 @@
-import { ExpandMore } from "@mui/icons-material"
-import { Stack, Accordion, AccordionSummary, AccordionDetails, Box, Typography, Tabs, Tab, useMediaQuery, useTheme, Grid2 as Grid } from "@mui/material"
+import { CloseFullscreenRounded, ExpandMore, MinimizeRounded, TableChartRounded } from "@mui/icons-material"
+import { Stack, Accordion, AccordionSummary, AccordionDetails, Box, Typography, Tabs, Tab, useMediaQuery, useTheme, Grid2 as Grid, IconButton, Tooltip, Button } from "@mui/material"
 import { useState } from "react"
 
 /**
@@ -13,10 +13,16 @@ export type TwoPaneLayoutProps = {
   }[]
 }
 
-const TwoPaneLayout = ({TableComponent, plots}: TwoPaneLayoutProps) => {
+const TwoPaneLayout = ({ TableComponent, plots }: TwoPaneLayoutProps) => {
   const [tab, setTab] = useState<number>(0)
+  const [tableOpen, setTableOpen] = useState(true)
+
   const handleSetTab = (_, newTab: number) => {
     setTab(newTab)
+  }
+
+  const handleToggleTable = () => {
+    setTableOpen(!tableOpen)
   }
 
   const plotTabs = plots.map(x => x.tabTitle)
@@ -27,18 +33,36 @@ const TwoPaneLayout = ({TableComponent, plots}: TwoPaneLayoutProps) => {
 
   return (
     <Grid container spacing={2}>
-      <Grid size={{xs: 12, lg: 6}} id={"accordion_container"}>
-        <Accordion defaultExpanded={isMd}>
-          <AccordionSummary expandIcon={<ExpandMore />}>
-            <Typography>Table View</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            {TableComponent}
-          </AccordionDetails>
-        </Accordion>
+      <Grid size={{ xs: 12, lg: tableOpen ? 6 : 0.5 }}>
+        {tableOpen ?
+          <>
+            <Stack direction={"row"} alignItems={"center"} spacing={1} mb={1}>
+              <Tooltip title={`${tableOpen ? "Hide" : "Show"} Table`}>
+                <IconButton onClick={handleToggleTable}>
+                  <TableChartRounded color="primary" />
+                </IconButton>
+              </Tooltip>
+              <Typography variant="h5" sx={{ flexGrow: 1 }}>Table View</Typography>
+              <Tooltip title={`${tableOpen ? "Hide" : "Show"} Table`}>
+                <IconButton onClick={handleToggleTable}>
+                  <CloseFullscreenRounded color="primary" />
+                </IconButton>
+              </Tooltip>
+            </Stack>
+            <div>
+              {TableComponent}
+            </div>
+          </>
+          :
+          <Tooltip title={`${tableOpen ? "Hide" : "Show"} Table`}>
+            <IconButton onClick={handleToggleTable}>
+              <TableChartRounded color="primary" />
+            </IconButton>
+          </Tooltip>
+        }
       </Grid>
-      <Grid size={{xs: 12, lg: 6}} id={"figure+tabs_container"}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }} id={"tabs_container"}>
+      <Grid size={{ xs: 12, lg: tableOpen ? 6 : 11.5 }}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
           <Tabs value={tab} onChange={handleSetTab}>
             {plotTabs.map((tab, i) =>
               <Tab label={tab} key={i} />)

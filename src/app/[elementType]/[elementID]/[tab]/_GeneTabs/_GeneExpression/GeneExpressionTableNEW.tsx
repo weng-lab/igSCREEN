@@ -35,8 +35,19 @@ const GeneExpressionTableNew = ({name, id, selected, onSelectionChange}: GeneExp
     {
       field: 'celltype',
       headerName: 'Grouping',
-      width: 130,
+      width: 150,
       valueGetter: (_, row) => getCellCategoryDisplayname(row.celltype)
+    },
+    {
+      field: 'source',
+      headerName: 'Source',
+      description: 'This column has a value getter and is not sortable.',
+      width: 90,
+    },
+    {
+      field: 'expid',
+      headerName: 'Experiment ID',
+      width: 120
     },
   ];
 
@@ -61,6 +72,12 @@ const GeneExpressionTableNew = ({name, id, selected, onSelectionChange}: GeneExp
             },
             sorting: {
               sortModel: [{field: 'value', sort: 'desc'}]
+            },
+            columns: {
+              columnVisibilityModel: {
+                source: false,
+                expid: false
+              }
             }
           }}
           slots={{ toolbar: GridToolbar }}

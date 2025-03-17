@@ -16,6 +16,7 @@ export interface BarData<T> {
   category: string;
   label: string;
   value: number;
+  id: string;
   color?: string;
   metadata?: T;
 }
@@ -73,18 +74,18 @@ const VerticalBarPlot = <T,>({
   }, [showTooltip]);
 
   const { parentRef, width: ParentWidth } = useParentSize({ debounceTime: 150 });
-  const width = useMemo(() => Math.max(750, ParentWidth), [ParentWidth])
+  // const width = useMemo(() => Math.max(750, ParentWidth), [ParentWidth])
   const spaceForTopAxis = 50
   const spaceOnBottom = 20
   const spaceForCategory = 120
   const gapBetweenTextAndBar = 10
-  const dataHeight = data.length * 8
+  const dataHeight = data.length * 14
   const totalHeight = dataHeight + spaceForTopAxis + spaceOnBottom
 
   // Scales
   const yScale = useMemo(() =>
     scaleBand<string>({
-      domain: data.map((d) => d.label),
+      domain: data.map((d) => d.id),
       range: [0, dataHeight],
       padding: 0.2,
     }), [data, dataHeight])
@@ -92,18 +93,14 @@ const VerticalBarPlot = <T,>({
   const xScale = useMemo(() =>
     scaleLinear<number>({
       domain: [0, Math.max(...data.map((d) => d.value))],
-      range: [0, Math.max(width - spaceForCategory - spaceForLabel, 0)],
-    }), [data, spaceForLabel, width])
-
-  
-    //use prop ref or fallback if ref not passed
-  const containerWidth = SVGref ? SVGref.current?.clientWidth : outerSvgRef.current?.clientWidth
+      range: [0, Math.max(ParentWidth - spaceForCategory - spaceForLabel, 0)],
+    }), [data, spaceForLabel, ParentWidth])
 
   //This feels really dumb but I couldn't figure out a better way to have the labels not overflow sometimes - JF 11/8/24
   //Whenever xScale is adjusted, it checks to see if any of the labels overflow the container, and if so
   //it sets the spaceForLabel to be the amount overflowed.
   useEffect(() => {
-    if (!containerWidth) { return }
+    if (!ParentWidth) { return }
 
     let maxOverflow = 0
     let minUnderflow: number = null
@@ -116,7 +113,7 @@ const VerticalBarPlot = <T,>({
         const barWidth = xScale(d.value);
 
         const totalWidth = spaceForCategory + barWidth + gapBetweenTextAndBar + textWidth
-        const overflow = totalWidth - containerWidth
+        const overflow = totalWidth - ParentWidth
 
         maxOverflow = Math.max(overflow, maxOverflow)
         if (overflow < 0) {
@@ -143,7 +140,7 @@ const VerticalBarPlot = <T,>({
       setLabelSpaceDecided(true)
     }
 
-  }, [data, xScale, spaceForLabel, labelSpaceDecided, SVGref, containerWidth, topAxisLabel, uniqueID]);
+  }, [data, xScale, spaceForLabel, labelSpaceDecided, SVGref, ParentWidth, topAxisLabel, uniqueID]);
 
   return (
     <div ref={parentRef} style={{position: "relative"}}>
@@ -158,17 +155,17 @@ const VerticalBarPlot = <T,>({
             }
             outerSvgRef.current = node;
           }}
-          width={width}
+          width={ParentWidth}
           height={totalHeight}
           opacity={(labelSpaceDecided && ParentWidth > 0) ? 1 : 0.3}
         >
           <Group left={spaceForCategory} top={spaceForTopAxis} >
             {/* Top Axis with Label */}
-            <AxisTop scale={xScale} top={0} label={topAxisLabel} labelProps={{ dy: -5, fontSize: 16, fontFamily: fontFamily }} numTicks={width < 600 ? 4 : undefined} />
+            <AxisTop scale={xScale} top={0} label={topAxisLabel} labelProps={{ dy: -5, fontSize: 16, fontFamily: fontFamily }} numTicks={ParentWidth < 600 ? 4 : undefined} />
             {data.map((d, i) => {
               const barHeight = yScale.bandwidth();
               const barWidth = xScale(d.value) ?? 0;
-              const barY = yScale(d.label);
+              const barY = yScale(d.id);
               const barX = 0;
               return (
                 <Group
