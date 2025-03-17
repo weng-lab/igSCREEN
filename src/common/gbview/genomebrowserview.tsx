@@ -292,19 +292,7 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (
   };
 
   const theme = useTheme();
-
-  useEffect(()=>{
-    if (props.highlights) {
-      console.log("adding highlights", props.highlights);
-      props.highlights.forEach((highlight) => {
-        browserDispatch({
-          type: BrowserActionType.ADD_HIGHLIGHT,
-          highlight,
-        });
-      });
-    }
-  }, [props.highlights, browserDispatch]);
-
+  
   return (
     <Grid2
       container
