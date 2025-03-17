@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { Modal, Accordion, Box } from "@mui/material";
 import { Typography, Button } from "@weng-lab/psychscreen-ui-components";
-import { CalderonBigWigTracks } from "./consts";
+import { CalderonBigWigTracks } from "../consts";
 import {
   AccordionDetails,
   AccordionSummary,

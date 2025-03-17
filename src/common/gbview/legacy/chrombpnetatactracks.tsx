@@ -4,13 +4,13 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { experimentInfo } from "../consts";
+import { experimentInfo } from "../../consts";
 import TitledImportanceTrack from "./titledimportancetrack";
 import { BigBedData } from "bigwig-reader";
 import ChromBPNetAtacModal from "./chrombpnetatacmodal"
-import { CalderonBigWigTracksMetadata, CalderonCellTypesMetadata } from "./consts";
-import { CellDisplayName, CellQueryValue } from "../../app/celllineage/types";
-import { getCellColor, getCellDisplayName } from "../../app/celllineage/utils";
+import { CalderonBigWigTracksMetadata, CalderonCellTypesMetadata } from "../consts";
+import { CellDisplayName, CellQueryValue } from "../../../app/celllineage/types";
+import { getCellColor, getCellDisplayName } from "../../../app/celllineage/utils";
 export type GenomicRange = {
   chromosome?: string;
   start: number;

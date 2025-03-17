@@ -73,7 +73,10 @@ export default function ControlButtons({
     }[];
   }) => (
     <Box display={"flex"} flexDirection={"row"} alignItems={"center"}>
-      <Typography variant="body2" pr={1}>
+      <Typography 
+        variant="body2" 
+        pr={1}
+      >
         {title}
       </Typography>
       {buttons.map((btn, index) => {
@@ -83,7 +86,12 @@ export default function ControlButtons({
             variant="outlined"
             size="small"
             onClick={() => btn.onClick(btn.value)}
-            // title={`${title} ${btn.value.toLocaleString()}bp`}
+            title={`${title} ${btn.value.toLocaleString()}`}
+            sx={{
+              padding: '2px 8px',
+              minWidth: '30px',
+              fontSize: '0.8rem'
+            }}
           >
             {btn.label}
           </Button>
@@ -124,10 +132,10 @@ export default function ControlButtons({
     {
       title: "Zoom Out",
       buttons: [
-        { label: "1.5x", onClick: zoom, value: 1.5 },
-        { label: "3x", onClick: zoom, value: 3 },
-        { label: "10x", onClick: zoom, value: 10 },
-        { label: "100x", onClick: zoom, value: 100 },
+        { label: "-1.5x", onClick: zoom, value: 1.5 },
+        { label: "-3x", onClick: zoom, value: 3 },
+        { label: "-10x", onClick: zoom, value: 10 },
+        { label: "-100x", onClick: zoom, value: 100 },
       ],
     },
   ];
