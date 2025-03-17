@@ -1,8 +1,9 @@
 import { DataTable, DataTableColumn, DataTableProps } from "@weng-lab/psychscreen-ui-components"
 import { useGeneExpression, UseGeneExpressionReturn } from "common/hooks/useGeneExpression"
 import { GeneExpressionProps, PointMetadata } from "./GeneExpression"
-import { CircularProgress, Typography } from "@mui/material"
+import { Checkbox, CircularProgress, Typography } from "@mui/material"
 import { getCellCategoryDisplayname } from "common/utility"
+import { useState } from "react"
 
 /**
  * @todo link experiments to paper or source, need info on where to link to
@@ -13,9 +14,9 @@ export type GeneExpressionTableProps<T> =
   GeneExpressionProps
   & Partial<DataTableProps<T>>
 
-const GeneExpressionTable = <T extends PointMetadata>({name, id, ...rest}: GeneExpressionTableProps<T>) => {
+const GeneExpressionTable = <T extends PointMetadata>({name, id, ...tableProps}: GeneExpressionTableProps<T>) => {
   const { data, loading, error } = useGeneExpression({ id })
-
+  
   const cols: DataTableColumn<PointMetadata>[] = [
     {
       header: "Cell Type",
@@ -46,12 +47,13 @@ const GeneExpressionTable = <T extends PointMetadata>({name, id, ...rest}: GeneE
       <CircularProgress /> 
       :
       <DataTable
+        //force refresh when selected samples change - this is hacky
         rows={data || []}
         tableTitle={`${name} Gene Expression`}
         columns={cols}
-        sortColumn={2}
+        sortColumn={3}
         searchable
-        {...rest}
+        {...tableProps}
       />
   )
 }

@@ -75,13 +75,12 @@ const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selectedPoints,
 
     return data.map((x) => {
       const gradientColor = interpolateYlOrRd(colorScale(logTransform(x.value)));
-      
 
       return {
         x: x.umap_1,
         y: x.umap_2,
         r: isHighlighted(x) ? 6 : 4,
-        color: (isHighlighted(x) || selectedPoints.length === 0) ? ((colorScheme === 'geneexp' || colorScheme === 'ZScore') ? gradientColor : getCellCategoryColor(x.celltype)) : '#CCCCCC',
+        color: (isHighlighted(x) || selectedPoints.length === 0) ? ((colorScheme === 'geneexp') ? gradientColor : getCellCategoryColor(x.celltype)) : '#CCCCCC',
         shape: x.stimulation === "unstimulated" ? "circle" : "triangle" as "circle" | "triangle",
         metaData: x
       };
@@ -107,23 +106,6 @@ const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selectedPoints,
     }
   }, [scatterData, colorScheme]);
 
-  useEffect(() => {
-    const graphElement = graphContainerRef.current;
-
-    const handleWheel = (event: WheelEvent) => {
-      // Prevent default scroll behavior when using the wheel in the graph
-      event.preventDefault();
-    };
-    if (graphElement) {
-      graphElement.addEventListener('wheel', handleWheel, { passive: false });
-    }
-    return () => {
-      if (graphElement) {
-        graphElement.removeEventListener('wheel', handleWheel);
-      }
-    };
-  }, []);
-
   const TooltipBody = (point: Point<PointMetadata>) => {
     return (
       <>
@@ -134,7 +116,6 @@ const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selectedPoints,
       </>
     )
   }
-
 
   return (
     <Box>
@@ -162,7 +143,7 @@ const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selectedPoints,
                   {"\u25EF unstimulated, \u25B3 stimulated "}
                 </Typography>
                 <ScatterPlot
-                  // {...rest}
+                  {...rest}
                   width={squareSize}
                   height={squareSize}
                   pointData={scatterData}
@@ -178,15 +159,6 @@ const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selectedPoints,
               </>
             )
           }}
-          {/* {(parent) => {
-          // console.log(parent.width)
-          return (
-            <>
-            <p>Width: {parent.width}</p>
-            <p>Height: {parent.height}</p>
-            </>
-          )
-        }} */}
         </ParentSize>
         <Button variant="outlined" sx={{ position: "absolute", bottom: 10, left: 10, textTransform: "none" }} onClick={() => setShowLegend(!showLegend)}>Toggle Legend</Button>
       </Box>

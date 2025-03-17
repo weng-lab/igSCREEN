@@ -4,6 +4,10 @@ import { useState } from "react"
 import GeneExpressionTable from "./GeneExpressionTable"
 import GeneExpressionUMAP from "./GeneExpressionUMAP"
 import GeneExpressionBarPlot from "./GeneExpressionBarPlot"
+import { Alert, Button } from "@mui/material"
+import { Close, ViewList } from "@mui/icons-material"
+import GeneExpressionTableNew from "./GeneExpressionTableNEW"
+import GeneExpressionDialog from "./GeneExpressionDialog"
 
 
 export type GeneExpressionProps = {
@@ -15,61 +19,84 @@ export type PointMetadata = GeneExpressionQuery["immuneRnaUmapQuery"][0]
 
 const GeneExpression = ({ name, id }: GeneExpressionProps) => {
   const [selected, setSelected] = useState<PointMetadata[]>([])
-  const [hovered, setHovered] = useState<PointMetadata>(null)
+  const [open, setOpen] = useState(false)
 
-  const handleRowClick = (pointInfo: PointMetadata) => {
-    if (selected.some(x => x.name === pointInfo.name)) {
-      setSelected(selected.filter(x => x.name !== pointInfo.name)) // filter out if included
-    } else setSelected([...selected, pointInfo]) // else add to selected
+  const handlePointsSelected = (pointsInfo: PointMetadata[]) => {
+    setSelected([...selected, ...pointsInfo])
   }
 
-  const handleRowMouseEnter = (pointInfo: PointMetadata) => {
-    setHovered(pointInfo) // add point even if selected (so we can remove on mouse leave)
+  const handleClearSelected = () => {
+    setSelected([])
   }
 
-  const handleRowMouseLeave = (pointInfo: PointMetadata) => {
-    setSelected(null)
+  const handleViewSelected = () => {
+    setOpen(true)
   }
 
-  const handlePointClick = (pointInfo: PointMetadata) => {
-    setSelected([...selected, pointInfo])
+  const handleClose = () => {
+    setOpen(false)
   }
 
-  let x = [...selected]
-  if (hovered) x.push(hovered)
+  const handleSelectionChange = (selected: PointMetadata[]) => {
+    setSelected(selected)
+  }
 
   return (
+    <>
+      {selected.length > 0 ?
+        <Alert
+          severity="info"
+          action={
+            <>
+              <Button color="inherit" size="small" onClick={handleViewSelected} startIcon={<ViewList />} sx={{mr: 1}}>
+                View Selected
+              </Button>
+              <Button color="inherit" size="small" onClick={handleClearSelected} startIcon={<Close />}>
+                Clear
+              </Button>
+            </>
+          }
+        >
+          {`${selected.length} points selected`}
+        </Alert>
+        :
+        <Alert severity="info" variant="outlined">
+          Select experiments to view more information
+        </Alert>
+      }
     <TwoPaneLayout
       TableComponent={
-        <GeneExpressionTable
-          name={name}
-          id={id}
-          onRowClick={handleRowClick}
-          // onRowMouseEnter={handleRowMouseEnter}
-          // onRowMouseLeave={handleRowMouseLeave}
-          highlighted={x}
-        />
-      }
-      plots={[
-        {
-          tabTitle: "Bar Plot",
-          plotComponent:
-            <GeneExpressionBarPlot 
-              name={name}
-              id={name}
-            />
-        },
-        {
-        tabTitle: "UMAP",
-        plotComponent: 
-          <GeneExpressionUMAP
+          <GeneExpressionTableNew
             name={name}
             id={id}
-            selectedPoints={x}
+            selected={selected}
+            onSelectionChange={handleSelectionChange}
           />
-      }
-    ]}
-    />
+        }
+        plots={[
+          {
+            tabTitle: "Bar Plot",
+            plotComponent:
+              <GeneExpressionBarPlot
+                name={name}
+                id={id}
+                onBarClicked={(bar) => handleSelectionChange([bar.metadata])}
+              />
+          },
+          {
+            tabTitle: "UMAP",
+            plotComponent:
+              <GeneExpressionUMAP
+                name={name}
+                id={id}
+                selectedPoints={selected}
+                onSelectionChange={(points) => handlePointsSelected(points.map(x => x.metaData))}
+              />
+          }
+        ]}
+      />
+      <GeneExpressionDialog open={open} onClose={handleClose} selected={selected} />
+    </>
   )
 }
 
