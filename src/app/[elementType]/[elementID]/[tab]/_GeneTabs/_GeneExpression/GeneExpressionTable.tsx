@@ -1,60 +1,95 @@
-import { DataTable, DataTableColumn, DataTableProps } from "@weng-lab/psychscreen-ui-components"
-import { useGeneExpression, UseGeneExpressionReturn } from "common/hooks/useGeneExpression"
+import { useGeneExpression } from "common/hooks/useGeneExpression"
 import { GeneExpressionProps, PointMetadata } from "./GeneExpression"
-import { Checkbox, CircularProgress, Typography } from "@mui/material"
+import { Checkbox, CircularProgress } from "@mui/material"
 import { getCellCategoryDisplayname } from "common/utility"
 import { useState } from "react"
-
-/**
- * @todo link experiments to paper or source, need info on where to link to
- */
+import { DataGrid, DataGridProps, GridCallbackDetails, GridColDef, GridRowSelectionModel, GridToolbar } from "@mui/x-data-grid"
 
 
-export type GeneExpressionTableProps<T> =
-  GeneExpressionProps
-  & Partial<DataTableProps<T>>
+export type GeneExpressionTableProps = GeneExpressionProps & {
+  onSelectionChange: (selected: PointMetadata[]) => void,
+  selected: PointMetadata[]
+}
 
-const GeneExpressionTable = <T extends PointMetadata>({name, id, ...tableProps}: GeneExpressionTableProps<T>) => {
+const GeneExpressionTable = ({name, id, selected, onSelectionChange}: GeneExpressionTableProps) => {
   const { data, loading, error } = useGeneExpression({ id })
-  
-  const cols: DataTableColumn<PointMetadata>[] = [
+
+  const columns: GridColDef<PointMetadata>[] = [
     {
-      header: "Cell Type",
-      value: (row) => `${row.description}`
+      field: 'description',
+      headerName: 'Biosample',
+      width: 200
     },
     {
-      header: "Stim",
-      tooltip: "'S' if cell has been stimulated, 'U' for unstimulated",
-      value: (row) => row.stimulation.charAt(0).toUpperCase()
+      field: 'value',
+      headerName: 'TPM',
+      type: 'number',
+      width: 100,
     },
     {
-      header: "TPM",
-      HeaderRender: () => <Typography variant="body2">TPM</Typography>,
-      value: (row) => row.value.toFixed(2)
+      field: 'stimulation',
+      headerName: 'Stim',
+      width: 100,
+      valueFormatter: (_, row) => row.stimulation.charAt(0).toUpperCase()
     },
     {
-      header: "Category",
-      value: (row) => getCellCategoryDisplayname(row.celltype)
+      field: 'celltype',
+      headerName: 'Lineage',
+      width: 150,
+      valueGetter: (_, row) => getCellCategoryDisplayname(row.celltype)
     },
     {
-      header: "Source",
-      value: (row) => row.source
+      field: 'source',
+      headerName: 'Source',
+      description: 'This column has a value getter and is not sortable.',
+      width: 90,
     },
-  ]
+    {
+      field: 'expid',
+      headerName: 'Experiment ID',
+      width: 120
+    },
+  ];
+
+  const handleRowSelectionModelChange = (ids: GridRowSelectionModel) => {
+    const selectedRows = ids.map((id) => data.find((row) => row.name === id));
+    onSelectionChange(selectedRows)
+  }
 
   return (
-    loading ?
-      <CircularProgress /> 
-      :
-      <DataTable
-        //force refresh when selected samples change - this is hacky
-        rows={data || []}
-        tableTitle={`${name} Gene Expression`}
-        columns={cols}
-        sortColumn={3}
-        searchable
-        {...tableProps}
-      />
+    <>
+      {loading ?
+        <CircularProgress />
+        :
+        <DataGrid
+          rows={data}
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 10,
+              },
+            },
+            sorting: {
+              sortModel: [{field: 'value', sort: 'desc'}]
+            },
+            columns: {
+              columnVisibilityModel: {
+                source: false,
+                expid: false
+              }
+            }
+          }}
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{ toolbar: { showQuickFilter: true } }}
+          pageSizeOptions={[10, 25, 50]}
+          checkboxSelection
+          onRowSelectionModelChange={handleRowSelectionModelChange}
+          rowSelectionModel={selected.map(x => x.name)}
+          disableRowSelectionOnClick
+          getRowId={(row) => row.name}
+        />}
+    </>
   )
 }
 
