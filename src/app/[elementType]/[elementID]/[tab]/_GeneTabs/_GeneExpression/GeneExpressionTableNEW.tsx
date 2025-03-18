@@ -17,7 +17,7 @@ const GeneExpressionTableNew = ({name, id, selected, onSelectionChange}: GeneExp
   const columns: GridColDef<PointMetadata>[] = [
     {
       field: 'description',
-      headerName: 'Cell Type',
+      headerName: 'Biosample',
       width: 200
     },
     {
@@ -34,7 +34,7 @@ const GeneExpressionTableNew = ({name, id, selected, onSelectionChange}: GeneExp
     },
     {
       field: 'celltype',
-      headerName: 'Grouping',
+      headerName: 'Lineage',
       width: 150,
       valueGetter: (_, row) => getCellCategoryDisplayname(row.celltype)
     },

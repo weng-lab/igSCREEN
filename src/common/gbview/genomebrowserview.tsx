@@ -185,7 +185,7 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (
         type: BrowserActionType.SET_DOMAIN,
         domain: initialDomain,
       });
-      console.log(tracks);
+      // console.log(tracks);
       tracks.forEach((track) => {
         if (!browserState.tracks.find((t) => t.id === track.id)) {
           browserDispatch({ type: BrowserActionType.ADD_TRACK, track });
@@ -220,7 +220,7 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (
 
   useEffect(() => {
     // Remove only bulk ATAC tracks for deselected cells
-    console.log(selectedCells);
+    // console.log(selectedCells);
     browserState.tracks.forEach((track) => {
       if (
         track.id === "all-immune-bigwig" ||
@@ -229,7 +229,7 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (
       )
         return;
       if (!selectedCells.some((cell) => cell === track.id)) {
-        console.log("deleting", track.id);
+        // console.log("deleting", track.id);
         browserDispatch({ type: BrowserActionType.DELETE_TRACK, id: track.id });
       }
     });
@@ -258,7 +258,7 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (
           displayMode: DisplayMode.FULL,
           id: selectedCells[index],
         };
-        console.log(track);
+        // console.log(track);
         browserDispatch({ type: BrowserActionType.ADD_TRACK, track });
       }
     });

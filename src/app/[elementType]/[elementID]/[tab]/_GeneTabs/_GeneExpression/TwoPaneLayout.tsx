@@ -32,8 +32,8 @@ const TwoPaneLayout = ({ TableComponent, plots }: TwoPaneLayoutProps) => {
   const isMd = useMediaQuery(theme.breakpoints.up("md"))
 
   return (
-    <Grid container spacing={2}>
-      <Grid size={{ xs: 12, lg: tableOpen ? 6 : 0.5 }}>
+    <Stack spacing={2} direction={{xs: "column", md: "row"}} id="two-pane-layout">
+      <Box flexGrow={0} width={{xs: '100%', md: tableOpen ? '35%' : '40px'}} id="table-container">
         {tableOpen ?
           <>
             <Stack direction={"row"} alignItems={"center"} spacing={1} mb={1}>
@@ -60,8 +60,8 @@ const TwoPaneLayout = ({ TableComponent, plots }: TwoPaneLayoutProps) => {
             </IconButton>
           </Tooltip>
         }
-      </Grid>
-      <Grid size={{ xs: 12, lg: tableOpen ? 6 : 11.5 }}>
+      </Box>
+      <Box flexGrow={1}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 2 }}>
           <Tabs value={tab} onChange={handleSetTab}>
             {plotTabs.map((tab, i) =>
@@ -70,12 +70,12 @@ const TwoPaneLayout = ({ TableComponent, plots }: TwoPaneLayoutProps) => {
           </Tabs>
         </Box>
         {figures.map((Figure, i) =>
-          <Box display={tab === i ? "initial" : "none"} key={i} id={"figure_container"}>
+          <Box display={tab === i ? "block" : "none"} width={'100%'} key={i} id={"figure_container"}>
             {Figure}
           </Box>
         )}
-      </Grid>
-    </Grid>
+      </Box>
+    </Stack>
   )
 }
 

@@ -74,6 +74,7 @@ const VerticalBarPlot = <T,>({
   }, [showTooltip]);
 
   const { parentRef, width: ParentWidth } = useParentSize({ debounceTime: 150 });
+  console.log(ParentWidth)
   // const width = useMemo(() => Math.max(750, ParentWidth), [ParentWidth])
   const spaceForTopAxis = 50
   const spaceOnBottom = 20
@@ -143,7 +144,7 @@ const VerticalBarPlot = <T,>({
   }, [data, xScale, spaceForLabel, labelSpaceDecided, SVGref, ParentWidth, topAxisLabel, uniqueID]);
 
   return (
-    <div ref={parentRef} style={{position: "relative"}}>
+    <div ref={parentRef} style={{position: "relative", width: '100%'}}>
       {data.length === 0 ?
         <p>No Data To Display</p>
         :

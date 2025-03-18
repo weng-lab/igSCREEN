@@ -8,6 +8,7 @@ import { Alert, Button } from "@mui/material"
 import { Close, ViewList } from "@mui/icons-material"
 import GeneExpressionTableNew from "./GeneExpressionTableNEW"
 import GeneExpressionDialog from "./GeneExpressionDialog"
+import TestComponenet from "./TestComponent"
 
 
 export type GeneExpressionProps = {
@@ -74,6 +75,10 @@ const GeneExpression = ({ name, id }: GeneExpressionProps) => {
           />
         }
         plots={[
+          {
+            tabTitle: "Test",
+            plotComponent: <TestComponenet />
+          },
           {
             tabTitle: "Bar Plot",
             plotComponent:
