@@ -1,6 +1,4 @@
-import { Box } from "@mui/material"
 import { GeneExpressionProps, PointMetadata } from "./GeneExpression"
-import { ParentSize } from "@visx/responsive"
 import { useGeneExpression } from "common/hooks/useGeneExpression"
 import VerticalBarPlot, { BarData, BarPlotProps } from "./VerticalBarPlot"
 import { useMemo } from "react"
