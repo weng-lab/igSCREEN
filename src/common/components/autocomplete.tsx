@@ -6,6 +6,10 @@ import {
 } from "@weng-lab/psychscreen-ui-components";
 import { useRouter } from "next/navigation";
 
+/**
+ * Redirects the user to the a new page based on the search result
+ * @param props - The props for the GenomeSearch component
+ */
 export default function AutoComplete(props: Partial<GenomeSearchProps>) {
   const router = useRouter();
 

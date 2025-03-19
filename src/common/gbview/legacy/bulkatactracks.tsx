@@ -4,10 +4,10 @@ import React, { RefObject, useEffect, useMemo, useState } from "react";
 import { DenseBigBed, EmptyTrack, FullBigWig } from "umms-gb";
 import { RequestError, } from "umms-gb/dist/components/tracks/trackset/types";
 import { ValuedPoint } from "umms-gb/dist/utils/types";
-import { client } from "../utils"
-import { CellQueryValue } from "../../app/celllineage/types";
-import { getCellColor, getCellDisplayName } from "../../app/celllineage/utils";
-import BulkAtacModal from "./bulkAtacSelector";
+import { client } from "../../utils"
+import { CellQueryValue } from "../../../app/celllineage/types";
+import { getCellColor, getCellDisplayName } from "../../../app/celllineage/utils";
+import BulkAtacModal from "../bulkAtacSelector";
 
 export const BIG_QUERY = gql`
   query BigRequests($bigRequests: [BigRequest!]!) {

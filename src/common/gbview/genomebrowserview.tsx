@@ -1,39 +1,49 @@
 "use client";
-import React, {
-  useMemo,
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-} from "react";
-import Grid2 from "@mui/material/Grid2";
-import { Box, Button, IconButton, useTheme } from "@mui/material";
-import {
-  BrowserActionType,
-  TrackType,
-  GQLCytobands,
-  useBrowserState,
-  TranscriptTrackProps,
-  TranscriptHumanVersion,
-  TranscriptMouseVersion,
-  DefaultTranscript,
-  DefaultBigBed,
-  DisplayMode,
-  BigBedTrackProps,
-  DefaultBigWig,
-  Controls,
-  GenomeBrowser,
-} from "@weng-lab/genomebrowser";
-import { Rect } from "umms-gb/dist/components/tracks/bigbed/types";
-import { CellQueryValue } from "../../app/celllineage/types";
-import BulkAtacModal from "./bulkAtacSelector";
-import { getCellDisplayName } from "../../app/celllineage/utils";
-import { getCellColor } from "../../app/celllineage/utils";
 import { Search } from "@mui/icons-material";
 import EditIcon from "@mui/icons-material/Edit";
+import { Box, Button, IconButton } from "@mui/material";
+import Grid2 from "@mui/material/Grid2";
+import { useTheme } from "@mui/material/styles";
+import {
+  BigBedTrackProps,
+  BrowserActionType,
+  DefaultBigBed,
+  DefaultBigWig,
+  DefaultTranscript,
+  DisplayMode,
+  GenomeBrowser,
+  GQLCytobands,
+  TrackType,
+  TranscriptHumanVersion,
+  TranscriptMouseVersion,
+  TranscriptTrackProps,
+  useBrowserState,
+} from "@weng-lab/genomebrowser";
 import { Result } from "@weng-lab/psychscreen-ui-components";
-import { GenomicRange } from "./types";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { Rect } from "umms-gb/dist/components/tracks/bigbed/types";
+import { CellQueryValue } from "../../app/celllineage/types";
+import { getCellColor, getCellDisplayName } from "../../app/celllineage/utils";
 import AutoComplete from "../components/autocomplete";
+import BulkAtacModal from "./bulkAtacSelector";
+import { GenomicRange } from "./types";
+import ControlButtons from "./controls";
+
+type Highlight = {
+  domain: {
+    chromosome: string;
+    start: number;
+    end: number;
+  };
+  color: string;
+  id: string;
+};
 
 type GenomeBrowserViewProps = {
   coordinates: {
@@ -50,6 +60,7 @@ type GenomeBrowserViewProps = {
     end: number;
   };
   assembly: string;
+  highlights?: Highlight[];
 };
 
 export type Transcript = {
@@ -168,9 +179,9 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (
       domain: initialDomain,
       width: 1500,
       tracks: initialTracks,
-      highlights: [],
+      highlights: props.highlights || [],
     };
-  }, [initialDomain, initialTracks]);
+  }, [initialDomain, initialTracks, props.highlights]);
 
   const [browserState, browserDispatch] = useBrowserState(initialBrowserState);
   const [browserInitialized, setBrowserInitialized] = useState(
@@ -220,7 +231,6 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (
 
   useEffect(() => {
     // Remove only bulk ATAC tracks for deselected cells
-    // console.log(selectedCells);
     browserState.tracks.forEach((track) => {
       if (
         track.id === "all-immune-bigwig" ||
@@ -282,88 +292,96 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (
   };
 
   const theme = useTheme();
-
+  
   return (
-    <>
+    <Grid2
+      container
+      spacing={3}
+      sx={{ mt: "0rem", mb: "1rem" }}
+      ref={containerRef}
+      justifyContent="center"
+      alignItems="center"
+    >
       <Grid2
-        container
-        spacing={3}
-        sx={{ mt: "0rem", mb: "1rem" }}
-        ref={containerRef}
-        justifyContent="center"
-        alignItems="center"
+        size={{ xs: 12, lg: 12 }}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: "0px",
+        }}
       >
-        <Grid2
-          size={{ xs: 12, lg: 12 }}
-          style={{
+        <Box
+          sx={{
+            width: "100%",
             display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            marginTop: "0px",
+            justifyContent: "space-between",
+            mb: 2,
           }}
         >
-          <Box
-            sx={{
-              width: "100%",
-              display: "flex",
-              justifyContent: "space-between",
-              mb: 2,
+          <AutoComplete
+            size="small"
+            assembly="GRCh38"
+            onSearchSubmit={handeSearchSubmit}
+            queries={["Gene", "SNP", "iCRE", "Coordinate"]}
+            geneLimit={3}
+            sx={{ width: "400px" }}
+            slots={{
+              button: (
+                <IconButton sx={{ color: theme.palette.primary.main }}>
+                  <Search />
+                </IconButton>
+              ),
             }}
-          >
-            <AutoComplete
-              assembly="GRCh38"
-              onSearchSubmit={handeSearchSubmit}
-              queries={["Gene", "SNP", "iCRE", "Coordinate"]}
-              geneLimit={3}
-              sx={{ width: "400px" }}
-              slots={{
-                button: (
-                  <IconButton sx={{ color: theme.palette.primary.main }}>
-                    <Search />
-                  </IconButton>
-                ),
-              }}
-              slotProps={{
-                input: {
-                  label: "Change browser region",
-                  sx: {
-                    backgroundColor: "white",
-                    "& label.Mui-focused": {
-                      color: theme.palette.primary.main,
-                    },
-                    "& .MuiOutlinedInput-root": {
-                      "&.Mui-focused fieldset": {
-                        borderColor: theme.palette.primary.main,
-                      },
+            slotProps={{
+              input: {
+                label: "Change browser region",
+                sx: {
+                  backgroundColor: "white",
+                  "& label.Mui-focused": {
+                    color: theme.palette.primary.main,
+                  },
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: theme.palette.primary.main,
                     },
                   },
                 },
-              }}
-            />
-            <Button
-              variant="contained"
-              startIcon={<EditIcon />}
-              sx={{
-                backgroundColor: theme.palette.primary.main,
-                color: "white",
-              }}
-              onClick={() => setSettingsModalShown(true)}
-            >
-              Add more ATAC-seq data
-            </Button>
-          </Box>
-          <BulkAtacModal
-            open={settingsModalShown}
-            onCancel={() => setSettingsModalShown(false)}
-            onAccept={(cells: CellQueryValue[]) => {
-              setSelectedCells(cells);
-              setSettingsModalShown(false);
+              },
             }}
-            selected={selectedCells}
           />
+          <Button
+            variant="contained"
+            startIcon={<EditIcon />}
+            size="small"
+            sx={{
+              backgroundColor: theme.palette.primary.main,
+              color: "white",
+            }}
+            onClick={() => setSettingsModalShown(true)}
+          >
+            Add more ATAC-seq data
+          </Button>
+        </Box>
+        <BulkAtacModal
+          open={settingsModalShown}
+          onCancel={() => setSettingsModalShown(false)}
+          onAccept={(cells: CellQueryValue[]) => {
+            setSelectedCells(cells);
+            setSettingsModalShown(false);
+          }}
+          selected={selectedCells}
+        />
+        <Box
+          width={"100%"}
+          justifyContent={"space-between"}
+          flexDirection={"row"}
+          display={"flex"}
+          alignItems={"center"}
+        >
           <h3 style={{ marginBottom: "0px", marginTop: "0px" }}>
-            {props.assembly} at {browserState.domain.chromosome}:
+            {browserState.domain.chromosome}:
             {browserState.domain.start.toLocaleString()}-
             {browserState.domain.end.toLocaleString()}
           </h3>
@@ -375,51 +393,42 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (
               currentDomain={browserState.domain}
             />
           </svg>
-        </Grid2>
-        <Grid2 size={{ xs: 12, lg: 12 }}>
-          <Controls
-            inputButtonComponent={
-              <IconButton
-                type="button"
-                sx={{
-                  color: "black",
-                  maxHeight: "100%",
-                  padding: "4px",
-                }}
-              >
-                <Search fontSize="small" />
-              </IconButton>
-            }
-            buttonComponent={
-              <Button
-                variant="outlined"
-                sx={{
-                  minWidth: "0px",
-                  width: { xs: "100%", sm: "80%" },
-                  maxWidth: "120px",
-                  fontSize: "0.8rem",
-                  padding: "4px 8px",
-                }}
-              />
-            }
-            domain={browserState.domain}
-            dispatch={browserDispatch}
-            withInput={false}
-            style={{
-              paddingBottom: "4px",
-              display: "flex",
-              flexWrap: "wrap",
-              gap: "4px",
-              width: "100%",
-            }}
-          />
-          <GenomeBrowser
-            width={"100%"}
-            browserState={browserState}
-            browserDispatch={browserDispatch}
-          />
-        </Grid2>
+          <h3 style={{ marginBottom: "0px", marginTop: "0px" }}>hg38</h3>
+        </Box>
+        <ControlButtons
+          browserState={browserState}
+          browserDispatch={browserDispatch}
+        />
       </Grid2>
-    </>
+      <Grid2 size={{ xs: 12, lg: 12 }}>
+        <GenomeBrowser
+          width={"100%"}
+          browserState={browserState}
+          browserDispatch={browserDispatch}
+        />
+      </Grid2>
+      <Box
+          sx={{
+            width: "100%",
+            height: 40,
+            display: "flex",
+            justifyContent: "flex-end",
+          }}
+        >
+        {/* Lower button, commented out for now because it doesn't seem necessary atm */}
+        {/* <Button 
+          variant="contained"
+          startIcon={<EditIcon />}
+          size="small"
+          sx={{
+            backgroundColor: theme.palette.primary.main,
+            color: "white",
+          }}
+          onClick={() => setSettingsModalShown(true)}
+        >
+          Add more ATAC-seq data
+        </Button> */}
+      </Box>
+    </Grid2>
   );
 };

@@ -51,7 +51,17 @@ export default function DetailsPage({
     /**
      * @todo not properly passing in element details for highlight yet
      */
-    return <GenomeBrowserView assembly="GRCh38" coordinates={elementMetadata.coordinates} />
+    const highlight = {
+      domain: {
+        chromosome: elementMetadata.coordinates.chromosome,
+        start: elementMetadata.coordinates.start,
+        end: elementMetadata.coordinates.end,
+      },
+      color: "red",
+      id: "test",
+    }
+    console.log("highlight", highlight);
+    return <GenomeBrowserView assembly="GRCh38" highlights={[highlight]} coordinates={elementMetadata.coordinates} gene={elementMetadata.__typename === "Gene" ? elementMetadata.name : undefined} />
   }
 
   switch (elementType) {
