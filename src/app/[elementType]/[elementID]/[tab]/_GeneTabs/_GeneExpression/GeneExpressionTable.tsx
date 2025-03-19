@@ -4,7 +4,7 @@ import { Checkbox, CircularProgress } from "@mui/material"
 import { getCellCategoryDisplayname } from "common/utility"
 import { useState } from "react"
 import { DataGrid, DataGridProps, GridCallbackDetails, GridColDef, GridRowSelectionModel, GridToolbar } from "@mui/x-data-grid"
-
+import { GRID_CHECKBOX_SELECTION_COL_DEF } from "@mui/x-data-grid"
 
 export type GeneExpressionTableProps = GeneExpressionProps & {
   onSelectionChange: (selected: PointMetadata[]) => void,
@@ -14,11 +14,27 @@ export type GeneExpressionTableProps = GeneExpressionProps & {
 const GeneExpressionTable = ({name, id, selected, onSelectionChange}: GeneExpressionTableProps) => {
   const { data, loading, error } = useGeneExpression({ id })
 
+  console.log(GRID_CHECKBOX_SELECTION_COL_DEF)
+
+  //This is used to prevent sorting from happening when clicking on the header checkbox
+  const StopPropogationWrapper = (params) =>
+    <div id={'StopPropogationWrapper'} onClick={(e) => e.stopPropagation()}>
+      <GRID_CHECKBOX_SELECTION_COL_DEF.renderHeader {...params} />
+    </div>
+
   const columns: GridColDef<PointMetadata>[] = [
+    {
+      ...GRID_CHECKBOX_SELECTION_COL_DEF, //Override checkbox column https://mui.com/x/react-data-grid/row-selection/#custom-checkbox-column
+      
+      width: 60,
+      sortable: true,
+      hideable: false,
+      renderHeader: StopPropogationWrapper
+    },
     {
       field: 'description',
       headerName: 'Biosample',
-      width: 200
+      width: 200,
     },
     {
       field: 'value',
@@ -71,7 +87,7 @@ const GeneExpressionTable = ({name, id, selected, onSelectionChange}: GeneExpres
               },
             },
             sorting: {
-              sortModel: [{field: 'value', sort: 'desc'}]
+              sortModel: [{field: 'value', sort: 'desc'}],
             },
             columns: {
               columnVisibilityModel: {
@@ -80,6 +96,7 @@ const GeneExpressionTable = ({name, id, selected, onSelectionChange}: GeneExpres
               }
             }
           }}
+          sortingOrder={['desc', 'asc', null]}
           slots={{ toolbar: GridToolbar }}
           slotProps={{ toolbar: { showQuickFilter: true } }}
           pageSizeOptions={[10, 25, 50]}
