@@ -30,7 +30,7 @@ import React, {
 import { Rect } from "umms-gb/dist/components/tracks/bigbed/types";
 import { CellQueryValue } from "../../app/celllineage/types";
 import { getCellColor, getCellDisplayName } from "../../app/celllineage/utils";
-import AutoComplete from "../components/mainsearch/autocomplete";
+import AutoComplete from "../components/autocomplete";
 import BulkAtacModal from "./bulkAtacSelector";
 import { GenomicRange } from "./types";
 import ControlButtons from "./controls";
@@ -196,7 +196,7 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (
         type: BrowserActionType.SET_DOMAIN,
         domain: initialDomain,
       });
-      console.log(tracks);
+      // console.log(tracks);
       tracks.forEach((track) => {
         if (!browserState.tracks.find((t) => t.id === track.id)) {
           browserDispatch({ type: BrowserActionType.ADD_TRACK, track });
@@ -239,7 +239,7 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (
       )
         return;
       if (!selectedCells.some((cell) => cell === track.id)) {
-        console.log("deleting", track.id);
+        // console.log("deleting", track.id);
         browserDispatch({ type: BrowserActionType.DELETE_TRACK, id: track.id });
       }
     });
@@ -268,7 +268,7 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (
           displayMode: DisplayMode.FULL,
           id: selectedCells[index],
         };
-        console.log(track);
+        // console.log(track);
         browserDispatch({ type: BrowserActionType.ADD_TRACK, track });
       }
     });

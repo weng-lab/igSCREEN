@@ -1,26 +1,16 @@
 //Home Page
 
 "use client"
-import { Box, Button, Divider, FormControl, IconButton, MenuItem, Stack, Typography, useTheme } from "@mui/material"
+import { Box, Button, Divider, IconButton, Stack, Typography, useTheme } from "@mui/material"
 import React, { useState } from "react"
-import Select, { SelectChangeEvent } from "@mui/material/Select";
+import { SelectChangeEvent } from "@mui/material/Select";
 import Grid2 from "@mui/material/Grid2"
-import { GeneAutoComplete } from "../common/components/mainsearch/GeneAutocomplete";
-import { SnpAutoComplete } from "../common/components/mainsearch/SnpAutocomplete";
-import { CcreAutoComplete } from "../common/components/mainsearch/CcreAutocomplete";
 import Image from 'next/image'
-import GenomicRegion from "../common/components/mainsearch/genomicregion";
 import { ArrowForwardIos, ExpandMore, Login, Search } from "@mui/icons-material";
-import AutoComplete from "../common/components/mainsearch/autocomplete";
+import AutoComplete from "../common/components/autocomplete";
 import Link from "next/link";
 
 const Home = () => {
-  const [elementSearch, setElementSearch] = useState<string>("Genomic Region")
-
-  const handleSetElementSearch = (event: SelectChangeEvent) => {
-    setElementSearch(event.target.value);
-  };
-
   const theme = useTheme();
 
   return (
