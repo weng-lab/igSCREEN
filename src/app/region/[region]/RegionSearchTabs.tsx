@@ -30,6 +30,8 @@ const RegionSearchTabs = () => {
         <Tab label="iCREs" value="icres" LinkComponent={Link} href={basepath + '/' + 'icres'} />
         <Tab label="Genes" value="genes" LinkComponent={Link} href={basepath + '/' + 'genes'} />
         <Tab label="SNPs" value="snps" LinkComponent={Link} href={basepath + '/' + 'snps'} />
+        <Tab label="Genome Browser" value="genomebrowser" LinkComponent={Link} href={basepath + '/' + 'genomebrowser'} />
+
       </Tabs>
     </Box>
   )
