@@ -7,7 +7,7 @@ import { useElementMetadata, useElementMetadataReturn } from "common/hooks/useEl
 import { GenomicElementType, isValidGeneTab, isValidIcreTab, isValidSnpTab, isValidTab } from "types/globalTypes"
 import SnpEQTLs from "./_SnpTabs/SnpEQTLs"
 import GeneEQTLs from "./_GeneTabs/GeneEQTLs"
-import GeneExpression from "./_GeneTabs/GeneExpression"
+import GeneExpression from "./_GeneTabs/_GeneExpression/GeneExpression"
 import IcreActivity from "./_IcreTabs/IcreActivity"
 
 /**
@@ -87,7 +87,7 @@ export default function DetailsPage({
       switch (tab) {
         case ("eQTLs"): return <GeneEQTLs name={geneData.name} id={geneData.id} />
         case ("linked"): return <p>Viewing {tab} for {elementID} in {elementType} Portal</p>
-        case ("expression"): return <GeneExpression name={geneData.name} />
+        case ("expression"): return <GeneExpression name={geneData.name} id={geneData.id} />
       }
     }
 

@@ -1,5 +1,31 @@
 import { CellName, CellTypeStaticInfo } from "../app/celllineage/types"
 
+export const cellCategoryColors = {
+  Bcells: "#078fff",
+  Bulk_Tcells: "#cc0000",
+  CD4_Tcells: "#5b1606",
+  CD8_Tcells: "#f6b26b",
+  Erythroblasts: "#684fda",
+  Leukemia: "#1ab19a",
+  Myeloid: "#a64d79",
+  NK: "#2f4a15",
+  Progenitors: "#d3b2ce",
+  gd_Tcells: "#ff9900"
+}
+
+export const cellCategoryDisplaynames = {
+  Bcells: "B Cells",
+  Bulk_Tcells: "Bulk T Cells",
+  CD4_Tcells: "CD4 T Cells",
+  CD8_Tcells: "CD8 T Cells",
+  Erythroblasts: "Erythroblasts",
+  Leukemia: "Leukemic Cells",
+  Myeloid: "Myeloid Cells",
+  NK: "Natural Killer Cells",
+  Progenitors: "Progenitor Cells",
+  gd_Tcells: "Gamma Delta T Cells"
+}
+
 export const cellTypeStaticInfo: { [key in CellName]: CellTypeStaticInfo } = {
   Monocytes: {
     id: 'Monocytes',

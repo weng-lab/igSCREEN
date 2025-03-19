@@ -5,6 +5,7 @@ import { CellDisplayName, CellLineageTreeState, CellName, CellQueryValue, CellTy
 /**
  * 
  * @todo these functions should be moved out of the celllineage directory and into common probably
+ * @deprecated
  */
 export const getCellColor = (cell: CellName | CellQueryValue | CellDisplayName): string => {
   return Object.values(cellTypeStaticInfo).find((x: CellTypeStaticInfo) => x.id === cell || x.displayName === cell || extractQueryValues(x, "B").includes(cell as CellQueryValue))?.color ?? "#000000"

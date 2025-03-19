@@ -1,4 +1,5 @@
 import { GenomicRange, PortalName } from "types/globalTypes"
+import { cellCategoryColors, cellCategoryDisplaynames } from "./consts"
 
 /**
  * @todo Merge with utility.ts
@@ -51,4 +52,22 @@ export function formatPortal(subpath: string): PortalName | null {
     case ("icre"): return "iCRE"
     default: return null
   }
+}
+
+/**
+ * 
+ * @param cell use ```celltype``` field of return data
+ * @returns the corresponding color for that cell category, or black if not found
+ */
+export function getCellCategoryColor(cell: string): string {
+  return cellCategoryColors[cell] || "#000"
+}
+
+/**
+ * 
+ * @param cell use ```celltype``` field of return data
+ * @returns the corresponding celltype display name for the category, or "Unknown Celltype if not found"
+ */
+export function getCellCategoryDisplayname(cell: string) {
+  return cellCategoryDisplaynames[cell] || "Unknown Celltype"
 }
