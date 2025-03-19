@@ -88,6 +88,7 @@ const GeneExpressionTable = ({name, id, selected, onSelectionChange}: GeneExpres
           rowSelectionModel={selected.map(x => x.name)}
           disableRowSelectionOnClick
           getRowId={(row) => row.name}
+          keepNonExistentRowsSelected //needed to prevent clearing selections on changing filters
         />}
     </>
   )

@@ -4,6 +4,7 @@ import { useState } from "react"
 import GeneExpressionTable from "./GeneExpressionTable"
 import GeneExpressionUMAP from "./GeneExpressionUMAP"
 import GeneExpressionBarPlot from "./GeneExpressionBarPlot"
+import { BarData } from "./VerticalBarPlot"
 
 
 export type GeneExpressionProps = {
@@ -24,6 +25,18 @@ const GeneExpression = ({ name, id }: GeneExpressionProps) => {
     setSelected(selected)
   }
 
+  const handleBarClick = (bar: BarData<PointMetadata>) => {
+    if (selected.includes(bar.metadata)) {
+      setSelected(selected.filter(x => x !== bar.metadata))
+    } else setSelected([...selected, bar.metadata])
+  }
+
+  /**
+   * In order to make the subset plot work I would need to have some way to capture a 
+   * state that includes the points used to make the subset plot. I think I can use the same state variable 
+   * for highlighting still. Would need to pass
+   */
+
   return (
     <TwoPaneLayout
       TableComponent={
@@ -41,7 +54,8 @@ const GeneExpression = ({ name, id }: GeneExpressionProps) => {
               <GeneExpressionBarPlot
                 name={name}
                 id={id}
-                onBarClicked={(bar) => handleSelectionChange([bar.metadata])}
+                selected={selected}
+                onBarClicked={handleBarClick}
               />
           },
           {

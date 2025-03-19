@@ -74,8 +74,7 @@ const VerticalBarPlot = <T,>({
   }, [showTooltip]);
 
   const { parentRef, width: ParentWidth } = useParentSize({ debounceTime: 150 });
-  console.log(ParentWidth)
-  // const width = useMemo(() => Math.max(750, ParentWidth), [ParentWidth])
+
   const spaceForTopAxis = 50
   const spaceOnBottom = 20
   const spaceForCategory = 120

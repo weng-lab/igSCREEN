@@ -8,34 +8,37 @@ export type GeneExpressionBarPlotProps =
   GeneExpressionProps & 
   {
     onBarClicked: BarPlotProps<PointMetadata>["onBarClicked"]
+    selected: PointMetadata[]
   }
 
-const GeneExpressionBarPlot = ({name, id, onBarClicked}: GeneExpressionBarPlotProps) => {
+const GeneExpressionBarPlot = ({name, id, onBarClicked, selected}: GeneExpressionBarPlotProps) => {
   const { data, loading, error } = useGeneExpression({ id })
 
   const plotData: BarData<PointMetadata>[] = useMemo(() => {
     if (!data) return []
     return (
       data.map((x, i) => {
+        const anySelected = selected.length > 0
+        const isSelected = selected.includes(x)
         return (
           {
             category: x.celltype,
             label: `${x.value.toFixed(2)}, ${x.description.slice(0, 30) + (x.description.length > 30 ? "..." : "")}`,
             value: x.value,
             id: i.toString(),
-            color: getCellCategoryColor(x.celltype),
+            color: (anySelected && isSelected || !anySelected) ? getCellCategoryColor(x.celltype) : '#CCCCCC',
             metadata: x
           }
         )
       })
     ).sort((a,b) => b.value - a.value)
-  }, [data])
+  }, [data, selected])
 
   return(
     <VerticalBarPlot
-      key={JSON.stringify(plotData)}
       data={plotData}
       onBarClicked={onBarClicked}
+      topAxisLabel={`${name} Gene Expression in GRCh38 - Linear TPM`}
     />
   )
 }

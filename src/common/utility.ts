@@ -59,7 +59,7 @@ export function formatPortal(subpath: string): PortalName | null {
  * @param cell use ```celltype``` field of return data
  * @returns the corresponding color for that cell category, or black if not found
  */
-export function getCellCategoryColor(cell: string) {
+export function getCellCategoryColor(cell: string): string {
   return cellCategoryColors[cell] || "#000"
 }
 
