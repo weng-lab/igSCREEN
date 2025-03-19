@@ -76,7 +76,7 @@ const GeneExpressionTable = ({name, id, selected, onSelectionChange}: GeneExpres
         <CircularProgress />
         :
         <DataGrid
-          rows={data}
+          rows={[...data].sort((a,b) => b.value - a.value)}
           columns={columns}
           initialState={{
             pagination: {
