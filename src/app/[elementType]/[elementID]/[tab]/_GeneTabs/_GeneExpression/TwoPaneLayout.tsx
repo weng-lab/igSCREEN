@@ -58,8 +58,8 @@ const TwoPaneLayout = ({ TableComponent, plots }: TwoPaneLayoutProps) => {
           </Tooltip>
         }
       </Box>
-      <Box flexGrow={1} overflow={"auto"}>
-        <Tabs value={tab} onChange={handleSetTab} sx={{mb: 2}}>
+      <Box flexGrow={1} overflow={"hidden"} id="tabs_figure_container">
+        <Tabs value={tab} onChange={handleSetTab} sx={{mb: 2}} id="plot_tabs">
           {plotTabs.map((tab, i) =>
             <Tab label={tab} key={i} />)
           }

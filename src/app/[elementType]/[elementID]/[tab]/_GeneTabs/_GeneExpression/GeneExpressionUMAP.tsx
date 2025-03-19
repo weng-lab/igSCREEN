@@ -17,7 +17,7 @@ export type GeneExpressionUmapProps<T> =
 
 const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selectedPoints, ...rest }: GeneExpressionUmapProps<T>) => {
   const [colorScheme, setColorScheme] = useState('geneexp');
-  const [showLegend, setShowLegend] = useState<boolean>(false);
+  const [showLegend, setShowLegend] = useState<boolean>(true);
 
   const { data, loading, error } = useGeneExpression({ id })
 
@@ -102,7 +102,7 @@ const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selectedPoints,
         label: getCellCategoryDisplayname(cellType),
         color: getCellCategoryColor(cellType),
         value: count
-      }));
+      })).sort((a,b) => b.value - a.value);
     }
   }, [scatterData, colorScheme]);
 
@@ -153,7 +153,6 @@ const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selectedPoints,
                   miniMap={map}
                   groupPointsAnchor="celltype"
                   tooltipBody={(point) => <TooltipBody {...point} />}
-
                 />
               </>
             )
@@ -163,7 +162,7 @@ const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selectedPoints,
       </Box>
       {/* legend */}
       {showLegend && (
-          <Box mt={2} sx={{ display: 'flex', flexDirection: 'column' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
             <Typography mb={1}><b>Legend</b></Typography>
             {colorScheme === "geneexp" ? (
               <>
@@ -182,11 +181,14 @@ const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selectedPoints,
                 </Box>
               </>
             ) : (
+              /**
+               * @todo clean this up. No way this legend needs to be this complicated
+               */
               /* Normal legend for cell types */
-              <Box sx={{ display: 'flex', justifyContent: legendEntries.length / 6 >= 3 ? "space-between" : "flex-start", gap: legendEntries.length / 6 >= 4 ? 0 : 10 }}>
-                {Array.from({ length: Math.ceil(legendEntries.length / 6) }, (_, colIndex) => (
+              <Box sx={{ display: 'flex', justifyContent: legendEntries.length / 4 >= 3 ? "space-between" : "flex-start", gap: legendEntries.length / 4 >= 4 ? 0 : 10 }}>
+                {Array.from({ length: Math.ceil(legendEntries.length / 4) }, (_, colIndex) => (
                   <Box key={colIndex} sx={{ marginRight: 2 }}>
-                    {legendEntries.slice(colIndex * 6, colIndex * 6 + 6).map((cellType, index) => (
+                    {legendEntries.slice(colIndex * 4, colIndex * 4 + 4).map((cellType, index) => (
                       <Box key={index} sx={{ display: 'flex', alignItems: 'center', marginBottom: 1 }}>
                         <Box sx={{ width: '12px', height: '12px', backgroundColor: cellType.color, marginRight: 1 }} />
                         <Typography>

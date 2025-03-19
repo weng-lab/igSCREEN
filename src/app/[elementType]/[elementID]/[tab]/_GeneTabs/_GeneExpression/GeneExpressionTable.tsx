@@ -14,8 +14,6 @@ export type GeneExpressionTableProps = GeneExpressionProps & {
 const GeneExpressionTable = ({name, id, selected, onSelectionChange}: GeneExpressionTableProps) => {
   const { data, loading, error } = useGeneExpression({ id })
 
-  console.log(GRID_CHECKBOX_SELECTION_COL_DEF)
-
   //This is used to prevent sorting from happening when clicking on the header checkbox
   const StopPropogationWrapper = (params) =>
     <div id={'StopPropogationWrapper'} onClick={(e) => e.stopPropagation()}>
