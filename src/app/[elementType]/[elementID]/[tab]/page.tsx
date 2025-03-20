@@ -60,7 +60,6 @@ export default function DetailsPage({
       color: "red",
       id: "test",
     }
-    console.log("highlight", highlight);
     return <GenomeBrowserView assembly="GRCh38" highlights={[highlight]} coordinates={elementMetadata.coordinates} gene={elementMetadata.__typename === "Gene" ? elementMetadata.name : undefined} />
   }
 
