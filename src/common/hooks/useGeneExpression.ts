@@ -48,6 +48,7 @@ export const useGeneExpression = ({ id }: UseGeneDataParams): UseGeneExpressionR
    * Need to correct the data, since encode samples sometimes have a ' \" ' before and after the true value
    */
   const correctedData = useMemo(() => {
+    if (!data) return data
     return {
       ...data,
       immuneRnaUmapQuery: data.immuneRnaUmapQuery.map((x) => {

@@ -22,11 +22,11 @@ const GeneExpressionBarPlot = ({name, id, onBarClicked, selected}: GeneExpressio
         const isSelected = selected.includes(x)
         return (
           {
-            category: getCellCategoryDisplayname(x.celltype),
+            category: getCellCategoryDisplayname(x.lineage),
             label: `${x.value.toFixed(2)}, ${x.biosample.slice(0, 30) + (x.biosample.length > 30 ? "..." : "")}`,
             value: x.value,
             id: i.toString(),
-            color: (anySelected && isSelected || !anySelected) ? getCellCategoryColor(x.celltype) : '#CCCCCC',
+            color: (anySelected && isSelected || !anySelected) ? getCellCategoryColor(x.lineage) : '#CCCCCC',
             metadata: x
           }
         )

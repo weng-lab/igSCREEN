@@ -52,7 +52,7 @@ const GeneExpressionTable = ({name, id, selected, onSelectionChange}: GeneExpres
       field: 'lineage',
       headerName: 'Lineage',
       width: 150,
-      valueGetter: (_, row) => getCellCategoryDisplayname(row.celltype)
+      valueGetter: (_, row) => getCellCategoryDisplayname(row.lineage)
     },
     {
       field: 'link',

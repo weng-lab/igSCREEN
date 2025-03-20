@@ -93,7 +93,7 @@ const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selectedPoints,
     if (colorScheme === "celltype") {
       // Count occurrences of each unique cellType
       const cellTypeCounts = scatterData.reduce((acc, point) => {
-        const cellType = point.metaData.celltype;
+        const cellType = point.metaData.lineage;
         acc.set(cellType, (acc.get(cellType) || 0) + 1);
         return acc;
       }, new Map<string, number>());
@@ -109,7 +109,7 @@ const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selectedPoints,
   const TooltipBody = (point: Point<PointMetadata>) => {
     return (
       <>
-        <Typography><b>Category:</b> {getCellCategoryDisplayname(point.metaData.celltype)}</Typography>
+        <Typography><b>Category:</b> {getCellCategoryDisplayname(point.metaData.lineage)}</Typography>
         <Typography><b>Biosample:</b> {point.metaData.biosample}, {point.metaData.stimulation}</Typography>
         <Typography><b>Linear TPM:</b> {point.metaData.value.toFixed(2)}</Typography>
         <Typography><b>Source:</b> {point.metaData.source}</Typography>

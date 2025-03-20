@@ -57,7 +57,7 @@ const IcreActivityTable = ({accession, selected, onSelectionChange}: IcreActivit
       field: 'celltype',
       headerName: 'Lineage',
       width: 150,
-      valueGetter: (_, row) => getCellCategoryDisplayname(row.celltype)
+      valueGetter: (_, row) => getCellCategoryDisplayname(row.lineage)
     },
     {
       field: 'source',
