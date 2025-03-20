@@ -20,6 +20,9 @@ import Link from "next/link";
 import Image from "next/image";
 import AutoComplete from "./autocomplete";
 import { Search } from "@mui/icons-material";
+import MenuIcon from "@mui/icons-material/Menu"
+import { useState } from "react";
+import MobileMenu from "./MobileMenu";
 
 const pageLinks = [
   {
@@ -76,6 +79,12 @@ const ResponsiveAppBar = () => {
   const [anchorElNav_Dropdown1, setAnchorElNav_Dropdown1] =
     React.useState<null | HTMLElement>(null);
 
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const toggleDrawer = (open) => () => {
+    setDrawerOpen(open);
+  };
+
   // Open Dropdown
   const handleOpenNavMenu_Dropdown = (
     event: React.MouseEvent<HTMLElement>,
@@ -119,7 +128,7 @@ const ResponsiveAppBar = () => {
               />
             </Box>
             {/* Main navigation items for desktop */}
-            <Box display={"flex"} alignItems={"center"} gap={2}>
+            <Box display={{ xs: "none", md: "flex" }} alignItems={"center"} gap={2}>
               <Box sx={{ display: { xs: "flex" } }}>
                 {pageLinks.map((page) => (
                   <Box key={page.pageName}>
@@ -256,6 +265,20 @@ const ResponsiveAppBar = () => {
                 }}
               />
             </Box>
+            <Box display={{ xs: "flex", md: "none" }} alignItems={"center"} gap={2}>
+              <IconButton
+                size="large"
+                onClick={toggleDrawer(true)}
+                color="inherit"
+              >
+                <MenuIcon />
+              </IconButton>
+            </Box>
+            <MobileMenu
+              pageLinks={pageLinks}
+              drawerOpen={drawerOpen}
+              toggleDrawer={toggleDrawer}
+            />
           </Toolbar>
         </Container>
       </AppBar>
