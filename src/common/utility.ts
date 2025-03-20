@@ -56,7 +56,7 @@ export function formatPortal(subpath: string): PortalName | null {
 
 /**
  * 
- * @param cell use ```celltype``` field of return data
+ * @param cell use ```lineage``` field of return data
  * @returns the corresponding color for that cell category, or black if not found
  */
 export function getCellCategoryColor(cell: string): string {
@@ -65,7 +65,7 @@ export function getCellCategoryColor(cell: string): string {
 
 /**
  * 
- * @param cell use ```celltype``` field of return data
+ * @param cell use ```lineage``` field of return data
  * @returns the corresponding celltype display name for the category, or "Unknown Celltype if not found"
  */
 export function getCellCategoryDisplayname(cell: string) {
