@@ -79,7 +79,7 @@ const VerticalBarPlot = <T,>({
   const spaceOnBottom = 20
   const spaceForCategory = 120
   const gapBetweenTextAndBar = 10
-  const dataHeight = data.length * 14
+  const dataHeight = data.length * 15
   const totalHeight = dataHeight + spaceForTopAxis + spaceOnBottom
 
   // Scales
@@ -87,7 +87,7 @@ const VerticalBarPlot = <T,>({
     scaleBand<string>({
       domain: data.map((d) => d.id),
       range: [0, dataHeight],
-      padding: 0.2,
+      padding: 0.15,
     }), [data, dataHeight])
 
   const xScale = useMemo(() =>
@@ -195,7 +195,7 @@ const VerticalBarPlot = <T,>({
                       width={barWidth}
                       height={barHeight}
                       fill={d.color || "black"}
-                      rx={2}
+                      rx={3}
                     />
                     {/* Value label next to the bar */}
                     <Text

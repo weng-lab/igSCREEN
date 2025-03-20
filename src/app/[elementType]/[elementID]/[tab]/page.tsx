@@ -10,12 +10,6 @@ import GeneEQTLs from "./_GeneTabs/GeneEQTLs"
 import GeneExpression from "./_GeneTabs/_GeneExpression/GeneExpression"
 import IcreActivity from "./_IcreTabs/IcreActivity"
 
-/**
- * @todo
- * - Create switch block for rendering correct details page
- * - add check for valid elementID (Where is the best place to do this once. In the layout component? Here? I feel like both checks should happen in the same place)
- */
-
 export default function DetailsPage({
   params: { elementType, elementID, tab },
 }: {

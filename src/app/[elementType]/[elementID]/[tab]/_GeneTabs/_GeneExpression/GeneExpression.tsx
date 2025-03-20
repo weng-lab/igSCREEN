@@ -1,10 +1,10 @@
-import TwoPaneLayout from "./TwoPaneLayout"
+import TwoPaneLayout from "../../TwoPaneLayout"
 import { GeneExpressionQuery } from "types/generated/graphql"
 import { useState } from "react"
 import GeneExpressionTable from "./GeneExpressionTable"
 import GeneExpressionUMAP from "./GeneExpressionUMAP"
 import GeneExpressionBarPlot from "./GeneExpressionBarPlot"
-import { BarData } from "./VerticalBarPlot"
+import { BarData } from "../../VerticalBarPlot"
 
 
 export type GeneExpressionProps = {
