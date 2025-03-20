@@ -2,13 +2,13 @@ import { CellName, CellTypeStaticInfo } from "../app/celllineage/types"
 
 export const cellCategoryColors = {
   Bcells: "#078fff",
-  Bulk_Tcells: "#cc0000",
-  CD4_Tcells: "#5b1606",
+  Bulk_Tcells: "#e06666",
+  CD4_Tcells: "#990000",
   CD8_Tcells: "#f6b26b",
   Erythroblasts: "#684fda",
   Leukemia: "#1ab19a",
   Myeloid: "#a64d79",
-  NK: "#2f4a15",
+  NK: "#93c47d",
   Progenitors: "#d3b2ce",
   gd_Tcells: "#ff9900"
 }

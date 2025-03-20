@@ -38,7 +38,7 @@ const GeneExpressionBarPlot = ({name, id, onBarClicked, selected}: GeneExpressio
     <VerticalBarPlot
       data={plotData}
       onBarClicked={onBarClicked}
-      topAxisLabel={`${name} Gene Expression in GRCh38 - Linear TPM`}
+      topAxisLabel={`${name} Expression - Linear TPM`}
     />
   )
 }
