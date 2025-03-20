@@ -1,6 +1,6 @@
 import { GeneExpressionProps, PointMetadata } from "./GeneExpression"
 import { useGeneExpression } from "common/hooks/useGeneExpression"
-import VerticalBarPlot, { BarData, BarPlotProps } from "./VerticalBarPlot"
+import VerticalBarPlot, { BarData, BarPlotProps } from "../../VerticalBarPlot"
 import { useMemo } from "react"
 import { getCellCategoryColor, getCellCategoryDisplayname } from "common/utility"
 
@@ -23,7 +23,7 @@ const GeneExpressionBarPlot = ({name, id, onBarClicked, selected}: GeneExpressio
         return (
           {
             category: getCellCategoryDisplayname(x.celltype),
-            label: `${x.value.toFixed(2)}, ${x.description.slice(0, 30) + (x.description.length > 30 ? "..." : "")}`,
+            label: `${x.value.toFixed(2)}, ${x.biosample.slice(0, 30) + (x.biosample.length > 30 ? "..." : "")}`,
             value: x.value,
             id: i.toString(),
             color: (anySelected && isSelected || !anySelected) ? getCellCategoryColor(x.celltype) : '#CCCCCC',

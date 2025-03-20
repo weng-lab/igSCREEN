@@ -1,19 +1,22 @@
 import { ApolloError, useQuery } from "@apollo/client";
+import { useMemo } from "react";
 import { gql } from "types/generated/gql";
-import { GeneExpressionQuery, GeneQuery } from "types/generated/graphql";
-import { GenomicElementType, GenomicRange } from "types/globalTypes";
+import { GeneExpressionQuery } from "types/generated/graphql";
 
 const GET_GENE_EXPRESSION = gql(`
   query GeneExpression($gene_id: String!) {
     immuneRnaUmapQuery(gene_id: $gene_id) {
-      umap_1
+      umap_1    
       umap_2
       celltype
+      study
       source
-      description
+      link
+      lineage
+      biosample
+      biosampleid    
       expid
-      name
-      tree_celltype
+      name    
       value
       stimulation
     }
@@ -41,11 +44,24 @@ export const useGeneExpression = ({ id }: UseGeneDataParams): UseGeneExpressionR
     }
   );
 
+  /**
+   * Need to correct the data, since encode samples sometimes have a ' \" ' before and after the true value
+   */
+  const correctedData = useMemo(() => {
+    return {
+      ...data,
+      immuneRnaUmapQuery: data.immuneRnaUmapQuery.map((x) => {
+        return {
+          ...x,
+          biosample: x.biosample.replaceAll('\"', ''),
+          biosampleid: x.biosampleid.replaceAll('\"', '')
+        }
+      })
+    }
+  }, [data])
+
   return {
-    /**
-     * return either whole array or just first item depending on input
-     */
-    data: data?.immuneRnaUmapQuery,
+    data: correctedData?.immuneRnaUmapQuery,
     loading,
     error,
   }
