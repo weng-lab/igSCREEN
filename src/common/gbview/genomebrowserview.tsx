@@ -112,7 +112,7 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (
     initialBrowserCoords.start,
   ]);
 
-  const bedMouseOver = useCallback((item: Rect) => {
+  const icreMouseOver = useCallback((item: Rect) => {
     const newHighlight = {
       domain: { start: item.start + 150, end: item.end + 150 },
       color: item.color || "red",
@@ -123,8 +123,13 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (
       highlight: newHighlight,
     });
   }, []);
-  const bedMouseOut = useCallback(() => {
+  const icreMouseOut = useCallback(() => {
     browserDispatch({ type: BrowserActionType.REMOVE_LAST_HIGHLIGHT });
+  }, []);
+
+  const onIcreClick = useCallback((item: Rect) => {
+    const accession = item.name
+    window.open(`/icre/${accession}/nearby`, '_blank')
   }, []);
 
   const initialTracks = useMemo(() => {
@@ -155,8 +160,9 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (
       color: "#9378bc",
       rowHeight: 20,
       height: 75,
-      onMouseOver: bedMouseOver,
-      onMouseOut: bedMouseOut,
+      onMouseOver: icreMouseOver,
+      onMouseOut: icreMouseOut,
+      onClick: onIcreClick,
       url: "https://downloads.wenglab.org/Calderon-Corces_activeCREs_iSCREEN_withcolors.bigBed",
     } as BigBedTrackProps;
 
@@ -172,7 +178,7 @@ export const GenomeBrowserView: React.FC<GenomeBrowserViewProps> = (
     };
 
     return [geneTrack, icreTrack, allImmuneBigWig];
-  }, [props.gene, props.assembly, bedMouseOver, bedMouseOut]);
+  }, [props.gene, props.assembly, icreMouseOver, icreMouseOut, onIcreClick]);
 
   const initialBrowserState = useMemo(() => {
     return {
