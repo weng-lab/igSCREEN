@@ -6,7 +6,7 @@ function useLinkedGenes(accession: string) {
       accessions: [accession],
       assembly: "grch38"
     }
-  })    
+  })
   
   return {data: data?.linkedGenes as LinkedGeneInfo[], loading, error}
 }
@@ -31,8 +31,8 @@ export type LinkedGeneInfo = {
   slope: number
   tissue: string
   displayname: string
+  id?: string
 }
-
 
 const LINKED_GENES = gql(`
   query nearbyAndLinkedGenes(

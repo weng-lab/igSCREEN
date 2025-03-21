@@ -39,6 +39,13 @@ export const CreateLink: React.FC<{
   );
 };
 
+export const GeneLink: React.FC<{
+  assembly: string;
+  geneName: string;
+}> = (props) => {
+  return <CreateLink linkPrefix={`https://www.encodeproject.org/genes/${props.assembly}/${props.geneName}`} label={props.geneName} />
+}
+
 /**
  * @param num Number to convert to Sci Notation
  * @param variant MUI Typography Variant to be used
