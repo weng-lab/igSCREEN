@@ -20,7 +20,7 @@ const GeneExpressionTable = ({name, id, selected, onSelectionChange}: GeneExpres
       <GRID_CHECKBOX_SELECTION_COL_DEF.renderHeader {...params} />
     </div>
 
-  // ensure that "field" is accessing a true property of the row, "__check__" is for overriden checkbox column
+  // ensure that "field" is accessing a true property of the row
   type TypeSafeColDef<T> = GridColDef & { field: keyof T }; 
 
   const columns: TypeSafeColDef<PointMetadata>[] = [

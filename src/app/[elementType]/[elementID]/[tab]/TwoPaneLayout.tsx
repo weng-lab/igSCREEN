@@ -33,15 +33,17 @@ const TwoPaneLayout = ({ TableComponent, plots }: TwoPaneLayoutProps) => {
       <Box flexGrow={0} width={{xs: '100%', lg: tableOpen ? '35%' : '40px'}} id="table-container">
         {tableOpen ?
           <>
-            <Stack direction={"row"} alignItems={"center"} spacing={1} mb={1}>
+            <Stack direction={"row"} alignItems={"center"} gap={1} mb={1}>
               <Tooltip title={`${tableOpen ? "Hide" : "Show"} Table`}>
-                <IconButton onClick={handleToggleTable}>
+                {/* Using negative margin instead of 'edge' prop since, edge gives -12px padding instead of needed -8px for actual alignment */}
+                <IconButton onClick={handleToggleTable} sx={{ml: -1}}>
                   <TableChartRounded color="primary" />
                 </IconButton>
               </Tooltip>
               <Typography variant="h5" sx={{ flexGrow: 1 }}>Table View</Typography>
               <Tooltip title={`${tableOpen ? "Hide" : "Show"} Table`}>
-                <IconButton onClick={handleToggleTable}>
+                {/* Using negative margin instead of 'edge' prop since, edge gives -12px padding instead of needed -8px for actual alignment */}
+                <IconButton onClick={handleToggleTable} sx={{mr: -1}}>
                   <CloseFullscreenRounded color="primary" />
                 </IconButton>
               </Tooltip>
@@ -52,7 +54,8 @@ const TwoPaneLayout = ({ TableComponent, plots }: TwoPaneLayoutProps) => {
           </>
           :
           <Tooltip title={`${tableOpen ? "Hide" : "Show"} Table`}>
-            <IconButton onClick={handleToggleTable}>
+            {/* Using negative margin instead of 'edge' prop since, edge gives -12px padding instead of needed -8px for actual alignment */}
+            <IconButton onClick={handleToggleTable} sx={{ml: -1}}> 
               <TableChartRounded color="primary" />
             </IconButton>
           </Tooltip>

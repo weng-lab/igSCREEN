@@ -1,16 +1,18 @@
-import { GeneExpressionProps, PointMetadata, SharedGeneExpressionPlotProps } from "./GeneExpression"
-import { useGeneExpression } from "common/hooks/useGeneExpression"
+import { IcreActivityProps, PointMetadata, SharedIcreActivityPlotProps } from "./IcreActivity"
 import VerticalBarPlot, { BarData, BarPlotProps } from "../../VerticalBarPlot"
 import { useMemo } from "react"
 import { getCellCategoryColor, getCellCategoryDisplayname } from "common/utility"
+import { useIcreActivity } from "common/hooks/useIcreActivity"
 
-export type GeneExpressionBarPlotProps = 
-  GeneExpressionProps & 
-  SharedGeneExpressionPlotProps &
-  Partial<BarPlotProps<PointMetadata>>
+export type IcreActivityBarPlotProps = 
+  IcreActivityProps & 
+  SharedIcreActivityPlotProps &
+  {
+    onBarClicked: BarPlotProps<PointMetadata>["onBarClicked"]
+  }
 
-const GeneExpressionBarPlot = ({name, id, selected, ...rest}: GeneExpressionBarPlotProps) => {
-  const { data, loading, error } = useGeneExpression({ id })
+const IcreActivityBarPlot = ({accession, selected, assay, onBarClicked}: IcreActivityBarPlotProps) => {
+  const { data, loading, error } = useIcreActivity({ accession, assay })
 
   const plotData: BarData<PointMetadata>[] = useMemo(() => {
     if (!data) return []
@@ -34,11 +36,11 @@ const GeneExpressionBarPlot = ({name, id, selected, ...rest}: GeneExpressionBarP
 
   return(
     <VerticalBarPlot
-      {...rest}
       data={plotData}
-      topAxisLabel={`${name} Expression - Linear TPM`}
+      onBarClicked={onBarClicked}
+      topAxisLabel={`${accession} Activity`}
     />
   )
 }
 
-export default GeneExpressionBarPlot
+export default IcreActivityBarPlot
