@@ -1,5 +1,5 @@
 import { GenomicRange, PortalName } from "types/globalTypes"
-import { cellCategoryColors, cellCategoryDisplaynames } from "./consts"
+import { cellCategoryColors, cellCategoryDisplaynames, studyLinks } from "./consts"
 
 /**
  * @todo Merge with utility.ts
@@ -70,4 +70,13 @@ export function getCellCategoryColor(cell: string): string {
  */
 export function getCellCategoryDisplayname(cell: string) {
   return cellCategoryDisplaynames[cell] || "Unknown Celltype"
+}
+
+/**
+ * 
+ * @param study use ```study``` field of return data
+ * @returns The corresponding DOI link for the study, or "Unknown Study" if not found
+ */
+export function getStudyLink(study: string) {
+  return studyLinks[study] || "Unknown Study"
 }
