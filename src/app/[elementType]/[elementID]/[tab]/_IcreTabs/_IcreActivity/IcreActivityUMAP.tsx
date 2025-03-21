@@ -65,7 +65,7 @@ const IcreActivityUMAP = <T extends PointMetadata>({ accession, selected, assay,
   );
 
   const generateGradient = (maxValue: number) => {
-    const stops = generateDomain(maxValue, 8).map(value => interpolateYlOrRd(colorScale(value)));
+    const stops = generateDomain(maxValue, 9).map(value => interpolateYlOrRd(colorScale(value)));
     return `#808080, ${stops.join(", ")}`;
   };
 
@@ -171,7 +171,7 @@ const IcreActivityUMAP = <T extends PointMetadata>({ accession, selected, assay,
               <>
                 <Typography>Z-score</Typography>
                 <Box sx={{ display: "flex", alignItems: "center", width: "200px" }}>
-                  <Typography sx={{ mr: 1 }}>0</Typography>
+                  <Typography sx={{ mr: 1 }}>{'< 0'}</Typography>
                   <Box
                     sx={{
                       height: "16px",

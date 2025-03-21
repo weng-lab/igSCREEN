@@ -62,7 +62,7 @@ const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selected, ...re
   );
 
   const generateGradient = (maxValue: number) => {
-    const stops = generateDomain(maxValue, 8).map(value => interpolateYlOrRd(colorScale(value)));
+    const stops = generateDomain(maxValue, 9).map(value => interpolateYlOrRd(colorScale(value)));
     return `#808080, ${stops.join(", ")}`;
   };
 
