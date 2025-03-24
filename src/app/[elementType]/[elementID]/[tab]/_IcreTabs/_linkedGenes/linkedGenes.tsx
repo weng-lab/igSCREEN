@@ -4,7 +4,17 @@ import {
   Grid2 as Grid,
   Typography,
 } from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridColDef,
+  GridToolbar,
+  GridToolbarColumnsButton,
+  GridToolbarContainer,
+  GridToolbarExport,
+  GridToolbarFilterButton,
+  GridToolbarDensitySelector,
+  GridToolbarQuickFilter,
+} from "@mui/x-data-grid";
 import useLinkedGenes, { LinkedGeneInfo } from "common/hooks/useLinkedGenes";
 import {
   ChIAPETCols,
@@ -12,6 +22,13 @@ import {
   eQTLCols,
   IntactHiCLoopsCols,
 } from "./columns";
+import DataGridToolbar from "common/components/dataGridToolbar";
+
+type TableDef = {
+  name: string;
+  data: LinkedGeneInfo[];
+  columns: GridColDef<LinkedGeneInfo>[];
+};
 
 export default function LinkedGenes({ accession }: { accession: string }) {
   const { data, loading, error } = useLinkedGenes(accession);
@@ -22,21 +39,33 @@ export default function LinkedGenes({ accession }: { accession: string }) {
   // make types for the data
   const HiCLinked = data
     .filter((x: LinkedGeneInfo) => x.assay === "Intact-HiC")
-    .map((x: LinkedGeneInfo, index: number) => ({ ...x, id: index.toString() }));
+    .map((x: LinkedGeneInfo, index: number) => ({
+      ...x,
+      id: index.toString(),
+    }));
   const ChIAPETLinked = data
     .filter(
       (x: LinkedGeneInfo) =>
         x.assay === "RNAPII-ChIAPET" || x.assay === "CTCF-ChIAPET"
     )
-    .map((x: LinkedGeneInfo, index: number) => ({ ...x, id: index.toString() }));
+    .map((x: LinkedGeneInfo, index: number) => ({
+      ...x,
+      id: index.toString(),
+    }));
   const crisprLinked = data
     .filter((x: LinkedGeneInfo) => x.method === "CRISPR")
-    .map((x: LinkedGeneInfo, index: number) => ({ ...x, id: index.toString() }));
+    .map((x: LinkedGeneInfo, index: number) => ({
+      ...x,
+      id: index.toString(),
+    }));
   const eqtlLinked = data
     .filter((x: LinkedGeneInfo) => x.method === "eQTLs")
-    .map((x: LinkedGeneInfo, index: number) => ({ ...x, id: index.toString() }));
+    .map((x: LinkedGeneInfo, index: number) => ({
+      ...x,
+      id: index.toString(),
+    }));
 
-  const tables = [
+  const tables: TableDef[] = [
     { name: "Intact Hi-C Loops", data: HiCLinked, columns: IntactHiCLoopsCols },
     {
       name: "ChIA-PET Interactions",
@@ -50,6 +79,7 @@ export default function LinkedGenes({ accession }: { accession: string }) {
     },
     { name: "eQTLs", data: eqtlLinked, columns: eQTLCols },
   ];
+
   return (
     <Grid container spacing={2} flexDirection="column" sx={{ width: "100%" }}>
       <Grid size={{ xs: 12, md: 12 }}>
@@ -70,7 +100,7 @@ export default function LinkedGenes({ accession }: { accession: string }) {
                 getRowHeight={() => "auto"}
                 getRowId={(row: LinkedGeneInfo) => row.id}
                 sx={{ width: "100%", height: "auto" }}
-                slots={{ toolbar: CustomToolbar }}
+                slots={{ toolbar: DataGridToolbar }}
                 slotProps={{ toolbar: { title: table.name } }}
                 initialState={{
                   pagination: {
@@ -99,23 +129,5 @@ export default function LinkedGenes({ accession }: { accession: string }) {
         )}
       </Grid>
     </Grid>
-  );
-}
-
-function CustomToolbar({ title }: { title: string }) {
-  return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        paddingTop: 10,
-      }}
-    >
-      <Typography variant="h4" pl={1}>
-        {title}
-      </Typography>
-      <GridToolbar showQuickFilter title="Title" />
-    </div>
   );
 }
