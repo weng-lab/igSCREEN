@@ -4,31 +4,33 @@ import { AxisLeft } from "@visx/axis";
 import { useMemo } from "react";
 import { scaleLinear } from "@visx/scale";
 import { Group } from "@visx/group";
-import { experimentInfo, cellTypeStaticInfo } from "../../common/consts"
 import { defaultStyles as defaultTooltipStyles, useTooltip, TooltipWithBounds } from '@visx/tooltip';
 import { Text } from '@visx/text';
 import { MouseEvent } from "react";
-import { getCellColor } from "../celllineage/utils";
-import { CellName, CellQueryValue } from "../celllineage/types";
 import { toScientificNotation } from "../../common/utils";
+import { Box, Typography } from "@mui/material";
+import { getCellCategoryDisplayname, getCellCategoryColor } from "common/utility";
 
 type Props = {
   width: number;
   height: number;
   data: LDSCDataPoint[];
   pValCutoff: number;
-  stimView: "S" | "U" | "B"
+  stimView: "S" | "U" | "B",
+  legendEntries: {label: string, value: string, color: string}[]
 };
 
 interface TooltipData {
-  cell: string,
+  biosampleid: string,
+  lineage: string,
+  celltype: string,
   enrichment: number,
   enrichmentP: number,
   enrichmentStdErr: number,
   percentageSNPs: number,
 }
 
-export default function LDSCplot({ width, height, data, pValCutoff, stimView }: Props) {
+export default function LDSCplot({ width, height, data, pValCutoff, stimView, legendEntries }: Props) {
   const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip, updateTooltip } = useTooltip<TooltipData>();
 
   const handleHover = (event: MouseEvent<SVGPolygonElement | SVGCircleElement, globalThis.MouseEvent>, point: LDSCDataPoint) => {
@@ -36,7 +38,9 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
       tooltipTop: event.pageY,
       tooltipLeft: event.pageX,
       tooltipData: {
-        cell: experimentInfo[point.celltype].description,
+        biosampleid: point.biosampleid,
+        lineage: getCellCategoryDisplayname(point.lineage),
+        celltype: point.celltype,
         enrichment: point.enrichment,
         enrichmentP: point.enrichment_p,
         enrichmentStdErr: point.enrichment_std_error,
@@ -45,25 +49,25 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
     })
     event.currentTarget.setAttribute("stroke", "black") //Outline point
     event.currentTarget.setAttribute("transform", "scale(1.5)") //Grow point
-    document.getElementById(`stdErr-${point.celltype}`).setAttribute("stroke", "black") //Show std error bars
+    document.getElementById(`stdErr-${point.expvalue}`).setAttribute("stroke", "black") //Show std error bars
   }
 
   const handleLeaveHover = (event: MouseEvent<SVGPolygonElement | SVGCircleElement, globalThis.MouseEvent>, point: LDSCDataPoint) => {
     hideTooltip()
     event.currentTarget.setAttribute("stroke", "none")
     event.currentTarget.setAttribute("transform", "scale(1)")
-    document.getElementById(`stdErr-${point.celltype}`).setAttribute("stroke", "none")
+    document.getElementById(`stdErr-${point.expvalue}`).setAttribute("stroke", "none")
   }
-
-  const orderedData = [...data]
-    .sort((a, b) => {
+  //TODO: Check if data needs to ordered
+  const orderedData = [...data]   
+    /*.sort((a, b) => {
       if (experimentInfo[a.celltype] && experimentInfo[b.celltype]) {
         return (experimentInfo[a.celltype].order - experimentInfo[b.celltype].order)
       } else {
-        console.error("Couldn't find" + a.celltype + "or" + b.celltype)
+        console.log("Couldn't find" + a.celltype + "or" + b.celltype)
         return 0
       }
-    })
+    })*/
 
   const spaceForAxis = 70
   const paddingRight = 20
@@ -110,21 +114,21 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
             
           />
           {orderedData.map((point, i) => {
-            const stimulated = point.celltype.split("-")[point.celltype.split("-").length - 1] === "S"
+            const stimulated = point.stimulation === "stimulated"
             // Passes p-val cutoff and is correct stimulation
             const toBeShown = point.enrichment_p <= pValCutoff && (stimView === "S" && stimulated || stimView === "U" && !stimulated || stimView === "B")
             const commonProps = {
               opacity: toBeShown ? 1 : 0.1, //Sharply decrease opacity if not to be shown
-              fill: getCellColor(point.celltype.split('-')[1] as CellQueryValue | CellName),
+              fill:  getCellCategoryColor(point.lineage),//getCellColor(point.expvalue.split('-')[1] as CellQueryValue | CellName),
               style: { transformOrigin: `${xScale(i)}px ${yScale(point.enrichment)}px` }, //Needed so that scale transforms are applied correctly
               onMouseMove: (event) => handleHover(event, point),
               onMouseLeave: (event) => handleLeaveHover(event, point)
             }
 
             return (
-              <Group key={`datapoint-${point.celltype}`}>
+              <Group key={`datapoint-${point.expvalue}`}>
                 {/* Standard error */}
-                <Group id={`stdErr-${point.celltype}`}>
+                <Group id={`stdErr-${point.expvalue}`}>
                   <Line
                     from={{ x: xScale(i), y: yScale(point.enrichment - point.enrichment_std_error) }}
                     to={{ x: xScale(i), y: yScale(point.enrichment + point.enrichment_std_error) }}
@@ -159,7 +163,7 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
             )
           })}
         </Group>
-        <Text x={width - 10} y={20} textAnchor="end" fontSize={12}>* Colors represent cell type, hovering shows standard error</Text>
+        <Text x={width - 10} y={20} textAnchor="end" fontSize={12}>* Colors represent lineage, hovering shows standard error</Text>
       </svg>
       {tooltipOpen && tooltipData && (
         <TooltipWithBounds
@@ -168,7 +172,9 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
           style={{ ...defaultTooltipStyles, backgroundColor: '#283238', color: 'white' }}
         >
           <div style={{ maxWidth: "20rem" }}>
-            <p><b>Cell:</b> {tooltipData.cell}</p>
+            <p><b>Biosample:</b> {tooltipData.biosampleid}</p>
+            <p><b>Lineage:</b> {tooltipData.lineage}</p>
+            <p><b>Celltype:</b> {tooltipData.celltype}</p>
           </div>
           <br />
           <div>
@@ -185,6 +191,24 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView }: 
           </div>
         </TooltipWithBounds>
       )}
+      {legendEntries && legendEntries.length >0 &&
+          <Box display="flex" justifyContent="space-between">
+          {Array.from({ length: 5 }).map((_, colIndex) => (
+            <Box key={colIndex} display="flex" flexDirection="column" gap={1}>
+              {legendEntries
+                .filter((_, idx) => idx % 5 === colIndex)
+                .map((entry, i) => (
+                  <Box key={i} display="flex" alignItems="center" gap={1}>
+                    <Box sx={{ width: '12px', height: '12px', backgroundColor: entry.color }} />
+                    <Typography variant="body2">
+                      {entry.label} : {entry.value}
+                    </Typography>
+                  </Box>
+                ))}
+            </Box>
+          ))}
+        </Box>
+        }
     </div>
   )
 }
