@@ -28,6 +28,11 @@ const pageLinks = [
   {
     pageName: "About",
     link: "/about",
+    dropdownID: "0",
+    subPages: [
+      { pageName: "Overview", link: "/about" },
+      { pageName: "Contact Us", link: "/about#contact-us" },
+    ],
   },
   {
     pageName: "Portals",
