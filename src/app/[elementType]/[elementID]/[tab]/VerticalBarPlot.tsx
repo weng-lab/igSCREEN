@@ -30,6 +30,14 @@ export interface BarPlotProps<T> {
   topAxisLabel?: string;
   onBarClicked?: (bar: BarData<T>) => void;
   TooltipContents?: (bar: BarData<T>) => React.ReactNode
+  /**
+   * Shows dotted line at xScale(1.645)
+   */
+  show95thPercentileLine?: boolean
+  /**
+   * If true, will cutoff negative values in the chart at -0.5, and add a 
+   */
+  cutoffNegativeValues?: boolean
 }
 
 const VerticalBarPlot = <T,>({
@@ -37,7 +45,9 @@ const VerticalBarPlot = <T,>({
   SVGref,
   topAxisLabel,
   onBarClicked,
-  TooltipContents
+  TooltipContents,
+  show95thPercentileLine = false,
+  cutoffNegativeValues = false
 }: BarPlotProps<T>) => {
   const [spaceForLabel, setSpaceForLabel] = useState(200)
   const [labelSpaceDecided, setLabelSpaceDecided] = useState(false)
@@ -94,6 +104,7 @@ const VerticalBarPlot = <T,>({
 
   const maxValue = useMemo(() => Math.max(...data.map((d) => d.value)), [data])
   const minValue = useMemo(() => Math.min(...data.map((d) => d.value)), [data])
+  const negativeCutoff = -0.5
 
   // Scales
   const yScale = useMemo(() =>
@@ -105,9 +116,13 @@ const VerticalBarPlot = <T,>({
 
   const xScale = useMemo(() =>
     scaleLinear<number>({
-      domain: [Math.min(0, minValue), Math.max(0, maxValue)], //always include 0 as anchor if values do not cross 0
+      domain: [
+        // If cutting off negative values, the lower bound is max(negativeCutoff, minValue).
+        cutoffNegativeValues ? Math.min(0, Math.max(minValue, negativeCutoff)) : Math.min(0, minValue), 
+        Math.max(0, maxValue)
+      ], // always include 0 as anchor if values do not cross 0
       range: [0, Math.max(ParentWidth - spaceForCategory - spaceForLabel, 0)],
-    }), [minValue, maxValue, ParentWidth, spaceForLabel])
+    }), [cutoffNegativeValues, minValue, negativeCutoff, maxValue, ParentWidth, spaceForLabel])
 
   //This feels really dumb but I couldn't figure out a better way to have the labels not overflow sometimes - JF 11/8/24
   //Whenever xScale is adjusted, it checks to see if any of the labels overflow the container, and if so
@@ -174,12 +189,24 @@ const VerticalBarPlot = <T,>({
         >
           <Group left={spaceForCategory} top={spaceForTopAxis} >
             {/* Top Axis with Label */}
-            <AxisTop scale={xScale} top={0} label={topAxisLabel} labelProps={{ dy: -5, fontSize: 16, fontFamily: fontFamily }} numTicks={ParentWidth < 600 ? 4 : undefined} />
+            <AxisTop
+              scale={xScale}
+              top={0}
+              label={topAxisLabel}
+              labelProps={{ dy: -5, fontSize: 14, fontFamily: fontFamily }}
+              numTicks={ParentWidth < 600 ? 4 : undefined}
+              tickFormat={(value: number, index: number) => {
+                if (index === 0 && cutoffNegativeValues && value === negativeCutoff) {
+                  return "Low Signal"
+                } else return value.toString()
+              }}
+            />
             {data.map((d, i) => {
+              const pointValue = cutoffNegativeValues ? Math.max(d.value, negativeCutoff) : d.value
               const barHeight = yScale.bandwidth()
-              const barWidth = Math.abs(xScale(d.value) - xScale(0))
+              const barWidth = Math.abs(xScale(pointValue) - xScale(0))
               const barY = yScale(d.id)
-              const barX = d.value > 0 ? xScale(0) : xScale(d.value)
+              const barX = pointValue > 0 ? xScale(0) : xScale(pointValue)
               return (
                 <Group
                   key={i}
@@ -208,6 +235,7 @@ const VerticalBarPlot = <T,>({
                       width={barWidth}
                       height={barHeight}
                       fill={d.color || "black"}
+                      opacity={cutoffNegativeValues && pointValue === negativeCutoff ? 0.4 : 1}
                       rx={3}
                     />
                     {/* Value label next to the bar */}
@@ -225,6 +253,23 @@ const VerticalBarPlot = <T,>({
                 </Group>
               );
             })}
+            <line
+              x1={xScale(0)}
+              x2={xScale(0)}
+              y1={0}
+              y2={dataHeight}
+              stroke="#000000"
+            />
+            {show95thPercentileLine && xScale.domain()[1] > 1.645 &&
+              <line
+                x1={xScale(1.645)}
+                x2={xScale(1.645)}
+                y1={0}
+                y2={dataHeight}
+                stroke="#000000"
+                strokeDasharray={'5 7'}
+              />
+            }
           </Group>
         </svg>
       }

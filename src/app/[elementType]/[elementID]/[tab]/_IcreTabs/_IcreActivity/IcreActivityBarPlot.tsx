@@ -39,6 +39,8 @@ const IcreActivityBarPlot = ({accession, selected, assay, onBarClicked}: IcreAct
       data={plotData}
       onBarClicked={onBarClicked}
       topAxisLabel={`${accession} Activity`}
+      show95thPercentileLine
+      cutoffNegativeValues
     />
   )
 }
