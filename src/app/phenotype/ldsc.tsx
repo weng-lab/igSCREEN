@@ -11,32 +11,6 @@ import { toScientificNotation } from "../../common/utils";
 import { Box, Typography } from "@mui/material";
 import { getCellCategoryDisplayname, getCellCategoryColor } from "common/utility";
 
-
-export const cellCategoryColors = {
-  Bcells: "#078fff",
-  Bulk_Tcells: "#e06666",
-  CD4_Tcells: "#990000",
-  CD8_Tcells: "#f6b26b",
-  Erythroblasts: "#684fda",
-  Leukemia: "#1ab19a",
-  Myeloid: "#a64d79",
-  NK: "#93c47d",
-  Progenitors: "#d3b2ce",
-  gd_Tcells: "#ff9900"
-}
-export const cellCategoryDisplaynames = {
-  Bcells: "B Cells",
-  Bulk_Tcells: "Bulk T Cells",
-  CD4_Tcells: "CD4 T Cells",
-  CD8_Tcells: "CD8 T Cells",
-  Erythroblasts: "Erythroblasts",
-  Leukemia: "Leukemic Cells",
-  Myeloid: "Myeloid Cells",
-  NK: "Natural Killer Cells",
-  Progenitors: "Progenitor Cells",
-  gd_Tcells: "Gamma Delta T Cells"
-}
-
 type Props = {
   width: number;
   height: number;
