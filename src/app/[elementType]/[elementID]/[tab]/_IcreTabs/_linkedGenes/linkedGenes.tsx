@@ -106,6 +106,7 @@ export default function LinkedGenes({ accession }: { accession: string }) {
             </Box>
           ) : (
             <Typography
+              key={index}
               variant="h6"
               pl={1}
               sx={{
