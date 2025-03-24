@@ -4,14 +4,14 @@ import {
   Grid2 as Grid,
   Typography,
 } from "@mui/material";
-import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import useLinkedGenes, { LinkedGeneInfo } from "common/hooks/useLinkedGenes";
 import {
   ChIAPETCols,
   CrisprFlowFISHCols,
   eQTLCols,
   IntactHiCLoopsCols,
 } from "./columns";
-import useLinkedGenes, { LinkedGeneInfo } from "common/hooks/useLinkedGenes";
 
 export default function LinkedGenes({ accession }: { accession: string }) {
   const { data, loading, error } = useLinkedGenes(accession);
@@ -64,7 +64,7 @@ export default function LinkedGenes({ accession }: { accession: string }) {
               key={index}
             >
               <DataGrid
-                density="comfortable"
+                density={"compact"}
                 columns={table.columns}
                 rows={table.data}
                 getRowHeight={() => "auto"}

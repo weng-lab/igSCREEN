@@ -1,9 +1,13 @@
-import Typography, { TypographyOwnProps, TypographyPropsVariantOverrides } from "@mui/material/Typography";
+import Typography, {
+  TypographyOwnProps,
+  TypographyPropsVariantOverrides,
+} from "@mui/material/Typography";
 
 import { Launch } from "@mui/icons-material";
-import { OverridableStringUnion } from "@mui/types";
 import { Link } from "@mui/material";
 import { Variant } from "@mui/material/styles/createTypography";
+import { OverridableStringUnion } from "@mui/types";
+import { LinkedGeneInfo } from "common/hooks/useLinkedGenes";
 
 export const CreateLink: React.FC<{
   linkPrefix: string;
@@ -40,26 +44,54 @@ export const CreateLink: React.FC<{
 };
 
 export const GeneLink: React.FC<{
-  assembly: string;
   geneName: string;
 }> = (props) => {
-  return <CreateLink linkPrefix={`https://www.encodeproject.org/genes/${props.assembly}/${props.geneName}`} label={props.geneName} />
-}
+  return (
+    <CreateLink
+      linkPrefix={`/gene/`}
+      linkArg={props.geneName}
+      underline="hover"
+      label={props.geneName}
+    />
+  );
+};
 
 /**
  * @param num Number to convert to Sci Notation
  * @param variant MUI Typography Variant to be used
  * @param sigFigs Number of desired significant figures
- * @returns 
+ * @returns
  */
-export function toScientificNotationElement(num: number, sigFigs: number, typographyProps?: TypographyOwnProps) {
-  if (num > 0.01) { return <Typography {...typographyProps}>{num.toFixed(2)}</Typography> }
+export function toScientificNotationElement(
+  num: number,
+  sigFigs: number,
+  typographyProps?: TypographyOwnProps
+) {
+  if (num > 0.01) {
+    return <Typography {...typographyProps}>{num.toFixed(2)}</Typography>;
+  }
 
   // Convert the number to scientific notation using toExponential
   let scientific = num.toExponential(sigFigs);
-  let [coefficient, exponent] = scientific.split('e');
-  
+  let [coefficient, exponent] = scientific.split("e");
+
   return (
-    <Typography {...typographyProps}>{coefficient}&nbsp;×&nbsp;10<sup>{exponent}</sup></Typography>
-  )
+    <Typography {...typographyProps}>
+      {coefficient}&nbsp;×&nbsp;10<sup>{exponent}</sup>
+    </Typography>
+  );
 }
+
+/**
+ * Formats the gene type for the linked genes tab.
+ */
+export const GeneTypeFormatter = (value: string, row: LinkedGeneInfo) =>
+  row.genetype
+    ? row.genetype === "lncRNA"
+      ? row.genetype
+      : row.genetype
+          .replaceAll("_", " ")
+          .split(" ")
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ")
+    : value;
