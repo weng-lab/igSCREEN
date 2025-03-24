@@ -19,7 +19,6 @@ const IcreActivityUMAP = <T extends PointMetadata>({ accession, selected, assay,
 
   const { data, loading, error } = useIcreActivity({ accession, assay })
 
-
   const handleColorSchemeChange = (
     event: SelectChangeEvent,
   ) => {

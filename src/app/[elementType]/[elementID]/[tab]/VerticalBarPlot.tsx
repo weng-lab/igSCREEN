@@ -16,6 +16,9 @@ export interface BarData<T> {
   category: string;
   label: string;
   value: number;
+  /**
+   * Unique ID for the data point. This is a string and not number since scaleBand needs a string[] for it's domain
+   */
   id: string;
   color?: string;
   metadata?: T;
@@ -75,12 +78,22 @@ const VerticalBarPlot = <T,>({
 
   const { parentRef, width: ParentWidth } = useParentSize({ debounceTime: 150 });
 
+  // Y padding
   const spaceForTopAxis = 50
   const spaceOnBottom = 20
+
+  // X padding
   const spaceForCategory = 120
   const gapBetweenTextAndBar = 10
+
+  /**
+   * @todo why is this not working as expected. Was 30 in SCREEN, why does it need to be 15 here?
+   */
   const dataHeight = data.length * 15
   const totalHeight = dataHeight + spaceForTopAxis + spaceOnBottom
+
+  const maxValue = useMemo(() => Math.max(...data.map((d) => d.value)), [data])
+  const minValue = useMemo(() => Math.min(...data.map((d) => d.value)), [data])
 
   // Scales
   const yScale = useMemo(() =>
@@ -92,9 +105,9 @@ const VerticalBarPlot = <T,>({
 
   const xScale = useMemo(() =>
     scaleLinear<number>({
-      domain: [0, Math.max(...data.map((d) => d.value))],
+      domain: [Math.min(0, minValue), Math.max(0, maxValue)], //always include 0 as anchor if values do not cross 0
       range: [0, Math.max(ParentWidth - spaceForCategory - spaceForLabel, 0)],
-    }), [data, spaceForLabel, ParentWidth])
+    }), [minValue, maxValue, ParentWidth, spaceForLabel])
 
   //This feels really dumb but I couldn't figure out a better way to have the labels not overflow sometimes - JF 11/8/24
   //Whenever xScale is adjusted, it checks to see if any of the labels overflow the container, and if so
@@ -163,10 +176,10 @@ const VerticalBarPlot = <T,>({
             {/* Top Axis with Label */}
             <AxisTop scale={xScale} top={0} label={topAxisLabel} labelProps={{ dy: -5, fontSize: 16, fontFamily: fontFamily }} numTicks={ParentWidth < 600 ? 4 : undefined} />
             {data.map((d, i) => {
-              const barHeight = yScale.bandwidth();
-              const barWidth = xScale(d.value) ?? 0;
-              const barY = yScale(d.id);
-              const barX = 0;
+              const barHeight = yScale.bandwidth()
+              const barWidth = Math.abs(xScale(d.value) - xScale(0))
+              const barY = yScale(d.id)
+              const barX = d.value > 0 ? xScale(0) : xScale(d.value)
               return (
                 <Group
                   key={i}
