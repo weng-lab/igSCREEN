@@ -7,13 +7,6 @@ import {
 import {
   DataGrid,
   GridColDef,
-  GridToolbar,
-  GridToolbarColumnsButton,
-  GridToolbarContainer,
-  GridToolbarExport,
-  GridToolbarFilterButton,
-  GridToolbarDensitySelector,
-  GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 import useLinkedGenes, { LinkedGeneInfo } from "common/hooks/useLinkedGenes";
 import {
