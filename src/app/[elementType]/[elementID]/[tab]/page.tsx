@@ -10,6 +10,7 @@ import GeneEQTLs from "./_GeneTabs/GeneEQTLs"
 import GeneExpression from "./_GeneTabs/_GeneExpression/GeneExpression"
 // import IcreActivity from "./_IcreTabs/IcreActivity"
 import IcreActivity from "./_IcreTabs/_IcreActivity/IcreActivity"
+import LinkedGenes from "./_IcreTabs/_linkedGenes/linkedGenes"
 
 export default function DetailsPage({
   params: { elementType, elementID, tab },
@@ -55,7 +56,6 @@ export default function DetailsPage({
       color: "red",
       id: "test",
     }
-    console.log("highlight", highlight);
     return <GenomeBrowserView assembly="GRCh38" highlights={[highlight]} coordinates={elementMetadata.coordinates} gene={elementMetadata.__typename === "Gene" ? elementMetadata.name : undefined} />
   }
 
@@ -94,7 +94,7 @@ export default function DetailsPage({
       const icreData = elementMetadata as useElementMetadataReturn<"icre">["data"]
 
       switch (tab) {
-        case ("linked"): return <p>Viewing {tab} for {elementID} in {elementType} Portal</p>
+        case ("linked"): return <LinkedGenes accession={icreData.accession}/>
         case ("activity"): return <IcreActivity accession={icreData.accession}/>
       }
     }
