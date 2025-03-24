@@ -9,6 +9,7 @@ import SnpEQTLs from "./_SnpTabs/SnpEQTLs"
 import GeneEQTLs from "./_GeneTabs/GeneEQTLs"
 import GeneExpression from "./_GeneTabs/_GeneExpression/GeneExpression"
 import IcreActivity from "./_IcreTabs/IcreActivity"
+import LinkedGenes from "./_IcreTabs/_linkedGenes/linkedGenes"
 
 export default function DetailsPage({
   params: { elementType, elementID, tab },
@@ -93,7 +94,7 @@ export default function DetailsPage({
       const icreData = elementMetadata as useElementMetadataReturn<"icre">["data"]
 
       switch (tab) {
-        case ("linked"): return <p>Viewing {tab} for {elementID} in {elementType} Portal</p>
+        case ("linked"): return <LinkedGenes accession={icreData.accession}/>
         case ("activity"): return <IcreActivity accession={icreData.accession}/>
       }
     }
