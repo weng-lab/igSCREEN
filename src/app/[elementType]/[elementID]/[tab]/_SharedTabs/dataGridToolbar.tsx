@@ -6,7 +6,7 @@ import {
 
 import { Typography } from "@mui/material";
 
-export default function DataGridToolbar({ title }: { title: string }) {
+export default function DataGridToolbar({ title, variant = "h6" }: { title: string, variant?: "h4" | "h6" }) {
   return (
     <div
       style={{
@@ -16,7 +16,7 @@ export default function DataGridToolbar({ title }: { title: string }) {
         paddingTop: 10,
       }}
     >
-      <Typography variant="h4" pl={1}>
+      <Typography variant={variant} pl={1}>
         {title}
       </Typography>
       <GridToolbarContainer>

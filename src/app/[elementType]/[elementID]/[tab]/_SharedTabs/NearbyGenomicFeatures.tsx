@@ -1,12 +1,20 @@
-"use client"
-import React from "react"
-import { useQuery } from "@apollo/client"
-import Grid from "@mui/material/Grid2"
-import { Link as MuiLink, Skeleton } from "@mui/material"
-import { DataTable } from "@weng-lab/psychscreen-ui-components"
-import { gql } from "types/generated/gql"
-import { GenomicElementType, GenomicRange } from "types/globalTypes"
-import Link from "next/link"
+"use client";
+import React from "react";
+import { useQuery } from "@apollo/client";
+import Grid from "@mui/material/Grid2";
+import { Link as MuiLink, Skeleton, Typography } from "@mui/material";
+import { DataTable } from "@weng-lab/psychscreen-ui-components";
+import { gql } from "types/generated/gql";
+import { GenomicElementType, GenomicRange } from "types/globalTypes";
+import Link from "next/link";
+import {
+  calcDistToTSS,
+  calcDistRegionToPosition,
+  calcDistRegionToRegion,
+  NearbyGenomicFeaturesProps,
+} from "./utils";
+import DataGridToolbar from "./dataGridToolbar";
+import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 
 export const NEARBY_GENOMIC_FEATURES_QUERY = gql(`
   query nearbyGenomicFeatures($coordinates: [GenomicRangeInput!], $chromosome: String, $start: Int, $end: Int, $version: Int) {
@@ -42,206 +50,219 @@ export const NEARBY_GENOMIC_FEATURES_QUERY = gql(`
       }
     }
   }
-`)
+`);
 
-/**
- * 
- * @param region {chrom, start, end}
- * @param transcripts 
- * @returns distance to nearest TSS from any point in inputted region. 
- */
-function calcDistToTSS(region: GenomicRange, transcripts: { id: string, coordinates: GenomicRange }[], strand: '+' | '-'): number {
-  const distances: number[] = transcripts.map((transcript) => calcDistRegionToPosition(
-    region.start,
-    region.end,
-    "closest",
-    strand === "+" ? transcript.coordinates.start : transcript.coordinates.end
-  ))
-  return Math.min(...distances)
-}
-
-/**
- * 
- * @param start Start of Region
- * @param end End of Region
- * @param anchor The anchor of region to be used: start, end, middle, or closest (finds minimum of all anchors)
- * @param point Point to Find Distance to
- * @returns The distance from the anchor specified to the position
- */
-function calcDistRegionToPosition(start: number, end: number, anchor: 'closest' | 'start' | 'end' | 'middle', point: number): number {
-  const distToStart = Math.abs(start - point)
-  const distToEnd = Math.abs(end - point)
-  const distToMiddle = Math.abs(((start + end) / 2) - point)
-
-  if (start <= point && point <= end) {
-    return 0
-  }
-
-  switch (anchor) {
-    case ('start'): return distToStart
-    case ('end'): return distToEnd
-    case ('middle'): return distToMiddle
-    case ('closest'): return Math.min(distToStart, distToEnd, distToMiddle)
-  }
-}
-
-/**
- * 
- * @param coord1 
- * @param coord2 
- * @returns the smallest distance from any point in either region
- */
-export function calcDistRegionToRegion(coord1: { start: number, end: number }, coord2: { start: number, end: number }): number {
-  if (coord1.end < coord2.start) {
-    return coord2.start - coord1.end;
-  } else if (coord2.end < coord1.start) {
-    return coord1.start - coord2.end;
-  } else {
-    return 0;
-  }
-}
-
-export type NearbyGenomicFeaturesProps = {
-  coordinates: GenomicRange,
-  elementType: GenomicElementType,
-  elementID: string,
-}
-
-const NearbyGenomicFeatures = ({ coordinates, elementType, elementID }: NearbyGenomicFeaturesProps) => {
-
-  const { loading, data, error } = useQuery(
-    NEARBY_GENOMIC_FEATURES_QUERY,
-    {
-      variables:
-      {
-        //The coordinates need to be repeated twice since the nested queries take different inputs
-        coordinates: {
-          chromosome: coordinates.chromosome,
-          start: coordinates.start - 1000000,
-          end: coordinates.end + 1000000,
-        },
+const NearbyGenomicFeatures = ({
+  coordinates,
+  elementType,
+  elementID,
+}: NearbyGenomicFeaturesProps) => {
+  const { loading, data, error } = useQuery(NEARBY_GENOMIC_FEATURES_QUERY, {
+    variables: {
+      //The coordinates need to be repeated twice since the nested queries take different inputs
+      coordinates: {
         chromosome: coordinates.chromosome,
         start: coordinates.start - 1000000,
         end: coordinates.end + 1000000,
-        version: 29
       },
-    }
-  )
+      chromosome: coordinates.chromosome,
+      start: coordinates.start - 1000000,
+      end: coordinates.end + 1000000,
+      version: 29,
+    },
+  });
 
-  const genes = data?.gene.map((gene) => {
-    return {
-      ...gene,
-      distance: calcDistToTSS(coordinates, gene.transcripts, gene.strand as "+" | "-")
-    }
-  }).filter(gene => {
-    if (elementType === "gene") {
-      return gene.name !== elementID
-    } else return true
-  })
+  const genes = data?.gene
+    .map((gene) => {
+      return {
+        ...gene,
+        distance: calcDistToTSS(
+          coordinates,
+          gene.transcripts,
+          gene.strand as "+" | "-"
+        ),
+      };
+    })
+    .filter((gene) => {
+      if (elementType === "gene") {
+        return gene.name !== elementID;
+      } else return true;
+    });
 
-  const iCREs = data?.iCREQuery.map((iCRE) => {
-    return {
-      ...iCRE,
-      distance: calcDistRegionToRegion(coordinates, iCRE.coordinates),
-    }
-  }).filter(iCRE => {
-    if (elementType === "icre") {
-      return iCRE.accession !== elementID
-    } else return true
-  })
+  const iCREs = data?.iCREQuery
+    .map((iCRE) => {
+      return {
+        ...iCRE,
+        distance: calcDistRegionToRegion(coordinates, iCRE.coordinates),
+      };
+    })
+    .filter((iCRE) => {
+      if (elementType === "icre") {
+        return iCRE.accession !== elementID;
+      } else return true;
+    });
 
-  const snps = data?.snpQuery.map((snp) => {
-    return {
-      ...snp,
-      distance: calcDistRegionToPosition(coordinates.start, coordinates.end, "closest", snp.coordinates.start),
-    }
-  }).filter(snp => {
-    if (elementType === "snp") {
-      return snp.id !== elementID
-    } else return true
-  })
+  const snps = data?.snpQuery
+    .map((snp) => {
+      return {
+        ...snp,
+        distance: calcDistRegionToPosition(
+          coordinates.start,
+          coordinates.end,
+          "closest",
+          snp.coordinates.start
+        ),
+      };
+    })
+    .filter((snp) => {
+      if (elementType === "snp") {
+        return snp.id !== elementID;
+      } else return true;
+    });
 
   return (
     <Grid container spacing={4}>
-      <Grid size={{ xs: 12, md: 6, xl: 4 }} >
-        {loading ?
+      <Grid size={{ xs: 12, md: 6, xl: 4 }}>
+        {loading ? (
           <Skeleton variant="rounded" width={"100%"} height={705} />
-          :
-          <DataTable
-            columns={[
-              {
-                header: "Symbol",
-                value: (row) => row.name,
-                render: (row) => <MuiLink component={Link} href={'/gene/' + row.name}><i>{row.name}</i></MuiLink>
-              },
-              {
-                header: "Distance to Nearest TSS (in bp)",
-                value: (row) => row.distance,
-                render: (row) => row.distance.toLocaleString("en-US"),
-              },
-            ]}
+        ) : (
+          <DataGrid
             rows={genes || []}
-            sortColumn={1}
-            tableTitle="Nearby Genes"
-            itemsPerPage={10}
-            searchable
-            sortDescending={true}
+            columns={
+              [
+                {
+                  field: "name",
+                  headerName: "Symbol",
+                  flex: 1,
+                  renderCell: (params) => (
+                    <MuiLink component={Link} href={"/gene/" + params.value}>
+                      <i>{params.value}</i>
+                    </MuiLink>
+                  ),
+                },
+                distanceCol
+              ] as GridColDef[]
+            }
+            getRowId={(row) => row.name}
+            initialState={{
+              sorting: {
+                sortModel: [{ field: "distance", sort: "desc" }],
+              },
+              pagination: {
+                paginationModel: { pageSize: 10 },
+              },
+            }}
+            slots={{ toolbar: DataGridToolbar }}
+            slotProps={{ toolbar: { title: "Nearby Genes" } }}
+            density="compact"
+            style={{ boxShadow: "0px 6px 12px rgba(0,0,0,0.2)" }}
           />
-        }
-      </Grid>
-      <Grid size={{ xs: 12, md: 6, xl: 4 }} >
-        {loading ?
-          <Skeleton variant="rounded" width={"100%"} height={705} />
-          :
-          <DataTable
-          columns={[
-            {
-              header: "Accession",
-              value: (row) => row.accession,
-              render: (row) => <MuiLink component={Link} href={'/icre/' + row.accession}>{row.accession}</MuiLink>
-            },
-            {
-              header: "Distance (in bp)",
-              value: (row) => row.distance,
-              render: (row) => row.distance.toLocaleString("en-US"),
-            },
-          ]}
-          rows={iCREs || []}
-          sortColumn={1}
-          tableTitle="Nearby iCREs"
-          itemsPerPage={10}
-          searchable
-          sortDescending={true}
-        />}
+        )}
       </Grid>
       <Grid size={{ xs: 12, md: 6, xl: 4 }}>
-        {loading ?
+        {loading ? (
           <Skeleton variant="rounded" width={"100%"} height={705} />
-          :
-          <DataTable
-            columns={[
-              {
-                header: "SNP ID",
-                value: (row) => row.id,
-                render: (row) => <MuiLink component={Link} href={'/snp/' + row.id}>{row.id}</MuiLink>
+        ) : (
+          <DataGrid
+            rows={iCREs || []}
+            columns={
+              [
+                {
+                  field: "accession",
+                  headerName: "Accession",
+                  flex: 1,
+                  renderCell: (params) => (
+                    <MuiLink component={Link} href={"/icre/" + params.value}>
+                      {params.value}
+                    </MuiLink>
+                  ),
+                },
+                distanceCol
+              ] as GridColDef[]
+            }
+            getRowId={(row) => row.accession}
+            initialState={{
+              sorting: {
+                sortModel: [{ field: "distance", sort: "desc" }],
               },
-              {
-                header: "Distance (in bp)",
-                value: (row) => row.distance,
-                render: (row) => row.distance.toLocaleString("en-US"),
+              pagination: {
+                paginationModel: { pageSize: 10 },
               },
-            ]}
-            sortColumn={1}
-            tableTitle="Nearby SNPs"
-            titleHoverInfo="Showing only common SNPs with allele frequency > 0.05"
+            }}
+            slots={{ toolbar: DataGridToolbar }}
+            slotProps={{ toolbar: { title: "Nearby iCREs" } }}
+            density="compact"
+            style={{ boxShadow: "0px 6px 12px rgba(0,0,0,0.2)" }}
+          />
+        )}
+      </Grid>
+      <Grid size={{ xs: 12, md: 6, xl: 4 }}>
+        {loading ? (
+          <Skeleton variant="rounded" width={"100%"} height={705} />
+        ) : (
+          <DataGrid
             rows={snps || []}
-            itemsPerPage={10}
-            searchable
-            sortDescending={true}
-          />}
+            columns={
+              [
+                {
+                  field: "id",
+                  headerName: "SNP ID",
+                  flex: 1,
+                  renderCell: (params) => (
+                    <MuiLink component={Link} href={"/snp/" + params.value}>
+                      {params.value}
+                    </MuiLink>
+                  ),
+                },
+                distanceCol,
+              ] as GridColDef[]
+            }
+            getRowId={(row) => row.id}
+            initialState={{
+              sorting: {
+                sortModel: [{ field: "distance", sort: "desc" }],
+              },
+              pagination: {
+                paginationModel: { pageSize: 10 },
+              },
+            }}
+            slots={{ toolbar: DataGridToolbar }}
+            slotProps={{ toolbar: { title: "Nearby SNPs" } }}
+            density="compact"
+            style={{ boxShadow: "0px 6px 12px rgba(0,0,0,0.2)" }}
+          />
+        )}
       </Grid>
     </Grid>
   );
+};
+
+const distanceCol: GridColDef = {
+  field: "distance",
+  headerName: "Distance (in bp)",
+  flex: 1,
+  renderCell: (params) => {
+    return params.value.toLocaleString();
+  },
+};
+
+{
+  /* <DataGrid
+density={"compact"}
+columns={table.columns}
+rows={table.data}
+getRowHeight={() => "auto"}
+getRowId={(row: LinkedGeneInfo) => row.id}
+sx={{ width: "100%", height: "auto" }}
+slots={{ toolbar: DataGridToolbar }}
+slotProps={{ toolbar: { title: table.name } }}
+initialState={{
+  pagination: {
+    paginationModel: {
+      pageSize: 5,
+    },
+  },
+}} */
 }
 
-export default NearbyGenomicFeatures
+export default NearbyGenomicFeatures;

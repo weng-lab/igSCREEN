@@ -15,7 +15,7 @@ import {
   eQTLCols,
   IntactHiCLoopsCols,
 } from "./columns";
-import DataGridToolbar from "./dataGridToolbar";
+import DataGridToolbar from "../../_SharedTabs/dataGridToolbar";
 
 type TableDef = {
   name: string;
