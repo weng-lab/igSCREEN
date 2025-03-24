@@ -22,7 +22,7 @@ import {
   eQTLCols,
   IntactHiCLoopsCols,
 } from "./columns";
-import DataGridToolbar from "common/components/dataGridToolbar";
+import DataGridToolbar from "app/[elementType]/[elementID]/[tab]/_SharedTabs/dataGridToolbar";
 
 type TableDef = {
   name: string;
