@@ -153,7 +153,7 @@ const { data: dataStudies } = useQuery(ICRE_STUDIES, { client })
           <Box>
             <Typography variant="h4">LD Score Regression by Phenotype</Typography>
           </Box>
-          <Typography>Select a phenotype to explore its heritability enrichment (calculated by LD score regression) within 305 immune cell experiments.</Typography>
+          <Typography>Select a phenotype to explore its heritability enrichment (calculated by LD score regression) within 736 immune cell experiments.</Typography>
           {LDSCStudies && LDSCStudies.length >0 && 
           <Autocomplete
             fullWidth
