@@ -69,7 +69,7 @@ const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selected, ...re
   const scatterData: Point<PointMetadata>[] = useMemo(() => {
     if (!data) return []
     
-    const isHighlighted = (x: PointMetadata) => selected.includes(x)
+    const isHighlighted = (x: PointMetadata) => selected.some(y => y.name === x.name)
 
     return data.map((x) => {
       const gradientColor = interpolateYlOrRd(colorScale(logTransform(x.value)));

@@ -17,7 +17,7 @@ const GeneExpressionBarPlot = ({name, id, selected, ...rest}: GeneExpressionBarP
     return (
       data.map((x, i) => {
         const anySelected = selected.length > 0
-        const isSelected = selected.includes(x)
+        const isSelected = selected.some(y => y.name === x.name)
         return (
           {
             category: getCellCategoryDisplayname(x.lineage),
