@@ -93,7 +93,7 @@ const VerticalBarPlot = <T,>({
   const spaceOnBottom = 20
 
   // X padding
-  const spaceForCategory = 120
+  const spaceForCategory = 130
   const gapBetweenTextAndBar = 10
 
   /**

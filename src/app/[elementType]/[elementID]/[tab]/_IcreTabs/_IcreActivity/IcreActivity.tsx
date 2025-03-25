@@ -1,8 +1,8 @@
 import TwoPaneLayout from "../../TwoPaneLayout"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { BarData } from "../../VerticalBarPlot"
 import IcreActivityTable from "./IcreActivityTable"
-import { IcreActivityAssay, UseIcreActivityReturn } from "common/hooks/useIcreActivity"
+import { IcreActivityAssay, useIcreActivity, UseIcreActivityReturn } from "common/hooks/useIcreActivity"
 import IcreActivityBarPlot from "./IcreActivityBarPlot"
 import { FormControl, FormLabel, FormControlLabel, FormGroup, Checkbox } from "@mui/material"
 import IcreActivityUMAP from "./IcreActivityUMAP"
@@ -16,12 +16,15 @@ export type PointMetadata = UseIcreActivityReturn["data"][number]
 
 export type SharedIcreActivityPlotProps = {
   selected: PointMetadata[],
-  assays: IcreActivityAssay[]
+  iCREActivitydata: UseIcreActivityReturn,
+  sortedFilteredData: PointMetadata[]
 }
 
 const IcreActivity = ({ accession }: IcreActivityProps) => {
   const [selected, setSelected] = useState<PointMetadata[]>([])
-  const [assays, setAssays] = useState<IcreActivityAssay[]>(['ATAC', 'DNase'])
+  const [sortedFilteredData, setSortedFilteredData] = useState<PointMetadata[]>([])
+
+  const iCREActivitydata = useIcreActivity({ accession, assays: ['ATAC', 'DNase'] })
 
   const handlePointsSelected = (pointsInfo: PointMetadata[]) => {
     setSelected([...selected, ...pointsInfo])
@@ -37,36 +40,17 @@ const IcreActivity = ({ accession }: IcreActivityProps) => {
     } else setSelected([...selected, bar.metadata])
   }
 
-  const handleAssayToggle = (assayToToggle: IcreActivityAssay) => {
-    if (assays.includes(assayToToggle) && assays.length > 1) {
-      setAssays(assays.filter(x => x !== assayToToggle))
-    } else if (!assays.includes(assayToToggle)) {
-      setAssays([...assays, assayToToggle])
-    }
-  }
-
-  const AssayRadioButtons = () => {
-    return (
-      <FormControl>
-        <FormLabel id='assay-radio-buttons'>Assay</FormLabel>
-        <FormGroup row>
-          <FormControlLabel control={<Checkbox checked={assays.includes('ATAC')} onChange={() => handleAssayToggle('ATAC')}/>} label="ATAC" />
-          <FormControlLabel control={<Checkbox checked={assays.includes('DNase')} onChange={() => handleAssayToggle('DNase')} />} label="DNase" />
-        </FormGroup>
-      </FormControl>
-    )
-  }
-
   return (
     <>
-      <AssayRadioButtons />
       <TwoPaneLayout
         TableComponent={
           <IcreActivityTable
             accession={accession}
             onSelectionChange={handleSelectionChange}
+            sortedFilteredData={sortedFilteredData}
+            setSortedFilteredData={setSortedFilteredData}
+            iCREActivitydata={iCREActivitydata}
             selected={selected}
-            assays={assays}
           />
         }
         plots={[
@@ -75,8 +59,9 @@ const IcreActivity = ({ accession }: IcreActivityProps) => {
             plotComponent:
               <IcreActivityBarPlot
                 accession={accession}
+                sortedFilteredData={sortedFilteredData}
+                iCREActivitydata={iCREActivitydata}
                 selected={selected}
-                assays={assays}
                 onBarClicked={handleBarClick}
               />
           },
@@ -85,7 +70,8 @@ const IcreActivity = ({ accession }: IcreActivityProps) => {
             plotComponent:
               <IcreActivityUMAP
                 accession={accession}
-                assays={assays}
+                sortedFilteredData={sortedFilteredData}
+                iCREActivitydata={iCREActivitydata}
                 selected={selected}
                 onSelectionChange={(points) => handlePointsSelected(points.map(x => x.metaData))}
               />

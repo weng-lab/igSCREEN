@@ -93,7 +93,8 @@ const GeneExpressionTable = ({name, id, selected, onSelectionChange}: GeneExpres
         <CircularProgress />
         :
         <DataGrid
-          rows={[...data].sort((a,b) => b.value - a.value)}
+          rows={data}
+          loading={loading}
           columns={columns.map(col => { return { ...col, display: 'flex' } })}
           initialState={{
             pagination: {
@@ -117,7 +118,6 @@ const GeneExpressionTable = ({name, id, selected, onSelectionChange}: GeneExpres
           checkboxSelection
           onRowSelectionModelChange={handleRowSelectionModelChange}
           rowSelectionModel={selected.map(x => x.name)}
-          disableRowSelectionOnClick
           getRowHeight={() => 'auto'}
           getRowId={(row) => row.name}
           keepNonExistentRowsSelected //needed to prevent clearing selections on changing filters

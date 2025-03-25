@@ -1,11 +1,11 @@
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from "@mui/material"
+import { Box, Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, Stack, Typography } from "@mui/material"
 import { getCellCategoryColor, getCellCategoryDisplayname } from "common/utility"
 import { useMemo, useRef, useState } from "react"
 import { interpolateYlOrRd } from "d3-scale-chromatic";
 import { Point, ScatterPlot, ChartProps } from "@weng-lab/psychscreen-ui-components"
 import { ParentSize } from "@visx/responsive"
 import { IcreActivityProps, SharedIcreActivityPlotProps, PointMetadata  } from "./IcreActivity"
-import { useIcreActivity } from "common/hooks/useIcreActivity";
+import { IcreActivityAssay, useIcreActivity } from "common/hooks/useIcreActivity";
 import { scaleLinear } from "@visx/scale";
 
 export type IcreActivityUmapProps<T> =
@@ -13,11 +13,12 @@ export type IcreActivityUmapProps<T> =
   & SharedIcreActivityPlotProps
   & Partial<ChartProps<T>>
 
-const IcreActivityUMAP = <T extends PointMetadata>({ accession, selected, assays, ...rest }: IcreActivityUmapProps<T>) => {
+const IcreActivityUMAP = <T extends PointMetadata>({ accession, selected, iCREActivitydata, ...rest }: IcreActivityUmapProps<T>) => {
   const [colorScheme, setColorScheme] = useState<'Zscore' | 'lineage'>('Zscore');
   const [showLegend, setShowLegend] = useState<boolean>(true);
+  const [assay, setAssay] = useState<'ATAC' | 'DNase' | 'Combined'>('Combined')
 
-  const { data, loading, error } = useIcreActivity({ accession, assays })
+  const {data, loading, error} = iCREActivitydata
 
   const handleColorSchemeChange = (
     event: SelectChangeEvent,
@@ -77,15 +78,15 @@ const IcreActivityUMAP = <T extends PointMetadata>({ accession, selected, assays
       const gradientColor = interpolateYlOrRd(colorScale(x.value));
 
       return {
-        x: assays.length === 2 ? x.umap_1 : assays.includes("ATAC") ? x.umap_atac_1 : x.umap_dnase_1,
-        y: assays.length === 2 ? x.umap_2 : assays.includes("ATAC") ? x.umap_atac_2 : x.umap_dnase_2,
+        x: assay === "Combined" ? x.umap_1 : assay === "ATAC" ? x.umap_atac_1 : x.umap_dnase_1,
+        y: assay === "Combined" ? x.umap_2 : assay === "ATAC" ? x.umap_atac_2 : x.umap_dnase_2,
         r: isHighlighted(x) ? 6 : 4,
         color: (isHighlighted(x) || selected.length === 0) ? ((colorScheme === 'Zscore') ? gradientColor : getCellCategoryColor(x.lineage)) : '#CCCCCC',
         shape: x.stimulation === "unstimulated" ? "circle" : "triangle" as "circle" | "triangle",
         metaData: x
       };
     }).sort((a, b) => (isHighlighted(b.metaData)) ? -1 : 0)
-  }, [data, colorScale, selected, assays, colorScheme]);
+  }, [data, colorScale, selected, assay, colorScheme]);
 
   const legendEntries = useMemo(() => {
     if (!scatterData) return [];
@@ -118,22 +119,44 @@ const IcreActivityUMAP = <T extends PointMetadata>({ accession, selected, assays
     )
   }
 
+  const AssayRadioButtons = () => {
+    return (
+      <FormControl>
+        <FormLabel id="assay-radio-buttons-group-label">Assay</FormLabel>
+        <RadioGroup
+          aria-labelledby="assay-radio-buttons-group-label"
+          name="assay-radio-buttons-group"
+          value={assay}
+          onChange={(_, value) => setAssay(value as "Combined" | "ATAC" | "DNase")}
+          row
+        >
+          <FormControlLabel value="Combined" control={<Radio />} label="Combined" />
+          <FormControlLabel value="ATAC" control={<Radio />} label="ATAC" />
+          <FormControlLabel value="DNase" control={<Radio />} label="DNase" />
+        </RadioGroup>
+      </FormControl>
+    )
+  }
+
   return (
     <Box>
-      <FormControl sx={{ mb: 2 }}>
-        <InputLabel>Color By</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={colorScheme}
-          label="Color By"
-          onChange={handleColorSchemeChange}
-          MenuProps={{disableScrollLock: true}}
-        >
-          <MenuItem value={"Zscore"}>Z-score</MenuItem>
-          <MenuItem value={"lineage"}>Lineage</MenuItem>
-        </Select>
-      </FormControl>
+      <Stack direction={"row"} spacing={2}>
+        <FormControl sx={{ mb: 2 }}>
+          <InputLabel>Color By</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={colorScheme}
+            label="Color By"
+            onChange={handleColorSchemeChange}
+            MenuProps={{ disableScrollLock: true }}
+          >
+            <MenuItem value={"Zscore"}>Z-score</MenuItem>
+            <MenuItem value={"lineage"}>Lineage</MenuItem>
+          </Select>
+        </FormControl>
+        <AssayRadioButtons />
+      </Stack>
       <Box padding={1} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, position: "relative" }} ref={graphContainerRef}>
         <ParentSize>
           {({ width, height }) => {
