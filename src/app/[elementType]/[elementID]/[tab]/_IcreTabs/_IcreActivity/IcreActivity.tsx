@@ -4,7 +4,7 @@ import { BarData } from "../../VerticalBarPlot"
 import IcreActivityTable from "./IcreActivityTable"
 import { IcreActivityAssay, UseIcreActivityReturn } from "common/hooks/useIcreActivity"
 import IcreActivityBarPlot from "./IcreActivityBarPlot"
-import { FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from "@mui/material"
+import { FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, FormGroup, Checkbox } from "@mui/material"
 import IcreActivityUMAP from "./IcreActivityUMAP"
 
 
@@ -16,12 +16,12 @@ export type PointMetadata = UseIcreActivityReturn["data"][number]
 
 export type SharedIcreActivityPlotProps = {
   selected: PointMetadata[],
-  assay: IcreActivityAssay
+  assays: IcreActivityAssay[]
 }
 
 const IcreActivity = ({ accession }: IcreActivityProps) => {
   const [selected, setSelected] = useState<PointMetadata[]>([])
-  const [assay, setAssay] = useState<IcreActivityAssay>('combined')
+  const [assays, setAssays] = useState<IcreActivityAssay[]>(['ATAC', 'DNase'])
 
   const handlePointsSelected = (pointsInfo: PointMetadata[]) => {
     setSelected([...selected, ...pointsInfo])
@@ -37,25 +37,22 @@ const IcreActivity = ({ accession }: IcreActivityProps) => {
     } else setSelected([...selected, bar.metadata])
   }
 
-  const handleSetAssay = (assay: IcreActivityAssay) => {
-    setAssay(assay)
+  const handleAssayToggle = (assayToToggle: IcreActivityAssay) => {
+    if (assays.includes(assayToToggle) && assays.length > 1) {
+      setAssays(assays.filter(x => x !== assayToToggle))
+    } else if (!assays.includes(assayToToggle)) {
+      setAssays([...assays, assayToToggle])
+    }
   }
 
   const AssayRadioButtons = () => {
     return (
       <FormControl>
         <FormLabel id='assay-radio-buttons'>Assay</FormLabel>
-        <RadioGroup
-          aria-labelledby="assay-radio-buttons"
-          defaultValue="combined"
-          row
-          value={assay}
-          onChange={(_, value) => handleSetAssay(value as IcreActivityAssay)}
-        >
-          <FormControlLabel value="combined" control={<Radio />} label="ATAC & DNase" />
-          <FormControlLabel value="ATAC" control={<Radio />} label="ATAC" />
-          <FormControlLabel value="DNase" control={<Radio />} label="DNase" />
-        </RadioGroup>
+        <FormGroup row>
+          <FormControlLabel control={<Checkbox checked={assays.includes('ATAC')} onChange={() => handleAssayToggle('ATAC')}/>} label="ATAC" />
+          <FormControlLabel control={<Checkbox checked={assays.includes('DNase')} onChange={() => handleAssayToggle('DNase')} />} label="DNase" />
+        </FormGroup>
       </FormControl>
     )
   }
@@ -69,7 +66,7 @@ const IcreActivity = ({ accession }: IcreActivityProps) => {
             accession={accession}
             onSelectionChange={handleSelectionChange}
             selected={selected}
-            assay={assay}
+            assays={assays}
           />
         }
         plots={[
@@ -79,7 +76,7 @@ const IcreActivity = ({ accession }: IcreActivityProps) => {
               <IcreActivityBarPlot
                 accession={accession}
                 selected={selected}
-                assay={assay}
+                assays={assays}
                 onBarClicked={handleBarClick}
               />
           },
@@ -88,7 +85,7 @@ const IcreActivity = ({ accession }: IcreActivityProps) => {
             plotComponent:
               <IcreActivityUMAP
                 accession={accession}
-                assay={assay}
+                assays={assays}
                 selected={selected}
                 onSelectionChange={(points) => handlePointsSelected(points.map(x => x.metaData))}
               />

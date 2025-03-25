@@ -31,11 +31,11 @@ const GET_ICRE_ACTIVITY = gql(`
   }
 `)
 
-export type IcreActivityAssay = 'ATAC' | 'DNase' | 'combined'
+export type IcreActivityAssay = 'ATAC' | 'DNase'
 
 export type UseIcreActivityParams = {
   accession: string,
-  assay: IcreActivityAssay
+  assays: IcreActivityAssay[]
 }
 
 export type UseIcreActivityReturn = {
@@ -44,7 +44,7 @@ export type UseIcreActivityReturn = {
   error: ApolloError
 }
 
-export const useIcreActivity = ({ accession, assay }: UseIcreActivityParams): UseIcreActivityReturn => {
+export const useIcreActivity = ({ accession, assays }: UseIcreActivityParams): UseIcreActivityReturn => {
 
   const { data, loading, error } = useQuery(
     GET_ICRE_ACTIVITY,
@@ -56,11 +56,7 @@ export const useIcreActivity = ({ accession, assay }: UseIcreActivityParams): Us
   );
 
   return {
-    data: data?.immuneiCREsUmapQuery.filter(x => {
-      if (assay === 'combined') {
-        return true
-      } else return x.assay === assay
-    }),
+    data: data?.immuneiCREsUmapQuery.filter(x => assays.includes(x.assay as IcreActivityAssay)),
     loading,
     error,
   }

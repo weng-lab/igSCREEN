@@ -13,11 +13,11 @@ export type IcreActivityUmapProps<T> =
   & SharedIcreActivityPlotProps
   & Partial<ChartProps<T>>
 
-const IcreActivityUMAP = <T extends PointMetadata>({ accession, selected, assay, ...rest }: IcreActivityUmapProps<T>) => {
+const IcreActivityUMAP = <T extends PointMetadata>({ accession, selected, assays, ...rest }: IcreActivityUmapProps<T>) => {
   const [colorScheme, setColorScheme] = useState<'Zscore' | 'lineage'>('Zscore');
   const [showLegend, setShowLegend] = useState<boolean>(true);
 
-  const { data, loading, error } = useIcreActivity({ accession, assay })
+  const { data, loading, error } = useIcreActivity({ accession, assays })
 
   const handleColorSchemeChange = (
     event: SelectChangeEvent,
@@ -77,15 +77,15 @@ const IcreActivityUMAP = <T extends PointMetadata>({ accession, selected, assay,
       const gradientColor = interpolateYlOrRd(colorScale(x.value));
 
       return {
-        x: assay === 'combined' ? x.umap_1 : assay === "ATAC" ? x.umap_atac_1 : x.umap_dnase_1,
-        y: assay === 'combined' ? x.umap_2 : assay === "ATAC" ? x.umap_atac_2 : x.umap_dnase_2,
+        x: assays.length === 2 ? x.umap_1 : assays.includes("ATAC") ? x.umap_atac_1 : x.umap_dnase_1,
+        y: assays.length === 2 ? x.umap_2 : assays.includes("ATAC") ? x.umap_atac_2 : x.umap_dnase_2,
         r: isHighlighted(x) ? 6 : 4,
         color: (isHighlighted(x) || selected.length === 0) ? ((colorScheme === 'Zscore') ? gradientColor : getCellCategoryColor(x.lineage)) : '#CCCCCC',
         shape: x.stimulation === "unstimulated" ? "circle" : "triangle" as "circle" | "triangle",
         metaData: x
       };
     }).sort((a, b) => (isHighlighted(b.metaData)) ? -1 : 0)
-  }, [data, colorScale, selected, assay, colorScheme]);
+  }, [data, colorScale, selected, assays, colorScheme]);
 
   const legendEntries = useMemo(() => {
     if (!scatterData) return [];

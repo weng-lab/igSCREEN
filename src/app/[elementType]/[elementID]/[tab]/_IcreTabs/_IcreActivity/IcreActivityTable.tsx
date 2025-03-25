@@ -13,9 +13,9 @@ export type IcreActivityTableProps =
     onSelectionChange: (selected: PointMetadata[]) => void,
   }
 
-const IcreActivityTable = ({accession, selected, assay, onSelectionChange}: IcreActivityTableProps) => {
+const IcreActivityTable = ({accession, selected, assays, onSelectionChange}: IcreActivityTableProps) => {
   
-  const { data, loading, error } = useIcreActivity({ accession, assay })
+  const { data, loading, error } = useIcreActivity({ accession, assays })
 
   //This is used to prevent sorting from happening when clicking on the header checkbox
   const StopPropagationWrapper = (params) =>

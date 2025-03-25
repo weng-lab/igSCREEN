@@ -11,8 +11,8 @@ export type IcreActivityBarPlotProps =
     onBarClicked: BarPlotProps<PointMetadata>["onBarClicked"]
   }
 
-const IcreActivityBarPlot = ({accession, selected, assay, onBarClicked}: IcreActivityBarPlotProps) => {
-  const { data, loading, error } = useIcreActivity({ accession, assay })
+const IcreActivityBarPlot = ({accession, selected, assays, onBarClicked}: IcreActivityBarPlotProps) => {
+  const { data, loading, error } = useIcreActivity({ accession, assays })
 
   const plotData: BarData<PointMetadata>[] = useMemo(() => {
     if (!data) return []
@@ -38,7 +38,7 @@ const IcreActivityBarPlot = ({accession, selected, assay, onBarClicked}: IcreAct
     <VerticalBarPlot
       data={plotData}
       onBarClicked={onBarClicked}
-      topAxisLabel={`${accession} ${assay === "combined" ? "ATAC & DNase" : assay} Z-scores`}
+      topAxisLabel={`${accession} ${assays.length === 2 ? "ATAC & DNase" : assays[0]} Z-scores`}
       show95thPercentileLine
       cutoffNegativeValues
     />
