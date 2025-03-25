@@ -5,6 +5,7 @@ import GeneExpressionTable from "./GeneExpressionTable"
 import GeneExpressionUMAP from "./GeneExpressionUMAP"
 import GeneExpressionBarPlot from "./GeneExpressionBarPlot"
 import { BarData } from "../../VerticalBarPlot"
+import { UseGeneExpressionReturn } from "common/hooks/useGeneExpression"
 
 
 export type GeneExpressionProps = {
@@ -12,7 +13,11 @@ export type GeneExpressionProps = {
   id: string
 }
 
-export type PointMetadata = GeneExpressionQuery["immuneRnaUmapQuery"][0]
+export type SharedGeneExpressionPlotProps = {
+  selected: PointMetadata[],
+}
+
+export type PointMetadata = UseGeneExpressionReturn["data"][number]
 
 const GeneExpression = ({ name, id }: GeneExpressionProps) => {
   const [selected, setSelected] = useState<PointMetadata[]>([])
@@ -64,7 +69,7 @@ const GeneExpression = ({ name, id }: GeneExpressionProps) => {
               <GeneExpressionUMAP
                 name={name}
                 id={id}
-                selectedPoints={selected}
+                selected={selected}
                 onSelectionChange={(points) => handlePointsSelected(points.map(x => x.metaData))}
               />
           }

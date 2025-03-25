@@ -1,81 +1,99 @@
-import { CircularProgress } from "@mui/material"
-import { getCellCategoryDisplayname } from "common/utility"
+import { CircularProgress, IconButton, Link } from "@mui/material"
+import { getCellCategoryDisplayname, getStudyLink } from "common/utility"
 import { DataGrid, GridColDef, GridRowSelectionModel, GridToolbar } from "@mui/x-data-grid"
 import { GRID_CHECKBOX_SELECTION_COL_DEF } from "@mui/x-data-grid"
-import { IcreActivityProps, PointMetadata } from "./IcreActivity"
+import { IcreActivityProps, PointMetadata, SharedIcreActivityPlotProps } from "./IcreActivity"
+import { useIcreActivity } from "common/hooks/useIcreActivity"
+import { OpenInNew } from "@mui/icons-material"
 
-export type IcreActivityTableProps = IcreActivityProps & {
-  onSelectionChange: (selected: PointMetadata[]) => void,
-  selected: PointMetadata[]
-}
+export type IcreActivityTableProps =
+  IcreActivityProps &
+  SharedIcreActivityPlotProps &
+  {
+    onSelectionChange: (selected: PointMetadata[]) => void
+  }
 
-const IcreActivityTable = ({accession, selected, onSelectionChange}: IcreActivityTableProps) => {
+const IcreActivityTable = ({accession, selected, assays, onSelectionChange}: IcreActivityTableProps) => {
   
-  /**
-   * @todo create data fetching hook for iCRE activity and put here
-   */
-  // const { data, loading, error } = useGeneExpression({ id })
-  const data = []
-  const loading = false
+  const { data, loading, error } = useIcreActivity({ accession, assays })
 
+  
   //This is used to prevent sorting from happening when clicking on the header checkbox
   const StopPropagationWrapper = (params) =>
     <div id={'StopPropogationWrapper'} onClick={(e) => e.stopPropagation()}>
       <GRID_CHECKBOX_SELECTION_COL_DEF.renderHeader {...params} />
     </div>
 
-  /**
-   * @todo change columns based on metadata of each point
-   */
-  const columns: GridColDef<PointMetadata>[] = [
-    {
-      ...GRID_CHECKBOX_SELECTION_COL_DEF, //Override checkbox column https://mui.com/x/react-data-grid/row-selection/#custom-checkbox-column
-      
-      width: 60,
-      sortable: true,
-      hideable: false,
-      renderHeader: StopPropagationWrapper
+// ensure that "field" is accessing a true property of the row
+type TypeSafeColDef<T> = GridColDef & { field: keyof T }; 
+
+const columns: TypeSafeColDef<PointMetadata>[] = [
+  {
+    ...GRID_CHECKBOX_SELECTION_COL_DEF as TypeSafeColDef<PointMetadata>, //Override checkbox column https://mui.com/x/react-data-grid/row-selection/#custom-checkbox-column
+    width: 60,
+    sortable: true,
+    hideable: false,
+    renderHeader: StopPropagationWrapper
+  },
+  {
+    field: 'biosample',
+    headerName: 'Biosample',
+    width: 200,
+  },
+  {
+    field: 'assay',
+    headerName: 'Assay'
+  },
+  {
+    field: 'value',
+    headerName: 'Z-score',
+    type: 'number',
+    valueFormatter: (value?: number) => value ? value.toFixed(2) : 'null'
+  },
+  {
+    field: 'stimulation',
+    headerName: 'Stim',
+    valueFormatter: (_, row) => row.stimulation.charAt(0).toUpperCase()
+  },
+  {
+    field: 'lineage',
+    headerName: 'Lineage',
+    width: 150,
+    valueGetter: (_, row) => getCellCategoryDisplayname(row.lineage)
+  },
+  {
+    field: 'link',
+    headerName: 'Experiment',
+    width: 80,
+    sortable: false,
+    disableColumnMenu: true,
+    renderCell: (params) => {
+      return (
+        <IconButton href={params.value} target="_blank" size="small">
+            <OpenInNew fontSize="small"/>
+          </IconButton>
+        )
+      }
     },
     {
-      field: 'description',
-      headerName: 'Biosample',
-      width: 200,
-    },
-    {
-      field: 'value',
-      headerName: 'TPM',
-      type: 'number',
-      width: 100,
-    },
-    {
-      field: 'stimulation',
-      headerName: 'Stim',
-      width: 100,
-      valueFormatter: (_, row) => row.stimulation.charAt(0).toUpperCase()
-    },
-    {
-      field: 'celltype',
-      headerName: 'Lineage',
-      width: 150,
-      valueGetter: (_, row) => getCellCategoryDisplayname(row.lineage)
-    },
-    {
-      field: 'source',
-      headerName: 'Source',
-      description: 'This column has a value getter and is not sortable.',
-      width: 90,
-    },
-    {
-      field: 'expid',
-      headerName: 'Experiment ID',
-      width: 120
+      field: 'study',
+      headerName: 'Study',
+      width: 140,
+      renderCell: (params) => {
+        return (
+          <Link href={getStudyLink(params.value)} target="_blank">
+            {params.value}
+          </Link>
+        )
+      }
     },
   ];
-
+  
   const handleRowSelectionModelChange = (ids: GridRowSelectionModel) => {
     const selectedRows = ids.map((id) => data.find((row) => row.name === id));
     onSelectionChange(selectedRows)
   }
+
 
   return (
     <>
@@ -84,7 +102,7 @@ const IcreActivityTable = ({accession, selected, onSelectionChange}: IcreActivit
         :
         <DataGrid
           rows={[...data].sort((a, b) => b.value - a.value)}
-          columns={columns}
+          columns={columns.map(col => { return { ...col, display: 'flex' } })}
           initialState={{
             pagination: {
               paginationModel: {
@@ -96,8 +114,7 @@ const IcreActivityTable = ({accession, selected, onSelectionChange}: IcreActivit
             },
             columns: {
               columnVisibilityModel: {
-                source: false,
-                expid: false
+                study: false,
               }
             }
           }}
@@ -110,6 +127,7 @@ const IcreActivityTable = ({accession, selected, onSelectionChange}: IcreActivit
           rowSelectionModel={selected.map(x => x.name)}
           disableRowSelectionOnClick
           getRowId={(row) => row.name}
+          getRowHeight={() => 'auto'}
           keepNonExistentRowsSelected //needed to prevent clearing selections on changing filters
         />}
     </>

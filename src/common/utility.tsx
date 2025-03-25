@@ -1,5 +1,5 @@
 import { GenomicRange, PortalName } from "types/globalTypes"
-import { cellCategoryColors, cellCategoryDisplaynames } from "./consts"
+import { cellCategoryColors, cellCategoryDisplaynames, studyLinks } from "./consts"
 import { OverridableStringUnion } from '@mui/types';
 import { Variant } from "@mui/material/styles/createTypography";
 import { Launch } from "@mui/icons-material";
@@ -78,6 +78,15 @@ export function getCellCategoryDisplayname(cell: string) {
 
 /**
  * 
+ * @param study use ```study``` field of return data
+ * @returns The corresponding DOI link for the study, or "Unknown Study" if not found
+ */
+export function getStudyLink(study: string) {
+  return studyLinks[study] || "Unknown Study"
+}
+
+
+/** 
  * @param props 
  * @returns 
  */
