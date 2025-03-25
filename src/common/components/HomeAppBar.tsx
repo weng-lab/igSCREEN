@@ -6,16 +6,11 @@ import {
   Toolbar,
   Menu,
   Container,
-  Button,
   MenuItem,
-  Paper,
   Link as MuiLink,
-  TextField,
-  styled,
   IconButton,
 } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { ThemeProvider } from "@mui/material/styles";
 import Link from "next/link";
 import Image from "next/image";
 import AutoComplete from "./autocomplete";
@@ -24,11 +19,18 @@ import MenuIcon from "@mui/icons-material/Menu"
 import { useState } from "react";
 import MobileMenu from "./MobileMenu";
 
-const pageLinks = [
+type PageInfo = {
+  pageName: string,
+  link: string,
+  dropdownID?: number,
+  subPages?: { pageName: string, link: string }[]
+}
+
+const pageLinks: PageInfo[] = [
   {
     pageName: "About",
     link: "/about",
-    dropdownID: "0",
+    dropdownID: 0,
     subPages: [
       { pageName: "Overview", link: "/about" },
       { pageName: "Contact Us", link: "/about#contact-us" },
@@ -36,8 +38,8 @@ const pageLinks = [
   },
   {
     pageName: "Portals",
-    link: "/portal",
-    dropdownID: "1",
+    link: "/#portals",
+    dropdownID: 1,
     subPages: [
       { pageName: "Gene", link: "/gene" },
       { pageName: "SNP", link: "/snp" },
@@ -48,68 +50,58 @@ const pageLinks = [
   },
 ];
 
-const StyledTextField = styled(TextField)({
-  "& .MuiOutlinedInput-root": {
-    height: "50px ",
-    backgroundColor: "#ffffff",
-    "& fieldset": {
-      border: "none",
-    },
-    "&:hover fieldset": {
-      border: "none",
-    },
-    "&.Mui-focused fieldset": {
-      border: "none",
-    },
-  },
-  "& .MuiInputLabel-root": {
-    color: "#666666",
-    "&.Mui-focused": {
-      color: "#444444",
-    },
-  },
-  "& .MuiInputLabel-shrink": {
-    display: "none",
-  },
-});
-
-/**
- * @todo: Hamburger Menu, need to align optically without setting the margin to zero - it messes up interacting with the button
- */
-
 const ResponsiveAppBar = () => {
-  // Hover dropdowns, deals with setting its position
-  const [anchorElNav_Dropdown0, setAnchorElNav_Dropdown0] =
-    React.useState<null | HTMLElement>(null);
-  const [anchorElNav_Dropdown1, setAnchorElNav_Dropdown1] =
-    React.useState<null | HTMLElement>(null);
-
   const [drawerOpen, setDrawerOpen] = useState(false);
+  // Hover dropdowns, deals with setting its position
+  const [anchorDropdown0, setAnchorDropdown0] = useState<null | HTMLElement>(null)
+  const [anchorDropdown1, setAnchorDropdown1] = useState<null | HTMLElement>(null)
 
   const toggleDrawer = (open) => () => {
     setDrawerOpen(open);
   };
 
   // Open Dropdown
-  const handleOpenNavMenu_Dropdown = (
-    event: React.MouseEvent<HTMLElement>,
-    dropdownID: string
-  ) => {
-    if (dropdownID == "0") {
-      setAnchorElNav_Dropdown0(event.currentTarget);
-    } else if (dropdownID == "1") {
-      setAnchorElNav_Dropdown1(event.currentTarget);
+  const handleOpenDropdown = (event: React.MouseEvent<HTMLElement>, dropdownID: number) => {
+    if (dropdownID === 0) {
+      setAnchorDropdown0(event.currentTarget)
+    } else if (dropdownID === 1) {
+      setAnchorDropdown1(event.currentTarget)
     }
-  };
+  }
 
   // Close Dropdown
-  const handleCloseNavMenu_Dropdown = (dropdownID: string) => {
-    if (dropdownID == "0") {
-      setAnchorElNav_Dropdown0(null);
-    } else if (dropdownID == "1") {
-      setAnchorElNav_Dropdown1(null);
+  const handleCloseDropdown = (dropdownID: number) => {
+    if (dropdownID === 0) {
+      setAnchorDropdown0(null)
+    } else if (dropdownID === 1) {
+      setAnchorDropdown1(null)
     }
-  };
+  }
+
+  const handleMouseMoveLink = (event: React.MouseEvent<HTMLElement>, page: PageInfo) => {
+    if (page?.subPages && 'dropdownID' in page) {
+      handleOpenDropdown(event, page.dropdownID)
+    }
+  }
+
+  const handleMouseLeaveLink = (event: React.MouseEvent<HTMLElement>, page: PageInfo) => {
+    if (page?.subPages && 'dropdownID' in page) {
+      switch(page.dropdownID){
+        case 0: {
+          if (anchorDropdown0) {
+            handleCloseDropdown(0)
+          }
+          break;
+        }
+        case 1: {
+          if (anchorDropdown1) {
+            handleCloseDropdown(1)
+          }
+          break;
+        }
+      }
+    }
+  }
 
   return (
     <>
@@ -133,99 +125,59 @@ const ResponsiveAppBar = () => {
               />
             </Box>
             {/* Main navigation items for desktop */}
-            <Box display={{ xs: "none", md: "flex" }} alignItems={"center"} gap={2}>
+            <Box display={{ xs: "none", md: "flex" }} alignItems={"center"}>
               <Box sx={{ display: { xs: "flex" } }}>
                 {pageLinks.map((page) => (
-                  <Box key={page.pageName}>
-                    <Button
-                      sx={{
-                        color: "white",
-                        display: "flex",
-                        textTransform: "none",
-                        "& .MuiButton-endIcon": { ml: 0 },
-                      }}
-                      endIcon={page.subPages && <ArrowDropDownIcon />}
-                      onMouseEnter={
-                        page.subPages
-                          ? (event) =>
-                            handleOpenNavMenu_Dropdown(event, page.dropdownID)
-                          : undefined
-                      }
+                  <Box
+                    key={page.pageName}
+                    display={"flex"}
+                    alignItems={"center"}
+                    onMouseMove={(event) => handleMouseMoveLink(event, page)}
+                    onMouseLeave={(event) => handleMouseLeaveLink(event, page)}
+                    id="LinkBox"
+                    sx={{mr: 2}}
+                  >
+                    <MuiLink
+                      id="Link"
+                      display={"flex"}
+                      fontFamily={(theme) => theme.typography.fontFamily}
+                      underline="hover"
+                      color="primary.contrastText"
+                      component={Link}
+                      href={page.link}
                     >
-                      <MuiLink
-                        component={Link}
-                        href={page.link}
-                        variant="body1"
-                        sx={{
-                          color: (theme) => theme.palette.primary.contrastText,
-                        }}
-                      >
-                        {page.pageName}
-                      </MuiLink>
-                    </Button>
+                      {page.pageName}
+                      {page.subPages && <ArrowDropDownIcon />}
+                    </MuiLink>
                     {/* Create popup menu if page has subpages */}
                     {page.subPages && (
                       <Menu
                         id={`${page.pageName}-dropdown-appbar`}
                         // This logic would need to change when adding another dropdown
-                        anchorEl={
-                          page.dropdownID == "0"
-                            ? anchorElNav_Dropdown0
-                            : anchorElNav_Dropdown1
-                        }
+                        anchorEl={page.dropdownID === 0 ? anchorDropdown0 : anchorDropdown1}
                         anchorOrigin={{
-                          vertical: "top",
+                          vertical: "bottom",
                           horizontal: "left",
                         }}
-                        keepMounted
-                        transformOrigin={{
-                          vertical: "top",
-                          horizontal: "left",
-                        }}
-                        open={
-                          page.dropdownID == "0"
-                            ? Boolean(anchorElNav_Dropdown0)
-                            : Boolean(anchorElNav_Dropdown1)
-                        }
-                        onClose={() =>
-                          handleCloseNavMenu_Dropdown(page.dropdownID)
-                        }
-                        //These are to prevent focus ring from showing up in some browsers, but doesn't work completely
-                        MenuListProps={{
-                          autoFocusItem: false,
-                          autoFocus: false,
-                        }}
-                        slotProps={{
-                          paper: {
-                            onMouseLeave: () =>
-                              handleCloseNavMenu_Dropdown(page.dropdownID),
-                            elevation: 0,
-                            sx: { backgroundColor: "transparent" },
-                          },
-                        }}
+                        open={page.dropdownID === 0 ? Boolean(anchorDropdown0) : Boolean(anchorDropdown1)}
+                        onClose={() => handleCloseDropdown(page.dropdownID)}
+                        slotProps={{ paper: { onMouseLeave: () => handleCloseDropdown(page.dropdownID), sx: { pointerEvents: 'auto' } } }}
+                        sx={{ pointerEvents: 'none', zIndex: 2000 }} //z index of AppBar is 1100 for whatever reason
                       >
-                        {/* This box is here to provide better onMouseLeave behavior, still not ideal */}
-                        <Box width="auto" height="25px"></Box>
-                        <Paper elevation={4} sx={{ margin: 0.75 }}>
-                          {page.subPages &&
-                            page.subPages.map((subPage) => (
-                              <MenuItem
-                                key={subPage.pageName}
-                                onClick={() =>
-                                  handleCloseNavMenu_Dropdown(page.dropdownID)
-                                }
-                              >
-                                {/* Wrap in next/link to enable dyanic link changing from basePath in next.config.js */}
-                                <MuiLink
-                                  component={Link}
-                                  textAlign={"center"}
-                                  href={subPage.link}
-                                >
-                                  {subPage.pageName}
-                                </MuiLink>
+                        {page.subPages &&
+                          page.subPages.map((subPage) => (
+                            <MuiLink
+                              key={subPage.pageName}
+                              underline="hover"
+                              color="black"
+                              component={Link}
+                              href={subPage.link}
+                            >
+                              <MenuItem>
+                                {subPage.pageName}
                               </MenuItem>
-                            ))}
-                        </Paper>
+                            </MuiLink>
+                          ))}
                       </Menu>
                     )}
                   </Box>
@@ -270,6 +222,7 @@ const ResponsiveAppBar = () => {
                 }}
               />
             </Box>
+            {/* mobile view */}
             <Box display={{ xs: "flex", md: "none" }} alignItems={"center"} gap={2}>
               <IconButton
                 size="large"
