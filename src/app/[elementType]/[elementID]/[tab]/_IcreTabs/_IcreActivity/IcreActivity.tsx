@@ -4,7 +4,7 @@ import { BarData } from "../../VerticalBarPlot"
 import IcreActivityTable from "./IcreActivityTable"
 import { IcreActivityAssay, UseIcreActivityReturn } from "common/hooks/useIcreActivity"
 import IcreActivityBarPlot from "./IcreActivityBarPlot"
-import { FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, FormGroup, Checkbox } from "@mui/material"
+import { FormControl, FormLabel, FormControlLabel, FormGroup, Checkbox } from "@mui/material"
 import IcreActivityUMAP from "./IcreActivityUMAP"
 
 
