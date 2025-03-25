@@ -38,7 +38,7 @@ const IcreActivityBarPlot = ({accession, selected, assay, onBarClicked}: IcreAct
     <VerticalBarPlot
       data={plotData}
       onBarClicked={onBarClicked}
-      topAxisLabel={`${accession} Activity`}
+      topAxisLabel={`${accession} ${assay === "combined" ? "ATAC & DNase" : assay} Z-scores`}
       show95thPercentileLine
       cutoffNegativeValues
     />

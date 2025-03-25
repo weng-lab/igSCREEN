@@ -1,9 +1,10 @@
-import { CircularProgress } from "@mui/material"
-import { getCellCategoryDisplayname } from "common/utility"
+import { CircularProgress, IconButton, Link } from "@mui/material"
+import { getCellCategoryDisplayname, getStudyLink } from "common/utility"
 import { DataGrid, GridColDef, GridRowSelectionModel, GridToolbar } from "@mui/x-data-grid"
 import { GRID_CHECKBOX_SELECTION_COL_DEF } from "@mui/x-data-grid"
 import { IcreActivityProps, PointMetadata, SharedIcreActivityPlotProps } from "./IcreActivity"
 import { useIcreActivity } from "common/hooks/useIcreActivity"
+import { OpenInNew } from "@mui/icons-material"
 
 export type IcreActivityTableProps =
   IcreActivityProps &
@@ -54,21 +55,36 @@ const IcreActivityTable = ({accession, selected, assay, onSelectionChange}: Icre
       valueFormatter: (_, row) => row.stimulation.charAt(0).toUpperCase()
     },
     {
-      field: 'celltype',
+      field: 'lineage',
       headerName: 'Lineage',
       width: 150,
       valueGetter: (_, row) => getCellCategoryDisplayname(row.lineage)
     },
     {
-      field: 'source',
-      headerName: 'Source',
-      description: 'This column has a value getter and is not sortable.',
-      width: 90,
+      field: 'link',
+      headerName: 'Experiment',
+      width: 80,
+      sortable: false,
+      disableColumnMenu: true,
+      renderCell: (params) => {
+        return (
+          <IconButton href={params.value} target="_blank" size="small">
+            <OpenInNew fontSize="small"/>
+          </IconButton>
+        )
+      }
     },
     {
-      field: 'expid',
-      headerName: 'Experiment ID',
-      width: 120
+      field: 'study',
+      headerName: 'Study',
+      width: 140,
+      renderCell: (params) => {
+        return (
+          <Link href={getStudyLink(params.value)} target="_blank">
+            {params.value}
+          </Link>
+        )
+      }
     },
   ];
 
@@ -96,8 +112,7 @@ const IcreActivityTable = ({accession, selected, assay, onSelectionChange}: Icre
             },
             columns: {
               columnVisibilityModel: {
-                source: false,
-                expid: false
+                study: false,
               }
             }
           }}

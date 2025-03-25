@@ -18,7 +18,7 @@ export const geneNameCol: GridColDef<LinkedGeneInfo> = {
   display: "flex",
   headerName: "Common Gene Name",
   renderCell: (params: GridRenderCellParams<LinkedGeneInfo>) => (
-    <Typography sx={{fontStyle: 'italic'}}><GeneLink geneName={params.value} /></Typography>
+    <Typography variant="body2" sx={{fontStyle: 'italic'}}><GeneLink geneName={params.value} /></Typography>
   ),
 };
 

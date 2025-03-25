@@ -194,9 +194,10 @@ const VerticalBarPlot = <T,>({
               top={0}
               label={topAxisLabel}
               labelProps={{ dy: -5, fontSize: 14, fontFamily: fontFamily }}
-              numTicks={ParentWidth < 600 ? 4 : undefined}
+              numTicks={ParentWidth < 700 ? 4 : undefined}
               tickFormat={(value: number, index: number) => {
-                if (index === 0 && cutoffNegativeValues && value === negativeCutoff) {
+                console.log(value, index)
+                if (index === 0 && cutoffNegativeValues && data.some(d => d.value <= negativeCutoff)) {
                   return "Low Signal"
                 } else return value.toString()
               }}
@@ -266,7 +267,7 @@ const VerticalBarPlot = <T,>({
                 x2={xScale(1.645)}
                 y1={0}
                 y2={dataHeight}
-                stroke="#000000"
+                stroke={"black"}
                 strokeDasharray={'5 7'}
               />
             }
