@@ -1,7 +1,7 @@
 import { useGeneExpression } from "common/hooks/useGeneExpression"
 import { GeneExpressionProps, PointMetadata } from "./GeneExpression"
-import { CircularProgress, IconButton } from "@mui/material"
-import { getCellCategoryDisplayname } from "common/utility"
+import { CircularProgress, IconButton, Link } from "@mui/material"
+import { getCellCategoryDisplayname, getStudyLink } from "common/utility"
 import { DataGrid, GridColDef, GridRowSelectionModel, GridToolbar } from "@mui/x-data-grid"
 import { GRID_CHECKBOX_SELECTION_COL_DEF } from "@mui/x-data-grid"
 import { OpenInNew } from "@mui/icons-material"
@@ -15,12 +15,12 @@ const GeneExpressionTable = ({name, id, selected, onSelectionChange}: GeneExpres
   const { data, loading, error } = useGeneExpression({ id })
 
   //This is used to prevent sorting from happening when clicking on the header checkbox
-  const StopPropogationWrapper = (params) =>
-    <div id={'StopPropogationWrapper'} onClick={(e) => e.stopPropagation()}>
+  const StopPropagationWrapper = (params) =>
+    <div id={'StopPropagationWrapper'} onClick={(e) => e.stopPropagation()}>
       <GRID_CHECKBOX_SELECTION_COL_DEF.renderHeader {...params} />
     </div>
 
-  // ensure that "field" is accessing a true property of the row, "__check__" is for overriden checkbox column
+  // ensure that "field" is accessing a true property of the row
   type TypeSafeColDef<T> = GridColDef & { field: keyof T }; 
 
   const columns: TypeSafeColDef<PointMetadata>[] = [
@@ -29,7 +29,7 @@ const GeneExpressionTable = ({name, id, selected, onSelectionChange}: GeneExpres
       width: 60,
       sortable: true,
       hideable: false,
-      renderHeader: StopPropogationWrapper
+      renderHeader: StopPropagationWrapper
     },
     {
       field: 'biosample',
@@ -45,7 +45,7 @@ const GeneExpressionTable = ({name, id, selected, onSelectionChange}: GeneExpres
     {
       field: 'stimulation',
       headerName: 'Stim',
-      width: 100,
+      width: 80,
       valueGetter: (_, row) => row.stimulation.charAt(0).toUpperCase()
     },
     {
@@ -57,22 +57,28 @@ const GeneExpressionTable = ({name, id, selected, onSelectionChange}: GeneExpres
     {
       field: 'link',
       headerName: 'Experiment',
-      width: 120,
+      width: 80,
       sortable: false,
       disableColumnMenu: true,
       renderCell: (params) => {
         return (
-          <IconButton href={params.value}>
-            <OpenInNew />
+          <IconButton href={params.value} target="_blank" size="small">
+            <OpenInNew fontSize="small"/>
           </IconButton>
         )
       }
     },
     {
-      field: 'source',
-      headerName: 'Source',
-      description: 'This column has a value getter and is not sortable.',
-      width: 90,
+      field: 'study',
+      headerName: 'Study',
+      width: 140,
+      renderCell: (params) => {
+        return (
+          <Link href={getStudyLink(params.value)} target="_blank">
+            {params.value}
+          </Link>
+        )
+      }
     },
   ];
 
@@ -88,7 +94,7 @@ const GeneExpressionTable = ({name, id, selected, onSelectionChange}: GeneExpres
         :
         <DataGrid
           rows={[...data].sort((a,b) => b.value - a.value)}
-          columns={columns}
+          columns={columns.map(col => { return { ...col, display: 'flex' } })}
           initialState={{
             pagination: {
               paginationModel: {
@@ -100,7 +106,7 @@ const GeneExpressionTable = ({name, id, selected, onSelectionChange}: GeneExpres
             },
             columns: {
               columnVisibilityModel: {
-                source: false,
+                study: false,
               }
             }
           }}
@@ -112,6 +118,7 @@ const GeneExpressionTable = ({name, id, selected, onSelectionChange}: GeneExpres
           onRowSelectionModelChange={handleRowSelectionModelChange}
           rowSelectionModel={selected.map(x => x.name)}
           disableRowSelectionOnClick
+          getRowHeight={() => 'auto'}
           getRowId={(row) => row.name}
           keepNonExistentRowsSelected //needed to prevent clearing selections on changing filters
         />}

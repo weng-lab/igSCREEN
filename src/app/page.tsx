@@ -80,7 +80,7 @@ const Home = () => {
                       md: 6
                     }}>
                     <Typography variant="h4">Gene Portal</Typography>
-                    <Typography mb={2}>Explore gene expression across immune cell types at bulk and single-cell resolution for 63 cell types across 305 experiments.</Typography>
+                    <Typography mb={2}>Explore gene expression across immune cell types at bulk and single-cell resolution for 63 cell types across 736 experiments.</Typography>
                     <Button LinkComponent={Link} href="/gene" variant="contained" endIcon={<ArrowForwardIos />}>Explore Genes</Button>
                   </Grid2>
                   <Grid2
@@ -133,7 +133,7 @@ const Home = () => {
                       md: 6
                     }}>
                     <Typography variant="h4">Element Portal</Typography>
-                    <Typography mb={2}>Explore regulatory element activity (immune cCREs) across immune cell types at bulk and single-cell resolution for 63 cell types across 305 experiments.</Typography>
+                    <Typography mb={2}>Explore regulatory element activity (immune cCREs) across immune cell types at bulk and single-cell resolution for 63 cell types across 736 experiments.</Typography>
                     <Button LinkComponent={Link} href="/icre" variant="contained" endIcon={<ArrowForwardIos />}>Explore iCREs</Button>
                   </Grid2>
                 </Grid2>
