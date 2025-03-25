@@ -1,5 +1,9 @@
 import { GenomicRange, PortalName } from "types/globalTypes"
 import { cellCategoryColors, cellCategoryDisplaynames } from "./consts"
+import { OverridableStringUnion } from '@mui/types';
+import { Variant } from "@mui/material/styles/createTypography";
+import { Launch } from "@mui/icons-material";
+import { Link, TypographyPropsVariantOverrides } from "@mui/material";
 
 /**
  * @todo Merge with utility.ts
@@ -70,4 +74,24 @@ export function getCellCategoryColor(cell: string): string {
  */
 export function getCellCategoryDisplayname(cell: string) {
   return cellCategoryDisplaynames[cell] || "Unknown Celltype"
+}
+
+/**
+ * 
+ * @param props 
+ * @returns 
+ */
+export const CreateLink: React.FC<{ 
+  linkPrefix: string,
+   linkArg?: string, 
+   label: string, 
+   showExternalIcon?: boolean,
+    variant?: OverridableStringUnion<Variant | 'inherit', TypographyPropsVariantOverrides>, textColor?: string, underline?: "none" | "always" | "hover" }> = (props) => {
+  const link = props.linkPrefix + (props.linkArg ?? "")
+  return (
+    <Link variant={props.variant} href={link} rel="noopener noreferrer" target="_blank" color={props.textColor} underline={props.underline}>
+      {props.label}
+      {props.showExternalIcon && <Launch sx={{ display: "inline-flex", verticalAlign: "middle", ml: 0.5 }} color="inherit" fontSize="inherit" />}
+    </Link>
+  )
 }
