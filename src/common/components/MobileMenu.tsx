@@ -3,6 +3,7 @@ import { Search } from "@mui/icons-material"
 import { Box, Button, Divider, Drawer, IconButton, List, ListItem } from "@mui/material"
 import MuiLink from "@mui/material/Link"
 import AutoComplete from "./autocomplete"
+import Link from "next/link";
 
 export default function MobileMenu({pageLinks, drawerOpen, toggleDrawer}) {
     return (
@@ -13,7 +14,7 @@ export default function MobileMenu({pageLinks, drawerOpen, toggleDrawer}) {
                         style={{ width: "100%"}}
                         slots={{
                             button: (
-                                <IconButton sx={{ color: "black" }} onClick={toggleDrawer(false)}>
+                                <IconButton sx={{ color: "black" }}>
                                     <Search />
                                 </IconButton>
                             ),
@@ -29,6 +30,9 @@ export default function MobileMenu({pageLinks, drawerOpen, toggleDrawer}) {
                                     },
                                 },
                             },
+                            button: {
+                                onClick: toggleDrawer(false)
+                            }
                         }}
                     />
                     <br/>
@@ -36,9 +40,9 @@ export default function MobileMenu({pageLinks, drawerOpen, toggleDrawer}) {
                     <List>
                         {pageLinks.slice().reverse().map((page) => (
                             <Box key={page.pageName} sx={{ mb: 1 }}>
-                                <ListItem>
+                                <ListItem onClick={toggleDrawer(false)}>
                                     <MuiLink
-                                        component={Button}
+                                        component={Link}
                                         href={page.link}
                                         sx={{
                                             color: "black",
@@ -53,8 +57,8 @@ export default function MobileMenu({pageLinks, drawerOpen, toggleDrawer}) {
                                 {page.subPages && (
                                     <List sx={{ pl: 2 }}>
                                         {page.subPages.map((subPage) => (
-                                            <ListItem key={subPage.pageName} sx={{ py: 0 }}>
-                                                <MuiLink component={Button} href={subPage.link} sx={{ color: "gray", textTransform: "none" }}>
+                                            <ListItem key={subPage.pageName} sx={{ py: 0 }} onClick={toggleDrawer(false)}>
+                                                <MuiLink component={Link} href={subPage.link} sx={{ color: "gray", textTransform: "none" }}>
                                                     {subPage.pageName}
                                                 </MuiLink>
                                             </ListItem>
