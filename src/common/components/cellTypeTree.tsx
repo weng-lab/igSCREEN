@@ -397,8 +397,8 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
                   event.currentTarget.setAttribute('opacity', '1')
                 }
                 showTooltip({
-                  tooltipTop: top,
-                  tooltipLeft: left,
+                  tooltipTop: event.clientY,
+                  tooltipLeft: event.clientX,
                   tooltipData: {
                     name: node.data.displayName,
                     unstimCount: node.data.unstimCount,
@@ -496,8 +496,8 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
     , [data, Node, innerMarginLeft, innerMarginTop, orientation, sizeHeight, sizeWidth])
 
   return totalWidth < 10 ? null : (
-    <div style={{ position: "relative" }}>
-      <svg width={totalWidth} height={totalHeight} cursor={stimulateMode ? stimulateCursor : "auto"}>
+    <>
+      <svg width={"100%"} height={totalHeight} viewBox={`0 0 ${totalWidth} ${totalHeight}`} cursor={stimulateMode ? stimulateCursor : "auto"}>
         <rect width={totalWidth} height={totalHeight} fill={background} />
         {TreeMemo}
       </svg>
@@ -518,6 +518,6 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
           </div>}
         </TooltipWithBounds>       
       )}
-    </div>
+    </>
   );
 }
