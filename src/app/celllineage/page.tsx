@@ -19,6 +19,8 @@ import {
   Button,
   Checkbox,
   CircularProgress,
+  DialogTitle,
+  Dialog,
   Drawer,
   FormControl,
   FormControlLabel,
@@ -33,6 +35,8 @@ import {
   Toolbar,
   Tooltip,
   Typography,
+  DialogContent,
+  IconButton,
 } from "@mui/material";
 import { gql, useLazyQuery } from "@apollo/client";
 import { client } from "../../common/utils";
@@ -67,6 +71,8 @@ import { cellTypeStaticInfo } from "../../common/consts";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import MultiSelect from "./_components/multiselect";
+import { Instructions } from "./_components/instructions";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 type QueryGroup = {
   intersect?: CellQueryValue[][];
   exclude?: CellQueryValue[][];
@@ -656,7 +662,7 @@ export default function UpSet() {
 
   const Checkboxes = () => (
     <>
-      <Typography variant="h6">Immune cCRE classes to Include:</Typography>
+      {/* <Typography variant="h6">Immune cCRE classes to Include:</Typography> */}
       <FormControlLabel
         label="All Classes"
         control={
@@ -722,13 +728,6 @@ export default function UpSet() {
     </Button>
   );
 
-  const StimulationWarning = () => (
-    <Typography mt={2}>
-      Tip: Stimulating a cell does not automatically select it! Exit Stimulation
-      Mode and click to select.
-    </Typography>
-  );
-
   const DownloadUpsetButton = () =>
     data_count && (
       <Button
@@ -741,19 +740,31 @@ export default function UpSet() {
       </Button>
     );
 
+  useEffect(() => {
+    if (noneSelected && !noneStimulated) {
+      handleOpenSnackbar(
+        "Tip: Stimulating a cell does not automatically select it! Exit Stimulation Mode and click to select."
+      );
+    } else {
+      setOpenSnackbar(false);
+    }
+  }, [noneSelected, noneStimulated]);
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+
   return (
     <Grid container>
-      <Typography variant="h3" sx={{ textAlign: "center" }}>Cell Lineage Applet</Typography>
       <Grid
         size={{ xs: 12, xl: 12 }}
-        height="auto"
+        height="fit-content"
         display="flex"
         flexDirection="column"
         justifyContent="center"
         alignItems="center"
         position="relative"
+        paddingInline={2}
       >
-        {noneSelected && !noneStimulated && <StimulationWarning />}
+        <Header setDialogOpen={setDialogOpen} />
         {/* Buttons and Filters */}
         <Box
           display={"flex"}
@@ -763,15 +774,18 @@ export default function UpSet() {
           mb={-3}
         >
           <MultiSelect
-            value={[{ label: "test1" }, { label: "test2" }, { label: "test3" }]}
-            options={[
-              { label: "test1" },
-              { label: "test2" },
-              { label: "test3" },
-            ]}
+            value={Object.keys(checkboxClasses).map((group) => ({
+              label: classDisplaynames[group],
+            }))}
+            options={Object.keys(checkboxClasses).map((group) => ({
+              label: classDisplaynames[group],
+            }))}
             getOptionDisabled={() => false}
-            onChange={() => {}}
-            placeholder="Filter Tissues"
+            onChange={(_, value) => {
+              setUpSetClasses(value.map((v) => v.label as CCRE_CLASS));
+              console.log(value.map((v) => v.label));
+            }}
+            placeholder="Filter iCRE classes"
             limitTags={2}
           />
           <Buttons
@@ -785,43 +799,69 @@ export default function UpSet() {
             handleUnselectAll={handleUnselectAll}
           />
         </Box>
-        <Box
-          display={"flex"}
-          flexDirection={"row"}
-          alignItems={"center"}
-        >
+        <Box display={"flex"} flexDirection={"row"} alignItems={"center"}>
           <GenerateUpsetButton />
           <DownloadUpsetButton />
         </Box>
         <Box
           display={"flex"}
-          flexDirection={"row"}
+          flexDirection={{
+            md: "row",
+            sm: "column-reverse",
+          }}
           justifyContent={"center"}
-          alignItems={"center"}
-          width={"fit-content"}
+          alignItems={"flex-start"}
+          width={"100%"}
+          height={"100%"}
           sx={{
-            boxShadow: "0px 0px 10px 0px rgba(0, 0, 0, 0.15)",
-            borderRadius: "10px",
             padding: "10px",
           }}
         >
-          <UpSetWithRef
-            data_count={data_count}
-            upSetWidth={upSetWidth}
-            handleUpsetDownload={handleUpsetDownload}
-            downloading={downloading}
-            ref={svgRef}
-          />
+          <Box
+            width={"65%"}
+            display={"flex"}
+            flexDirection={"column"}
+            justifyContent={"center"}
+            alignSelf={"center"}
+            sx={{
+              height: "100%",
+            }}
+          >
+            {cellTypeTree}
+          </Box>
+          {data_count && (
+            <Box
+              sx={{
+                boxShadow: "0px 0px 10px 0px rgba(0, 0, 0, 0.15)",
+                borderRadius: "10px",
+              }}
+              height={"fit-content"}
+            >
+              <UpSetWithRef
+                data_count={data_count}
+                upSetWidth={upSetWidth}
+                handleUpsetDownload={handleUpsetDownload}
+                downloading={downloading}
+                ref={svgRef}
+              />
+            </Box>
+          )}
         </Box>
-        {cellTypeTree}
+        {/* Snackbar for warning and tips */}
         <Snackbar
           sx={{ "& .MuiSnackbarContent-message": { margin: "auto" } }}
           open={openSnackbar}
           anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-          autoHideDuration={2000}
+          autoHideDuration={5000}
           onClose={handleCloseSnackbar}
-          message={snackbarMessage}
+          message={<Typography>{snackbarMessage}</Typography>}
         />
+        {/* Dialog for instructions */}
+        <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+          <DialogContent>
+            <Instructions cellTypeTreeWidth={cellTypeTreeWidth} />
+          </DialogContent>
+        </Dialog>
       </Grid>
     </Grid>
   );
@@ -857,10 +897,10 @@ function Buttons({
       flexWrap="wrap"
       gap={1}
       sx={{
-        '& > *': {
-          minWidth: 'fit-content',
-          flex: { xs: '1 1 40%', sm: '0 1 auto' }
-        }
+        "& > *": {
+          minWidth: "fit-content",
+          flex: { xs: "1 1 40%", sm: "0 1 auto" },
+        },
       }}
     >
       <Tooltip title="Tip: Holding Option/Command (MacOS) or Alt/Windows (Windows) will enter stimulate mode. Stimulating a cell does NOT select it.">
@@ -916,6 +956,37 @@ function Buttons({
         Unselect All
       </Button>
     </Stack>
+  );
+}
+
+function Header({ setDialogOpen }: { setDialogOpen: (open: boolean) => void }) {
+  return (
+    <Box
+      sx={{ p: 1 }}
+      pt={2}
+      mt={2}
+      width={"100%"}
+      border={(theme) => `1px solid ${theme.palette.divider}`}
+      display={"flex"}
+      flexDirection={"column"}
+      alignItems={"baseline"}
+      borderRadius={1}
+    >
+      <Typography variant="h4">Cell Lineage Applet</Typography>
+      <Box
+        display={"flex"}
+        flexDirection={"row"}
+        alignItems={"center"}
+        width={"100%"}
+      >
+        <Typography variant="subtitle1">
+          Compare immune cCRE activity between selected immune cell types.
+        </Typography>
+        <IconButton onClick={() => setDialogOpen(true)}>
+          <InfoOutlinedIcon />
+        </IconButton>
+      </Box>
+    </Box>
   );
 }
 

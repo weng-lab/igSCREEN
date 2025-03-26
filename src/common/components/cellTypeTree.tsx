@@ -497,7 +497,7 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
 
   return totalWidth < 10 ? null : (
     <>
-      <svg width={"100%"} height={totalHeight} viewBox={`0 0 ${totalWidth} ${totalHeight}`} cursor={stimulateMode ? stimulateCursor : "auto"}>
+      <svg width={"100%"} height={"auto"} viewBox={`0 0 ${totalWidth} ${totalHeight}`} cursor={stimulateMode ? stimulateCursor : "auto"}>
         <rect width={totalWidth} height={totalHeight} fill={background} />
         {TreeMemo}
       </svg>
