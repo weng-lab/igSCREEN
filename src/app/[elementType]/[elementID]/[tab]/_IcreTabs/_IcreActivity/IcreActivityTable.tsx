@@ -54,7 +54,7 @@ const IcreActivityTable = ({ accession, selected, onSelectionChange, iCREActivit
     {
       field: 'stimulation',
       headerName: 'Stim',
-      valueFormatter: (_, row) => row.stimulation.charAt(0).toUpperCase()
+      valueGetter: (_, row) => row.stimulation.charAt(0).toUpperCase()
     },
     {
       field: 'lineage',
@@ -142,7 +142,7 @@ const IcreActivityTable = ({ accession, selected, onSelectionChange, iCREActivit
       }}
       sortingOrder={['desc', 'asc', null]}
       slots={{ toolbar: GridToolbar }}
-      slotProps={{ toolbar: { showQuickFilter: true } }}
+      slotProps={{ toolbar: { showQuickFilter: true, sx: {p: 1} } }}
       pageSizeOptions={[10, 25, 50]}
       checkboxSelection
       onRowSelectionModelChange={handleRowSelectionModelChange}
