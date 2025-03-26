@@ -750,6 +750,8 @@ export default function UpSet() {
     }
   }, [noneSelected, noneStimulated]);
 
+  const [dialogOpen, setDialogOpen] = useState(false);
+
   return (
     <>
       {/* Buttons and Filters */}
@@ -854,6 +856,11 @@ export default function UpSet() {
         onClose={handleCloseSnackbar}
         message={<Typography>{snackbarMessage}</Typography>}
       />
+      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+        <DialogContent>
+          <Instructions cellTypeTreeWidth={835} />
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

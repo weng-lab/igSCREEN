@@ -1,14 +1,12 @@
-"use client";
-import { IconButton } from "@mui/material";
-import { DialogContent, Dialog, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { Box } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import { useState } from "react";
-import { Instructions } from "./_components/instructions";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
-export default function CellLineageLayout({ children }: { children: React.ReactNode }) {
-  const [dialogOpen, setDialogOpen] = useState(false);
+export default function CellLineageLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <Grid container>
       <Grid
@@ -21,27 +19,20 @@ export default function CellLineageLayout({ children }: { children: React.ReactN
         position="relative"
         paddingInline={2}
       >
-        <Header setDialogOpen={setDialogOpen} />
+        <Header />
         {children}
-        {/* Dialog for instructions */}
-        <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
-          <DialogContent>
-            <Instructions cellTypeTreeWidth={835} />
-          </DialogContent>
-        </Dialog>
       </Grid>
     </Grid>
   );
 }
 
-function Header({ setDialogOpen }: { setDialogOpen: (open: boolean) => void }) {
+function Header() {
   return (
     <Box
       sx={{ p: 1 }}
       pt={2}
       mt={2}
       width={"100%"}
-      border={(theme) => `1px solid ${theme.palette.divider}`}
       display={"flex"}
       flexDirection={"column"}
       alignItems={"baseline"}
@@ -57,9 +48,6 @@ function Header({ setDialogOpen }: { setDialogOpen: (open: boolean) => void }) {
         <Typography variant="subtitle1">
           Compare immune cCRE activity between selected immune cell types.
         </Typography>
-        <IconButton onClick={() => setDialogOpen(true)}>
-          <InfoOutlinedIcon />
-        </IconButton>
       </Box>
     </Box>
   );
