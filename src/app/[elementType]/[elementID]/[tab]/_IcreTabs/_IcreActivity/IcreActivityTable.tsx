@@ -1,11 +1,11 @@
-import { Button, CircularProgress, IconButton, Link } from "@mui/material"
+import { IconButton, Link } from "@mui/material"
 import { getCellCategoryDisplayname, getStudyLink } from "common/utility"
-import { DataGrid, GridColDef, gridFilteredSortedRowEntriesSelector, gridFilteredSortedRowIdsSelector, GridRowSelectionModel, GridToolbar, useGridApiEventHandler, useGridApiRef } from "@mui/x-data-grid"
-import { GRID_CHECKBOX_SELECTION_COL_DEF } from "@mui/x-data-grid"
+import { DataGridPro, GridColDef, gridFilteredSortedRowEntriesSelector, GridRowSelectionModel, GridToolbar, useGridApiRef, GRID_CHECKBOX_SELECTION_COL_DEF } from "@mui/x-data-grid-pro"
+// import { DataGrid } from "@mui/x-data-grid"
+// import { GRID_CHECKBOX_SELECTION_COL_DEF } from "@mui/x-data-grid"
 import { IcreActivityProps, PointMetadata, SharedIcreActivityPlotProps } from "./IcreActivity"
-import { useIcreActivity, UseIcreActivityReturn } from "common/hooks/useIcreActivity"
 import { OpenInNew } from "@mui/icons-material"
-import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react"
+import { Dispatch, SetStateAction} from "react"
 
 export type IcreActivityTableProps =
   IcreActivityProps &
@@ -119,11 +119,12 @@ const IcreActivityTable = ({ accession, selected, onSelectionChange, iCREActivit
   }
 
   return (
-    <DataGrid
+    <DataGridPro
       apiRef={apiRef}
-      rows={data}
+      rows={data || []}
       columns={columns.map(col => { return { ...col, display: 'flex' } })}
       loading={loading}
+      pagination
       initialState={{
         pagination: {
           paginationModel: {
