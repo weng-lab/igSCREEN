@@ -25,6 +25,13 @@ const IcreActivityUMAP = <T extends PointMetadata>({ accession, selected, iCREAc
   ) => {
     setColorScheme(event.target.value as 'Zscore' | 'lineage');
   };
+
+  const handleAssayChange = (
+    event: SelectChangeEvent,
+  ) => {
+    setAssay(event.target.value as 'ATAC' | 'DNase' | 'Combined');
+  };
+
   const graphContainerRef = useRef(null);
 
   const map = {
@@ -119,43 +126,50 @@ const IcreActivityUMAP = <T extends PointMetadata>({ accession, selected, iCREAc
     )
   }
 
-  const AssayRadioButtons = () => {
+  const AssaySelect = () => {
     return (
       <FormControl>
-        <FormLabel id="assay-radio-buttons-group-label">Assay</FormLabel>
-        <RadioGroup
-          aria-labelledby="assay-radio-buttons-group-label"
-          name="assay-radio-buttons-group"
+        <InputLabel>Assay</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
           value={assay}
-          onChange={(_, value) => setAssay(value as "Combined" | "ATAC" | "DNase")}
-          row
+          label="Assay"
+          onChange={handleAssayChange}
+          MenuProps={{ disableScrollLock: true }}
         >
-          <FormControlLabel value="Combined" control={<Radio />} label="Combined" />
-          <FormControlLabel value="ATAC" control={<Radio />} label="ATAC" />
-          <FormControlLabel value="DNase" control={<Radio />} label="DNase" />
-        </RadioGroup>
+          <MenuItem value={"Combined"}>ATAC & DNase</MenuItem>
+          <MenuItem value={"ATAC"}>ATAC</MenuItem>
+          <MenuItem value={"DNase"}>DNase</MenuItem>
+        </Select>
+      </FormControl>
+    )
+  }
+
+  const ColorBySelect = () => {
+    return (
+      <FormControl>
+        <InputLabel>Color By</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={colorScheme}
+          label="Color By"
+          onChange={handleColorSchemeChange}
+          MenuProps={{ disableScrollLock: true }}
+        >
+          <MenuItem value={"Zscore"}>Z-score</MenuItem>
+          <MenuItem value={"lineage"}>Lineage</MenuItem>
+        </Select>
       </FormControl>
     )
   }
 
   return (
-    <Box>
+    <Stack spacing={2}>
       <Stack direction={"row"} spacing={2}>
-        <FormControl sx={{ mb: 2 }}>
-          <InputLabel>Color By</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={colorScheme}
-            label="Color By"
-            onChange={handleColorSchemeChange}
-            MenuProps={{ disableScrollLock: true }}
-          >
-            <MenuItem value={"Zscore"}>Z-score</MenuItem>
-            <MenuItem value={"lineage"}>Lineage</MenuItem>
-          </Select>
-        </FormControl>
-        <AssayRadioButtons />
+        <ColorBySelect />
+        <AssaySelect />
       </Stack>
       <Box padding={1} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, position: "relative" }} ref={graphContainerRef}>
         <ParentSize>
@@ -231,7 +245,7 @@ const IcreActivityUMAP = <T extends PointMetadata>({ accession, selected, iCREAc
             )}
           </Box>
       )}
-    </Box>
+    </Stack>
   )
 }
 
