@@ -750,120 +750,111 @@ export default function UpSet() {
     }
   }, [noneSelected, noneStimulated]);
 
-  const [dialogOpen, setDialogOpen] = useState(false);
-
   return (
-    <Grid container>
-      <Grid
-        size={{ xs: 12, xl: 12 }}
-        height="fit-content"
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        alignItems="center"
-        position="relative"
-        paddingInline={2}
+    <>
+      {/* Buttons and Filters */}
+      <Box
+        display={"flex"}
+        flexDirection={"row"}
+        justifyContent={"space-evenly"}
+        alignItems={"center"}
+        mb={-3}
+      ></Box>
+      {/* Buttons for generating and downloading the UpSet plot */}
+      <Box
+        display={"flex"}
+        flexDirection={"row"}
+        justifyContent={"space-around"}
+        alignItems={"center"}
+        mt={3}
+        marginInline={3}
+        width={"100%"}
       >
-        <Header setDialogOpen={setDialogOpen} />
-        {/* Buttons and Filters */}
-        <Box
-          display={"flex"}
-          flexDirection={"row"}
-          justifyContent={"space-evenly"}
-          alignItems={"center"}
-          mb={-3}
-        >
-          <MultiSelect
-            value={Object.keys(checkboxClasses).map((group) => ({
-              label: classDisplaynames[group],
-            }))}
-            options={Object.keys(checkboxClasses).map((group) => ({
-              label: classDisplaynames[group],
-            }))}
-            getOptionDisabled={() => false}
-            onChange={(_, value) => {
-              setUpSetClasses(value.map((v) => v.label as CCRE_CLASS));
-              console.log(value.map((v) => v.label));
-            }}
-            placeholder="Filter iCRE classes"
-            limitTags={2}
-          />
-          <Buttons
-            stimulateMode={stimulateMode}
-            handleToggleStimulateMode={handleToggleStimulateMode}
-            allStimulated={allStimulated}
-            noneStimulated={noneStimulated}
-            allBothStimulated={allBothStimulated}
-            noneSelected={noneSelected}
-            handleStimulateAll={handleStimulateAll}
-            handleUnselectAll={handleUnselectAll}
-          />
-        </Box>
-        <Box display={"flex"} flexDirection={"row"} alignItems={"center"}>
+        <Box display={"flex"} flexDirection={"row"} gap={2}>
           <GenerateUpsetButton />
           <DownloadUpsetButton />
         </Box>
-        <Box
-          display={"flex"}
-          flexDirection={{
-            md: "row",
-            sm: "column-reverse",
+        <MultiSelect
+          value={Object.keys(checkboxClasses).map((group) => ({
+            label: classDisplaynames[group],
+          }))}
+          options={Object.keys(checkboxClasses).map((group) => ({
+            label: classDisplaynames[group],
+          }))}
+          getOptionDisabled={() => false}
+          onChange={(_, value) => {
+            setUpSetClasses(value.map((v) => v.label as CCRE_CLASS));
+            console.log(value.map((v) => v.label));
           }}
+          placeholder="Filter iCRE classes"
+          limitTags={2}
+        />
+      </Box>
+      {/* Container for the cell tree and the UpSet plot */}
+      <Box
+        display={"flex"}
+        flexDirection={{
+          md: "row",
+          sm: "column-reverse",
+        }}
+        // justifyContent={"center"}
+        alignItems={"flex-start"}
+        width={"100%"}
+        height={"100%"}
+        sx={{
+          padding: "10px",
+        }}
+      >
+        <Box
+          width={{
+            md: "50%",
+            sm: "100%",
+          }}
+          pt={{
+            md: "0",
+            sm: 2,
+          }}
+          display={"flex"}
+          flexDirection={"column"}
           justifyContent={"center"}
-          alignItems={"flex-start"}
-          width={"100%"}
-          height={"100%"}
+          alignSelf={"center"}
           sx={{
-            padding: "10px",
+            height: "100%",
           }}
         >
+          {cellTypeTree}
+        </Box>
+        {data_count && (
           <Box
-            width={"65%"}
-            display={"flex"}
-            flexDirection={"column"}
-            justifyContent={"center"}
-            alignSelf={"center"}
             sx={{
-              height: "100%",
+              boxShadow: "0px 0px 10px 0px rgba(0, 0, 0, 0.15)",
+              borderRadius: "10px",
+              width: {
+                md: "50%",
+                sm: "100%",
+              },
             }}
           >
-            {cellTypeTree}
+            <UpSetWithRef
+              data_count={data_count}
+              upSetWidth={upSetWidth}
+              handleUpsetDownload={handleUpsetDownload}
+              downloading={downloading}
+              ref={svgRef}
+            />
           </Box>
-          {data_count && (
-            <Box
-              sx={{
-                boxShadow: "0px 0px 10px 0px rgba(0, 0, 0, 0.15)",
-                borderRadius: "10px",
-              }}
-              height={"fit-content"}
-            >
-              <UpSetWithRef
-                data_count={data_count}
-                upSetWidth={upSetWidth}
-                handleUpsetDownload={handleUpsetDownload}
-                downloading={downloading}
-                ref={svgRef}
-              />
-            </Box>
-          )}
-        </Box>
-        {/* Snackbar for warning and tips */}
-        <Snackbar
-          sx={{ "& .MuiSnackbarContent-message": { margin: "auto" } }}
-          open={openSnackbar}
-          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-          autoHideDuration={5000}
-          onClose={handleCloseSnackbar}
-          message={<Typography>{snackbarMessage}</Typography>}
-        />
-        {/* Dialog for instructions */}
-        <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
-          <DialogContent>
-            <Instructions cellTypeTreeWidth={cellTypeTreeWidth} />
-          </DialogContent>
-        </Dialog>
-      </Grid>
-    </Grid>
+        )}
+      </Box>
+      {/* Snackbar for warning and tips */}
+      <Snackbar
+        sx={{ "& .MuiSnackbarContent-message": { margin: "auto" } }}
+        open={openSnackbar}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        autoHideDuration={5000}
+        onClose={handleCloseSnackbar}
+        message={<Typography>{snackbarMessage}</Typography>}
+      />
+    </>
   );
 }
 
@@ -956,37 +947,6 @@ function Buttons({
         Unselect All
       </Button>
     </Stack>
-  );
-}
-
-function Header({ setDialogOpen }: { setDialogOpen: (open: boolean) => void }) {
-  return (
-    <Box
-      sx={{ p: 1 }}
-      pt={2}
-      mt={2}
-      width={"100%"}
-      border={(theme) => `1px solid ${theme.palette.divider}`}
-      display={"flex"}
-      flexDirection={"column"}
-      alignItems={"baseline"}
-      borderRadius={1}
-    >
-      <Typography variant="h4">Cell Lineage Applet</Typography>
-      <Box
-        display={"flex"}
-        flexDirection={"row"}
-        alignItems={"center"}
-        width={"100%"}
-      >
-        <Typography variant="subtitle1">
-          Compare immune cCRE activity between selected immune cell types.
-        </Typography>
-        <IconButton onClick={() => setDialogOpen(true)}>
-          <InfoOutlinedIcon />
-        </IconButton>
-      </Box>
-    </Box>
   );
 }
 
