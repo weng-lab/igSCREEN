@@ -117,7 +117,7 @@ const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selected, geneE
 
   const ColorBySelect = () => {
     return (
-      <FormControl>
+      <FormControl sx={{alignSelf: "flex-start"}}>
         <InputLabel>Color By</InputLabel>
         <Select
           labelId="demo-simple-select-label"
