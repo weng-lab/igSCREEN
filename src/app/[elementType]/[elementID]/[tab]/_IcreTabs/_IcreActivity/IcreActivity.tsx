@@ -41,44 +41,42 @@ const IcreActivity = ({ accession }: IcreActivityProps) => {
   }
 
   return (
-    <>
-      <TwoPaneLayout
-        TableComponent={
-          <IcreActivityTable
-            accession={accession}
-            onSelectionChange={handleSelectionChange}
-            sortedFilteredData={sortedFilteredData}
-            setSortedFilteredData={setSortedFilteredData}
-            iCREActivitydata={iCREActivitydata}
-            selected={selected}
-          />
+    <TwoPaneLayout
+      TableComponent={
+        <IcreActivityTable
+          accession={accession}
+          selected={selected}
+          onSelectionChange={handleSelectionChange}
+          sortedFilteredData={sortedFilteredData}
+          setSortedFilteredData={setSortedFilteredData}
+          iCREActivitydata={iCREActivitydata}
+        />
+      }
+      plots={[
+        {
+          tabTitle: "Bar Plot",
+          plotComponent:
+            <IcreActivityBarPlot
+              accession={accession}
+              selected={selected}
+              sortedFilteredData={sortedFilteredData}
+              iCREActivitydata={iCREActivitydata}
+              onBarClicked={handleBarClick}
+            />
+        },
+        {
+          tabTitle: "UMAP",
+          plotComponent:
+            <IcreActivityUMAP
+              accession={accession}
+              sortedFilteredData={sortedFilteredData}
+              iCREActivitydata={iCREActivitydata}
+              selected={selected}
+              onSelectionChange={(points) => handlePointsSelected(points.map(x => x.metaData))}
+            />
         }
-        plots={[
-          {
-            tabTitle: "Bar Plot",
-            plotComponent:
-              <IcreActivityBarPlot
-                accession={accession}
-                sortedFilteredData={sortedFilteredData}
-                iCREActivitydata={iCREActivitydata}
-                selected={selected}
-                onBarClicked={handleBarClick}
-              />
-          },
-          {
-            tabTitle: "UMAP",
-            plotComponent:
-              <IcreActivityUMAP
-                accession={accession}
-                sortedFilteredData={sortedFilteredData}
-                iCREActivitydata={iCREActivitydata}
-                selected={selected}
-                onSelectionChange={(points) => handlePointsSelected(points.map(x => x.metaData))}
-              />
-          }
-        ]}
-      />
-    </>
+      ]}
+    />
   )
 }
 

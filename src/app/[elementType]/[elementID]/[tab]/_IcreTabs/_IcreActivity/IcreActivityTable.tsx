@@ -1,8 +1,6 @@
 import { IconButton, Link } from "@mui/material"
 import { getCellCategoryDisplayname, getStudyLink } from "common/utility"
 import { DataGridPro, GridColDef, gridFilteredSortedRowEntriesSelector, GridRowSelectionModel, GridToolbar, useGridApiRef, GRID_CHECKBOX_SELECTION_COL_DEF } from "@mui/x-data-grid-pro"
-// import { DataGrid } from "@mui/x-data-grid"
-// import { GRID_CHECKBOX_SELECTION_COL_DEF } from "@mui/x-data-grid"
 import { IcreActivityProps, PointMetadata, SharedIcreActivityPlotProps } from "./IcreActivity"
 import { OpenInNew } from "@mui/icons-material"
 import { Dispatch, SetStateAction} from "react"
@@ -96,7 +94,6 @@ const IcreActivityTable = ({ accession, selected, onSelectionChange, iCREActivit
   }
 
   const apiRef = useGridApiRef()
-
 
   const arraysAreEqual = (arr1: PointMetadata[], arr2: PointMetadata[]): boolean => {
     if (arr1.length !== arr2.length) {

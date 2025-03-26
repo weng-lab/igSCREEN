@@ -1,5 +1,4 @@
 import { GeneExpressionProps, PointMetadata, SharedGeneExpressionPlotProps } from "./GeneExpression"
-import { useGeneExpression } from "common/hooks/useGeneExpression"
 import VerticalBarPlot, { BarData, BarPlotProps } from "../../VerticalBarPlot"
 import { useMemo } from "react"
 import { getCellCategoryColor, getCellCategoryDisplayname } from "common/utility"
@@ -9,13 +8,12 @@ export type GeneExpressionBarPlotProps =
   SharedGeneExpressionPlotProps &
   Partial<BarPlotProps<PointMetadata>>
 
-const GeneExpressionBarPlot = ({name, id, selected, ...rest}: GeneExpressionBarPlotProps) => {
-  const { data, loading, error } = useGeneExpression({ id })
+const GeneExpressionBarPlot = ({name, id, selected, sortedFilteredData, ...rest}: GeneExpressionBarPlotProps) => {
 
   const plotData: BarData<PointMetadata>[] = useMemo(() => {
-    if (!data) return []
+    if (!sortedFilteredData) return []
     return (
-      data.map((x, i) => {
+      sortedFilteredData.map((x, i) => {
         const anySelected = selected.length > 0
         const isSelected = selected.some(y => y.name === x.name)
         return (
@@ -29,8 +27,8 @@ const GeneExpressionBarPlot = ({name, id, selected, ...rest}: GeneExpressionBarP
           }
         )
       })
-    ).sort((a,b) => b.value - a.value)
-  }, [data, selected])
+    )
+  }, [sortedFilteredData, selected])
 
   return(
     <VerticalBarPlot

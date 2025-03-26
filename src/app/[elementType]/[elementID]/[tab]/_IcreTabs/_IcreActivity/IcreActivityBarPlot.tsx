@@ -6,11 +6,9 @@ import { getCellCategoryColor, getCellCategoryDisplayname } from "common/utility
 export type IcreActivityBarPlotProps = 
   IcreActivityProps & 
   SharedIcreActivityPlotProps &
-  {
-    onBarClicked: BarPlotProps<PointMetadata>["onBarClicked"],
-  }
+  Partial<BarPlotProps<PointMetadata>>
 
-const IcreActivityBarPlot = ({accession, selected, onBarClicked, sortedFilteredData}: IcreActivityBarPlotProps) => {
+const IcreActivityBarPlot = ({accession, selected, sortedFilteredData, ...rest}: IcreActivityBarPlotProps) => {
 
   const plotData: BarData<PointMetadata>[] = useMemo(() => {
     if (!sortedFilteredData) return []
@@ -34,8 +32,8 @@ const IcreActivityBarPlot = ({accession, selected, onBarClicked, sortedFilteredD
 
   return(
     <VerticalBarPlot
+      {...rest}
       data={plotData}
-      onBarClicked={onBarClicked}
       topAxisLabel={`${accession} Z-scores`}
       show95thPercentileLine
       cutoffNegativeValues

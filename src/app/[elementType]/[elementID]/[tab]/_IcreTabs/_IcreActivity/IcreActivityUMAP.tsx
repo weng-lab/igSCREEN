@@ -1,6 +1,6 @@
 import { Box, Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, Stack, Typography } from "@mui/material"
 import { getCellCategoryColor, getCellCategoryDisplayname } from "common/utility"
-import { useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { interpolateYlOrRd } from "d3-scale-chromatic";
 import { Point, ScatterPlot, ChartProps } from "@weng-lab/psychscreen-ui-components"
 import { ParentSize } from "@visx/responsive"
@@ -42,6 +42,22 @@ const IcreActivityUMAP = <T extends PointMetadata>({ accession, selected, iCREAc
     },
     ref: graphContainerRef
   };
+
+  //prevent scroll on UMAP
+  useEffect(() => {
+    const handleWheel = (event: WheelEvent) => {
+      if (graphContainerRef.current && graphContainerRef.current.contains(event.target)) {
+        event.preventDefault(); // Prevent page scroll
+        // Your zoom logic here
+      }
+    };
+
+    document.addEventListener("wheel", handleWheel, { passive: false });
+
+    return () => {
+      document.removeEventListener("wheel", handleWheel);
+    };
+  }, []);
 
   //find the max logTPM for the domain fo the gradient
   const maxValue = useMemo(() => {
