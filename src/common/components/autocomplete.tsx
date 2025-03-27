@@ -14,6 +14,8 @@ export default function AutoComplete(props: Partial<GenomeSearchProps>) {
   const router = useRouter();
 
   const handleSearchSubmit = (r: Result) => {
+    props.onSearchSubmit?.(r);
+
     let url = "";
     switch (r.type) {
       case "Gene":
@@ -34,10 +36,10 @@ export default function AutoComplete(props: Partial<GenomeSearchProps>) {
 
   return (
     <GenomeSearch
+    {...props}
       assembly="GRCh38"
-      onSearchSubmit={handleSearchSubmit}
       queries={["Gene", "iCRE", "SNP", "Coordinate"]}
-      {...props}
+      onSearchSubmit={handleSearchSubmit}
     />
   );
 }
