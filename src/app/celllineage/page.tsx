@@ -50,8 +50,6 @@ import FlashOffOutlinedIcon from "@mui/icons-material/FlashOffOutlined";
 import FlashAutoIcon from "@mui/icons-material/FlashAuto";
 import UndoOutlinedIcon from "@mui/icons-material/UndoOutlined";
 import {
-  ArrowRight,
-  Circle,
   Download,
   ExpandMore,
   Sync,
@@ -68,11 +66,9 @@ import {
   DynamicCellTypeInfo,
 } from "./types";
 import { cellTypeStaticInfo } from "../../common/consts";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import MultiSelect from "./_components/multiselect";
 import { Instructions } from "./_components/instructions";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 type QueryGroup = {
   intersect?: CellQueryValue[][];
   exclude?: CellQueryValue[][];
@@ -90,17 +86,43 @@ export type CCRE_CLASS =
   | "dELS"
   | "PLS";
 
-const classDisplaynames: { [key in CCRE_CLASS]: string } = {
-  "CA-CTCF": "Chromatin Accessible with CTCF",
-  "CA-TF": "Chromatin Accessible with TF",
-  "CA-H3K4me3": "Chromatin Accessible with H3K4me3",
-  TF: "TF",
-  CA: "Chromatin Accessible Only",
-  pELS: "Proximal Enhancer-Like Signature",
-  dELS: "Distal Enhancer-Like Signature",
-  PLS: "Promoter-Like Signature",
-};
-
+const ccreClasses: {
+  label: string,
+  value: CCRE_CLASS
+}[] = [
+  {
+    label: "Chromatin Accessible with CTCF",
+    value: "CA-CTCF",
+  },
+  {
+    label: "Chromatin Accessible with TF",
+    value: "CA-TF",
+  },
+  {
+    label: "Chromatin Accessible with H3K4me3",
+    value: "CA-H3K4me3",
+  },
+  {
+    label: "Chromatin Accessible Only",
+    value: "CA",
+  },
+  {
+    label: "TF",
+    value: "TF",
+  },
+  {
+    label: "Proximal Enhancer-Like Signature",
+    value: "pELS",
+  },
+  {
+    label: "Distal Enhancer-Like Signature",
+    value: "dELS",
+  },
+  {
+    label: "Promoter-Like Signature",
+    value: "PLS",
+  },
+];
 /**
  * Initial configuration of the cell type tree
  * To break displayName into multiple lines in the tree, use '/' instead of a space
@@ -120,18 +142,10 @@ export default function UpSet() {
     [key: string]: QueryGroup;
   }>(null); //stores groupings used to generate query (for DL)
   const [downloading, setDownloading] = useState<boolean>(false);
-  const [checkboxClasses, setCheckboxClasses] = useState<{
-    [key in CCRE_CLASS]: boolean;
-  }>({
-    "CA-CTCF": true,
-    "CA-TF": true,
-    "CA-H3K4me3": true,
-    TF: true,
-    CA: true,
-    pELS: true,
-    dELS: true,
-    PLS: true,
-  });
+  // List of selected cCRE classes used in multi-select
+  const [selectedClasses, setSelectedClasses] = useState<Partial<typeof ccreClasses>>(ccreClasses);
+
+  // Snackbar popup state
   const [openSnackbar, setOpenSnackbar] = useState(false); //Snackbar is the popup alert component
   const [snackbarMessage, setSnackbarMessage] = useState(null);
 
@@ -543,11 +557,7 @@ export default function UpSet() {
         )
       )
     );
-    setUpSetClasses(
-      Object.entries(checkboxClasses)
-        .filter((x: [string, boolean]) => x[1])
-        .map((y: [string, boolean]) => y[0] as CCRE_CLASS)
-    );
+    setUpSetClasses(selectedClasses.map((v) => v.value));
     getCountData();
   };
 
@@ -642,72 +652,6 @@ export default function UpSet() {
       cellTypeStaticInfo[key].stimulable ? value.stimulated === "B" : true
   );
 
-  const groupCheckbox = (group: CCRE_CLASS, key: number) => {
-    return (
-      <FormControlLabel
-        key={key}
-        label={classDisplaynames[group]}
-        slotProps={{ typography: { maxWidth: "10rem" } }}
-        control={
-          <Checkbox
-            checked={checkboxClasses[group]}
-            onChange={(_, checked) =>
-              setCheckboxClasses({ ...checkboxClasses, [group]: checked })
-            }
-          />
-        }
-      />
-    );
-  };
-
-  const Checkboxes = () => (
-    <>
-      {/* <Typography variant="h6">Immune cCRE classes to Include:</Typography> */}
-      <FormControlLabel
-        label="All Classes"
-        control={
-          <Checkbox
-            checked={Object.values(checkboxClasses).every(
-              (val) => val === true
-            )}
-            indeterminate={
-              !Object.values(checkboxClasses).every(
-                (val) => val === checkboxClasses.CA
-              )
-            }
-            onChange={(_, checked) =>
-              setCheckboxClasses({
-                "CA-CTCF": checked,
-                "CA-TF": checked,
-                "CA-H3K4me3": checked,
-                TF: checked,
-                CA: checked,
-                pELS: checked,
-                dELS: checked,
-                PLS: checked,
-              })
-            }
-          />
-        }
-      />
-      <Box
-        sx={{
-          display: "flex",
-          flexWrap: "wrap",
-          flexDirection: "column",
-          ml: 3,
-          maxHeight: "12rem",
-          gap: "1rem",
-          alignContent: "flex-start",
-        }}
-      >
-        {Object.keys(checkboxClasses).map((group: CCRE_CLASS, i) =>
-          groupCheckbox(group, i)
-        )}
-      </Box>
-    </>
-  );
-
   const GenerateUpsetButton = () => (
     <Button
       loading={loading_count}
@@ -761,7 +705,9 @@ export default function UpSet() {
         justifyContent={"space-evenly"}
         alignItems={"center"}
         mb={-3}
-      ></Box>
+      >
+        {/* Butons go here eventually */}
+      </Box>
       {/* Buttons for generating and downloading the UpSet plot */}
       <Box
         display={"flex"}
@@ -777,17 +723,12 @@ export default function UpSet() {
           <DownloadUpsetButton />
         </Box>
         <MultiSelect
-          value={Object.keys(checkboxClasses).map((group) => ({
-            label: classDisplaynames[group],
-          }))}
-          options={Object.keys(checkboxClasses).map((group) => ({
-            label: classDisplaynames[group],
-          }))}
-          getOptionDisabled={() => false}
+          options={ccreClasses}
+          value={selectedClasses}
           onChange={(_, value) => {
-            setUpSetClasses(value.map((v) => v.label as CCRE_CLASS));
-            console.log(value.map((v) => v.label));
+            setSelectedClasses(value);
           }}
+          getOptionDisabled={() => false}
           placeholder="Filter iCRE classes"
           limitTags={2}
         />
@@ -796,32 +737,40 @@ export default function UpSet() {
       <Box
         display={"flex"}
         flexDirection={{
-          md: "row",
+          lg: "row",
+          md: "column-reverse",
           sm: "column-reverse",
+          xs: "column-reverse",
         }}
-        // justifyContent={"center"}
         alignItems={"flex-start"}
         width={"100%"}
         height={"100%"}
         sx={{
           padding: "10px",
         }}
+        gap={2}
       >
         <Box
           width={{
-            md: "50%",
+            lg: "50%",
+            md: "100%",
             sm: "100%",
+            xs: "100%",
           }}
           pt={{
-            md: "0",
+            lg: "0",
+            md: 2,
             sm: 2,
+            xs: 2,
           }}
+          pb={2}
           display={"flex"}
           flexDirection={"column"}
           justifyContent={"center"}
           alignSelf={"center"}
           sx={{
             height: "100%",
+            boxShadow: "0px 0px 10px 0px rgba(0, 0, 0, 0.1)",
           }}
         >
           {cellTypeTree}
@@ -829,11 +778,13 @@ export default function UpSet() {
         {data_count && (
           <Box
             sx={{
-              boxShadow: "0px 0px 10px 0px rgba(0, 0, 0, 0.15)",
+              boxShadow: "0px 0px 10px 0px rgba(0, 0, 0, 0.1)",
               borderRadius: "10px",
               width: {
-                md: "50%",
+                lg: "50%",
+                md: "100%",
                 sm: "100%",
+                xs: "100%",
               },
             }}
           >
@@ -955,65 +906,4 @@ function Buttons({
       </Button>
     </Stack>
   );
-}
-
-{
-  /* <>
-    <Grid2 container mt={3} ml={3} mr={3}>
-      <Grid2
-        container
-        justifyContent={"center"}
-        size={{
-          xs: 12,
-          xl: 5
-        }}>
-        <Box display={{ xs: "none", xl: "block" }}>
-          <HeaderAbout />
-          <Box>
-            <Checkboxes />
-            <GenerateUpsetButton />
-            <DownloadUpsetButton />
-            {noneSelected && !noneStimulated && <StimulationWarning />}
-            <Box>
-              <UpSetWithRef data_count={data_count} upSetWidth={upSetWidth} handleUpsetDownload={handleUpsetDownload} downloading={downloading} ref={svgRef} />
-            </Box>
-          </Box>
-        </Box>
-      </Grid2>
-      <Grid2
-        container
-        justifyContent={"center"}
-        size={{
-          xs: 12,
-          xl: 7
-        }}>
-        <Box>
-           On smaller screen display header on top 
-          <Box display={{ xs: "block", xl: "none" }}>
-            <HeaderAbout />
-          </Box>
-          {cellTypeTree}
-          On smaller screen display checkboxes and UpSet plot on bottom of tree
-          <Box justifyContent={"center"} display={{ xs: "block", xl: "none" }}>
-            <Checkboxes />
-            <GenerateUpsetButton />
-            <DownloadUpsetButton />
-            {noneSelected && !noneStimulated && <StimulationWarning />}
-            <Box>
-              {upSet} 
-              <UpSetWithRef data_count={data_count} upSetWidth={upSetWidth} handleUpsetDownload={handleUpsetDownload} downloading={downloading}  ref={svgRef} />
-            </Box>
-          </Box>
-        </Box>
-      </Grid2>
-    </Grid2>
-    <Snackbar
-      sx={{ "& .MuiSnackbarContent-message": { margin: "auto" } }}
-      open={openSnackbar}
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      autoHideDuration={2000}
-      onClose={handleCloseSnackbar}
-      message={snackbarMessage}
-    />
-  </>); */
 }

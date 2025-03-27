@@ -237,7 +237,7 @@ const MultiSelect = <
               sx={chipHidden && { opacity: 0.5 }}
               size="small"
               key={key}
-              label={isLabeledObject(option) ? option.label : option}
+              label={isLabeledObject(option) ? option.value.toString() : option}
               {...tagProps}
             />
           );
