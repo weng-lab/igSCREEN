@@ -1,11 +1,9 @@
 "use client";
-import { Box, Link, Button, Grid2, Typography } from "@mui/material";
+import { Box, Grid2, Typography } from "@mui/material";
 import { GenomeSearch, Result } from "@weng-lab/psychscreen-ui-components";
-import { formatPortal } from "common/utility";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { isValidGenomicElement } from "types/globalTypes";
-import Image from "next/image";
-import { ArrowForwardIos } from "@mui/icons-material";
 
 type PortalConfig = {
   image: string;
