@@ -12,6 +12,7 @@ export default function MobileMenu({pageLinks, drawerOpen, toggleDrawer}) {
                 <Box sx={{ width: 400, p: 2 }}>
                     <AutoComplete
                         style={{ width: "100%"}}
+                        onSearchSubmit={toggleDrawer(false)}
                         slots={{
                             button: (
                                 <IconButton sx={{ color: "black" }}>
