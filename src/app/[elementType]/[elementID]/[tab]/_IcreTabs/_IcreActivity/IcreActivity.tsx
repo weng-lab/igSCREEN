@@ -6,6 +6,7 @@ import { IcreActivityAssay, useIcreActivity, UseIcreActivityReturn } from "commo
 import IcreActivityBarPlot from "./IcreActivityBarPlot"
 import { FormControl, FormLabel, FormControlLabel, FormGroup, Checkbox } from "@mui/material"
 import IcreActivityUMAP from "./IcreActivityUMAP"
+import { BarChart, ScatterPlot } from "@mui/icons-material"
 
 
 export type IcreActivityProps = {
@@ -55,6 +56,7 @@ const IcreActivity = ({ accession }: IcreActivityProps) => {
       plots={[
         {
           tabTitle: "Bar Plot",
+          icon: <BarChart />,
           plotComponent:
             <IcreActivityBarPlot
               accession={accession}
@@ -66,6 +68,7 @@ const IcreActivity = ({ accession }: IcreActivityProps) => {
         },
         {
           tabTitle: "UMAP",
+          icon: <ScatterPlot />,
           plotComponent:
             <IcreActivityUMAP
               accession={accession}

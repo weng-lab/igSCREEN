@@ -6,6 +6,7 @@ import GeneExpressionUMAP from "./GeneExpressionUMAP"
 import GeneExpressionBarPlot from "./GeneExpressionBarPlot"
 import { BarData } from "../../VerticalBarPlot"
 import { useGeneExpression, UseGeneExpressionReturn } from "common/hooks/useGeneExpression"
+import { BarChart, ScatterPlot } from "@mui/icons-material"
 
 
 export type GeneExpressionProps = {
@@ -57,6 +58,7 @@ const GeneExpression = ({ name, id }: GeneExpressionProps) => {
         plots={[
           {
             tabTitle: "Bar Plot",
+            icon: <BarChart />,
             plotComponent:
               <GeneExpressionBarPlot
                 name={name}
@@ -69,6 +71,7 @@ const GeneExpression = ({ name, id }: GeneExpressionProps) => {
           },
           {
             tabTitle: "UMAP",
+            icon: <ScatterPlot />,
             plotComponent:
               <GeneExpressionUMAP
                 name={name}
