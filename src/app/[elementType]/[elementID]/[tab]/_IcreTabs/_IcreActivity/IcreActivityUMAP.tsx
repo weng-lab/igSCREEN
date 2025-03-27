@@ -13,7 +13,7 @@ export type IcreActivityUmapProps<T> =
   & SharedIcreActivityPlotProps
   & Partial<ChartProps<T>>
 
-const IcreActivityUMAP = <T extends PointMetadata>({ accession, selected, iCREActivitydata, ...rest }: IcreActivityUmapProps<T>) => {
+const IcreActivityUMAP = <T extends PointMetadata>({ accession, selected, sortedFilteredData,   iCREActivitydata, ...rest }: IcreActivityUmapProps<T>) => {
   const [colorScheme, setColorScheme] = useState<'Zscore' | 'lineage'>('Zscore');
   const [showLegend, setShowLegend] = useState<boolean>(true);
   const [assay, setAssay] = useState<'ATAC' | 'DNase' | 'Combined'>('Combined')
@@ -95,16 +95,24 @@ const IcreActivityUMAP = <T extends PointMetadata>({ accession, selected, iCREAc
   const scatterData: Point<PointMetadata>[] = useMemo(() => {
     if (!data) return []
     
-    const isHighlighted = (x: PointMetadata) => selected.some(y => y.name === x.name)
+    const isHighlighted = (d: PointMetadata) => selected.some(x => x.name === d.name)
 
     return data.map((x) => {
-      const gradientColor = interpolateYlOrRd(colorScale(x.value));
+      const gradientColor = interpolateYlOrRd(colorScale(x.value))
+
+      const getColor = () => {
+        if ((isHighlighted(x) || selected.length === 0)) {
+          if (colorScheme === 'Zscore'){
+            return gradientColor
+          } else return getCellCategoryColor(x.lineage)
+        } else return '#CCCCCC'
+      }
 
       return {
         x: assay === "Combined" ? x.umap_1 : assay === "ATAC" ? x.umap_atac_1 : x.umap_dnase_1,
         y: assay === "Combined" ? x.umap_2 : assay === "ATAC" ? x.umap_atac_2 : x.umap_dnase_2,
         r: isHighlighted(x) ? 6 : 4,
-        color: (isHighlighted(x) || selected.length === 0) ? ((colorScheme === 'Zscore') ? gradientColor : getCellCategoryColor(x.lineage)) : '#CCCCCC',
+        color: getColor(),
         shape: x.stimulation === "unstimulated" ? "circle" : "triangle" as "circle" | "triangle",
         metaData: x
       };
