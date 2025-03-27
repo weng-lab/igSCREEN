@@ -62,9 +62,7 @@ export default function PortalPage({
   return (
     <Grid2 container marginInline={5} marginTop={5}>
       <Grid2 size={12} display={"flex"} flexDirection={"column"}>
-        <Typography variant="h3" mb={2}>
-          {title} Portal
-        </Typography>
+        {/* Panel container */}
         <Grid2
           size={12}
           display={"flex"}
@@ -74,37 +72,53 @@ export default function PortalPage({
           }}
           justifyContent={"space-evenly"}
         >
+          {/* Left Panel */}
           <Grid2
             size={{
               xs: 12,
               md: 4,
+              lg: 3,
             }}
             display={"flex"}
             flexDirection={"column"}
-            justifyContent={"center"}
-            alignItems={"flex-start"}
+            justifyContent={"space-evenly"}
           >
-            <Typography mb={4}>{description}</Typography>
-            <GenomeSearch
-              assembly="GRCh38"
-              onSearchSubmit={handleSearchSubmit}
-              queries={[
-                elementType === "gene"
-                  ? "Gene"
-                  : elementType === "icre"
-                  ? "iCRE"
-                  : "SNP",
-              ]}
-              sx={{ width: "100%" }}
-            />
+            <Typography variant="h3">{title} Portal</Typography>
+            <Box
+              mb={4}
+              display={"flex"}
+              flexDirection={"column"}
+              alignItems={"flex-start"}
+            >
+              <Typography mb={4}>{description}</Typography>
+              <GenomeSearch
+                assembly="GRCh38"
+                onSearchSubmit={handleSearchSubmit}
+                queries={[
+                  elementType === "gene"
+                    ? "Gene"
+                    : elementType === "icre"
+                    ? "iCRE"
+                    : "SNP",
+                ]}
+                sx={{ width: "100%" }}
+              />
+            </Box>
           </Grid2>
+          {/* Right Panel */}
           <Grid2
             size={{
               xs: 12,
               md: 6,
             }}
             position="relative"
-            sx={{ height: "400px" }}
+            sx={{
+              height: {
+                lg: "600px",
+                md: "400px",
+                xs: "400px",
+              },
+            }}
           >
             <Image
               style={{ objectFit: "contain", objectPosition: "center" }}
@@ -114,6 +128,7 @@ export default function PortalPage({
             />
           </Grid2>
         </Grid2>
+        {/* Content container */}
         <Grid2
           size={12}
           display="flex"
