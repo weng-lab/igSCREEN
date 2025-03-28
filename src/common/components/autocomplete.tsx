@@ -6,15 +6,24 @@ import {
 } from "@weng-lab/psychscreen-ui-components";
 import { useRouter } from "next/navigation";
 
+export type AutoCompleteProps =
+  Partial<GenomeSearchProps> & 
+  {
+    closeDrawer?: () => void
+  }
+
 /**
  * Redirects the user to the a new page based on the search result
  * @param props - The props for the GenomeSearch component
  */
-export default function AutoComplete(props: Partial<GenomeSearchProps>) {
+export default function AutoComplete({closeDrawer, ...props}: AutoCompleteProps) {
   const router = useRouter();
 
   const handleSearchSubmit = (r: Result) => {
-    props.onSearchSubmit?.(r);
+    //needed to trigger closing the mobile menu drawer
+    if (closeDrawer) {
+      closeDrawer()
+    }
 
     let url = "";
     switch (r.type) {
@@ -36,10 +45,16 @@ export default function AutoComplete(props: Partial<GenomeSearchProps>) {
 
   return (
     <GenomeSearch
-    {...props}
+      {...props}
       assembly="GRCh38"
       queries={["Gene", "iCRE", "SNP", "Coordinate"]}
       onSearchSubmit={handleSearchSubmit}
+      //This is needed to prevent the enter key press from triggering the onClick of the Menu IconButton
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+        }
+      }}
     />
   );
 }

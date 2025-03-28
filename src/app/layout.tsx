@@ -6,6 +6,7 @@ import { theme } from "./theme"
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 import { ApolloWrapper } from "common/apollo/apollo-wrapper"
 import { Suspense } from "react"
+import MuiXLicense from "common/MuiXLicense";
 
 export const metadata = {
   title: "igSCREEN: Search Immune Candidate cis-Regulatory Elements by ENCODE",
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </AppRouterCacheProvider>
           </ApolloWrapper>
         </Suspense>
+        <MuiXLicense />
       </body>
     </html>
   )
