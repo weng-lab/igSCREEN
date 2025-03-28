@@ -19,7 +19,7 @@ import MenuIcon from "@mui/icons-material/Menu"
 import { useState } from "react";
 import MobileMenu from "./MobileMenu";
 
-type PageInfo = {
+export type PageInfo = {
   pageName: string,
   link: string,
   dropdownID?: number,
@@ -56,7 +56,8 @@ const ResponsiveAppBar = () => {
   const [anchorDropdown0, setAnchorDropdown0] = useState<null | HTMLElement>(null)
   const [anchorDropdown1, setAnchorDropdown1] = useState<null | HTMLElement>(null)
 
-  const toggleDrawer = (open) => () => {
+  const toggleDrawer = (open: boolean) => {
+    console.log("called with: ", open)
     setDrawerOpen(open);
   };
 
@@ -226,7 +227,10 @@ const ResponsiveAppBar = () => {
             <Box display={{ xs: "flex", md: "none" }} alignItems={"center"} gap={2}>
               <IconButton
                 size="large"
-                onClick={toggleDrawer(true)}
+                onClick={() => {
+                  console.log("icon setting drawer open")
+                  toggleDrawer(true)
+                }}
                 color="inherit"
               >
                 <MenuIcon />
