@@ -68,7 +68,8 @@ export default function PortalPage({
             xs: "column",
             md: "row",
           }}
-          justifyContent={"space-evenly"}
+          justifyContent={"center"}
+          spacing={2}
         >
           {/* Left Panel */}
           <Grid2
@@ -83,12 +84,11 @@ export default function PortalPage({
           >
             <Typography variant="h3">{title} Portal</Typography>
             <Box
-              mb={4}
               display={"flex"}
               flexDirection={"column"}
               alignItems={"flex-start"}
             >
-              <Typography mb={4}>{description}</Typography>
+              <Typography mb={2}>{description}</Typography>
               <GenomeSearch
                 assembly="GRCh38"
                 onSearchSubmit={handleSearchSubmit}
@@ -112,9 +112,9 @@ export default function PortalPage({
             position="relative"
             sx={{
               height: {
-                lg: "600px",
-                md: "400px",
-                xs: "400px",
+                lg: "350px",
+                md: "250px",
+                xs: "200px",
               },
             }}
           >
@@ -131,7 +131,8 @@ export default function PortalPage({
           size={12}
           display="flex"
           flexDirection="row"
-          justifyContent="space-evenly"
+          justifyContent="center"
+          spacing={2}
         >
           {/* MORE CONTENT HERE */}
         </Grid2>
