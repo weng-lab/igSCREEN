@@ -1,7 +1,16 @@
 "use client";
 import { Search } from "@mui/icons-material";
 import EditIcon from "@mui/icons-material/Edit";
-import { Box, Button, IconButton } from "@mui/material";
+import {
+  Box,
+  Button,
+  DialogTitle,
+  Dialog,
+  IconButton,
+  DialogContent,
+  DialogContentText,
+  Typography,
+} from "@mui/material";
 import Grid2 from "@mui/material/Grid2";
 import { useTheme } from "@mui/material/styles";
 import {
@@ -18,11 +27,7 @@ import {
   useBrowserState,
 } from "@weng-lab/genomebrowser";
 import { GenomeSearch, Result } from "@weng-lab/psychscreen-ui-components";
-import React, {
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Rect } from "umms-gb/dist/components/tracks/bigbed/types";
 import { CellQueryValue } from "../../app/celllineage/types";
 import { getCellColor, getCellDisplayName } from "../../app/celllineage/utils";
@@ -32,11 +37,14 @@ import { GenomicRange } from "./types";
 import ControlButtons from "./controls";
 import { useElementMetadataReturn } from "common/hooks/useElementMetadata";
 import { GenomicElementType } from "types/globalTypes";
+import HighlightIcon from "@mui/icons-material/Highlight";
+import DeleteIcon from "@mui/icons-material/Delete";
+import HighlightDialog, { GBHighlight } from "./highlightDialog";
 
 function expandCoordinates(coordinates: GenomicRange) {
   let length = coordinates.end - coordinates.start;
-  if (length <= 100) { 
-    length = 100
+  if (length <= 100) {
+    length = 100;
   }
   const padding = Math.floor(length * 0.25);
   return {
@@ -46,7 +54,15 @@ function expandCoordinates(coordinates: GenomicRange) {
   };
 }
 
-export default function GenomeBrowserView({ coordinates, name, type }: { coordinates: GenomicRange, name: string, type: GenomicElementType }) {
+export default function GenomeBrowserView({
+  coordinates,
+  name,
+  type,
+}: {
+  coordinates: GenomicRange;
+  name: string;
+  type: GenomicElementType;
+}) {
   const [browserState, browserDispatch] = useBrowserState({
     domain: expandCoordinates(coordinates),
     width: 1500,
@@ -55,17 +71,20 @@ export default function GenomeBrowserView({ coordinates, name, type }: { coordin
   });
 
   // Bed track mouse over, out, and click handlers
-  const icreMouseOver = useCallback((item: Rect) => {
-    const newHighlight = {
-      domain: { start: item.start + 150, end: item.end + 150 },
-      color: item.color || "red",
-      id: item.name,
-    };
-    browserDispatch({
-      type: BrowserActionType.ADD_HIGHLIGHT,
-      highlight: newHighlight,
-    });
-  }, [browserDispatch]);
+  const icreMouseOver = useCallback(
+    (item: Rect) => {
+      const newHighlight = {
+        domain: { start: item.start + 150, end: item.end + 150 },
+        color: item.color || "red",
+        id: item.name,
+      };
+      browserDispatch({
+        type: BrowserActionType.ADD_HIGHLIGHT,
+        highlight: newHighlight,
+      });
+    },
+    [browserDispatch]
+  );
   const icreMouseOut = useCallback(() => {
     browserDispatch({ type: BrowserActionType.REMOVE_LAST_HIGHLIGHT });
   }, [browserDispatch]);
@@ -94,10 +113,18 @@ export default function GenomeBrowserView({ coordinates, name, type }: { coordin
           end: coordinates.end,
         },
         color: "blue",
-        id: "initial-search-highlight",
+        id: name,
       },
     });
-  }, [coordinates, name, type, icreMouseOver, icreMouseOut, onIcreClick, browserDispatch]);
+  }, [
+    coordinates,
+    name,
+    type,
+    icreMouseOver,
+    icreMouseOut,
+    onIcreClick,
+    browserDispatch,
+  ]);
 
   // Bulk ATAC Modal
   const [settingsModalShown, setSettingsModalShown] = useState(false);
@@ -156,16 +183,18 @@ export default function GenomeBrowserView({ coordinates, name, type }: { coordin
         },
       });
     }
-    browserDispatch({
-      type: BrowserActionType.REMOVE_HIGHLIGHT,
-      id: "secondary-search-highlight",
-    });
+    // Only remove if there is more than one highlight
+    if (browserState.highlights.length > 1) {
+      browserDispatch({
+        type: BrowserActionType.REMOVE_LAST_HIGHLIGHT,
+      });
+    }
     browserDispatch({
       type: BrowserActionType.ADD_HIGHLIGHT,
       highlight: {
         domain: r.domain,
         color: "red",
-        id: "secondary-search-highlight",
+        id: r.title,
       },
     });
     browserDispatch({
@@ -175,11 +204,11 @@ export default function GenomeBrowserView({ coordinates, name, type }: { coordin
   };
 
   const theme = useTheme();
-
+  const [highlightDialogOpen, setHighlightDialogOpen] = useState(false);
   return (
     <Grid2
       container
-      spacing={3}
+      spacing={2}
       sx={{ mt: "0rem", mb: "1rem" }}
       justifyContent="center"
       alignItems="center"
@@ -233,18 +262,28 @@ export default function GenomeBrowserView({ coordinates, name, type }: { coordin
               },
             }}
           />
-          <Button
-            variant="contained"
-            startIcon={<EditIcon />}
-            size="small"
-            sx={{
-              backgroundColor: theme.palette.primary.main,
-              color: "white",
-            }}
-            onClick={() => setSettingsModalShown(true)}
-          >
-            Add more ATAC-seq data
-          </Button>
+          <Box display="flex" gap={2}>
+            <Button
+              variant="contained"
+              startIcon={<HighlightIcon />}
+              size="small"
+              onClick={() => setHighlightDialogOpen(true)}
+            >
+              View Current Highlights
+            </Button>
+            <Button
+              variant="contained"
+              startIcon={<EditIcon />}
+              size="small"
+              sx={{
+                backgroundColor: theme.palette.primary.main,
+                color: "white",
+              }}
+              onClick={() => setSettingsModalShown(true)}
+            >
+              Add more ATAC-seq data
+            </Button>
+          </Box>
         </Box>
         <BulkAtacModal
           open={settingsModalShown}
@@ -296,8 +335,12 @@ export default function GenomeBrowserView({ coordinates, name, type }: { coordin
           display: "flex",
           justifyContent: "flex-end",
         }}
-      >
-      </Box>
+      ></Box>
+      <HighlightDialog
+        open={highlightDialogOpen}
+        setOpen={setHighlightDialogOpen}
+        highlights={browserState.highlights as GBHighlight[]}
+      />
     </Grid2>
   );
 }
