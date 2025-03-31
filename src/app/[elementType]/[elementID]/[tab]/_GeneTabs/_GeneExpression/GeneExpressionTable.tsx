@@ -1,18 +1,20 @@
-import { useGeneExpression } from "common/hooks/useGeneExpression"
-import { GeneExpressionProps, PointMetadata } from "./GeneExpression"
-import { CircularProgress, IconButton, Link } from "@mui/material"
+import { GeneExpressionProps, PointMetadata, SharedGeneExpressionPlotProps } from "./GeneExpression"
+import { IconButton, Link } from "@mui/material"
 import { getCellCategoryDisplayname, getStudyLink } from "common/utility"
-import { DataGrid, GridColDef, GridRowSelectionModel, GridToolbar } from "@mui/x-data-grid"
-import { GRID_CHECKBOX_SELECTION_COL_DEF } from "@mui/x-data-grid"
+import { GridColDef, gridFilteredSortedRowEntriesSelector, GridRowSelectionModel, GridToolbar, useGridApiRef, GRID_CHECKBOX_SELECTION_COL_DEF, DataGridPro } from "@mui/x-data-grid-pro"
 import { OpenInNew } from "@mui/icons-material"
+import { Dispatch, SetStateAction } from "react"
 
-export type GeneExpressionTableProps = GeneExpressionProps & {
+export type GeneExpressionTableProps = 
+GeneExpressionProps & 
+SharedGeneExpressionPlotProps &
+{
   onSelectionChange: (selected: PointMetadata[]) => void,
-  selected: PointMetadata[]
+  setSortedFilteredData: Dispatch<SetStateAction<PointMetadata[]>>
 }
 
-const GeneExpressionTable = ({name, id, selected, onSelectionChange}: GeneExpressionTableProps) => {
-  const { data, loading, error } = useGeneExpression({ id })
+const GeneExpressionTable = ({name, id, selected, onSelectionChange, geneExpressionData, setSortedFilteredData, sortedFilteredData}: GeneExpressionTableProps) => {
+  const { data, loading, error } = geneExpressionData
 
   //This is used to prevent sorting from happening when clicking on the header checkbox
   const StopPropagationWrapper = (params) =>
@@ -87,14 +89,35 @@ const GeneExpressionTable = ({name, id, selected, onSelectionChange}: GeneExpres
     onSelectionChange(selectedRows)
   }
 
+  const apiRef = useGridApiRef()
+
+    const arraysAreEqual = (arr1: PointMetadata[], arr2: PointMetadata[]): boolean => {
+      if (arr1.length !== arr2.length) {
+        return false
+      }
+    
+      for (let i = 0; i < arr1.length; i++) {
+        if (arr1[i].name !== arr2[i].name) {
+          return false
+        }
+      }
+      return true
+    };
+  
+    const handleSync = () => {
+      const rows = gridFilteredSortedRowEntriesSelector(apiRef).map(x => x.model) as PointMetadata[]
+      if (!arraysAreEqual(sortedFilteredData, rows)) {
+        setSortedFilteredData(rows)
+      }
+    }
+
   return (
-    <>
-      {loading ?
-        <CircularProgress />
-        :
-        <DataGrid
-          rows={[...data].sort((a,b) => b.value - a.value)}
+        <DataGridPro
+          apiRef={apiRef}
+          rows={data || []}
           columns={columns.map(col => { return { ...col, display: 'flex' } })}
+          loading={loading}
+          pagination
           initialState={{
             pagination: {
               paginationModel: {
@@ -112,17 +135,16 @@ const GeneExpressionTable = ({name, id, selected, onSelectionChange}: GeneExpres
           }}
           sortingOrder={['desc', 'asc', null]}
           slots={{ toolbar: GridToolbar }}
-          slotProps={{ toolbar: { showQuickFilter: true } }}
+          slotProps={{ toolbar: { showQuickFilter: true, sx: {p: 1} } }}
           pageSizeOptions={[10, 25, 50]}
           checkboxSelection
           onRowSelectionModelChange={handleRowSelectionModelChange}
           rowSelectionModel={selected.map(x => x.name)}
-          disableRowSelectionOnClick
-          getRowHeight={() => 'auto'}
           getRowId={(row) => row.name}
+          getRowHeight={() => 'auto'}
           keepNonExistentRowsSelected //needed to prevent clearing selections on changing filters
-        />}
-    </>
+          onStateChange={handleSync}
+        />
   )
 }
 
