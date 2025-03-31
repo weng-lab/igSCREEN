@@ -1,8 +1,7 @@
 'use client'
 import { CircularProgress, Typography } from "@mui/material"
 import NearbyGenomicFeatures from "app/[elementType]/[elementID]/[tab]/_SharedTabs/NearbyGenomicFeatures"
-import { GenomeBrowserView } from "common/gbview/genomebrowserview"
-import { GenomicRange } from "common/gbview/types"
+import GenomeBrowserView from "common/gbview/genomebrowserview"
 import { useElementMetadata, useElementMetadataReturn } from "common/hooks/useElementMetadata"
 import { GenomicElementType, isValidGeneTab, isValidIcreTab, isValidSnpTab, isValidTab } from "types/globalTypes"
 import SnpEQTLs from "./_SnpTabs/SnpEQTLs"
@@ -44,19 +43,8 @@ export default function DetailsPage({
     return <NearbyGenomicFeatures coordinates={elementMetadata.coordinates} elementID={elementID} elementType={elementType} />
   }
   if (tab === "browser") {
-    /**
-     * @todo not properly passing in element details for highlight yet
-     */
-    const highlight = {
-      domain: {
-        chromosome: elementMetadata.coordinates.chromosome,
-        start: elementMetadata.coordinates.start,
-        end: elementMetadata.coordinates.end,
-      },
-      color: "red",
-      id: "test",
-    }
-    return <GenomeBrowserView assembly="GRCh38" highlights={[highlight]} coordinates={elementMetadata.coordinates} gene={elementMetadata.__typename === "Gene" ? elementMetadata.name : undefined} />
+    const elementType = elementMetadata.__typename === "Gene" ? "gene" : elementMetadata.__typename === "ICRE" ? "icre" : "snp"
+    return <GenomeBrowserView coordinates={elementMetadata.coordinates} name={elementMetadata.__typename === "Gene" ? elementMetadata.name : elementMetadata.__typename === "ICRE" ? elementMetadata.accession : elementMetadata.id} type={elementType as GenomicElementType} />
   }
 
   switch (elementType) {
