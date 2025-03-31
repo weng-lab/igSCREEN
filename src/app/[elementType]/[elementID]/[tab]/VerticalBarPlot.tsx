@@ -93,7 +93,7 @@ const VerticalBarPlot = <T,>({
   const spaceOnBottom = 20
 
   // X padding
-  const spaceForCategory = 120
+  const spaceForCategory = 130
   const gapBetweenTextAndBar = 10
 
   /**
@@ -196,7 +196,7 @@ const VerticalBarPlot = <T,>({
               labelProps={{ dy: -5, fontSize: 14, fontFamily: fontFamily }}
               numTicks={ParentWidth < 700 ? 4 : undefined}
               tickFormat={(value: number, index: number) => {
-                if (index === 0 && cutoffNegativeValues && data.some(d => d.value <= negativeCutoff)) {
+                if (index === 0 && value < 0 && cutoffNegativeValues && data.some(d => d.value <= negativeCutoff)) {
                   return "Low Signal"
                 } else return value.toString()
               }}

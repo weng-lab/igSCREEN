@@ -1,6 +1,6 @@
 import { useGeneExpression } from "common/hooks/useGeneExpression"
 import { GeneExpressionProps, PointMetadata, SharedGeneExpressionPlotProps } from "./GeneExpression"
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from "@mui/material"
+import { Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Stack, Typography } from "@mui/material"
 import { getCellCategoryColor, getCellCategoryDisplayname } from "common/utility"
 import { useMemo, useRef, useState } from "react"
 import { interpolateYlOrRd } from "d3-scale-chromatic";
@@ -13,11 +13,11 @@ export type GeneExpressionUmapProps<T> =
   SharedGeneExpressionPlotProps &
   Partial<ChartProps<T>>
 
-const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selected, ...rest }: GeneExpressionUmapProps<T>) => {
+const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selected, geneExpressionData, ...rest }: GeneExpressionUmapProps<T>) => {
   const [colorScheme, setColorScheme] = useState<'expression' | 'lineage'>('expression');
   const [showLegend, setShowLegend] = useState<boolean>(true);
 
-  const { data, loading, error } = useGeneExpression({ id })
+  const { data, loading, error } = geneExpressionData
 
   const handleColorSchemeChange = (
     event: SelectChangeEvent,
@@ -115,9 +115,9 @@ const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selected, ...re
     )
   }
 
-  return (
-    <Box>
-      <FormControl sx={{ mb: 2 }}>
+  const ColorBySelect = () => {
+    return (
+      <FormControl sx={{alignSelf: "flex-start"}}>
         <InputLabel>Color By</InputLabel>
         <Select
           labelId="demo-simple-select-label"
@@ -125,12 +125,18 @@ const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selected, ...re
           value={colorScheme}
           label="Color By"
           onChange={handleColorSchemeChange}
-          MenuProps={{disableScrollLock: true}}
+          MenuProps={{ disableScrollLock: true }}
         >
           <MenuItem value={"expression"}>Expression</MenuItem>
           <MenuItem value={"lineage"}>Lineage</MenuItem>
         </Select>
       </FormControl>
+    )
+  }
+
+  return (
+    <Stack spacing={2}>
+      <ColorBySelect />
       <Box padding={1} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, position: "relative" }} ref={graphContainerRef}>
         <ParentSize>
           {({ width, height }) => {
@@ -205,7 +211,7 @@ const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selected, ...re
             )}
           </Box>
       )}
-    </Box>
+    </Stack>
   )
 }
 

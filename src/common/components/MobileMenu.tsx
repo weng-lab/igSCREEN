@@ -4,15 +4,28 @@ import { Box, Button, Divider, Drawer, IconButton, List, ListItem } from "@mui/m
 import MuiLink from "@mui/material/Link"
 import AutoComplete from "./autocomplete"
 import Link from "next/link";
+import { PageInfo } from "./HomeAppBar"
 
-export default function MobileMenu({pageLinks, drawerOpen, toggleDrawer}) {
+export type MobileMenuProps = {
+    pageLinks: PageInfo[]
+    drawerOpen: boolean
+    toggleDrawer: (open: boolean) => void
+}
+
+export default function MobileMenu({pageLinks, drawerOpen, toggleDrawer}: MobileMenuProps) {
+    
+    const closeDrawer = () => {
+        console.log("closeDrawer called in MobileMenu")
+        toggleDrawer(false)
+    }
+    
     return (
         <>
-            <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
+            <Drawer anchor="right" open={drawerOpen} onClose={closeDrawer}>
                 <Box sx={{ width: 400, p: 2 }}>
                     <AutoComplete
                         style={{ width: "100%"}}
-                        onSearchSubmit={toggleDrawer(false)}
+                        closeDrawer={closeDrawer}
                         slots={{
                             button: (
                                 <IconButton sx={{ color: "black" }}>
@@ -32,7 +45,7 @@ export default function MobileMenu({pageLinks, drawerOpen, toggleDrawer}) {
                                 },
                             },
                             button: {
-                                onClick: toggleDrawer(false)
+                                onClick: closeDrawer
                             }
                         }}
                     />
@@ -41,7 +54,7 @@ export default function MobileMenu({pageLinks, drawerOpen, toggleDrawer}) {
                     <List>
                         {pageLinks.slice().reverse().map((page) => (
                             <Box key={page.pageName} sx={{ mb: 1 }}>
-                                <ListItem onClick={toggleDrawer(false)}>
+                                <ListItem onClick={closeDrawer}>
                                     <MuiLink
                                         component={Link}
                                         href={page.link}
@@ -58,7 +71,7 @@ export default function MobileMenu({pageLinks, drawerOpen, toggleDrawer}) {
                                 {page.subPages && (
                                     <List sx={{ pl: 2 }}>
                                         {page.subPages.map((subPage) => (
-                                            <ListItem key={subPage.pageName} sx={{ py: 0 }} onClick={toggleDrawer(false)}>
+                                            <ListItem key={subPage.pageName} sx={{ py: 0 }} onClick={closeDrawer}>
                                                 <MuiLink component={Link} href={subPage.link} sx={{ color: "gray", textTransform: "none" }}>
                                                     {subPage.pageName}
                                                 </MuiLink>
