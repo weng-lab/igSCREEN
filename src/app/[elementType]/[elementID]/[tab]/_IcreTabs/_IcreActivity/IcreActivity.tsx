@@ -1,10 +1,9 @@
 import TwoPaneLayout from "../../TwoPaneLayout"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { BarData } from "../../VerticalBarPlot"
 import IcreActivityTable from "./IcreActivityTable"
-import { IcreActivityAssay, useIcreActivity, UseIcreActivityReturn } from "common/hooks/useIcreActivity"
+import { useIcreActivity, UseIcreActivityReturn } from "common/hooks/useIcreActivity"
 import IcreActivityBarPlot from "./IcreActivityBarPlot"
-import { FormControl, FormLabel, FormControlLabel, FormGroup, Checkbox } from "@mui/material"
 import IcreActivityUMAP from "./IcreActivityUMAP"
 import { BarChart, ScatterPlot } from "@mui/icons-material"
 
@@ -25,7 +24,7 @@ const IcreActivity = ({ accession }: IcreActivityProps) => {
   const [selected, setSelected] = useState<PointMetadata[]>([])
   const [sortedFilteredData, setSortedFilteredData] = useState<PointMetadata[]>([])
 
-  const iCREActivitydata = useIcreActivity({ accession, assays: ['ATAC', 'DNase'] })
+  const iCREActivitydata = useIcreActivity({ accession })
 
   const handlePointsSelected = (pointsInfo: PointMetadata[]) => {
     setSelected([...selected, ...pointsInfo])

@@ -11,6 +11,6 @@ export default function iCREs({
   const region = parseGenomicRangeString(params.region)
 
   return (
-    <IntersectingiCREs region={region} />
+    <IntersectingiCREs coordinates={region} />
   )
 }

@@ -3,7 +3,7 @@ import { gql } from "types/generated/gql";
 import { IcresZscoresQuery } from "types/generated/graphql";
 
 const GET_ICRE_ACTIVITY = gql(`
-  query IcresZscores($accession: String!) {
+  query IcresZscores($accession: [String]!) {
     immuneiCREsUmapQuery(accession: $accession) {
       source
       value
@@ -27,15 +27,13 @@ const GET_ICRE_ACTIVITY = gql(`
       chromosome
       end
       stimulation
+      accession
     }
   }
 `)
 
-export type IcreActivityAssay = 'ATAC' | 'DNase'
-
 export type UseIcreActivityParams = {
-  accession: string,
-  assays: IcreActivityAssay[]
+  accession: string | string[],
 }
 
 export type UseIcreActivityReturn = {
@@ -44,7 +42,7 @@ export type UseIcreActivityReturn = {
   error: ApolloError
 }
 
-export const useIcreActivity = ({ accession, assays }: UseIcreActivityParams): UseIcreActivityReturn => {
+export const useIcreActivity = ({ accession }: UseIcreActivityParams): UseIcreActivityReturn => {
 
   const { data, loading, error } = useQuery(
     GET_ICRE_ACTIVITY,
@@ -52,11 +50,12 @@ export const useIcreActivity = ({ accession, assays }: UseIcreActivityParams): U
       variables: {
         accession
       },
-    }
+      skip: !accession || accession.length === 0
+    },
   );
 
   return {
-    data: data?.immuneiCREsUmapQuery.filter(x => assays.includes(x.assay as IcreActivityAssay)),
+    data: data?.immuneiCREsUmapQuery,
     loading,
     error,
   }
