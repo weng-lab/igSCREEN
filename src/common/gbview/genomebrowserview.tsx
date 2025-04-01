@@ -1,16 +1,8 @@
 "use client";
 import { Search } from "@mui/icons-material";
 import EditIcon from "@mui/icons-material/Edit";
-import {
-  Box,
-  Button,
-  DialogTitle,
-  Dialog,
-  IconButton,
-  DialogContent,
-  DialogContentText,
-  Typography,
-} from "@mui/material";
+import HighlightIcon from "@mui/icons-material/Highlight";
+import { Box, Button, IconButton } from "@mui/material";
 import Grid2 from "@mui/material/Grid2";
 import { useTheme } from "@mui/material/styles";
 import {
@@ -27,19 +19,15 @@ import {
   useBrowserState,
 } from "@weng-lab/genomebrowser";
 import { GenomeSearch, Result } from "@weng-lab/psychscreen-ui-components";
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { GenomicElementType } from "types/globalTypes";
 import { Rect } from "umms-gb/dist/components/tracks/bigbed/types";
 import { CellQueryValue } from "../../app/celllineage/types";
 import { getCellColor, getCellDisplayName } from "../../app/celllineage/utils";
-import AutoComplete from "../components/autocomplete";
 import BulkAtacModal from "./bulkAtacSelector";
-import { GenomicRange } from "./types";
 import ControlButtons from "./controls";
-import { useElementMetadataReturn } from "common/hooks/useElementMetadata";
-import { GenomicElementType } from "types/globalTypes";
-import HighlightIcon from "@mui/icons-material/Highlight";
-import DeleteIcon from "@mui/icons-material/Delete";
 import HighlightDialog, { GBHighlight } from "./highlightDialog";
+import { GenomicRange } from "./types";
 
 function expandCoordinates(coordinates: GenomicRange) {
   let length = coordinates.end - coordinates.start;
@@ -69,6 +57,7 @@ export default function GenomeBrowserView({
     tracks: [],
     highlights: [],
   });
+  const theme = useTheme();
 
   // Bed track mouse over, out, and click handlers
   const icreMouseOver = useCallback(
@@ -112,7 +101,7 @@ export default function GenomeBrowserView({
           start: coordinates.start,
           end: coordinates.end,
         },
-        color: "blue",
+        color: "#ff00a7",
         id: name,
       },
     });
@@ -193,7 +182,7 @@ export default function GenomeBrowserView({
       type: BrowserActionType.ADD_HIGHLIGHT,
       highlight: {
         domain: r.domain,
-        color: "red",
+        color: "#00ff04",
         id: r.title,
       },
     });
@@ -203,7 +192,6 @@ export default function GenomeBrowserView({
     });
   };
 
-  const theme = useTheme();
   const [highlightDialogOpen, setHighlightDialogOpen] = useState(false);
   return (
     <Grid2
