@@ -1,5 +1,11 @@
 import { CellName, CellTypeStaticInfo } from "../app/celllineage/types"
 
+export const studyLinks = {
+  "Calderon..Pritchard 2019": "https://doi.org/10.1038/s41588-019-0505-9",
+  "Corces..Chang 2016": "https://doi.org/10.1038/ng.3646",
+  "ENCODE": "https://www.encodeproject.org/"
+}
+
 export const cellCategoryColors = {
   Bcells: "#078fff",
   Bulk_Tcells: "#e06666",

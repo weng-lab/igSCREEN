@@ -1,22 +1,30 @@
 import TwoPaneLayout from "../../TwoPaneLayout"
-import { GeneExpressionQuery } from "types/generated/graphql"
 import { useState } from "react"
 import { BarData } from "../../VerticalBarPlot"
 import IcreActivityTable from "./IcreActivityTable"
+import { useIcreActivity, UseIcreActivityReturn } from "common/hooks/useIcreActivity"
+import IcreActivityBarPlot from "./IcreActivityBarPlot"
+import IcreActivityUMAP from "./IcreActivityUMAP"
+import { BarChart, ScatterPlot } from "@mui/icons-material"
 
 
 export type IcreActivityProps = {
   accession: string,
 }
 
-// export type PointMetadata = GeneExpressionQuery["immuneRnaUmapQuery"][0]
-/**
- * @todo create data fetching hook, and put correct type of data here
- */
-export type PointMetadata = any
+export type PointMetadata = UseIcreActivityReturn["data"][number]
+
+export type SharedIcreActivityPlotProps = {
+  selected: PointMetadata[],
+  iCREActivitydata: UseIcreActivityReturn,
+  sortedFilteredData: PointMetadata[]
+}
 
 const IcreActivity = ({ accession }: IcreActivityProps) => {
   const [selected, setSelected] = useState<PointMetadata[]>([])
+  const [sortedFilteredData, setSortedFilteredData] = useState<PointMetadata[]>([])
+
+  const iCREActivitydata = useIcreActivity({ accession })
 
   const handlePointsSelected = (pointsInfo: PointMetadata[]) => {
     setSelected([...selected, ...pointsInfo])
@@ -37,33 +45,40 @@ const IcreActivity = ({ accession }: IcreActivityProps) => {
       TableComponent={
         <IcreActivityTable
           accession={accession}
+          selected={selected}
           onSelectionChange={handleSelectionChange}
-          selected={[]}
+          sortedFilteredData={sortedFilteredData}
+          setSortedFilteredData={setSortedFilteredData}
+          iCREActivitydata={iCREActivitydata}
         />
+      }
+      plots={[
+        {
+          tabTitle: "Bar Plot",
+          icon: <BarChart />,
+          plotComponent:
+            <IcreActivityBarPlot
+              accession={accession}
+              selected={selected}
+              sortedFilteredData={sortedFilteredData}
+              iCREActivitydata={iCREActivitydata}
+              onBarClicked={handleBarClick}
+            />
+        },
+        {
+          tabTitle: "UMAP",
+          icon: <ScatterPlot />,
+          plotComponent:
+            <IcreActivityUMAP
+              accession={accession}
+              sortedFilteredData={sortedFilteredData}
+              iCREActivitydata={iCREActivitydata}
+              selected={selected}
+              onSelectionChange={(points) => handlePointsSelected(points.map(x => x.metaData))}
+            />
         }
-        plots={[
-          // {
-          //   tabTitle: "Bar Plot",
-          //   plotComponent:
-          //     <GeneExpressionBarPlot
-          //       name={name}
-          //       id={id}
-          //       selected={selected}
-          //       onBarClicked={handleBarClick}
-          //     />
-          // },
-          // {
-          //   tabTitle: "UMAP",
-          //   plotComponent:
-          //     <GeneExpressionUMAP
-          //       name={name}
-          //       id={id}
-          //       selectedPoints={selected}
-          //       onSelectionChange={(points) => handlePointsSelected(points.map(x => x.metaData))}
-          //     />
-          // }
-        ]}
-      />
+      ]}
+    />
   )
 }
 

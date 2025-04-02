@@ -1,29 +1,36 @@
-import { useGeneExpression } from "common/hooks/useGeneExpression"
-import { GeneExpressionProps, PointMetadata, SharedGeneExpressionPlotProps } from "./GeneExpression"
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Stack, Typography } from "@mui/material"
 import { getCellCategoryColor, getCellCategoryDisplayname } from "common/utility"
-import { useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { interpolateYlOrRd } from "d3-scale-chromatic";
-import { scaleLinear } from "d3-scale"
 import { Point, ScatterPlot, ChartProps } from "@weng-lab/psychscreen-ui-components"
 import { ParentSize } from "@visx/responsive"
+import { IcreActivityProps, SharedIcreActivityPlotProps, PointMetadata  } from "./IcreActivity"
+import { scaleLinear } from "@visx/scale";
 
-export type GeneExpressionUmapProps<T> =
-  GeneExpressionProps  &
-  SharedGeneExpressionPlotProps &
-  Partial<ChartProps<T>>
+export type IcreActivityUmapProps<T> =
+  IcreActivityProps
+  & SharedIcreActivityPlotProps
+  & Partial<ChartProps<T>>
 
-const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selected, geneExpressionData, ...rest }: GeneExpressionUmapProps<T>) => {
-  const [colorScheme, setColorScheme] = useState<'expression' | 'lineage'>('expression');
+const IcreActivityUMAP = <T extends PointMetadata>({ accession, selected, sortedFilteredData,   iCREActivitydata, ...rest }: IcreActivityUmapProps<T>) => {
+  const [colorScheme, setColorScheme] = useState<'Zscore' | 'lineage'>('Zscore');
   const [showLegend, setShowLegend] = useState<boolean>(true);
+  const [assay, setAssay] = useState<'ATAC' | 'DNase' | 'Combined'>('Combined')
 
-  const { data, loading, error } = geneExpressionData
+  const {data, loading, error} = iCREActivitydata
 
   const handleColorSchemeChange = (
     event: SelectChangeEvent,
   ) => {
-    setColorScheme(event.target.value as 'expression' | 'lineage');
+    setColorScheme(event.target.value as 'Zscore' | 'lineage');
   };
+
+  const handleAssayChange = (
+    event: SelectChangeEvent,
+  ) => {
+    setAssay(event.target.value as 'ATAC' | 'DNase' | 'Combined');
+  };
+
   const graphContainerRef = useRef(null);
 
   const map = {
@@ -35,29 +42,47 @@ const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selected, geneE
     ref: graphContainerRef
   };
 
-  function logTransform(val: number) {
-    return Math.log10(val + 1)
-  }
+  //prevent scroll on UMAP
+  useEffect(() => {
+    const handleWheel = (event: WheelEvent) => {
+      if (graphContainerRef.current && graphContainerRef.current.contains(event.target)) {
+        event.preventDefault(); // Prevent page scroll
+        // Your zoom logic here
+      }
+    };
+
+    document.addEventListener("wheel", handleWheel, { passive: false });
+
+    return () => {
+      document.removeEventListener("wheel", handleWheel);
+    };
+  }, []);
 
   //find the max logTPM for the domain fo the gradient
   const maxValue = useMemo(() => {
     if (!data || data.length === 0) return 0;
-    return Math.max(...data.map((x) => logTransform(x.value)));
+    return Math.max(...data.map((x) => x.value));
   }, [data]);
+
+
+  //find the max logTPM for the domain fo the gradient
+  const minValue = useMemo(() => {
+    if (!data || data.length === 0) return 0;
+    return Math.min(...data.map((x) => x.value));
+  }, [data]);
+
 
   //generate the domain for the gradient based on the max number
   const generateDomain = (max: number, steps: number) => {
     return Array.from({ length: steps }, (_, i) => (i / (steps - 1)) * max);
   };
 
-  /**
-   * @todo why is this using d3 scaleLinear and not visx
-   */
   const colorScale = useMemo(() =>
-    scaleLinear<number, number>()
-      .domain(generateDomain(maxValue, 9)) // 9 evenly spaced domain stops (9 colors)
-      .range(Array.from({ length: 9 }, (_, i) => i / 8)) // Normalize range for interpolation
-      .clamp(true),
+    scaleLinear({
+      domain: generateDomain(maxValue, 9), // 9 evenly spaced domain stops (9 colors)
+      range: Array.from({ length: 9 }, (_, i) => i / 8), // Normalize range for interpolation
+      clamp: true
+    }),
     [maxValue]
   );
 
@@ -69,21 +94,29 @@ const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selected, geneE
   const scatterData: Point<PointMetadata>[] = useMemo(() => {
     if (!data) return []
     
-    const isHighlighted = (x: PointMetadata) => selected.some(y => y.name === x.name)
+    const isHighlighted = (d: PointMetadata) => selected.some(x => x.name === d.name)
 
     return data.map((x) => {
-      const gradientColor = interpolateYlOrRd(colorScale(logTransform(x.value)));
+      const gradientColor = interpolateYlOrRd(colorScale(x.value))
+
+      const getColor = () => {
+        if ((isHighlighted(x) || selected.length === 0)) {
+          if (colorScheme === 'Zscore'){
+            return gradientColor
+          } else return getCellCategoryColor(x.lineage)
+        } else return '#CCCCCC'
+      }
 
       return {
-        x: x.umap_1,
-        y: x.umap_2,
+        x: assay === "Combined" ? x.umap_1 : assay === "ATAC" ? x.umap_atac_1 : x.umap_dnase_1,
+        y: assay === "Combined" ? x.umap_2 : assay === "ATAC" ? x.umap_atac_2 : x.umap_dnase_2,
         r: isHighlighted(x) ? 6 : 4,
-        color: (isHighlighted(x) || selected.length === 0) ? ((colorScheme === 'expression') ? gradientColor : getCellCategoryColor(x.lineage)) : '#CCCCCC',
+        color: getColor(),
         shape: x.stimulation === "unstimulated" ? "circle" : "triangle" as "circle" | "triangle",
         metaData: x
       };
     }).sort((a, b) => (isHighlighted(b.metaData)) ? -1 : 0)
-  }, [data, colorScale, selected, colorScheme]);
+  }, [data, colorScale, selected, assay, colorScheme]);
 
   const legendEntries = useMemo(() => {
     if (!scatterData) return [];
@@ -109,15 +142,36 @@ const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selected, geneE
       <>
         <Typography><b>Lineage:</b> {getCellCategoryDisplayname(point.metaData.lineage)}</Typography>
         <Typography><b>Biosample:</b> {point.metaData.biosample}, {point.metaData.stimulation}</Typography>
-        <Typography><b>Linear TPM:</b> {point.metaData.value.toFixed(2)}</Typography>
+        <Typography><b>Assay:</b> {point.metaData.assay}</Typography>
+        <Typography><b>Z-score:</b> {point.metaData.value.toFixed(2)}</Typography>
         <Typography><b>Source:</b> {point.metaData.source}</Typography>
       </>
     )
   }
 
+  const AssaySelect = () => {
+    return (
+      <FormControl>
+        <InputLabel>Assay</InputLabel>
+        <Select
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+          value={assay}
+          label="Assay"
+          onChange={handleAssayChange}
+          MenuProps={{ disableScrollLock: true }}
+        >
+          <MenuItem value={"Combined"}>ATAC & DNase</MenuItem>
+          <MenuItem value={"ATAC"}>ATAC</MenuItem>
+          <MenuItem value={"DNase"}>DNase</MenuItem>
+        </Select>
+      </FormControl>
+    )
+  }
+
   const ColorBySelect = () => {
     return (
-      <FormControl sx={{alignSelf: "flex-start"}}>
+      <FormControl>
         <InputLabel>Color By</InputLabel>
         <Select
           labelId="demo-simple-select-label"
@@ -127,7 +181,7 @@ const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selected, geneE
           onChange={handleColorSchemeChange}
           MenuProps={{ disableScrollLock: true }}
         >
-          <MenuItem value={"expression"}>Expression</MenuItem>
+          <MenuItem value={"Zscore"}>Z-score</MenuItem>
           <MenuItem value={"lineage"}>Lineage</MenuItem>
         </Select>
       </FormControl>
@@ -136,7 +190,10 @@ const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selected, geneE
 
   return (
     <Stack spacing={2}>
-      <ColorBySelect />
+      <Stack direction={"row"} spacing={2}>
+        <ColorBySelect />
+        <AssaySelect />
+      </Stack>
       <Box padding={1} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, position: "relative" }} ref={graphContainerRef}>
         <ParentSize>
           {({ width, height }) => {
@@ -169,11 +226,11 @@ const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selected, geneE
       {showLegend && (
           <Box sx={{ display: 'flex', flexDirection: 'column' }}>
             <Typography mb={1}><b>Legend</b></Typography>
-            {colorScheme === "expression" ? (
+            {colorScheme === "Zscore" ? (
               <>
-                <Typography>Log₁₀(TPM + 1)</Typography>
+                <Typography>Z-score</Typography>
                 <Box sx={{ display: "flex", alignItems: "center", width: "200px" }}>
-                  <Typography sx={{ mr: 1 }}>0</Typography>
+                  <Typography sx={{ mr: 1 }}>{'< 0'}</Typography>
                   <Box
                     sx={{
                       height: "16px",
@@ -215,4 +272,4 @@ const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selected, geneE
   )
 }
 
-export default GeneExpressionUMAP
+export default IcreActivityUMAP

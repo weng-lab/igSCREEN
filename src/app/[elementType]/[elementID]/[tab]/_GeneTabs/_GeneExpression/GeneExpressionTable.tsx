@@ -1,26 +1,28 @@
-import { useGeneExpression } from "common/hooks/useGeneExpression"
-import { GeneExpressionProps, PointMetadata } from "./GeneExpression"
-import { CircularProgress, IconButton } from "@mui/material"
-import { getCellCategoryDisplayname } from "common/utility"
-import { DataGrid, GridColDef, GridRowSelectionModel, GridToolbar } from "@mui/x-data-grid"
-import { GRID_CHECKBOX_SELECTION_COL_DEF } from "@mui/x-data-grid"
+import { GeneExpressionProps, PointMetadata, SharedGeneExpressionPlotProps } from "./GeneExpression"
+import { IconButton, Link } from "@mui/material"
+import { getCellCategoryDisplayname, getStudyLink } from "common/utility"
+import { GridColDef, gridFilteredSortedRowEntriesSelector, GridRowSelectionModel, GridToolbar, useGridApiRef, GRID_CHECKBOX_SELECTION_COL_DEF, DataGridPro } from "@mui/x-data-grid-pro"
 import { OpenInNew } from "@mui/icons-material"
+import { Dispatch, SetStateAction } from "react"
 
-export type GeneExpressionTableProps = GeneExpressionProps & {
+export type GeneExpressionTableProps = 
+GeneExpressionProps & 
+SharedGeneExpressionPlotProps &
+{
   onSelectionChange: (selected: PointMetadata[]) => void,
-  selected: PointMetadata[]
+  setSortedFilteredData: Dispatch<SetStateAction<PointMetadata[]>>
 }
 
-const GeneExpressionTable = ({name, id, selected, onSelectionChange}: GeneExpressionTableProps) => {
-  const { data, loading, error } = useGeneExpression({ id })
+const GeneExpressionTable = ({name, id, selected, onSelectionChange, geneExpressionData, setSortedFilteredData, sortedFilteredData}: GeneExpressionTableProps) => {
+  const { data, loading, error } = geneExpressionData
 
   //This is used to prevent sorting from happening when clicking on the header checkbox
-  const StopPropogationWrapper = (params) =>
-    <div id={'StopPropogationWrapper'} onClick={(e) => e.stopPropagation()}>
+  const StopPropagationWrapper = (params) =>
+    <div id={'StopPropagationWrapper'} onClick={(e) => e.stopPropagation()}>
       <GRID_CHECKBOX_SELECTION_COL_DEF.renderHeader {...params} />
     </div>
 
-  // ensure that "field" is accessing a true property of the row, "__check__" is for overriden checkbox column
+  // ensure that "field" is accessing a true property of the row
   type TypeSafeColDef<T> = GridColDef & { field: keyof T }; 
 
   const columns: TypeSafeColDef<PointMetadata>[] = [
@@ -29,7 +31,7 @@ const GeneExpressionTable = ({name, id, selected, onSelectionChange}: GeneExpres
       width: 60,
       sortable: true,
       hideable: false,
-      renderHeader: StopPropogationWrapper
+      renderHeader: StopPropagationWrapper
     },
     {
       field: 'biosample',
@@ -45,7 +47,7 @@ const GeneExpressionTable = ({name, id, selected, onSelectionChange}: GeneExpres
     {
       field: 'stimulation',
       headerName: 'Stim',
-      width: 100,
+      width: 80,
       valueGetter: (_, row) => row.stimulation.charAt(0).toUpperCase()
     },
     {
@@ -57,22 +59,28 @@ const GeneExpressionTable = ({name, id, selected, onSelectionChange}: GeneExpres
     {
       field: 'link',
       headerName: 'Experiment',
-      width: 120,
+      width: 80,
       sortable: false,
       disableColumnMenu: true,
       renderCell: (params) => {
         return (
-          <IconButton href={params.value}>
-            <OpenInNew />
+          <IconButton href={params.value} target="_blank" size="small">
+            <OpenInNew fontSize="small"/>
           </IconButton>
         )
       }
     },
     {
-      field: 'source',
-      headerName: 'Source',
-      description: 'This column has a value getter and is not sortable.',
-      width: 90,
+      field: 'study',
+      headerName: 'Study',
+      width: 140,
+      renderCell: (params) => {
+        return (
+          <Link href={getStudyLink(params.value)} target="_blank">
+            {params.value}
+          </Link>
+        )
+      }
     },
   ];
 
@@ -81,14 +89,35 @@ const GeneExpressionTable = ({name, id, selected, onSelectionChange}: GeneExpres
     onSelectionChange(selectedRows)
   }
 
+  const apiRef = useGridApiRef()
+
+    const arraysAreEqual = (arr1: PointMetadata[], arr2: PointMetadata[]): boolean => {
+      if (arr1.length !== arr2.length) {
+        return false
+      }
+    
+      for (let i = 0; i < arr1.length; i++) {
+        if (arr1[i].name !== arr2[i].name) {
+          return false
+        }
+      }
+      return true
+    };
+  
+    const handleSync = () => {
+      const rows = gridFilteredSortedRowEntriesSelector(apiRef).map(x => x.model) as PointMetadata[]
+      if (!arraysAreEqual(sortedFilteredData, rows)) {
+        setSortedFilteredData(rows)
+      }
+    }
+
   return (
-    <>
-      {loading ?
-        <CircularProgress />
-        :
-        <DataGrid
-          rows={[...data].sort((a,b) => b.value - a.value)}
-          columns={columns}
+        <DataGridPro
+          apiRef={apiRef}
+          rows={data || []}
+          columns={columns.map(col => { return { ...col, display: 'flex' } })}
+          loading={loading}
+          pagination
           initialState={{
             pagination: {
               paginationModel: {
@@ -100,22 +129,22 @@ const GeneExpressionTable = ({name, id, selected, onSelectionChange}: GeneExpres
             },
             columns: {
               columnVisibilityModel: {
-                source: false,
+                study: false,
               }
             }
           }}
           sortingOrder={['desc', 'asc', null]}
           slots={{ toolbar: GridToolbar }}
-          slotProps={{ toolbar: { showQuickFilter: true } }}
+          slotProps={{ toolbar: { showQuickFilter: true, sx: {p: 1} } }}
           pageSizeOptions={[10, 25, 50]}
           checkboxSelection
           onRowSelectionModelChange={handleRowSelectionModelChange}
           rowSelectionModel={selected.map(x => x.name)}
-          disableRowSelectionOnClick
           getRowId={(row) => row.name}
+          getRowHeight={() => 'auto'}
           keepNonExistentRowsSelected //needed to prevent clearing selections on changing filters
-        />}
-    </>
+          onStateChange={handleSync}
+        />
   )
 }
 

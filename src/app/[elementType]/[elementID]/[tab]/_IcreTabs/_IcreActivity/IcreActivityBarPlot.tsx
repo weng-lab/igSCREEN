@@ -1,14 +1,14 @@
-import { GeneExpressionProps, PointMetadata, SharedGeneExpressionPlotProps } from "./GeneExpression"
+import { IcreActivityProps, PointMetadata, SharedIcreActivityPlotProps } from "./IcreActivity"
 import VerticalBarPlot, { BarData, BarPlotProps } from "../../VerticalBarPlot"
 import { useMemo } from "react"
 import { getCellCategoryColor, getCellCategoryDisplayname } from "common/utility"
 
-export type GeneExpressionBarPlotProps = 
-  GeneExpressionProps & 
-  SharedGeneExpressionPlotProps &
+export type IcreActivityBarPlotProps = 
+  IcreActivityProps & 
+  SharedIcreActivityPlotProps &
   Partial<BarPlotProps<PointMetadata>>
 
-const GeneExpressionBarPlot = ({name, id, selected, sortedFilteredData, ...rest}: GeneExpressionBarPlotProps) => {
+const IcreActivityBarPlot = ({accession, selected, sortedFilteredData, ...rest}: IcreActivityBarPlotProps) => {
 
   const plotData: BarData<PointMetadata>[] = useMemo(() => {
     if (!sortedFilteredData) return []
@@ -28,15 +28,17 @@ const GeneExpressionBarPlot = ({name, id, selected, sortedFilteredData, ...rest}
         )
       })
     )
-  }, [sortedFilteredData, selected])
+  }, [selected, sortedFilteredData])
 
   return(
     <VerticalBarPlot
       {...rest}
       data={plotData}
-      topAxisLabel={`${name} Expression - Linear TPM`}
+      topAxisLabel={`${accession} Z-scores`}
+      show95thPercentileLine
+      cutoffNegativeValues
     />
   )
 }
 
-export default GeneExpressionBarPlot
+export default IcreActivityBarPlot

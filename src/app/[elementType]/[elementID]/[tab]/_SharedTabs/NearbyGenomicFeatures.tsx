@@ -146,7 +146,7 @@ const NearbyGenomicFeatures = ({
             getRowId={(row) => row.name}
             initialState={{
               sorting: {
-                sortModel: [{ field: "distance", sort: "desc" }],
+                sortModel: [{ field: "distance", sort: "asc" }],
               },
               pagination: {
                 paginationModel: { pageSize: 10 },
@@ -183,7 +183,7 @@ const NearbyGenomicFeatures = ({
             getRowId={(row) => row.accession}
             initialState={{
               sorting: {
-                sortModel: [{ field: "distance", sort: "desc" }],
+                sortModel: [{ field: "distance", sort: "asc" }],
               },
               pagination: {
                 paginationModel: { pageSize: 10 },
@@ -220,7 +220,7 @@ const NearbyGenomicFeatures = ({
             getRowId={(row) => row.id}
             initialState={{
               sorting: {
-                sortModel: [{ field: "distance", sort: "desc" }],
+                sortModel: [{ field: "distance", sort: "asc" }],
               },
               pagination: {
                 paginationModel: { pageSize: 10 },
