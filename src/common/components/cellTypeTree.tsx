@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Group } from '@visx/group';
 import { Tree, hierarchy } from '@visx/hierarchy';
 import { HierarchyPointNode, HierarchyPointLink } from '@visx/hierarchy/lib/types';
@@ -54,7 +54,7 @@ const stimulateCursor = "url(/stimulateCursor.png) 5 30, cell"
  * Cell Lineage Tree. Optional Props only optional if the tree isn't interactive (generateCellLineageTreeState called with param #2 set to false).
  */
 export default function CellTypeTree({ width: totalWidth, height: totalHeight, orientation, cellTypeState, setCellTypeState, stimulateMode = false, setStimulateMode, selectionLimit = "none", triggerAlert, noneSelectedOpacity = "filled" }: CellTypeTreeProps) {
-
+  const containerRef = useRef<HTMLDivElement>(null);
   const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip, updateTooltip } = useTooltip<TooltipData>();
 
   let sizeWidth: number;
@@ -396,15 +396,16 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
                   event.currentTarget.setAttribute('transform', 'scale(1.1)')
                   event.currentTarget.setAttribute('opacity', '1')
                 }
+                
                 showTooltip({
-                  tooltipTop: top,
-                  tooltipLeft: left,
+                  tooltipTop: event.pageY,
+                  tooltipLeft: event.pageX,
                   tooltipData: {
                     name: node.data.displayName,
                     unstimCount: node.data.unstimCount,
                     stimCount: node.data?.stimCount
                   }
-                })
+                });
               }
             }
           }
@@ -494,10 +495,10 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
       )}
     </Tree>
     , [data, Node, innerMarginLeft, innerMarginTop, orientation, sizeHeight, sizeWidth])
-
+  
   return totalWidth < 10 ? null : (
-    <div style={{ position: "relative" }}>
-      <svg width={totalWidth} height={totalHeight} cursor={stimulateMode ? stimulateCursor : "auto"}>
+    <>
+      <svg width={"100%"} height={"auto"} viewBox={`0 0 ${totalWidth} ${totalHeight}`} cursor={stimulateMode ? stimulateCursor : "auto"}>
         <rect width={totalWidth} height={totalHeight} fill={background} />
         {TreeMemo}
       </svg>
@@ -518,6 +519,6 @@ export default function CellTypeTree({ width: totalWidth, height: totalHeight, o
           </div>}
         </TooltipWithBounds>       
       )}
-    </div>
+    </>
   );
 }
