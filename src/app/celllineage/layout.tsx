@@ -1,10 +1,9 @@
 "use client";
-import { DialogContent, Dialog, Typography, IconButton } from "@mui/material";
-import { Box } from "@mui/material";
+import HelpIcon from "@mui/icons-material/Help";
+import { Box, Dialog, DialogContent, IconButton, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { useState } from "react";
 import { Instructions } from "./_components/instructions";
-import HelpIcon from "@mui/icons-material/Help";
 
 export default function CellLineageLayout({
   children,

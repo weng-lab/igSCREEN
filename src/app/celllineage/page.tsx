@@ -10,33 +10,13 @@ import {
   useRef,
   useState,
 } from "react";
-import Grid from "@mui/material/Grid2";
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
   Box,
   Button,
-  Checkbox,
-  CircularProgress,
-  DialogTitle,
-  Dialog,
-  Drawer,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
   Snackbar,
   Stack,
-  Toolbar,
   Tooltip,
   Typography,
-  DialogContent,
-  IconButton,
   Switch,
 } from "@mui/material";
 import { gql, useLazyQuery } from "@apollo/client";
@@ -50,7 +30,7 @@ import FlashOnOutlinedIcon from "@mui/icons-material/FlashOnOutlined";
 import FlashOffOutlinedIcon from "@mui/icons-material/FlashOffOutlined";
 import FlashAutoIcon from "@mui/icons-material/FlashAuto";
 import UndoOutlinedIcon from "@mui/icons-material/UndoOutlined";
-import { Download, ExpandMore, Sync } from "@mui/icons-material";
+import { Download, Sync } from "@mui/icons-material";
 import {
   downloadSVG,
   extractQueryValues,
@@ -63,9 +43,8 @@ import {
   DynamicCellTypeInfo,
 } from "./types";
 import { cellTypeStaticInfo } from "../../common/consts";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import MultiSelect from "./_components/multiselect";
-import { Instructions } from "./_components/instructions";
+
 type QueryGroup = {
   intersect?: CellQueryValue[][];
   exclude?: CellQueryValue[][];
@@ -692,6 +671,7 @@ export default function UpSet() {
     }
   }, [noneSelected, noneStimulated]);
 
+  // Whether to show DNase or ATAC data
   const [assayMode, setAssayMode] = useState("DNase");
 
   return (
@@ -793,7 +773,6 @@ export default function UpSet() {
                 setAssayMode(e.target.checked ? "ATAC" : "DNase")
               }
               color="primary"
-              
             />
             <Typography sx={{ ml: 2 }}>ATAC</Typography>
           </Box>
