@@ -11,9 +11,11 @@ import { ExpandMore } from "@mui/icons-material";
 import { DataGridPro, GridColDef, GridToolbar } from "@mui/x-data-grid-pro";
 import Link from "next/link";
 
-const IntersectingiCREs = ({ coordinates }: { coordinates: GenomicRange }) => {
+const IntersectingiCREs = ({ region }: { region: GenomicRange }) => {
 
-  const { data: dataIcres, loading: loadingIcres, error: errorIcres } = useIcreData({ coordinates });
+  console.log(region)
+
+  const { data: dataIcres, loading: loadingIcres, error: errorIcres } = useIcreData({ coordinates: [region] });
 
   const intersectingAccessions = useMemo(() => {
     if (!dataIcres) return null;
@@ -56,7 +58,7 @@ const IntersectingiCREs = ({ coordinates }: { coordinates: GenomicRange }) => {
   // ensure that "field" is accessing a true property of the row
   type TypeSafeColDef<T> = GridColDef & { field: keyof T };
 
-  type RowObj = UseIcreDataReturn<{ coordinates }>["data"][number] & {activeExps: {[lineage: string]: ExpInfo[]}};
+  type RowObj = UseIcreDataReturn<{ coordinates: GenomicRange }>["data"][number] & {activeExps: {[lineage: string]: ExpInfo[]}};
 
   const columns: TypeSafeColDef<RowObj>[] = [
     {
@@ -167,7 +169,7 @@ const IntersectingiCREs = ({ coordinates }: { coordinates: GenomicRange }) => {
       getRowId={(row) => row.accession}
       getRowHeight={() => "auto"}
     />
-  );
+  )
 };
 
 export default IntersectingiCREs;
