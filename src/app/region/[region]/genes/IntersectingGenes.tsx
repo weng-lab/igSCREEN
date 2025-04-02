@@ -46,13 +46,11 @@ const IntersectionGenes = ({ region }: { region: GenomicRange }) => {
   ];
 
   return errorSnps ? (
-    <Typography>Error Fetching SNPs</Typography>
+    <Typography>Error Fetching Genes</Typography>
   ) : (
     <DataGridPro
       rows={dataSnps || []}
-      columns={columns.map((col) => {
-        return { ...col };
-      })}
+      columns={columns}
       loading={loadingSnps}
       pagination
       initialState={{
@@ -70,7 +68,6 @@ const IntersectionGenes = ({ region }: { region: GenomicRange }) => {
       pageSizeOptions={[10, 25, 50]}
       disableRowSelectionOnClick
       getRowId={(row) => row.id}
-      getRowHeight={() => "auto"}
     />
   );
 };

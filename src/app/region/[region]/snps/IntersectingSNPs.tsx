@@ -40,9 +40,7 @@ const IntersectingSNPs = ({ region }: { region: GenomicRange }) => {
   ) : (
     <DataGridPro
       rows={dataSnps || []}
-      columns={columns.map((col) => {
-        return { ...col };
-      })}
+      columns={columns}
       loading={loadingSnps}
       pagination
       initialState={{
@@ -60,7 +58,6 @@ const IntersectingSNPs = ({ region }: { region: GenomicRange }) => {
       pageSizeOptions={[10, 25, 50]}
       disableRowSelectionOnClick
       getRowId={(row) => row.id}
-      getRowHeight={() => "auto"}
     />
   );
 };

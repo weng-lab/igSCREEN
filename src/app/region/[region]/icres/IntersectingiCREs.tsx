@@ -1,6 +1,6 @@
 "use client";
 
-import { Accordion, AccordionDetails, AccordionSummary, CircularProgress, Link as MuiLink, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, CircularProgress, Link as MuiLink, Skeleton, Typography } from "@mui/material";
 import { ExternalLink, getCellCategoryDisplayname, getClassDisplayname } from "common/utility";
 import { GenomicRange } from "types/globalTypes";
 import { useRouter } from "next/navigation";
@@ -111,32 +111,33 @@ const IntersectingiCREs = ({ region }: { region: GenomicRange }) => {
       sortComparator: (v1, v2) => Object.values(v1).flat().length - Object.values(v2).flat().length,
       renderCell: (params) => {
         const activeExps = params.value as RowObj["activeExps"];
+        if (loadingActivity) return <Skeleton width={300} height={40} />
         return (
-          activeExps ? (
-            <Accordion sx={{width: '100%', background: "transparent"}} slotProps={{ transition: { unmountOnExit: true } }} elevation={0}>
-              <AccordionSummary expandIcon={<ExpandMore />}>
-                Active in {Object.values(activeExps).flat().length} Experiments
-              </AccordionSummary>
-              <AccordionDetails>
-                {Object.entries(activeExps).map(([lineage, exps], i) => (
-                  <Accordion key={i} elevation={0} sx={{background: "transparent"}}>
-                    <AccordionSummary expandIcon={<ExpandMore />}>
-                      {getCellCategoryDisplayname(lineage)} ({exps.length})
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      {exps.map((exp, i) => (
-                        <ExternalLink href={exp.link} showExternalIcon underline="hover" display={"block"} key={i}>
-                          {exp.biosampleid} - {exp.source}
-                        </ExternalLink>
-                      ))}
-                    </AccordionDetails>
-                  </Accordion>
-                ))}
-              </AccordionDetails>
-            </Accordion>
-          ) : (
-            <CircularProgress />
-          )
+          <Accordion
+            sx={{ width: "100%", background: "transparent" }}
+            slotProps={{ transition: { unmountOnExit: true } }}
+            elevation={0}
+          >
+            <AccordionSummary expandIcon={<ExpandMore />}>
+              Active in {Object.values(activeExps).flat().length} Experiments
+            </AccordionSummary>
+            <AccordionDetails>
+              {Object.entries(activeExps).map(([lineage, exps], i) => (
+                <Accordion key={i} elevation={0} sx={{ background: "transparent" }}>
+                  <AccordionSummary expandIcon={<ExpandMore />}>
+                    {getCellCategoryDisplayname(lineage)} ({exps.length})
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    {exps.map((exp, i) => (
+                      <ExternalLink href={exp.link} showExternalIcon underline="hover" display={"block"} key={i}>
+                        {exp.biosampleid} - {exp.source}
+                      </ExternalLink>
+                    ))}
+                  </AccordionDetails>
+                </Accordion>
+              ))}
+            </AccordionDetails>
+          </Accordion>
         );
       },
     },
