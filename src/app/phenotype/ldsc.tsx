@@ -32,7 +32,16 @@ interface TooltipData {
   percentageSNPs: number;
 }
 
-export default function LDSCplot({ width, height, data, pValCutoff, stimView, legendEntries, rotate, svgRef }: Props) {
+export default function LDSCplot({
+  width,
+  height,
+  data,
+  pValCutoff,
+  stimView,
+  legendEntries,
+  rotate,
+  svgRef,
+}: Props) {
   const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip, updateTooltip } =
     useTooltip<TooltipData>();
 
@@ -41,7 +50,7 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView, le
     point: LDSCDataPoint,
     index: number
   ) => {
-    if (rotate) return // don't show tooltip on rotated plot
+    if (rotate) return; // don't show tooltip on rotated plot
     const info = {
       biosampleid: point.biosampleid || "Baseline",
       lineage: getCellCategoryDisplayname(point.lineage),
@@ -141,6 +150,13 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView, le
         <rect width={width} height={height} rx={14} fill="none" stroke="transparent" />
         <Group top={paddingTop} left={spaceForAxis}>
           <Line stroke="black" opacity={0.3} from={{ x: 0, y: yScale(0) }} to={{ x: plotWidth, y: yScale(0) }} />
+          <Line
+            from={{ x: xScale(736), y: 0 }}
+            to={{ x: xScale(736), y: plotHeight }}
+            stroke="#666"
+            strokeDasharray="4,4"
+            opacity={0.5}
+          />
           <AxisLeft label="Heritability Enrichment" labelProps={{ fontSize: 14 }} scale={yScale} />
           {data.map((point, i) => {
             const stimulated = point.stimulation === "stimulated";
@@ -194,6 +210,7 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView, le
             );
           })}
         </Group>
+
         <Text x={WIDTH - 10} y={20} textAnchor="end" fontSize={12}>
           * Colors represent lineage, hovering shows standard error
         </Text>
