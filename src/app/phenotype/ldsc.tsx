@@ -1,82 +1,91 @@
 import { Circle, Line, Polygon } from "@visx/shape";
 import { LDSCDataPoint } from "./page";
 import { AxisLeft } from "@visx/axis";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { scaleLinear } from "@visx/scale";
 import { Group } from "@visx/group";
-import { defaultStyles as defaultTooltipStyles, useTooltip, TooltipWithBounds } from '@visx/tooltip';
-import { Text } from '@visx/text';
+import { defaultStyles as defaultTooltipStyles, useTooltip, TooltipWithBounds } from "@visx/tooltip";
+import { Text } from "@visx/text";
 import { MouseEvent } from "react";
 import { toScientificNotation } from "../../common/utils";
 import { Box, Typography } from "@mui/material";
 import { getCellCategoryDisplayname, getCellCategoryColor } from "common/utility";
 
 type Props = {
-  width: number;
-  height: number;
+  width: string;
+  height: string;
   data: LDSCDataPoint[];
   pValCutoff: number;
-  stimView: "S" | "U" | "B",
-  legendEntries: {label: string, value: string, color: string}[]
+  stimView: "S" | "U" | "B";
+  legendEntries: { label: string; value: string; color: string }[];
+  rotate?: boolean;
+  svgRef: React.RefObject<SVGSVGElement>;
 };
 
 interface TooltipData {
-  biosampleid: string,
-  lineage: string,
-  celltype: string,
-  enrichment: number,
-  enrichmentP: number,
-  enrichmentStdErr: number,
-  percentageSNPs: number,
+  biosampleid: string;
+  lineage: string;
+  celltype: string;
+  enrichment: number;
+  enrichmentP: number;
+  enrichmentStdErr: number;
+  percentageSNPs: number;
 }
 
-export default function LDSCplot({ width, height, data, pValCutoff, stimView, legendEntries }: Props) {
-  const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip, updateTooltip } = useTooltip<TooltipData>();
+export default function LDSCplot({ width, height, data, pValCutoff, stimView, legendEntries, rotate, svgRef }: Props) {
+  const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip, updateTooltip } =
+    useTooltip<TooltipData>();
 
-  const handleHover = (event: MouseEvent<SVGPolygonElement | SVGCircleElement, globalThis.MouseEvent>, point: LDSCDataPoint) => {
-    showTooltip({
+  const handleHover = (
+    event: MouseEvent<SVGPolygonElement | SVGCircleElement, globalThis.MouseEvent>,
+    point: LDSCDataPoint,
+    index: number
+  ) => {
+    if (rotate) return // don't show tooltip on rotated plot
+    const info = {
+      biosampleid: point.biosampleid || "Baseline",
+      lineage: getCellCategoryDisplayname(point.lineage),
+      celltype: point.celltype,
+      enrichment: point.enrichment,
+      enrichmentP: point.enrichment_p,
+      enrichmentStdErr: point.enrichment_std_error,
+      percentageSNPs: point.snps,
+    };
+
+    const tooltip = {
       tooltipTop: event.pageY,
       tooltipLeft: event.pageX,
-      tooltipData: {
-        biosampleid: point.biosampleid,
-        lineage: getCellCategoryDisplayname(point.lineage),
-        celltype: point.celltype,
-        enrichment: point.enrichment,
-        enrichmentP: point.enrichment_p,
-        enrichmentStdErr: point.enrichment_std_error,
-        percentageSNPs: point.snps
-      }
-    })
-    event.currentTarget.setAttribute("stroke", "black") //Outline point
-    event.currentTarget.setAttribute("transform", "scale(1.5)") //Grow point
-    document.getElementById(`stdErr-${point.expvalue}`).setAttribute("stroke", "black") //Show std error bars
-  }
+      tooltipData: info,
+    };
 
-  const handleLeaveHover = (event: MouseEvent<SVGPolygonElement | SVGCircleElement, globalThis.MouseEvent>, point: LDSCDataPoint) => {
-    hideTooltip()
-    event.currentTarget.setAttribute("stroke", "none")
-    event.currentTarget.setAttribute("transform", "scale(1)")
-    document.getElementById(`stdErr-${point.expvalue}`).setAttribute("stroke", "none")
-  }
-  //TODO: Check if data needs to ordered
-  const orderedData = [...data]   
-    /*.sort((a, b) => {
-      if (experimentInfo[a.celltype] && experimentInfo[b.celltype]) {
-        return (experimentInfo[a.celltype].order - experimentInfo[b.celltype].order)
-      } else {
-        console.log("Couldn't find" + a.celltype + "or" + b.celltype)
-        return 0
-      }
-    })*/
+    showTooltip(tooltip);
 
-  const spaceForAxis = 70
-  const paddingRight = 20
-  const paddingTop = 20
-  const paddingBottom = 20
-  const plotWidth = width - spaceForAxis - paddingRight
-  const plotHeight = height - paddingTop - paddingBottom
-  const dataPaddingLeft = 20
-  const dataPaddingTopBottom = 15
+    // Handle hover effects
+    event.currentTarget.setAttribute("stroke", "black");
+    event.currentTarget.setAttribute("transform", "scale(1.5)");
+    document.getElementById(`stdErr-${index}`).setAttribute("stroke", "black");
+  };
+
+  const handleLeaveHover = (
+    event: MouseEvent<SVGPolygonElement | SVGCircleElement, globalThis.MouseEvent>,
+    index: number
+  ) => {
+    hideTooltip();
+    event.currentTarget.setAttribute("stroke", "none");
+    event.currentTarget.setAttribute("transform", "scale(1)");
+    document.getElementById(`stdErr-${index}`).setAttribute("stroke", "none");
+  };
+
+  const WIDTH = 1200;
+  const HEIGHT = 400;
+  const spaceForAxis = 70;
+  const paddingRight = 20;
+  const paddingTop = 20;
+  const paddingBottom = 20;
+  const plotWidth = WIDTH - spaceForAxis - paddingRight;
+  const plotHeight = HEIGHT - paddingTop - paddingBottom;
+  const dataPaddingLeft = 20;
+  const dataPaddingTopBottom = 15;
 
   //Input to this will be the order of the celltype according to known order. Output is its position on the x axis
   const xScale = useMemo(
@@ -85,50 +94,77 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView, le
         domain: [0, data.length],
         range: [dataPaddingLeft, plotWidth], //Start at 20 to provide left side padding to data points
       }),
-    [plotWidth, data],
+    [plotWidth, data]
   );
 
-  const dataMin: number = Math.min(...data.map(x => x.enrichment))
-  const dataMax: number = Math.max(...data.map(x => x.enrichment))
+  const dataMin: number = Math.min(...data.map((x) => x.enrichment));
+  const dataMax: number = Math.max(...data.map((x) => x.enrichment));
 
   //Input to this is the enrichment value of a point. Output is its vertical position on the scale
   const yScale = useMemo(
     () =>
       scaleLinear<number>({
         domain: [dataMin - dataPaddingTopBottom, dataMax + dataPaddingTopBottom],
-        range: [plotHeight, 0]
+        range: [plotHeight, 0],
       }),
-    [dataMin, dataMax, plotHeight],
+    [dataMin, dataMax, plotHeight]
   );
 
   return (
-    <div>
-      <svg width={width} height={height}>
-        <rect width={width} height={height} rx={14} fill="none" stroke="black" />
+    <div
+      style={{
+        width: rotate ? height : width,
+        height: rotate ? width : height,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        position: "relative",
+      }}
+    >
+      <svg
+        ref={svgRef}
+        width={width}
+        height={height}
+        viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
+        style={
+          rotate
+            ? {
+                position: "absolute",
+                left: "50%",
+                top: "50%",
+                transform: "translate(-50%, -50%) rotate(90deg)",
+                transformOrigin: "center center",
+              }
+            : {}
+        }
+      >
+        <rect width={width} height={height} rx={14} fill="none" stroke="transparent" />
         <Group top={paddingTop} left={spaceForAxis}>
           <Line stroke="black" opacity={0.3} from={{ x: 0, y: yScale(0) }} to={{ x: plotWidth, y: yScale(0) }} />
-          <AxisLeft
-            label="Heritability Enrichment"
-            labelProps={{fontSize: 14}}
-            scale={yScale}
-            
-          />
-          {orderedData.map((point, i) => {
-            const stimulated = point.stimulation === "stimulated"
+          <AxisLeft label="Heritability Enrichment" labelProps={{ fontSize: 14 }} scale={yScale} />
+          {data.map((point, i) => {
+            const stimulated = point.stimulation === "stimulated";
             // Passes p-val cutoff and is correct stimulation
-            const toBeShown = point.enrichment_p <= pValCutoff && (stimView === "S" && stimulated || stimView === "U" && !stimulated || stimView === "B")
+            const toBeShown =
+              point.enrichment_p <= pValCutoff &&
+              ((stimView === "S" && stimulated) || (stimView === "U" && !stimulated) || stimView === "B");
+
             const commonProps = {
-              opacity: toBeShown ? 1 : 0.1, //Sharply decrease opacity if not to be shown
-              fill:  getCellCategoryColor(point.lineage),//getCellColor(point.expvalue.split('-')[1] as CellQueryValue | CellName),
-              style: { transformOrigin: `${xScale(i)}px ${yScale(point.enrichment)}px` }, //Needed so that scale transforms are applied correctly
-              onMouseMove: (event) => handleHover(event, point),
-              onMouseLeave: (event) => handleLeaveHover(event, point)
-            }
+              opacity: toBeShown ? 1 : 0.1,
+              fill: getCellCategoryColor(point.lineage),
+              style: {
+                // i for points with no biosampleorder (baseline
+                transformOrigin: `${xScale(point.biosampleorder || i)}px ${yScale(point.enrichment)}px`,
+                cursor: "pointer", // Add cursor pointer to indicate interactivity
+              },
+              onMouseOver: (event) => handleHover(event, point, i),
+              onMouseLeave: (event) => handleLeaveHover(event, i),
+            };
 
             return (
-              <Group key={`datapoint-${point.expvalue}`}>
+              <Group key={`datapoint-${i}`}>
                 {/* Standard error */}
-                <Group id={`stdErr-${point.expvalue}`}>
+                <Group id={`stdErr-${i}`}>
                   <Line
                     from={{ x: xScale(i), y: yScale(point.enrichment - point.enrichment_std_error) }}
                     to={{ x: xScale(i), y: yScale(point.enrichment + point.enrichment_std_error) }}
@@ -143,7 +179,7 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView, le
                   />
                 </Group>
                 {/* Datapoint */}
-                {stimulated ?
+                {stimulated ? (
                   <Polygon
                     center={{ x: xScale(i), y: yScale(point.enrichment) }}
                     sides={3}
@@ -151,64 +187,88 @@ export default function LDSCplot({ width, height, data, pValCutoff, stimView, le
                     rotate={90}
                     {...commonProps}
                   />
-                  :
-                  <Circle
-                    r={5}
-                    cx={xScale(i)}
-                    cy={yScale(point.enrichment)}
-                    {...commonProps}
-                  />
-                }
+                ) : (
+                  <Circle r={5} cx={xScale(i)} cy={yScale(point.enrichment)} {...commonProps} />
+                )}
               </Group>
-            )
+            );
           })}
         </Group>
-        <Text x={width - 10} y={20} textAnchor="end" fontSize={12}>* Colors represent lineage, hovering shows standard error</Text>
+        <Text x={WIDTH - 10} y={20} textAnchor="end" fontSize={12}>
+          * Colors represent lineage, hovering shows standard error
+        </Text>
       </svg>
       {tooltipOpen && tooltipData && (
         <TooltipWithBounds
           top={tooltipTop}
           left={tooltipLeft}
-          style={{ ...defaultTooltipStyles, backgroundColor: '#283238', color: 'white' }}
+          style={{
+            ...defaultTooltipStyles,
+            backgroundColor: "#283238",
+            color: "white",
+            position: "fixed",
+          }}
         >
           <div style={{ maxWidth: "20rem" }}>
-            <p><b>Biosample:</b> {tooltipData.biosampleid}</p>
-            <p><b>Lineage:</b> {tooltipData.lineage}</p>
-            <p><b>Celltype:</b> {tooltipData.celltype}</p>
+            {tooltipData.biosampleid !== "Baseline" && (
+              <p>
+                <b>Biosample:</b> {tooltipData.biosampleid}
+              </p>
+            )}
+            {tooltipData.biosampleid !== "Baseline" && (
+              <p>
+                <b>Lineage:</b> {tooltipData.lineage}
+              </p>
+            )}
+            <p>
+              <b>Celltype:</b> {tooltipData.celltype}
+            </p>
           </div>
           <br />
           <div>
-            <p><b>Enrichment:</b> {tooltipData.enrichment.toFixed(2)}</p>
+            <p>
+              <b>Enrichment:</b> {tooltipData.enrichment.toFixed(2)}
+            </p>
           </div>
           <div>
-            <p><b>Enrichment <i>P</i> :</b> {toScientificNotation(tooltipData.enrichmentP, 2)}</p>
+            <p>
+              <b>
+                Enrichment <i>P</i> :
+              </b>{" "}
+              {toScientificNotation(tooltipData.enrichmentP, 2)}
+            </p>
           </div>
           <div>
-            <p><b>Enrichment Std Error:</b> {tooltipData.enrichmentStdErr.toFixed(2)}</p>
+            <p>
+              <b>Enrichment Std Error:</b> {tooltipData.enrichmentStdErr.toFixed(2)}
+            </p>
           </div>
           <div>
-            <p><b>Percentage of SNPs:</b> {tooltipData.percentageSNPs.toPrecision(2)}</p>
+            <p>
+              <b>Percentage of SNPs:</b> {tooltipData.percentageSNPs.toPrecision(2)}
+            </p>
           </div>
         </TooltipWithBounds>
       )}
-      {legendEntries && legendEntries.length >0 &&
-          <Box display="flex" justifyContent="space-between">
-          {Array.from({ length: 5 }).map((_, colIndex) => (
-            <Box key={colIndex} display="flex" flexDirection="column" gap={1}>
-              {legendEntries
-                .filter((_, idx) => idx % 5 === colIndex)
-                .map((entry, i) => (
-                  <Box key={i} display="flex" alignItems="center" gap={1}>
-                    <Box sx={{ width: '12px', height: '12px', backgroundColor: entry.color }} />
-                    <Typography variant="body2">
-                      {entry.label} : {entry.value}
-                    </Typography>
-                  </Box>
-                ))}
-            </Box>
-          ))}
-        </Box>
-        }
     </div>
-  )
+  );
 }
+
+// {legendEntries && legendEntries.length > 0 && (
+//   <Box display="flex" justifyContent="space-between">
+//     {Array.from({ length: 5 }).map((_, colIndex) => (
+//       <Box key={colIndex} display="flex" flexDirection="column" gap={1}>
+//         {legendEntries
+//           .filter((_, idx) => idx % 5 === colIndex)
+//           .map((entry, i) => (
+//             <Box key={i} display="flex" alignItems="center" gap={1}>
+//               <Box sx={{ width: "12px", height: "12px", backgroundColor: entry.color }} />
+//               <Typography variant="body2">
+//                 {entry.label} : {entry.value}
+//               </Typography>
+//             </Box>
+//           ))}
+//       </Box>
+//     ))}
+//   </Box>
+// )}
