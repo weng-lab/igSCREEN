@@ -146,17 +146,18 @@ export default function Phenotype() {
   let LDSCStudies = dataStudies && dataStudies.iCRELdscStudiesQuery;
 
   const data = useMemo(() => {
-    if (!dataiCRELDSC || !dataBaseline) return [];
+    if (!dataiCRELDSC || !dataBaseline) return [] as LDSCDataPoint[];
     const rawData: LDSCDataPoint[] = dataiCRELDSC.iCRELdscQuery;
     const rawDataSorted = [...rawData].sort((a, b) => a.biosampleorder - b.biosampleorder);
+
     const baselineData: LDSCDataPoint[] = dataBaseline.iCRELdscBaselineQuery;
     const baselineFiltered = baselineData.filter((x) => !x.celltype.startsWith("MAF_Adj"));
-    return [...rawDataSorted, ...baselineFiltered];
+    return [...rawDataSorted, ...baselineFiltered]
   }, [dataiCRELDSC, dataBaseline]);
 
   // In the slider, the "value" is used to place marks equally on track. The scale function below is used to pull out the true value that we want
   const pValMarks = [
-    {
+    { 
       value: 0,
       scaledValue: 0.0001,
       label: 0.0001,
@@ -203,7 +204,6 @@ export default function Phenotype() {
       else if (width >= breakpoint.md) newBreakpoint = 'md';
       else if (width >= breakpoint.sm) newBreakpoint = 'sm';
       
-      console.log('Current breakpoint:', newBreakpoint, 'Width:', width);
       setCurrentBreakpoint(newBreakpoint);
     };
 
