@@ -67,6 +67,12 @@ export type AtacAggregate = {
   reverse_values: Array<Scalars['Float']['output']>;
 };
 
+export type ActiveCelltypesIcres = {
+  __typename?: 'ActiveCelltypesIcres';
+  accession: Scalars['String']['output'];
+  activeCellTypes?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+};
+
 export enum AggregateByEnum {
   Average = 'AVERAGE',
   Max = 'MAX'
@@ -1354,8 +1360,11 @@ export type ImmuneAtacData = {
   accession: Scalars['String']['output'];
   assay: Scalars['String']['output'];
   biosample: Scalars['String']['output'];
+  biosample_order: Scalars['Int']['output'];
   biosampleid: Scalars['String']['output'];
   celltype: Scalars['String']['output'];
+  celltype_stim: Scalars['String']['output'];
+  celltype_stim_order: Scalars['Int']['output'];
   chromosome: Scalars['String']['output'];
   class: Scalars['String']['output'];
   end?: Maybe<Scalars['Int']['output']>;
@@ -1668,7 +1677,7 @@ export type MotifRanking = {
   alt?: Maybe<Scalars['Float']['output']>;
   diff?: Maybe<Scalars['Float']['output']>;
   motif?: Maybe<Scalars['String']['output']>;
-  ref?: Maybe<Scalars['Float']['output']>;
+  ref?: Maybe<Scalars['String']['output']>;
   regionid?: Maybe<Scalars['String']['output']>;
   threshold?: Maybe<Scalars['Float']['output']>;
 };
@@ -1680,6 +1689,26 @@ export type MotifRankingInput = {
   ref: Scalars['String']['input'];
   regionid: Scalars['String']['input'];
   start: Scalars['Int']['input'];
+};
+
+export type MotifRankingRefCheck = {
+  __typename?: 'MotifRankingRefCheck';
+  chrom?: Maybe<Scalars['String']['output']>;
+  end?: Maybe<Scalars['Int']['output']>;
+  ref?: Maybe<Scalars['String']['output']>;
+  refTrue?: Maybe<Scalars['String']['output']>;
+  regionid?: Maybe<Scalars['String']['output']>;
+  start?: Maybe<Scalars['Int']['output']>;
+  strand?: Maybe<Scalars['String']['output']>;
+};
+
+export type MotifRankingRefCheckInput = {
+  chrom: Scalars['String']['input'];
+  end: Scalars['Int']['input'];
+  ref: Scalars['String']['input'];
+  regionid: Scalars['String']['input'];
+  start: Scalars['Int']['input'];
+  strand: Scalars['String']['input'];
 };
 
 export type MotifSearchResult = {
@@ -2158,6 +2187,8 @@ export type Query = {
   iCREsCountQuery?: Maybe<Scalars['Int']['output']>;
   icreeQTLQuery?: Maybe<Array<Maybe<Eqtl>>>;
   immuneRnaUmapQuery?: Maybe<Array<Maybe<ImmuneRnaData>>>;
+  immuneUpsetPlotCountsQuery?: Maybe<Array<Maybe<UpsetPlotCounts>>>;
+  immuneiCREsActiveCelltypesQuery?: Maybe<Array<Maybe<ActiveCelltypesIcres>>>;
   immuneiCREsUmapQuery?: Maybe<Array<Maybe<ImmuneAtacData>>>;
   intersection?: Maybe<Array<Maybe<Scalars['cCRE']['output']>>>;
   ldr: Array<LdrEnrichment>;
@@ -2194,6 +2225,7 @@ export type Query = {
   rampageQuery?: Maybe<Array<Maybe<RampageResponse>>>;
   rdhs_motif_occurrences?: Maybe<Array<Maybe<RdhsMotifOccurrence>>>;
   rdhs_motif_occurrences_count?: Maybe<RdhsMotifOccurrenceCount>;
+  refcheckmotifranking?: Maybe<Array<Maybe<MotifRankingRefCheck>>>;
   refseqgenes?: Maybe<Array<Maybe<RefSeqGene>>>;
   refseqxenogenes?: Maybe<Array<Maybe<RefSeqGene>>>;
   resolve: Array<GenomicObject>;
@@ -2883,8 +2915,18 @@ export type QueryImmuneRnaUmapQueryArgs = {
 };
 
 
+export type QueryImmuneUpsetPlotCountsQueryArgs = {
+  targetcelltypes: Array<InputMaybe<Scalars['String']['input']>>;
+};
+
+
+export type QueryImmuneiCrEsActiveCelltypesQueryArgs = {
+  accession: Array<InputMaybe<Scalars['String']['input']>>;
+};
+
+
 export type QueryImmuneiCrEsUmapQueryArgs = {
-  accession: Scalars['String']['input'];
+  accession: Array<InputMaybe<Scalars['String']['input']>>;
 };
 
 
@@ -3191,6 +3233,11 @@ export type QueryRdhs_Motif_Occurrences_CountArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   peaks_accession?: InputMaybe<Scalars['String']['input']>;
   rdhss?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+};
+
+
+export type QueryRefcheckmotifrankingArgs = {
+  refcheckmotifinputs?: InputMaybe<Array<InputMaybe<MotifRankingRefCheckInput>>>;
 };
 
 
@@ -4046,6 +4093,14 @@ export type UnreplicatedPeaksPeaksArgs = {
   chrom_start: Scalars['Int']['input'];
 };
 
+export type UpsetPlotCounts = {
+  __typename?: 'UpsetPlotCounts';
+  counts: Scalars['Int']['output'];
+  excludedCelltypes?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
+  includedCelltypes: Array<Maybe<Scalars['String']['output']>>;
+  name: Scalars['String']['output'];
+};
+
 export type UserCollection = {
   __typename?: 'UserCollection';
   accession: Scalars['ID']['output'];
@@ -4291,11 +4346,11 @@ export type GeneExpressionQueryVariables = Exact<{
 export type GeneExpressionQuery = { __typename?: 'Query', immuneRnaUmapQuery?: Array<{ __typename?: 'ImmuneRnaData', umap_1: number, umap_2: number, celltype: string, study: string, source: string, link: string, lineage: string, biosample: string, biosampleid: string, expid: string, name: string, value: number, stimulation: string } | null> | null };
 
 export type IcresZscoresQueryVariables = Exact<{
-  accession: Scalars['String']['input'];
+  accession: Array<InputMaybe<Scalars['String']['input']>> | InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type IcresZscoresQuery = { __typename?: 'Query', immuneiCREsUmapQuery?: Array<{ __typename?: 'ImmuneATACData', source: string, value: number, umap_atac_1?: number | null, assay: string, umap_atac_2?: number | null, umap_dnase_1?: number | null, umap_dnase_2?: number | null, umap_1: number, link: string, umap_2: number, celltype: string, lineage: string, biosample: string, biosampleid: string, expid: string, name: string, study: string, start?: number | null, class: string, chromosome: string, end?: number | null, stimulation: string } | null> | null };
+export type IcresZscoresQuery = { __typename?: 'Query', immuneiCREsUmapQuery?: Array<{ __typename?: 'ImmuneATACData', source: string, value: number, umap_atac_1?: number | null, assay: string, umap_atac_2?: number | null, umap_dnase_1?: number | null, umap_dnase_2?: number | null, umap_1: number, link: string, umap_2: number, celltype: string, lineage: string, biosample: string, biosampleid: string, expid: string, name: string, study: string, start?: number | null, class: string, chromosome: string, end?: number | null, stimulation: string, accession: string } | null> | null };
 
 export type IcreQueryVariables = Exact<{
   coordinates?: InputMaybe<Array<GenomicRangeInput> | GenomicRangeInput>;
@@ -4332,6 +4387,6 @@ export const IcresActiveExperimentsDocument = {"kind":"Document","definitions":[
 export const BigRequestsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"BigRequests"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"bigRequests"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"BigRequest"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"bigRequests"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"requests"},"value":{"kind":"Variable","name":{"kind":"Name","value":"bigRequests"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"data"}},{"kind":"Field","name":{"kind":"Name","value":"error"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"errortype"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]}}]}}]} as unknown as DocumentNode<BigRequestsQuery, BigRequestsQueryVariables>;
 export const GeneDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Gene"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"chromosome"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"start"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"end"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"ListType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"gene"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"chromosome"},"value":{"kind":"Variable","name":{"kind":"Name","value":"chromosome"}}},{"kind":"Argument","name":{"kind":"Name","value":"start"},"value":{"kind":"Variable","name":{"kind":"Name","value":"start"}}},{"kind":"Argument","name":{"kind":"Name","value":"end"},"value":{"kind":"Variable","name":{"kind":"Name","value":"end"}}},{"kind":"Argument","name":{"kind":"Name","value":"assembly"},"value":{"kind":"StringValue","value":"GRCh38","block":false}},{"kind":"Argument","name":{"kind":"Name","value":"version"},"value":{"kind":"IntValue","value":"29"}},{"kind":"Argument","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"strand"}},{"kind":"Field","name":{"kind":"Name","value":"coordinates"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"chromosome"}},{"kind":"Field","name":{"kind":"Name","value":"end"}},{"kind":"Field","name":{"kind":"Name","value":"start"}}]}}]}}]}}]} as unknown as DocumentNode<GeneQuery, GeneQueryVariables>;
 export const GeneExpressionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GeneExpression"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"gene_id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"immuneRnaUmapQuery"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"gene_id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"gene_id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"umap_1"}},{"kind":"Field","name":{"kind":"Name","value":"umap_2"}},{"kind":"Field","name":{"kind":"Name","value":"celltype"}},{"kind":"Field","name":{"kind":"Name","value":"study"}},{"kind":"Field","name":{"kind":"Name","value":"source"}},{"kind":"Field","name":{"kind":"Name","value":"link"}},{"kind":"Field","name":{"kind":"Name","value":"lineage"}},{"kind":"Field","name":{"kind":"Name","value":"biosample"}},{"kind":"Field","name":{"kind":"Name","value":"biosampleid"}},{"kind":"Field","name":{"kind":"Name","value":"expid"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"value"}},{"kind":"Field","name":{"kind":"Name","value":"stimulation"}}]}}]}}]} as unknown as DocumentNode<GeneExpressionQuery, GeneExpressionQueryVariables>;
-export const IcresZscoresDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"IcresZscores"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"accession"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"immuneiCREsUmapQuery"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"accession"},"value":{"kind":"Variable","name":{"kind":"Name","value":"accession"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"source"}},{"kind":"Field","name":{"kind":"Name","value":"value"}},{"kind":"Field","name":{"kind":"Name","value":"umap_atac_1"}},{"kind":"Field","name":{"kind":"Name","value":"assay"}},{"kind":"Field","name":{"kind":"Name","value":"umap_atac_2"}},{"kind":"Field","name":{"kind":"Name","value":"umap_dnase_1"}},{"kind":"Field","name":{"kind":"Name","value":"umap_dnase_2"}},{"kind":"Field","name":{"kind":"Name","value":"umap_1"}},{"kind":"Field","name":{"kind":"Name","value":"link"}},{"kind":"Field","name":{"kind":"Name","value":"umap_2"}},{"kind":"Field","name":{"kind":"Name","value":"celltype"}},{"kind":"Field","name":{"kind":"Name","value":"lineage"}},{"kind":"Field","name":{"kind":"Name","value":"biosample"}},{"kind":"Field","name":{"kind":"Name","value":"biosampleid"}},{"kind":"Field","name":{"kind":"Name","value":"expid"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"study"}},{"kind":"Field","name":{"kind":"Name","value":"start"}},{"kind":"Field","name":{"kind":"Name","value":"class"}},{"kind":"Field","name":{"kind":"Name","value":"chromosome"}},{"kind":"Field","name":{"kind":"Name","value":"end"}},{"kind":"Field","name":{"kind":"Name","value":"stimulation"}}]}}]}}]} as unknown as DocumentNode<IcresZscoresQuery, IcresZscoresQueryVariables>;
+export const IcresZscoresDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"IcresZscores"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"accession"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"immuneiCREsUmapQuery"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"accession"},"value":{"kind":"Variable","name":{"kind":"Name","value":"accession"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"source"}},{"kind":"Field","name":{"kind":"Name","value":"value"}},{"kind":"Field","name":{"kind":"Name","value":"umap_atac_1"}},{"kind":"Field","name":{"kind":"Name","value":"assay"}},{"kind":"Field","name":{"kind":"Name","value":"umap_atac_2"}},{"kind":"Field","name":{"kind":"Name","value":"umap_dnase_1"}},{"kind":"Field","name":{"kind":"Name","value":"umap_dnase_2"}},{"kind":"Field","name":{"kind":"Name","value":"umap_1"}},{"kind":"Field","name":{"kind":"Name","value":"link"}},{"kind":"Field","name":{"kind":"Name","value":"umap_2"}},{"kind":"Field","name":{"kind":"Name","value":"celltype"}},{"kind":"Field","name":{"kind":"Name","value":"lineage"}},{"kind":"Field","name":{"kind":"Name","value":"biosample"}},{"kind":"Field","name":{"kind":"Name","value":"biosampleid"}},{"kind":"Field","name":{"kind":"Name","value":"expid"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"study"}},{"kind":"Field","name":{"kind":"Name","value":"start"}},{"kind":"Field","name":{"kind":"Name","value":"class"}},{"kind":"Field","name":{"kind":"Name","value":"chromosome"}},{"kind":"Field","name":{"kind":"Name","value":"end"}},{"kind":"Field","name":{"kind":"Name","value":"stimulation"}},{"kind":"Field","name":{"kind":"Name","value":"accession"}}]}}]}}]} as unknown as DocumentNode<IcresZscoresQuery, IcresZscoresQueryVariables>;
 export const IcreDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Icre"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"coordinates"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"GenomicRangeInput"}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"accession"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"iCREQuery"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"coordinates"},"value":{"kind":"Variable","name":{"kind":"Name","value":"coordinates"}}},{"kind":"Argument","name":{"kind":"Name","value":"accession"},"value":{"kind":"Variable","name":{"kind":"Name","value":"accession"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"accession"}},{"kind":"Field","name":{"kind":"Name","value":"group"}},{"kind":"Field","name":{"kind":"Name","value":"celltypes"}},{"kind":"Field","name":{"kind":"Name","value":"coordinates"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"start"}},{"kind":"Field","name":{"kind":"Name","value":"end"}},{"kind":"Field","name":{"kind":"Name","value":"chromosome"}}]}}]}}]}}]} as unknown as DocumentNode<IcreQuery, IcreQueryVariables>;
 export const SnpDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Snp"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"snpids"}},"type":{"kind":"ListType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"coordinates"}},"type":{"kind":"ListType","type":{"kind":"NamedType","name":{"kind":"Name","value":"GenomicRangeInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"snpQuery"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"assembly"},"value":{"kind":"StringValue","value":"GRCh38","block":false}},{"kind":"Argument","name":{"kind":"Name","value":"snpids"},"value":{"kind":"Variable","name":{"kind":"Name","value":"snpids"}}},{"kind":"Argument","name":{"kind":"Name","value":"coordinates"},"value":{"kind":"Variable","name":{"kind":"Name","value":"coordinates"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"coordinates"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"chromosome"}},{"kind":"Field","name":{"kind":"Name","value":"start"}},{"kind":"Field","name":{"kind":"Name","value":"end"}}]}}]}}]}}]} as unknown as DocumentNode<SnpQuery, SnpQueryVariables>;

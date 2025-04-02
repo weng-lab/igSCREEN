@@ -1,11 +1,10 @@
-import { Box, Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, SelectChangeEvent, Stack, Typography } from "@mui/material"
+import { Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Stack, Typography } from "@mui/material"
 import { getCellCategoryColor, getCellCategoryDisplayname } from "common/utility"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { interpolateYlOrRd } from "d3-scale-chromatic";
 import { Point, ScatterPlot, ChartProps } from "@weng-lab/psychscreen-ui-components"
 import { ParentSize } from "@visx/responsive"
 import { IcreActivityProps, SharedIcreActivityPlotProps, PointMetadata  } from "./IcreActivity"
-import { IcreActivityAssay, useIcreActivity } from "common/hooks/useIcreActivity";
 import { scaleLinear } from "@visx/scale";
 
 export type IcreActivityUmapProps<T> =
