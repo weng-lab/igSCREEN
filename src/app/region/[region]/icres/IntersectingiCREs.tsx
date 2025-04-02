@@ -13,9 +13,7 @@ import Link from "next/link";
 
 const IntersectingiCREs = ({ region }: { region: GenomicRange }) => {
 
-  console.log(region)
-
-  const { data: dataIcres, loading: loadingIcres, error: errorIcres } = useIcreData({ coordinates: [region] });
+  const { data: dataIcres, loading: loadingIcres, error: errorIcres } = useIcreData({ coordinates: region });
 
   const intersectingAccessions = useMemo(() => {
     if (!dataIcres) return null;
