@@ -17,11 +17,7 @@ export function Instructions({
 }) {
   return (
     <Box maxWidth={cellTypeTreeWidth}>
-      <Typography variant="h4">Immune cCRE Activity by Cell Type</Typography>
-      <Typography mb={1}>
-        Compare immune cCRE activity between selected immune cell types.
-      </Typography>
-      <Typography variant="h6">How to Use:</Typography>
+      <Typography variant="h4">How to Use:</Typography>
       <List disablePadding dense sx={{ mb: 2 }}>
         <ListItem disablePadding>
           <ListItemIcon>

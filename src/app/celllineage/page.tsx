@@ -37,6 +37,7 @@ import {
   Typography,
   DialogContent,
   IconButton,
+  Switch,
 } from "@mui/material";
 import { gql, useLazyQuery } from "@apollo/client";
 import { client } from "../../common/utils";
@@ -49,11 +50,7 @@ import FlashOnOutlinedIcon from "@mui/icons-material/FlashOnOutlined";
 import FlashOffOutlinedIcon from "@mui/icons-material/FlashOffOutlined";
 import FlashAutoIcon from "@mui/icons-material/FlashAuto";
 import UndoOutlinedIcon from "@mui/icons-material/UndoOutlined";
-import {
-  Download,
-  ExpandMore,
-  Sync,
-} from "@mui/icons-material";
+import { Download, ExpandMore, Sync } from "@mui/icons-material";
 import {
   downloadSVG,
   extractQueryValues,
@@ -87,8 +84,8 @@ export type CCRE_CLASS =
   | "PLS";
 
 const ccreClasses: {
-  label: string,
-  value: CCRE_CLASS
+  label: string;
+  value: CCRE_CLASS;
 }[] = [
   {
     label: "Chromatin Accessible with CTCF",
@@ -143,7 +140,8 @@ export default function UpSet() {
   }>(null); //stores groupings used to generate query (for DL)
   const [downloading, setDownloading] = useState<boolean>(false);
   // List of selected cCRE classes used in multi-select
-  const [selectedClasses, setSelectedClasses] = useState<Partial<typeof ccreClasses>>(ccreClasses);
+  const [selectedClasses, setSelectedClasses] =
+    useState<Partial<typeof ccreClasses>>(ccreClasses);
 
   // Snackbar popup state
   const [openSnackbar, setOpenSnackbar] = useState(false); //Snackbar is the popup alert component
@@ -694,7 +692,7 @@ export default function UpSet() {
     }
   }, [noneSelected, noneStimulated]);
 
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [assayMode, setAssayMode] = useState("DNase");
 
   return (
     <>
@@ -706,7 +704,16 @@ export default function UpSet() {
         alignItems={"center"}
         mb={-3}
       >
-        {/* Butons go here eventually */}
+        <Buttons
+          noneSelected={noneSelected}
+          handleUnselectAll={handleUnselectAll}
+          handleStimulateAll={handleStimulateAll}
+          stimulateMode={stimulateMode}
+          handleToggleStimulateMode={handleToggleStimulateMode}
+          allStimulated={allStimulated}
+          noneStimulated={noneStimulated}
+          allBothStimulated={allBothStimulated}
+        />
       </Box>
       {/* Buttons for generating and downloading the UpSet plot */}
       <Box
@@ -773,6 +780,23 @@ export default function UpSet() {
             boxShadow: "0px 0px 10px 0px rgba(0, 0, 0, 0.1)",
           }}
         >
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            mb={2}
+          >
+            <Typography sx={{ mr: 2 }}>DNase</Typography>
+            <Switch
+              checked={assayMode === "ATAC"}
+              onChange={(e) =>
+                setAssayMode(e.target.checked ? "ATAC" : "DNase")
+              }
+              color="primary"
+              
+            />
+            <Typography sx={{ ml: 2 }}>ATAC</Typography>
+          </Box>
           {cellTypeTree}
         </Box>
         {data_count && (
@@ -807,11 +831,6 @@ export default function UpSet() {
         onClose={handleCloseSnackbar}
         message={<Typography>{snackbarMessage}</Typography>}
       />
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
-        <DialogContent>
-          <Instructions cellTypeTreeWidth={835} />
-        </DialogContent>
-      </Dialog>
     </>
   );
 }

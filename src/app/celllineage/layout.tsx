@@ -1,6 +1,10 @@
-import { Typography } from "@mui/material";
+"use client";
+import { DialogContent, Dialog, Typography, IconButton } from "@mui/material";
 import { Box } from "@mui/material";
 import Grid from "@mui/material/Grid2";
+import { useState } from "react";
+import { Instructions } from "./_components/instructions";
+import HelpIcon from "@mui/icons-material/Help";
 
 export default function CellLineageLayout({
   children,
@@ -27,6 +31,7 @@ export default function CellLineageLayout({
 }
 
 function Header() {
+  const [dialogOpen, setDialogOpen] = useState(false);
   return (
     <Box
       sx={{ p: 1 }}
@@ -38,7 +43,7 @@ function Header() {
       alignItems={"baseline"}
       borderRadius={1}
     >
-      <Typography variant="h4">Cell Lineage Applet</Typography>
+      <Typography variant="h4">Immune cCRE Activity by Cell Type</Typography>
       <Box
         display={"flex"}
         flexDirection={"row"}
@@ -48,7 +53,18 @@ function Header() {
         <Typography variant="subtitle1">
           Compare immune cCRE activity between selected immune cell types.
         </Typography>
+        <IconButton
+          color="primary"
+          onClick={() => setDialogOpen(true)}
+        >
+          <HelpIcon />
+        </IconButton>
       </Box>
+      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+        <DialogContent>
+          <Instructions cellTypeTreeWidth={835} />
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 }
