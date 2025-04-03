@@ -76,7 +76,7 @@ const TwoPaneLayout = ({ TableComponent, plots }: TwoPaneLayoutProps) => {
           </Tabs>
         </Stack>
         {figures.map((Figure, i) =>
-          <Box display={tab === i ? "block" : "none"} key={i} id={"figure_container"}>
+          <Box display={tab === i ? "block" : "none"} key={i} id={"figure_container"} height={"648px"}>
             {Figure}
           </Box>
         )}
