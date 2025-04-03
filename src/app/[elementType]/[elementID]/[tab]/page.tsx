@@ -7,7 +7,6 @@ import { GenomicElementType, isValidGeneTab, isValidIcreTab, isValidSnpTab, isVa
 import SnpEQTLs from "./_SnpTabs/SnpEQTLs"
 import GeneEQTLs from "./_GeneTabs/GeneEQTLs"
 import GeneExpression from "./_GeneTabs/_GeneExpression/GeneExpression"
-// import IcreActivity from "./_IcreTabs/IcreActivity"
 import IcreActivity from "./_IcreTabs/_IcreActivity/IcreActivity"
 import LinkedGenes from "./_IcreTabs/_linkedGenes/linkedGenes"
 
@@ -20,6 +19,9 @@ export default function DetailsPage({
    */
   params: { elementType: GenomicElementType, elementID: string, tab: string } 
 }){
+  /**
+   * Configure valid tabs in globalTypes.ts
+   */
   if (!isValidTab(tab)){
     throw new Error("Unknown tab: " + tab)
   }
