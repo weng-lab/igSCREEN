@@ -1,5 +1,7 @@
 "use client";
 import { gql, useQuery } from "@apollo/client";
+import ChangeHistoryTwoToneIcon from "@mui/icons-material/ChangeHistoryTwoTone";
+import CircleTwoToneIcon from "@mui/icons-material/CircleTwoTone";
 import {
   Autocomplete,
   Box,
@@ -18,12 +20,13 @@ import {
   useTheme,
 } from "@mui/material";
 import Grid2 from "@mui/material/Grid2";
-import { useState, useMemo, useRef, useEffect } from "react";
-import { client } from "../../common/utils";
-import ChangeHistoryTwoToneIcon from "@mui/icons-material/ChangeHistoryTwoTone";
-import CircleTwoToneIcon from "@mui/icons-material/CircleTwoTone";
-import LDSCplot from "./ldsc";
 import { getCellCategoryColor, getCellCategoryDisplayname } from "common/utility";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { client } from "../../common/utils";
+import LDSCplot from "./ldsc";
+import { iCRE_LDSC_BASELINE_QUERY, ICRE_STUDIES, pValMarks, scale } from "./const";
+import { iCRE_LDSC_QUERY } from "./const";
+
 export type LDSCDataPoint = {
   snps: number;
   study: string;
@@ -49,70 +52,7 @@ export default function Phenotype() {
   const [pValCutoff, setPValCutoff] = useState<number>(0.05);
   const [stimView, setStimView] = useState<"S" | "U" | "B">("B");
 
-  /**
-   * @todo type gql queries and return data https://www.apollographql.com/docs/react/development-testing/static-typing/
-   */
-  const ICRE_STUDIES = gql`
-    {
-      iCRELdscStudiesQuery {
-        disease
-        author
-        value
-        category
-        study_source
-      }
-    }
-  `;
-
   const { data: dataStudies } = useQuery(ICRE_STUDIES, { client });
-
-  const iCRE_LDSC_QUERY = gql`
-    query getLDSCValues($study: [String]!) {
-      iCRELdscQuery(study: $study) {
-        study
-        expvalue
-        source
-        celltype
-        lineage
-        biosample
-        biosampleid
-        biosampleorder
-        stimulation
-
-        study_source
-        disease
-        category
-
-        snps
-        h2
-        h2_std_error
-        enrichment
-        enrichment_std_error
-        enrichment_p
-        coefficient
-        coefficient_std_error
-        coefficient_zscore
-      }
-    }
-  `;
-
-  const baselineQuery = gql`
-    query getLDSCBaselineValues($study: [String]!) {
-      iCRELdscBaselineQuery(study: $study) {
-        celltype
-        snps
-        h2
-        h2_std_error
-        study
-        enrichment
-        enrichment_std_error
-        enrichment_p
-        coefficient
-        coefficient_std_error
-        coefficient_zscore
-      }
-    }
-  `;
 
   const { data: dataiCRELDSC, loading: loadingiCRELDSC } = useQuery(iCRE_LDSC_QUERY, {
     client,
@@ -120,7 +60,7 @@ export default function Phenotype() {
     skip: !selectedStudy,
   });
 
-  const { data: dataBaseline } = useQuery(baselineQuery, {
+  const { data: dataBaseline } = useQuery(iCRE_LDSC_BASELINE_QUERY, {
     client,
     variables: { study: selectedStudy },
     skip: !selectedStudy,
@@ -140,8 +80,13 @@ export default function Phenotype() {
         color: getCellCategoryColor(cellType),
         value: count,
       }))
-      .sort((a, b) => b.value - a.value);
-  }, [dataiCRELDSC]);
+      .sort((a, b) => b.value - a.value)
+      .concat({
+        label: "Baseline",
+        color: "#000000", // gray color for baseline
+        value: dataBaseline?.iCRELdscBaselineQuery.filter((x) => !x.celltype.startsWith("MAF_Adj")).length || 0,
+      });
+  }, [dataiCRELDSC, dataBaseline]);
 
   let LDSCStudies = dataStudies && dataStudies.iCRELdscStudiesQuery;
 
@@ -152,75 +97,36 @@ export default function Phenotype() {
 
     const baselineData: LDSCDataPoint[] = dataBaseline.iCRELdscBaselineQuery;
     const baselineFiltered = baselineData.filter((x) => !x.celltype.startsWith("MAF_Adj"));
-    return [...rawDataSorted, ...baselineFiltered]
+    return [...rawDataSorted, ...baselineFiltered];
   }, [dataiCRELDSC, dataBaseline]);
-
-  // In the slider, the "value" is used to place marks equally on track. The scale function below is used to pull out the true value that we want
-  const pValMarks = [
-    { 
-      value: 0,
-      scaledValue: 0.0001,
-      label: 0.0001,
-    },
-    {
-      value: 1,
-      scaledValue: 0.001,
-      label: 0.001,
-    },
-    {
-      value: 2,
-      scaledValue: 0.01,
-      label: 0.01,
-    },
-    {
-      value: 3,
-      scaledValue: 0.05,
-      label: 0.05,
-    },
-    {
-      value: 4,
-      scaledValue: 1,
-      label: 1,
-    },
-  ];
-
-  const scale = (value: number) => {
-    return pValMarks.find((x) => x.value === value).scaledValue;
-  };
 
   const svgRef = useRef<SVGSVGElement>(null);
 
   const rotate = useMediaQuery((theme: Theme) => theme.breakpoints.down("md"));
   const theme = useTheme();
-  const [currentBreakpoint, setCurrentBreakpoint] = useState('xs');
+  const [currentBreakpoint, setCurrentBreakpoint] = useState("xs");
 
+  // refactor using MUI
   useEffect(() => {
     const handleResize = () => {
       const breakpoint = theme.breakpoints.values;
       const width = window.innerWidth;
-      
-      let newBreakpoint = 'xs';
-      if (width >= breakpoint.lg) newBreakpoint = 'lg';
-      else if (width >= breakpoint.md) newBreakpoint = 'md';
-      else if (width >= breakpoint.sm) newBreakpoint = 'sm';
-      
+      let newBreakpoint = "xs";
+      if (width >= breakpoint.lg) newBreakpoint = "lg";
+      else if (width >= breakpoint.md) newBreakpoint = "md";
+      else if (width >= breakpoint.sm) newBreakpoint = "sm";
       setCurrentBreakpoint(newBreakpoint);
     };
-
-    // Initial check
     handleResize();
-
-    // Add event listener
-    window.addEventListener('resize', handleResize);
-
-    // Cleanup
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, [theme.breakpoints.values]);
 
   return (
     <Grid2 container mt={3} display={"flex"} flexDirection={"column"} justifyContent={"center"}>
       <Grid2 margin={"auto"} width={"75%"}>
         <Box margin={"auto"} maxWidth={600} display={"flex"} flexDirection={"column"} justifyContent={"center"} gap={2}>
+          {/* Header */}
           <Box>
             <Typography variant="h4">LD Score Regression by Phenotype</Typography>
           </Box>
@@ -228,6 +134,7 @@ export default function Phenotype() {
             Select a phenotype to explore its heritability enrichment (calculated by LD score regression) within 736
             immune cell experiments.
           </Typography>
+          {/* Autocomplete */}
           {LDSCStudies && LDSCStudies.length > 0 && (
             <Autocomplete
               fullWidth
@@ -258,6 +165,7 @@ export default function Phenotype() {
               )}
             />
           )}
+          {/* Slider */}
           <Box>
             <FormLabel>
               <i>P</i> Cutoff
@@ -275,6 +183,7 @@ export default function Phenotype() {
               marks={pValMarks}
             />
           </Box>
+          {/* Button Group */}
           <FormControl>
             <FormLabel id="demo-row-radio-buttons-group-label">Showing experiments in cells that are: </FormLabel>
             <RadioGroup
@@ -319,38 +228,61 @@ export default function Phenotype() {
           </FormControl>
         </Box>
       </Grid2>
-      <Grid2 margin={"auto"} width={"100%"} display={"flex"} justifyContent={"center"}>
+      {/* LDSC Plot */}
+      <Grid2 margin={"auto"} width={"75%"} display={"flex"} justifyContent={"center"} mb={2}>
         {loadingiCRELDSC ? (
           <CircularProgress />
         ) : (
           data && (
-            <Box width={"75%"} display={"flex"} justifyContent={"center"} mb={2}>
-              <Box
-                p={2}
-                style={{
-                  boxShadow: "0px 0px 10px 0px rgba(0, 0, 0, 0.2)",
-                  borderRadius: 4,
-                }}
-                height={"auto"}
-                width={"auto"}
-                display={"flex"}
-                justifyContent={"flex-start"}
-              >
-                <LDSCplot
-                  svgRef={svgRef}
-                  width={currentBreakpoint === 'md' ? "900px" : "1200px"}
-                  height={currentBreakpoint === 'md' ? "300px" : "400px"}
-                  data={data}
-                  pValCutoff={pValCutoff}
-                  stimView={stimView}
-                  legendEntries={legendEntries}
-                  rotate={rotate}
-                />
-              </Box>
+            <Box
+              p={2}
+              style={{
+                boxShadow: "0px 0px 10px 0px rgba(0, 0, 0, 0.2)",
+                borderRadius: 4,
+              }}
+              height={"auto"}
+              width={"auto"}
+              display={"flex"}
+              flexDirection={"column"}
+              justifyContent={"flex-start"}
+            >
+              <LDSCplot
+                svgRef={svgRef}
+                width={currentBreakpoint === "md" ? "900px" : "1200px"}
+                height={currentBreakpoint === "md" ? "300px" : "400px"}
+                data={data}
+                pValCutoff={pValCutoff}
+                stimView={stimView}
+                legendEntries={legendEntries}
+                rotate={rotate}
+              />
+              <Legend legendEntries={legendEntries} />
             </Box>
           )
         )}
       </Grid2>
     </Grid2>
+  );
+}
+
+function Legend({ legendEntries }: { legendEntries: { label: string; color: string; value: number }[] }) {
+  return (
+    <Box
+      display={"flex"}
+      flexDirection={{ sm: "column", md: "row" }}
+      justifyContent={"space-evenly"}
+      flexWrap={"wrap"}
+      gap={2}
+      alignItems={"center"}
+    >
+      {legendEntries.map((entry, i) => (
+        <Box key={i} display="flex" alignItems="center" gap={1} paddingInline={2}>
+          <Box sx={{ width: "12px", height: "12px", backgroundColor: entry.color }} />
+          <Typography variant="body2">
+            {entry.label}: {entry.value}
+          </Typography>
+        </Box>
+      ))}
+    </Box>
   );
 }
