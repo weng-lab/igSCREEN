@@ -15,6 +15,7 @@ import Grid2 from "@mui/material/Grid2";
 import { useTheme } from "@mui/material/styles";
 import {
   BigBedTrackProps,
+  BigWigTrackProps,
   BrowserActionType,
   DefaultBigBed,
   DefaultBigWig,
@@ -29,17 +30,12 @@ import {
 import { GenomeSearch, Result } from "@weng-lab/psychscreen-ui-components";
 import React, { useCallback, useEffect, useState } from "react";
 import { Rect } from "umms-gb/dist/components/tracks/bigbed/types";
-import { CellQueryValue } from "../../app/celllineage/types";
-import { getCellColor, getCellDisplayName } from "../../app/celllineage/utils";
-import AutoComplete from "../components/autocomplete";
-import BulkAtacModal from "./bulkAtacSelector";
 import { GenomicRange } from "./types";
 import ControlButtons from "./controls";
-import { useElementMetadataReturn } from "common/hooks/useElementMetadata";
 import { GenomicElementType } from "types/globalTypes";
 import HighlightIcon from "@mui/icons-material/Highlight";
-import DeleteIcon from "@mui/icons-material/Delete";
 import HighlightDialog, { GBHighlight } from "./highlightDialog";
+import AddTracksModal from "./addTracksModal";
 
 function expandCoordinates(coordinates: GenomicRange) {
   let length = coordinates.end - coordinates.start;
@@ -95,12 +91,7 @@ export default function GenomeBrowserView({
 
   // Initialize tracks and highlights
   useEffect(() => {
-    const tracks = defaultTracks(
-      type === "gene" ? name : "",
-      icreMouseOver,
-      icreMouseOut,
-      onIcreClick
-    );
+    const tracks = defaultTracks(type === "gene" ? name : "", icreMouseOver, icreMouseOut, onIcreClick);
     tracks.forEach((track) => {
       browserDispatch({ type: BrowserActionType.ADD_TRACK, track });
     });
@@ -116,64 +107,32 @@ export default function GenomeBrowserView({
         id: name,
       },
     });
-  }, [
-    coordinates,
-    name,
-    type,
-    icreMouseOver,
-    icreMouseOut,
-    onIcreClick,
-    browserDispatch,
-  ]);
+  }, [coordinates, name, type, icreMouseOver, icreMouseOut, onIcreClick, browserDispatch]);
 
   // Bulk ATAC Modal
-  const [settingsModalShown, setSettingsModalShown] = useState(false);
-  const [selectedCells, setSelectedCells] = useState<CellQueryValue[]>([]);
+  const [showAddTracksModal, setShowAddTracksModal] = useState(false);
+  const [selectedTracks, setSelectedTracks] = useState<BigWigTrackProps[]>([]);
 
   useEffect(() => {
-    // Remove only bulk ATAC tracks for deselected cells
-    browserState.tracks.forEach((track) => {
-      if (
-        track.id === "all-immune-bigwig" ||
-        track.id === "default-icre" ||
-        track.id === "default-gene"
-      )
-        return;
-      if (!selectedCells.some((cell) => cell === track.id)) {
-        browserDispatch({ type: BrowserActionType.DELETE_TRACK, id: track.id });
-      }
-    });
-    // Add tracks for selected cells
-    const x: [string, string, string][] =
-      selectedCells.map((cell) => {
-        return [
-          getCellDisplayName(cell, true, true) +
-            (["HSC", "CD34_Cord_Blood", "CD34_Bone_Marrow"].find(
-              (x) => x === cell
-            )
-              ? ` (${cell})`
-              : ""),
-          `https://downloads.wenglab.org/${cell}.bigWig`,
-          getCellColor(cell),
-        ];
-      }) || [];
-    x.map((cell, index) => {
-      if (!browserState.tracks.find((t) => t.id === selectedCells[index])) {
-        const track = {
-          ...DefaultBigWig,
-          title: cell[0],
-          url: cell[1],
-          color: cell[2],
-          height: 75,
-          displayMode: DisplayMode.FULL,
-          id: selectedCells[index],
-        };
+    // Add new tracks that aren't already in browser state
+    selectedTracks.forEach((track) => {
+      if (!browserState.tracks.some((t) => t.id === track.id)) {
         browserDispatch({ type: BrowserActionType.ADD_TRACK, track });
       }
     });
-  }, [selectedCells, browserState.tracks, browserDispatch]);
+
+    // Remove tracks that are no longer selected
+    browserState.tracks.forEach((track) => {
+      if (track.id?.includes("_merged_signal") && !selectedTracks.some((t) => t.id === track.id)) {
+        browserDispatch({ type: BrowserActionType.DELETE_TRACK, id: track.id });
+      }
+    });
+  }, [browserState.tracks, selectedTracks, browserDispatch]);
 
   const handeSearchSubmit = (r: Result) => {
+    browserDispatch({
+      type: BrowserActionType.SET_LOADING,
+    });
     if (r.type === "Gene") {
       browserDispatch({
         type: BrowserActionType.UPDATE_PROPS,
@@ -193,7 +152,7 @@ export default function GenomeBrowserView({
       type: BrowserActionType.ADD_HIGHLIGHT,
       highlight: {
         domain: r.domain,
-        color: "red",
+        color: randomColor(),
         id: r.title,
       },
     });
@@ -205,14 +164,9 @@ export default function GenomeBrowserView({
 
   const theme = useTheme();
   const [highlightDialogOpen, setHighlightDialogOpen] = useState(false);
+
   return (
-    <Grid2
-      container
-      spacing={2}
-      sx={{ mt: "0rem", mb: "1rem" }}
-      justifyContent="center"
-      alignItems="center"
-    >
+    <Grid2 container spacing={2} sx={{ mt: "0rem", mb: "1rem" }} justifyContent="center" alignItems="center">
       <Grid2
         size={{ xs: 12, lg: 12 }}
         style={{
@@ -279,20 +233,17 @@ export default function GenomeBrowserView({
                 backgroundColor: theme.palette.primary.main,
                 color: "white",
               }}
-              onClick={() => setSettingsModalShown(true)}
+              onClick={() => setShowAddTracksModal(true)}
             >
-              Add more ATAC-seq data
+              Add signal tracks
             </Button>
           </Box>
         </Box>
-        <BulkAtacModal
-          open={settingsModalShown}
-          onCancel={() => setSettingsModalShown(false)}
-          onAccept={(cells: CellQueryValue[]) => {
-            setSelectedCells(cells);
-            setSettingsModalShown(false);
-          }}
-          selected={selectedCells}
+        <AddTracksModal
+          open={showAddTracksModal}
+          setOpen={setShowAddTracksModal}
+          setSelectedTracks={setSelectedTracks}
+          selectedTracks={selectedTracks}
         />
         <Box
           width={"100%"}
@@ -302,8 +253,7 @@ export default function GenomeBrowserView({
           alignItems={"center"}
         >
           <h3 style={{ marginBottom: "0px", marginTop: "0px" }}>
-            {browserState.domain.chromosome}:
-            {browserState.domain.start.toLocaleString()}-
+            {browserState.domain.chromosome}:{browserState.domain.start.toLocaleString()}-
             {browserState.domain.end.toLocaleString()}
           </h3>
 
@@ -316,17 +266,10 @@ export default function GenomeBrowserView({
           </svg>
           <h3 style={{ marginBottom: "0px", marginTop: "0px" }}>hg38</h3>
         </Box>
-        <ControlButtons
-          browserState={browserState}
-          browserDispatch={browserDispatch}
-        />
+        <ControlButtons browserState={browserState} browserDispatch={browserDispatch} />
       </Grid2>
       <Grid2 size={{ xs: 12, lg: 12 }}>
-        <GenomeBrowser
-          width={"100%"}
-          browserState={browserState}
-          browserDispatch={browserDispatch}
-        />
+        <GenomeBrowser width={"100%"} browserState={browserState} browserDispatch={browserDispatch} />
       </Grid2>
       <Box
         sx={{
@@ -386,9 +329,13 @@ function defaultTracks(
     url: "https://downloads.wenglab.org/all_immune.bigWig",
     color: "#000000",
     height: 75,
-    rowHeight: 12,
     displayMode: DisplayMode.FULL,
     id: "all-immune-bigwig",
   };
   return [geneTrack, icreTrack, allImmuneBigWig];
 }
+
+function randomColor() {
+  return "#" + Math.floor(Math.random() * 16777215).toString(16);
+}
+

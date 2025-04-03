@@ -7,7 +7,7 @@ import { ValuedPoint } from "umms-gb/dist/utils/types";
 import { client } from "../../utils"
 import { CellQueryValue } from "../../../app/celllineage/types";
 import { getCellColor, getCellDisplayName } from "../../../app/celllineage/utils";
-import BulkAtacModal from "../bulkAtacSelector";
+import BulkAtacModal from "../addTracksModal";
 
 export const BIG_QUERY = gql`
   query BigRequests($bigRequests: [BigRequest!]!) {
