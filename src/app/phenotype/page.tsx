@@ -156,9 +156,7 @@ export default function Phenotype() {
                   <div>
                     <Typography variant="body1">{option.disease}</Typography>
                     <Typography variant="body2" color="textSecondary">
-                      {option.study_source}
-                      {":"}
-                      {option.author}
+                      {option.study_source} {option.author && `${option.author.replace(/(\d+)$/, " $1")}`}
                     </Typography>
                   </div>
                 </li>
