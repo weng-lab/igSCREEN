@@ -135,7 +135,14 @@ const GeneExpressionUMAP = <T extends PointMetadata, S extends true, Z extends b
   return (
     <>
       <ColorBySelect />
-      <Box padding={1} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, position: "relative", width: "100%", height: "calc(100% - 72px)" }} ref={graphContainerRef} mt={2} mb={2}>
+      <Box 
+        padding={1} 
+        //hacky height, have to subtract the pixel value of the Colorby select and the margin to line it up with the table
+        sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, position: "relative", width: "100%", height: "calc(100% - 72px)" }} 
+        ref={graphContainerRef} 
+        mt={2} 
+        mb={2}
+      >
         <Typography variant="body2" align="right">
           {"\u25EF unstimulated, \u25B3 stimulated "}
         </Typography>

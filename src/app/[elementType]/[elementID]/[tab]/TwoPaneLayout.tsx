@@ -46,7 +46,7 @@ const TwoPaneLayout = ({ TableComponent, plots }: TwoPaneLayoutProps) => {
   }
 
   const plotTabs = plots.map(x => { return { tabTitle: x.tabTitle, icon: x.icon } })
-  const figures = plots.map(x => x.plotComponent)
+  const figures = plots.map(x => { return { title: x.tabTitle, component: x.plotComponent } })
 
   const TableIconButton = () => {
     return (
@@ -95,8 +95,8 @@ const TwoPaneLayout = ({ TableComponent, plots }: TwoPaneLayoutProps) => {
           </Tabs>
         </Stack>
         {figures.map((Figure, i) =>
-          <Box display={tab === i ? "block" : "none"} key={i} id={"figure_container"} height={tableHeight} maxHeight={"700px"}>
-            {Figure}
+          <Box display={tab === i ? "block" : "none"} key={i} id={"figure_container"} height={tableHeight} maxHeight={Figure.title === "UMAP" ? "700px" : "none"}>
+            {Figure.component}
           </Box>
         )}
       </Box>
