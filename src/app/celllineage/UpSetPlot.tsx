@@ -112,8 +112,8 @@ export default function UpSetPlot({ width, height, data, handleDownload, referen
 
   return totalWidth < 10 ? null : (
     <div>
-      <svg fontSize={fontSize} id='UpSet-Plot' width={totalWidth} height={totalHeight} ref={reference}>
-        <rect width={totalWidth} height={totalHeight} fill='none' stroke='black' fillOpacity={0.5} rx={8} />
+      <svg fontSize={fontSize} id='UpSet-Plot' width={"100%"} height={"auto"} viewBox={`0 0 ${totalWidth} ${totalHeight}`} ref={reference}>
+        {/* <rect width={totalWidth} height={totalHeight} fill='none' stroke='black' fillOpacity={0.5} rx={8}  /> */}
         <Group
           top={30}
           left={30}
