@@ -5,21 +5,18 @@ import { LinkVertical } from "@visx/shape";
 import { Text } from "@visx/text";
 import { useCallback, useMemo } from "react";
 
+const primaryColor = "#494d6b";
+
 interface NodeInfo {
   /**
    * unique identifier for the node, should match ```celltype``` field of useIcreActivity
    */
-  celltype: string
+  celltype: string;
 }
 
-/**
- * I think that there should be a way to download the individual sets of active iCREs for each cell types
- * Could be in the table which contains the selected cells
- */
-
 interface CellTypeTreeProps {
-  width: number
-  height: number
+  width: number;
+  height: number;
   /**
    * Highlights cells in the tree, and greys out the rest. Empty array will grey whole tree, null will grey none
    */
@@ -29,17 +26,18 @@ interface CellTypeTreeProps {
    */
   uninteractive?: boolean;
   onNodeClicked?: (node: NodeInfo) => void;
-};
+}
 
-function noop(){}
+function noop() {}
 
 function getCellImagePath(celltype: string): string {
-  return '/cellTypes/HSC.png'
+  return "/cellTypes/HSC.png";
 }
 
 interface TreeNode extends NodeInfo {
-  disabled?: boolean
-  children?: TreeNode[]
+  label: string;
+  disabled?: boolean;
+  children?: TreeNode[];
 }
 
 const tree: TreeNode = {
@@ -55,31 +53,31 @@ const tree: TreeNode = {
               celltype: "Granulocyte-monocyte progenitors",
               children: [
                 {
-                  celltype: "Plasmacytoid Dendritic Cells"
+                  celltype: "Plasmacytoid Dendritic Cells",
                 },
                 {
-                  celltype: "Myeloid Dendritic Cells"
+                  celltype: "Myeloid Dendritic Cells",
                 },
                 {
-                  celltype: "Monocytes"
+                  celltype: "Monocytes",
                 },
                 {
-                  celltype: "Suppressor Macrophages"
+                  celltype: "Suppressor Macrophages",
                 },
                 {
-                  celltype: "Inflammatory Macrophages"
+                  celltype: "Inflammatory Macrophages",
                 },
-              ]
-            }
-          ]
+              ],
+            },
+          ],
         },
         {
           celltype: "Megakaryocyte-Erythroid Progenitors",
           children: [
             {
-              celltype: "Erythroblasts"
-            }
-          ]
+              celltype: "Erythroblasts",
+            },
+          ],
         },
         {
           celltype: "Lymphoid-Primed Multipotent Progenitor Cells",
@@ -102,18 +100,18 @@ const tree: TreeNode = {
                               children: [
                                 {
                                   celltype: "Memory Natural Killer Cells",
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                      ],
                     },
                     {
                       celltype: "T Cells",
                       children: [
                         {
-                          celltype: "Gamma Delta T Cells"
+                          celltype: "Gamma Delta T Cells",
                         },
                         {
                           celltype: "Double Positive Cells",
@@ -132,28 +130,28 @@ const tree: TreeNode = {
                                           celltype: "Memory T Effector Cells",
                                           children: [
                                             {
-                                              celltype: "T-helper 1 Cell"
+                                              celltype: "T-helper 1 Cell",
                                             },
                                             {
-                                              celltype: "T-helper 2 Cell"
+                                              celltype: "T-helper 2 Cell",
                                             },
                                             {
-                                              celltype: "T-helper 9 Cell"
+                                              celltype: "T-helper 9 Cell",
                                             },
                                             {
-                                              celltype: "T-helper 17 Cell"
+                                              celltype: "T-helper 17 Cell",
                                             },
                                             {
-                                              celltype: "T-helper 22 Cell"
+                                              celltype: "T-helper 22 Cell",
                                             },
                                             {
-                                              celltype: "Follicular T Helper Cells"
-                                            }
-                                          ]
+                                              celltype: "Follicular T Helper Cells",
+                                            },
+                                          ],
                                         },
-                                      ]
-                                    }
-                                  ]
+                                      ],
+                                    },
+                                  ],
                                 },
                                 {
                                   celltype: "Regulatory T cells",
@@ -164,11 +162,11 @@ const tree: TreeNode = {
                                         {
                                           celltype: "Memory T Regulatory Cells",
                                         },
-                                      ]
+                                      ],
                                     },
-                                  ]
+                                  ],
                                 },
-                              ]
+                              ],
                             },
                             {
                               celltype: "CD8+ T Cells",
@@ -177,20 +175,20 @@ const tree: TreeNode = {
                                   celltype: "Naive CD8+ T Cells",
                                   children: [
                                     {
-                                      celltype: "Central Memory CD8+ T Cells"
+                                      celltype: "Central Memory CD8+ T Cells",
                                     },
                                     {
-                                      celltype: "Effector Memory CD8+ T Cells"
-                                    }
-                                  ]
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
+                                      celltype: "Effector Memory CD8+ T Cells",
+                                    },
+                                  ],
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
                 },
                 {
                   celltype: "B Cells",
@@ -202,25 +200,30 @@ const tree: TreeNode = {
                           celltype: "Memory B Cells",
                           children: [
                             {
-                              celltype: "Plasmablasts"
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  ]
-}
+                              celltype: "Plasmablasts",
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  ],
+};
 
-const NewCellTypeTree = ({width, height, selected = null, uninteractive = false, onNodeClicked = noop}: CellTypeTreeProps) => {
-
+const NewCellTypeTree = ({
+  width,
+  height,
+  selected = null,
+  uninteractive = false,
+  onNodeClicked = noop,
+}: CellTypeTreeProps) => {
   const innerMarginTop = 70;
   const innerMarginBottom = 25;
   const innerMarginLeft = 0;
@@ -231,43 +234,61 @@ const NewCellTypeTree = ({width, height, selected = null, uninteractive = false,
 
   const data = useMemo(() => hierarchy(tree), []);
 
-  const Node = useCallback(({ node }: { node: HierarchyPointNode<TreeNode> }) => {
-    const width = 60;
-    const height = 60;
-    const centerX = -width / 2;
-    const centerY = -height / 2;
-    const top = node.y;
-    const left = node.x;
+  const Node = useCallback(
+    ({ node }: { node: HierarchyPointNode<TreeNode> }) => {
+      const width = 60;
+      const height = 60;
+      const centerX = -width / 2;
+      const centerY = -height / 2;
+      const top = node.y;
+      const left = node.x;
 
-    const isSelected = selected?.includes(node.data.celltype)
-    const opacity = (selected === null || isSelected) ? 1 : 0.3
+      const isSelected = selected?.includes(node.data.celltype);
+      const opacity = !node.data.disabled && (selected === null || isSelected) ? 1 : 0.3;
 
-    return (
-      <Group top={top} left={left} onClick={() => onNodeClicked(node.data)} opacity={opacity}>
-        {/* Text positioned above the group, all positioning is done relative to image position */}
-        <Text y={-60}>{node.data.celltype}</Text>
-        <image
-          href={getCellImagePath(node.data.celltype)}
-          width={width}
-          height={height}
-          x={centerX}
-          y={centerY}
-          onMouseEnter={(event: React.MouseEvent<SVGImageElement, MouseEvent>) => {
-            if (!uninteractive && !node.data.disabled) {
-              event.currentTarget.setAttribute("transform", "scale(1.1)");
-              event.currentTarget.setAttribute("opacity", "1");
-            }
-          }}
-          onMouseOut={(event: React.MouseEvent<SVGImageElement, MouseEvent>) => {
-            if (!uninteractive && !node.data.disabled) {
-              event.currentTarget.setAttribute("transform", "scale(1)");
-              event.currentTarget.setAttribute("opacity", String(opacity));
-            }
-          }}
-        />
-      </Group>
-    );
-  }, [selected, uninteractive, onNodeClicked])
+      return (
+        <Group top={top} left={left} onClick={() => !node.data.disabled && onNodeClicked(node.data)} opacity={opacity}>
+          {/* Text positioned above the group, all positioning is done relative to image position */}
+          <Text y={-45} textAnchor="middle" fontSize={12}>
+            {node.data.celltype}
+          </Text>
+          <image
+            href={getCellImagePath(node.data.celltype)}
+            width={width}
+            height={height}
+            x={centerX}
+            y={centerY}
+            cursor={node.data.disabled ? "not-allowed" : "pointer"}
+            onMouseEnter={(event: React.MouseEvent<SVGImageElement, MouseEvent>) => {
+              if (!uninteractive && !node.data.disabled) {
+                event.currentTarget.setAttribute("transform", "scale(1.1)");
+                event.currentTarget.setAttribute("opacity", "1");
+              }
+            }}
+            onMouseOut={(event: React.MouseEvent<SVGImageElement, MouseEvent>) => {
+              if (!uninteractive && !node.data.disabled) {
+                event.currentTarget.setAttribute("transform", "scale(1)");
+                event.currentTarget.setAttribute("opacity", String(opacity));
+              }
+            }}
+          />
+          {isSelected && (
+            <rect
+              width={width - 5}
+              height={height - 5}
+              x={centerX + 2.5}
+              y={centerY}
+              rx={15}
+              fill="none"
+              stroke={primaryColor}
+              strokeWidth={1}
+            />
+          )}
+        </Group>
+      );
+    },
+    [onNodeClicked, selected, uninteractive]
+  );
 
   return innerWidth < 10 ? null : (
     <svg width={width} height={height}>
@@ -278,7 +299,7 @@ const NewCellTypeTree = ({width, height, selected = null, uninteractive = false,
               <LinkVertical<HierarchyPointLink<TreeNode>, HierarchyPointNode<TreeNode>>
                 key={`tree-link-${i}`}
                 data={link}
-                stroke={"black"}
+                stroke={primaryColor}
                 strokeOpacity={0.4}
                 //Bold if descendant selected
                 strokeWidth={
@@ -295,6 +316,6 @@ const NewCellTypeTree = ({width, height, selected = null, uninteractive = false,
       </Tree>
     </svg>
   );
-}
+};
 
-export default NewCellTypeTree
+export default NewCellTypeTree;

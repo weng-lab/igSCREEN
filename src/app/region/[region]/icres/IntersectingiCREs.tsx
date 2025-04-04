@@ -1,9 +1,8 @@
 "use client";
 
-import { Accordion, AccordionDetails, AccordionSummary, CircularProgress, Link as MuiLink, Skeleton, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Link as MuiLink, Skeleton, Typography } from "@mui/material";
 import { ExternalLink, getCellCategoryDisplayname, getClassDisplayname } from "common/utility";
 import { GenomicRange } from "types/globalTypes";
-import { useRouter } from "next/navigation";
 import { useIcreData, UseIcreDataReturn } from "common/hooks/useIcreData";
 import { useIcreActivity, UseIcreActivityReturn } from "common/hooks/useIcreActivity";
 import { useMemo } from "react";

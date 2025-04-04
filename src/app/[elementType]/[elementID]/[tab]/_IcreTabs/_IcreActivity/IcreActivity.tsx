@@ -7,6 +7,7 @@ import IcreActivityBarPlot from "./IcreActivityBarPlot"
 import IcreActivityUMAP from "./IcreActivityUMAP"
 import { BarChart, ScatterPlot, SchemaRounded } from "@mui/icons-material"
 import NewCellTypeTree from "common/components/NewCellTypeTree"
+import IcreActivityTree from "./IcreActivityTree"
 
 
 export type IcreActivityProps = {
@@ -79,14 +80,10 @@ const IcreActivity = ({ accession }: IcreActivityProps) => {
             />
         },
         {
-          tabTitle: "Activity in Lineage",
+          tabTitle: "Activity in Cell Lineage",
           icon: <SchemaRounded sx={{ transform: "rotate(270deg)" }}/>,
           plotComponent: 
-          <NewCellTypeTree 
-            width={830}
-            height={1100}
-            onNodeClicked={(node) => window.alert(node.celltype)}
-          />
+            <IcreActivityTree accession={accession} />
         }
       ]}
     />
