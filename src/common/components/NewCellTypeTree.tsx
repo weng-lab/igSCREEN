@@ -240,19 +240,19 @@ interface TreeNode extends NodeInfo {
 
 const tree: TreeNode = {
   celltype: "Hematopoetic Stem Cells",
-  label: "Hematopoetic/Stem Cells",
+  label: "Hematopoetic/Stem Cell",
   children: [
     {
       celltype: "Multipotent Progenitors",
-      label: "Multipotent/Progenitors",
+      label: "Multipotent/Progenitor",
       children: [
         {
           celltype: "Common Myeloid Progenitors",
-          label: "Common Myeloid/Progenitors",
+          label: "Common Myeloid/Progenitor",
           children: [
             {
               celltype: "Granulocyte-monocyte progenitors",
-              label: "Granulocyte-monocyte/progenitors",
+              label: "Granulocyte-monocyte/progenitor",
               children: [
                 {
                   celltype: "Plasmacytoid Dendritic Cells",
@@ -264,15 +264,15 @@ const tree: TreeNode = {
                 },
                 {
                   celltype: "Monocytes",
-                  label: "Monocytes",
+                  label: "Monocyte",
                 },
                 {
                   celltype: "Suppressor Macrophages",
-                  label: "Suppressor/Macrophages",
+                  label: "Suppressor/Macrophage",
                 },
                 {
                   celltype: "Inflammatory Macrophages",
-                  label: "Inflammatory/Macrophages",
+                  label: "Inflammatory/Macrophage",
                 },
               ],
             },
@@ -280,21 +280,21 @@ const tree: TreeNode = {
         },
         {
           celltype: "Megakaryocyte-Erythroid Progenitors",
-          label: "Megakaryocyte-Erythroid/Progenitors",
+          label: "Megakaryocyte-Erythroid/Progenitor",
           children: [
             {
               celltype: "Erythroblasts",
-              label: "Erythroblasts",
+              label: "Erythroblast",
             },
           ],
         },
         {
           celltype: "Lymphoid-Primed Multipotent Progenitor Cells",
-          label: "Lymphoid-Primed/Multipotent Progenitors",
+          label: "Lymphoid-Primed/Multipotent Progenitor",
           children: [
             {
               celltype: "Common Lymphoid Progenitors",
-              label: "Common Lymphoid/Progenitors",
+              label: "Common Lymphoid/Progenitor",
               children: [
                 {
                   celltype: null,
@@ -307,15 +307,15 @@ const tree: TreeNode = {
                       children: [
                         {
                           celltype: "Immature Natural Killer Cells",
-                          label: "Immature Natural Killer",
+                          label: "Immature NK",
                           children: [
                             {
                               celltype: "Mature Natural Killer Cells",
-                              label: "Mature Natural Killer",
+                              label: "Mature NK",
                               children: [
                                 {
                                   celltype: "Memory Natural Killer Cells",
-                                  label: "Memory Natural Killer",
+                                  label: "Memory NK",
                                 },
                               ],
                             },
@@ -325,7 +325,7 @@ const tree: TreeNode = {
                     },
                     {
                       celltype: "T Cells",
-                      label: "T Cells",
+                      label: "T Cell",
                       children: [
                         {
                           celltype: "Gamma Delta T Cells",
@@ -338,7 +338,7 @@ const tree: TreeNode = {
                           children: [
                             {
                               celltype: "CD4+ T Cells",
-                              label: "CD4+ T Cells",
+                              label: "CD4+ T Cell",
                               children: [
                                 {
                                   celltype: "Effector CD4+ Tcells",
@@ -374,7 +374,7 @@ const tree: TreeNode = {
                                             },
                                             {
                                               celltype: "Follicular T Helper Cells",
-                                              label: "Follicular/T Helper",
+                                              label: "T Follicular/Helper",
                                             },
                                           ],
                                         },
@@ -402,7 +402,7 @@ const tree: TreeNode = {
                             },
                             {
                               celltype: "CD8+ T Cells",
-                              label: "CD8+ T Cells",
+                              label: "CD8+ T Cell",
                               children: [
                                 {
                                   celltype: "Naive CD8+ T Cells",
@@ -428,19 +428,19 @@ const tree: TreeNode = {
                 },
                 {
                   celltype: "B Cells",
-                  label: "B Cells",
+                  label: "B Cell",
                   children: [
                     {
                       celltype: "Naive B Cells",
-                      label: "Naive B Cells",
+                      label: "Naive B Cell",
                       children: [
                         {
                           celltype: "Memory B Cells",
-                          label: "Memory B Cells",
+                          label: "Memory B Cell",
                           children: [
                             {
                               celltype: "Plasmablasts",
-                              label: "Plasmablasts",
+                              label: "Plasmablast",
                             },
                           ],
                         },
@@ -518,6 +518,18 @@ const NewCellTypeTree = ({
               );
             })}
           </text>
+          {isSelected && (
+            <rect
+              width={width}
+              height={height}
+              x={centerX}
+              y={centerY - 2}
+              rx={15}
+              fill="none"
+              stroke={primaryColor}
+              strokeWidth={0.5}
+            />
+          )}
           <image
             id={`cell-${node.data.celltype}`}
             href={getCellImagePath(node.data.celltype)}
@@ -538,18 +550,6 @@ const NewCellTypeTree = ({
             }}
             onClick={() => !node.data.disabled && onNodeClicked(node.data)}
           />
-          {isSelected && (
-            <rect
-              width={width - 5}
-              height={height - 5}
-              x={centerX + 2.5}
-              y={centerY}
-              rx={15}
-              fill="none"
-              stroke={primaryColor}
-              strokeWidth={1}
-            />
-          )}
         </Group>
       );
     },
@@ -566,10 +566,10 @@ const NewCellTypeTree = ({
                 key={`tree-link-${i}`}
                 data={link}
                 stroke={primaryColor}
-                strokeOpacity={0.4}
+                strokeOpacity={0.3}
                 //Bold if descendant selected
                 strokeWidth={
-                  link.target.descendants().find((childNode) => selected?.includes(childNode.data.celltype)) ? 3 : 0.75
+                  link.target.descendants().find((childNode) => selected?.includes(childNode.data.celltype)) ? 4 : 0.75
                 }
                 fill="none"
               />
