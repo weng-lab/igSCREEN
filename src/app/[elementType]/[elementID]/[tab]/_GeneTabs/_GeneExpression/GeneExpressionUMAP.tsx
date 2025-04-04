@@ -8,12 +8,12 @@ import { scaleLinear } from "d3-scale"
 import { Point, ScatterPlot, ChartProps } from "@weng-lab/psychscreen-ui-components"
 import { ParentSize } from "@visx/responsive"
 
-export type GeneExpressionUmapProps<T> =
-  GeneExpressionProps  &
+export type GeneExpressionUmapProps<T, S extends boolean | undefined, Z extends boolean | undefined> =
+  GeneExpressionProps &
   SharedGeneExpressionPlotProps &
-  Partial<ChartProps<T>>
+  Partial<ChartProps<T, S, Z>>
 
-const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selected, geneExpressionData, ...rest }: GeneExpressionUmapProps<T>) => {
+const GeneExpressionUMAP = <T extends PointMetadata, S extends true, Z extends boolean | undefined>({ name, id, selected, geneExpressionData, ...rest }: GeneExpressionUmapProps<T, S, Z>) => {
   const [colorScheme, setColorScheme] = useState<'expression' | 'lineage'>('expression');
   const [showLegend, setShowLegend] = useState<boolean>(true);
 
@@ -27,12 +27,10 @@ const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selected, geneE
   const graphContainerRef = useRef(null);
 
   const map = {
-    defaultOpen: false,
     position: {
       right: 50,
       bottom: 50,
     },
-    ref: graphContainerRef
   };
 
   function logTransform(val: number) {
@@ -68,7 +66,7 @@ const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selected, geneE
 
   const scatterData: Point<PointMetadata>[] = useMemo(() => {
     if (!data) return []
-    
+
     const isHighlighted = (x: PointMetadata) => selected.some(y => y.name === x.name)
 
     return data.map((x) => {
@@ -100,7 +98,7 @@ const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selected, geneE
         label: getCellCategoryDisplayname(cellType),
         color: getCellCategoryColor(cellType),
         value: count
-      })).sort((a,b) => b.value - a.value);
+      })).sort((a, b) => b.value - a.value);
     }
   }, [scatterData, colorScheme]);
 
@@ -117,7 +115,7 @@ const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selected, geneE
 
   const ColorBySelect = () => {
     return (
-      <FormControl sx={{alignSelf: "flex-start"}}>
+      <FormControl sx={{ alignSelf: "flex-start" }}>
         <InputLabel>Color By</InputLabel>
         <Select
           labelId="demo-simple-select-label"
@@ -135,83 +133,71 @@ const GeneExpressionUMAP = <T extends PointMetadata>({ name, id, selected, geneE
   }
 
   return (
-    <Stack spacing={2}>
+    <>
       <ColorBySelect />
-      <Box padding={1} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, position: "relative" }} ref={graphContainerRef}>
-        <ParentSize>
-          {({ width, height }) => {
-            return (
-              <>
-                <Typography variant="body2" align="right">
-                  {"\u25EF unstimulated, \u25B3 stimulated "}
-                </Typography>
-                <ScatterPlot
-                  {...rest}
-                  width={width}
-                  height={width}
-                  pointData={scatterData}
-                  selectable
-                  loading={loading}
-                  leftAxisLable=""
-                  bottomAxisLabel=""
-                  miniMap={map}
-                  groupPointsAnchor="lineage"
-                  tooltipBody={(point) => <TooltipBody {...point} />
-                }
-                />
-              </>
-            )
-          }}
-        </ParentSize>
+      <Box padding={1} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, position: "relative", width: "100%", height: "calc(100% - 72px)" }} ref={graphContainerRef} mt={2} mb={2}>
+        <Typography variant="body2" align="right">
+          {"\u25EF unstimulated, \u25B3 stimulated "}
+        </Typography>
+        <ScatterPlot
+          {...rest}
+          pointData={scatterData}
+          selectable
+          loading={loading}
+          miniMap={map}
+          groupPointsAnchor="lineage"
+          tooltipBody={(point) => <TooltipBody {...point} />
+          }
+        />
         <Button variant="outlined" sx={{ position: "absolute", bottom: 10, left: 10, textTransform: "none" }} onClick={() => setShowLegend(!showLegend)}>Toggle Legend</Button>
       </Box>
       {/* legend */}
       {showLegend && (
-          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            <Typography mb={1}><b>Legend</b></Typography>
-            {colorScheme === "expression" ? (
-              <>
-                <Typography>Log₁₀(TPM + 1)</Typography>
-                <Box sx={{ display: "flex", alignItems: "center", width: "200px" }}>
-                  <Typography sx={{ mr: 1 }}>0</Typography>
-                  <Box
-                    sx={{
-                      height: "16px",
-                      flexGrow: 1,
-                      background: `linear-gradient(to right, ${generateGradient(maxValue)})`,
-                      border: "1px solid #ccc"
-                    }}
-                  />
-                  <Typography sx={{ ml: 1 }}>{maxValue.toFixed(2)}</Typography>
-                </Box>
-              </>
-            ) : (
-              /**
-               * @todo clean this up. No way this legend needs to be this complicated
-               */
-              /* Normal legend for cell types */
-              <Box sx={{ display: 'flex', justifyContent: legendEntries.length / 4 >= 3 ? "space-between" : "flex-start", gap: legendEntries.length / 4 >= 4 ? 0 : 10 }}>
-                {Array.from({ length: Math.ceil(legendEntries.length / 4) }, (_, colIndex) => (
-                  <Box key={colIndex} sx={{ marginRight: 2 }}>
-                    {legendEntries.slice(colIndex * 4, colIndex * 4 + 4).map((cellType, index) => (
-                      <Box key={index} sx={{ display: 'flex', alignItems: 'center', marginBottom: 1 }}>
-                        <Box sx={{ width: '12px', height: '12px', backgroundColor: cellType.color, marginRight: 1 }} />
-                        <Typography>
-                          {`${cellType.label
-                            .split(' ')
-                            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                            .join(' ')}`}
-                          {colorScheme === "lineage" ? `: ${cellType.value}` : ""}
-                        </Typography>
-                      </Box>
-                    ))}
-                  </Box>
-                ))}
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          <Typography mb={1}><b>Legend</b></Typography>
+          {colorScheme === "expression" ? (
+            <>
+              <Typography>Log₁₀(TPM + 1)</Typography>
+              <Box sx={{ display: "flex", alignItems: "center", width: "200px" }}>
+                <Typography sx={{ mr: 1 }}>0</Typography>
+                <Box
+                  sx={{
+                    height: "16px",
+                    flexGrow: 1,
+                    background: `linear-gradient(to right, ${generateGradient(maxValue)})`,
+                    border: "1px solid #ccc"
+                  }}
+                />
+                <Typography sx={{ ml: 1 }}>{maxValue.toFixed(2)}</Typography>
               </Box>
-            )}
-          </Box>
+            </>
+          ) : (
+            /**
+             * @todo clean this up. No way this legend needs to be this complicated
+             */
+            /* Normal legend for cell types */
+            <Box sx={{ display: 'flex', justifyContent: legendEntries.length / 4 >= 3 ? "space-between" : "flex-start", gap: legendEntries.length / 4 >= 4 ? 0 : 10 }}>
+              {Array.from({ length: Math.ceil(legendEntries.length / 4) }, (_, colIndex) => (
+                <Box key={colIndex} sx={{ marginRight: 2 }}>
+                  {legendEntries.slice(colIndex * 4, colIndex * 4 + 4).map((cellType, index) => (
+                    <Box key={index} sx={{ display: 'flex', alignItems: 'center', marginBottom: 1 }}>
+                      <Box sx={{ width: '12px', height: '12px', backgroundColor: cellType.color, marginRight: 1 }} />
+                      <Typography>
+                        {`${cellType.label
+                          .split(' ')
+                          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                          .join(' ')}`}
+                        {colorScheme === "lineage" ? `: ${cellType.value}` : ""}
+                      </Typography>
+                    </Box>
+                  ))}
+                </Box>
+              ))}
+            </Box>
+          )}
+        </Box>
       )}
-    </Stack>
+    </>
   )
 }
 
