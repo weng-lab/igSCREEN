@@ -256,11 +256,11 @@ const tree: TreeNode = {
               children: [
                 {
                   celltype: "Plasmacytoid Dendritic Cells",
-                  label: "Plasmacytoid/Dendritic",
+                  label: "Plasmacytoid/DC",
                 },
                 {
                   celltype: "Myeloid Dendritic Cells",
-                  label: "Myeloid/Dendritic",
+                  label: "Myeloid/DC",
                 },
                 {
                   celltype: "Monocytes",
@@ -329,7 +329,7 @@ const tree: TreeNode = {
                       children: [
                         {
                           celltype: "Gamma Delta T Cells",
-                          label: "Gamma Delta T",
+                          label: "Gamma/Delta T",
                         },
                         {
                           celltype: null,

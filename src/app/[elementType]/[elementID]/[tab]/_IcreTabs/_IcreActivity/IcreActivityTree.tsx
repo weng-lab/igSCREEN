@@ -45,7 +45,6 @@ const IcreActivityTree = ({ accession }: IcreActivtyTreeProps) => {
       <NewCellTypeTree
         width={830}
         height={1100}
-        onNodeClicked={(node) => window.alert(node.celltype)}
         selected={cellTypesNoStim}
       />
     </Stack>
