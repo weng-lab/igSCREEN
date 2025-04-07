@@ -1,8 +1,10 @@
 import { useQuery } from "@apollo/client"
-import { CircularProgress, Grid2, Typography } from "@mui/material"
+import { CircularProgress, Grid2, Link, Typography } from "@mui/material"
+import { DataGrid, GridColDef } from "@mui/x-data-grid"
 import { DataTable } from "@weng-lab/psychscreen-ui-components"
 import { toScientificNotation } from "common/utils"
 import { gql } from "types/generated"
+import DataGridToolbar from "../_SharedTabs/dataGridToolbar"
 
 const COMBINED_EQTL_QUERY = gql(`
   query CombinedEqtl($geneid: String) {
@@ -72,82 +74,54 @@ const GeneEQTLs = ({ name, id }: GeneEQTLsProps) => {
   return (
     <Grid2 container spacing={2}>
       <Grid2 size={12}>
-        <DataTable
-          columns={[
-            {
-              header: "Variant Id",
-              value: (row) => row.variant_id || "",
-            },
-            {
-              header: "Nominal P",
-              HeaderRender: () => <Typography variant="body2">Nominal <i>P</i></Typography>,
-              value: (row) => row.pval_nominal && toScientificNotation(row.pval_nominal, 2) || 0,
-            },
-            {
-              header: "Beta P",
-              HeaderRender: () => <Typography variant="body2">Beta <i>P</i></Typography>,
-              value: (row) => row.pval_beta && toScientificNotation(row.pval_beta, 2) || 0,
-            }
-          ]}
-          tableTitle={`GTEX whole-blood eQTLs for ${name}`}
+        <DataGrid
+          columns={columns}
           rows={data.GTEX}
-          itemsPerPage={10}
+          getRowId={(row) => row.variant_id + row.pvalue}
+          slots={{ toolbar: DataGridToolbar }}
+          slotProps={{ toolbar: { title: `GTEX whole-blood eQTLs for ${name}` } }}
+          pagination
+          initialState={{
+            pagination: {
+              paginationModel: { pageSize: 10 },
+            },
+          }}
+          density="compact"
+          style={{ boxShadow: "0px 6px 12px rgba(0,0,0,0.2)" }}
         />
       </Grid2>
       <Grid2 size={12}>
-        <DataTable
-          columns={[
-            {
-              header: "SNP",
-              value: (row) => row.rsid || "",
-            },
-            {
-              header: "P",
-              HeaderRender: () => <Typography variant="body2"><i>P</i></Typography>,
-              value: (row) => row.pvalue && toScientificNotation(row.pvalue, 2) || 0,
-            },
-            {
-              header: "Q",
-              HeaderRender: () => <Typography variant="body2"><i>Q</i></Typography>,
-              value: (row) => row.qvalue && toScientificNotation(row.qvalue, 2) || 0,
-            },
-            {
-              header: "Celltype",
-              value: (row) => row.celltype || "",
-            }
-          ]}
-          tableTitle={`Yazar.Powell eQTLs for ${name}`}
+        <DataGrid
+          columns={YazarPowellColumns}
           rows={data.YazarPowell}
-          sortColumn={3}
-          itemsPerPage={10}
+          getRowId={(row) => row.variant_id + row.pvalue}
+          slots={{ toolbar: DataGridToolbar }}
+          slotProps={{ toolbar: { title: `Yazar.Powell eQTLs for ${name}` } }}
+          pagination
+          initialState={{
+            pagination: {
+              paginationModel: { pageSize: 10 },
+            },
+          }}
+          density="compact"
+          style={{ boxShadow: "0px 6px 12px rgba(0,0,0,0.2)" }}
         />
       </Grid2>
       <Grid2 size={12}>
-        <DataTable
-          columns={[
-            {
-              header: "Variant Id",
-              value: (row: any) => row.variant_id || "",
-            },
-            {
-              header: "Nominal P",
-              HeaderRender: () => <Typography variant="body2">Nominal <i>P</i></Typography>,
-              value: (row: any) => row.pval_nominal && toScientificNotation(row.pval_nominal, 2) || 0,
-            },
-            {
-              header: "Beta P",
-              HeaderRender: () => <Typography variant="body2">Beta <i>P</i></Typography>,
-              value: (row: any) => row.pval_beta && toScientificNotation(row.pval_beta, 2) || 0,
-            },
-            {
-              header: "Celltype",
-              value: (row: any) => row.celltype || "",
-            }
-          ]}
-          tableTitle={`Soskic.Trynka eQTLs for ${name}`}
+        <DataGrid
+          columns={SoskicTrynkaColumns}
           rows={data.SoskicTrynka}
-          sortColumn={3}
-          itemsPerPage={10}
+          getRowId={(row) => row.variant_id + row.pvalue}
+          slots={{ toolbar: DataGridToolbar }}
+          slotProps={{ toolbar: { title: `Soskic.Trynka eQTLs for ${name}` } }}
+          pagination
+          initialState={{
+            pagination: {
+              paginationModel: { pageSize: 10 },
+            },
+          }}
+          density="compact"
+          style={{ boxShadow: "0px 6px 12px rgba(0,0,0,0.2)" }}
         />
       </Grid2>
     </Grid2>
@@ -155,3 +129,92 @@ const GeneEQTLs = ({ name, id }: GeneEQTLsProps) => {
 }
 
 export default GeneEQTLs
+
+const columns: GridColDef[] = [
+  {
+    field: "variant_id",
+    headerName: "Variant Id",
+    flex: 2,
+  },
+  {
+    field: "pval_nominal",
+    headerName: "Nominal P",
+    flex: 1,
+    renderCell: (params) => (
+        toScientificNotation(params.value, 2)
+    ),
+  },
+  {
+    field: "pval_beta",
+    headerName: "Beta P",
+    flex: 1,
+    renderCell: (params) => (
+      toScientificNotation(params.value, 2)
+    ),
+  }
+]
+
+const YazarPowellColumns: GridColDef[] = [
+  {
+    field: "rsid",
+    headerName: "SNP",
+    flex: 2,
+    renderCell: (params) => {
+      return (
+        <Link href={`/snp/${params.value}`}>
+          {params.value}
+        </Link>
+      )
+    }
+  },
+  {
+    field: "pvalue",
+    headerName: "P",
+    flex: 1,
+    renderCell: (params) => (
+      toScientificNotation(params.value, 2)
+    ),
+  },
+  {
+    field: "qvalue",
+    headerName: "Q",
+    flex: 1,
+    renderCell: (params) => (
+      toScientificNotation(params.value, 2)
+    ),
+  },
+  {
+    field: "celltype",
+    headerName: "Celltype",
+    flex: 2,
+  }
+]
+
+const SoskicTrynkaColumns: GridColDef[] = [
+  {
+    field: "variant_id",
+    headerName: "Variant Id",
+    flex: 2,
+  },
+  {
+    field: "pval_nominal",
+    headerName: "Nominal P",
+    flex: 1,
+    renderCell: (params) => (
+      toScientificNotation(params.value, 2)
+    ),
+  },
+  {
+    field: "pval_beta",
+    headerName: "Beta P",
+    flex: 1,
+    renderCell: (params) => (
+      toScientificNotation(params.value, 2)
+    ),
+  },
+  {
+    field: "celltype",
+    headerName: "Celltype",
+    flex: 2,
+  }
+]
