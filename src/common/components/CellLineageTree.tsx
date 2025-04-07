@@ -2,7 +2,6 @@ import { Group } from "@visx/group";
 import { hierarchy, Tree } from "@visx/hierarchy";
 import { HierarchyPointLink, HierarchyPointNode } from "@visx/hierarchy/lib/types";
 import { LinkVertical } from "@visx/shape";
-import { Text } from "@visx/text";
 import { useCallback, useMemo } from "react";
 
 const primaryColor = "#494d6b";
@@ -125,9 +124,6 @@ interface CellTypeTreeProps {
   uninteractive?: boolean;
   onNodeClicked?: (node: NodeInfo) => void;
 }
-
-function noop() {}
-
 
 /**
  * Processes a cell type and returns a string based on the cell type
@@ -457,12 +453,12 @@ const tree: TreeNode = {
   ],
 };
 
-const NewCellTypeTree = ({
+const CellLineageTree = ({
   width,
   height,
   selected = null,
   uninteractive = false,
-  onNodeClicked = noop,
+  onNodeClicked = () => {},
 }: CellTypeTreeProps) => {
   const innerMarginTop = 70;
   const innerMarginBottom = 25;
@@ -584,4 +580,4 @@ const NewCellTypeTree = ({
   );
 };
 
-export default NewCellTypeTree;
+export default CellLineageTree;

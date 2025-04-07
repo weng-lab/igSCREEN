@@ -1,6 +1,6 @@
 "use client";
 
-import { Accordion, AccordionDetails, AccordionSummary, Link as MuiLink, Skeleton, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, List, ListItem, Link as MuiLink, Skeleton, Typography } from "@mui/material";
 import { ExternalLink, getCellCategoryDisplayname, getClassDisplayname } from "common/utility";
 import { GenomicRange } from "types/globalTypes";
 import { useIcreData, UseIcreDataReturn } from "common/hooks/useIcreData";
@@ -9,6 +9,7 @@ import { useMemo } from "react";
 import { ExpandMore } from "@mui/icons-material";
 import { DataGridPro, GridColDef, GridToolbar } from "@mui/x-data-grid-pro";
 import Link from "next/link";
+import ActiveCellTypesAccordion from "common/components/ActiveCellTypesAccordion";
 
 const IntersectingiCREs = ({ region }: { region: GenomicRange }) => {
 
@@ -62,14 +63,18 @@ const IntersectingiCREs = ({ region }: { region: GenomicRange }) => {
       field: "accession",
       headerName: "Accession",
       width: 130,
-      renderCell: (params) => <MuiLink href={`/icre/${params.value}`} component={Link}>{params.value}</MuiLink>
+      renderCell: (params) => (
+        <MuiLink href={`/icre/${params.value}`} component={Link}>
+          {params.value}
+        </MuiLink>
+      ),
     },
     {
       field: "group",
       headerName: "Class",
       type: "custom",
       width: 150,
-      renderCell: (params) => getClassDisplayname(params.value)
+      renderCell: (params) => getClassDisplayname(params.value),
     },
     {
       field: "coordinates",
@@ -81,25 +86,30 @@ const IntersectingiCREs = ({ region }: { region: GenomicRange }) => {
         }:${row.coordinates.start.toLocaleString()}-${row.coordinates.end.toLocaleString()}`,
     },
     {
-      field: "celltypes",
+      field: "dnasecelltypes",
       headerName: "Active Celltypes",
-      width: 250,
+      width: 275,
       sortComparator: (v1, v2) => v1.length - v2.length,
-      renderCell: (params) => {
-        const celltypes = params.value as RowObj["celltypes"];
-        return (
-          <Accordion sx={{width: '100%', background: "transparent"}} elevation={0}>
-            <AccordionSummary expandIcon={<ExpandMore />} sx={{pX: 0}}>Active in {celltypes.length} Cell Types</AccordionSummary>
-            <AccordionDetails>
-              {celltypes.map((celltype, i) => (
-                <Typography variant="body2" key={i}>
-                  {celltype}
-                </Typography>
-              ))}
-            </AccordionDetails>
-          </Accordion>
-        );
-      },
+      renderCell: (params) => (
+        <ActiveCellTypesAccordion
+          celltypes={params.value}
+          assay="DNase"
+          accordionProps={{ elevation: 0, sx: { width: "100%", background: "transparent" } }}
+        />
+      ),
+    },
+    {
+      field: "ataccelltypes",
+      headerName: "ATAC Celltypes",
+      width: 275,
+      sortComparator: (v1, v2) => v1.length - v2.length,
+      renderCell: (params) => (
+        <ActiveCellTypesAccordion
+          celltypes={params.value}
+          assay="ATAC"
+          accordionProps={{ elevation: 0, sx: { width: "100%", background: "transparent" } }}
+        />
+      ),
     },
     {
       field: "activeExps",
@@ -108,28 +118,31 @@ const IntersectingiCREs = ({ region }: { region: GenomicRange }) => {
       sortComparator: (v1, v2) => Object.values(v1).flat().length - Object.values(v2).flat().length,
       renderCell: (params) => {
         const activeExps = params.value as RowObj["activeExps"];
-        if (loadingActivity) return <Skeleton width={300} height={40} />
+        if (loadingActivity) return <Skeleton width={300} height={40} />;
         return (
           <Accordion
             sx={{ width: "100%", background: "transparent" }}
             slotProps={{ transition: { unmountOnExit: true } }}
             elevation={0}
+            disableGutters
           >
             <AccordionSummary expandIcon={<ExpandMore />}>
               Active in {Object.values(activeExps).flat().length} Experiments
             </AccordionSummary>
-            <AccordionDetails>
+            <AccordionDetails sx={{paddingY:0}}>
               {Object.entries(activeExps).map(([lineage, exps], i) => (
                 <Accordion key={i} elevation={0} sx={{ background: "transparent" }}>
-                  <AccordionSummary expandIcon={<ExpandMore />}>
+                  <AccordionSummary expandIcon={<ExpandMore />} sx={{p: 0}}>
                     {getCellCategoryDisplayname(lineage)} ({exps.length})
                   </AccordionSummary>
                   <AccordionDetails>
+                    <List disablePadding sx={{ listStyleType: "disc", pl: 2 }}>
                     {exps.map((exp, i) => (
-                      <ExternalLink href={exp.link} showExternalIcon underline="hover" display={"block"} key={i}>
+                      <ExternalLink href={exp.link} showExternalIcon underline="hover" display={"list-item"} key={i}>
                         {exp.biosampleid} - {exp.source}
                       </ExternalLink>
                     ))}
+                    </List>
                   </AccordionDetails>
                 </Accordion>
               ))}
