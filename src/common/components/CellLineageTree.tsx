@@ -52,6 +52,10 @@ export type CellType =
   | "T-helper 9 Cell"
   | "pre-Hematopoetic Leukemic Stem Cell";
 
+/**
+ * Provides mapping between celltype and if there is stim/unstim data for each assay
+ * @todo ensure this is correct, AI generated based on files given by Nishi
+ */
 export const cellTypeConfig: {
   [key in CellType]: { ATAC: { Stim: boolean; Unstim: boolean }; DNase: { Stim: boolean; Unstim: boolean } };
 } = {
@@ -104,7 +108,7 @@ export const cellTypeConfig: {
   "pre-Hematopoetic Leukemic Stem Cell": { ATAC: { Stim: false, Unstim: true }, DNase: { Stim: false, Unstim: false } },
 };
 
-interface NodeInfo {
+export interface NodeInfo {
   /**
    * unique identifier for the node, should match ```celltype``` field of useIcreActivity
    */
@@ -122,6 +126,10 @@ interface CellTypeTreeProps {
    * Makes it so that nodes do not grow slightly on hover
    */
   uninteractive?: boolean;
+  /**
+   * Disables nodes which do not have data in the specified assay
+   */
+  assay?: "DNase" | "ATAC"
   onNodeClicked?: (node: NodeInfo) => void;
 }
 
@@ -457,11 +465,12 @@ const CellLineageTree = ({
   width,
   height,
   selected = null,
+  assay = null,
   uninteractive = false,
   onNodeClicked = () => {},
 }: CellTypeTreeProps) => {
   const innerMarginTop = 70;
-  const innerMarginBottom = 25;
+  const innerMarginBottom = 30;
   const innerMarginLeft = 0;
   const innerMarginRight = 0;
 
@@ -480,7 +489,8 @@ const CellLineageTree = ({
       const left = node.x;
 
       const isSelected = selected?.includes(node.data.celltype);
-      const opacity = !node.data.disabled && (selected === null || isSelected) ? 1 : 0.3;
+      const isDisabled = node.data.disabled || (assay && (!cellTypeConfig[node.data.celltype][assay].Stim && !cellTypeConfig[node.data.celltype][assay].Unstim))
+      const opacity = isDisabled ? 0.3 : 1;
 
       const fontSize = 12
       const labelLines = node.data.label.split("/")
@@ -491,14 +501,14 @@ const CellLineageTree = ({
           left={left}
           opacity={opacity}
           onMouseEnter={(event: React.MouseEvent<SVGImageElement, MouseEvent>) => {
-            if (!uninteractive && !node.data.disabled) {
+            // if (!uninteractive && !isDisabled) {
               event.currentTarget.setAttribute("opacity", "1");
-            }
+            // }
           }}
           onMouseOut={(event: React.MouseEvent<SVGImageElement, MouseEvent>) => {
-            if (!uninteractive && !node.data.disabled) {
+            // if (!uninteractive && !isDisabled) {
               event.currentTarget.setAttribute("opacity", String(opacity));
-            }
+            // }
           }}
         >
           {/* 
@@ -523,7 +533,7 @@ const CellLineageTree = ({
               rx={15}
               fill="none"
               stroke={primaryColor}
-              strokeWidth={0.5}
+              strokeWidth={1}
             />
           )}
           <image
@@ -533,23 +543,26 @@ const CellLineageTree = ({
             height={height}
             x={centerX}
             y={centerY}
-            cursor={node.data.disabled ? "not-allowed" : "pointer"}
+            cursor={uninteractive ? 'initial' : isDisabled ? "not-allowed" : "pointer"}
             onMouseEnter={(event: React.MouseEvent<SVGImageElement, MouseEvent>) => {
-              if (!uninteractive && !node.data.disabled) {
+              if (!uninteractive && !isDisabled) {
                 event.currentTarget.setAttribute("transform", "scale(1.1)");
               }
             }}
             onMouseOut={(event: React.MouseEvent<SVGImageElement, MouseEvent>) => {
-              if (!uninteractive && !node.data.disabled) {
+              if (!uninteractive && !isDisabled) {
                 event.currentTarget.setAttribute("transform", "scale(1)");
               }
             }}
-            onClick={() => !node.data.disabled && onNodeClicked(node.data)}
+            style={{
+              transition: "transform 0.1s ease-in-out",
+            }}
+            onClick={() => !isDisabled && onNodeClicked(node.data)}
           />
         </Group>
       );
     },
-    [onNodeClicked, selected, uninteractive]
+    [assay, onNodeClicked, selected, uninteractive]
   );
 
   return innerWidth < 10 ? null : (
@@ -561,13 +574,14 @@ const CellLineageTree = ({
               <LinkVertical<HierarchyPointLink<TreeNode>, HierarchyPointNode<TreeNode>>
                 key={`tree-link-${i}`}
                 data={link}
-                stroke={primaryColor}
-                strokeOpacity={0.3}
-                //Bold if descendant selected
+                stroke={"#b4b6cc"}
                 strokeWidth={
                   link.target.descendants().find((childNode) => selected?.includes(childNode.data.celltype)) ? 4 : 0.75
                 }
                 fill="none"
+                style={{
+                  transition: "stroke-width 0.2s ease-in-out",
+                }}
               />
             ))}
             {tree.descendants().map((node, i) => (

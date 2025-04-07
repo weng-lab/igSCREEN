@@ -25,7 +25,7 @@ const IcreActivityTree = ({ accession }: IcreActivtyTreeProps) => {
         <ActiveCellTypesAccordion celltypes={dnaseCellTypes} assay="DNase" />
         <ActiveCellTypesAccordion celltypes={atacCellTypes} assay="ATAC" />
       </div>
-      <CellLineageTree width={830} height={1100} selected={treeSelected} />
+      <CellLineageTree width={830} height={1100} selected={treeSelected} uninteractive />
     </Stack>
   );
 }
