@@ -136,7 +136,7 @@ const IntersectingiCREs = ({ region }: { region: GenomicRange }) => {
                     {getCellCategoryDisplayname(lineage)} ({exps.length})
                   </AccordionSummary>
                   <AccordionDetails>
-                    <List disablePadding sx={{ listStyleType: "disc", pl: 2 }}>
+                    <List disablePadding sx={{ listStyleType: "disc" }}>
                     {exps.map((exp, i) => (
                       <ExternalLink href={exp.link} showExternalIcon underline="hover" display={"list-item"} key={i}>
                         {exp.biosampleid} - {exp.source}
