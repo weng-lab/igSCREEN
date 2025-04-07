@@ -4,20 +4,20 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import { interpolateYlOrRd } from "d3-scale-chromatic";
 import { Point, ScatterPlot, ChartProps } from "@weng-lab/psychscreen-ui-components"
 import { ParentSize } from "@visx/responsive"
-import { IcreActivityProps, SharedIcreActivityPlotProps, PointMetadata  } from "./IcreActivity"
+import { IcreActivityProps, SharedIcreActivityPlotProps, PointMetadata } from "./IcreActivity"
 import { scaleLinear } from "@visx/scale";
 
-export type IcreActivityUmapProps<T> =
+export type IcreActivityUmapProps<T, S extends boolean | undefined, Z extends boolean | undefined> =
   IcreActivityProps
   & SharedIcreActivityPlotProps
-  & Partial<ChartProps<T>>
+  & Partial<ChartProps<T, S, Z>>
 
-const IcreActivityUMAP = <T extends PointMetadata>({ accession, selected, sortedFilteredData,   iCREActivitydata, ...rest }: IcreActivityUmapProps<T>) => {
+const IcreActivityUMAP = <T extends PointMetadata, S extends true, Z extends boolean | undefined>({ accession, selected, sortedFilteredData, iCREActivitydata, ...rest }: IcreActivityUmapProps<T, S, Z>) => {
   const [colorScheme, setColorScheme] = useState<'Zscore' | 'lineage'>('Zscore');
   const [showLegend, setShowLegend] = useState<boolean>(true);
   const [assay, setAssay] = useState<'ATAC' | 'DNase' | 'Combined'>('Combined')
 
-  const {data, loading, error} = iCREActivitydata
+  const { data, loading, error } = iCREActivitydata
 
   const handleColorSchemeChange = (
     event: SelectChangeEvent,
@@ -34,12 +34,10 @@ const IcreActivityUMAP = <T extends PointMetadata>({ accession, selected, sorted
   const graphContainerRef = useRef(null);
 
   const map = {
-    defaultOpen: false,
     position: {
       right: 50,
       bottom: 50,
     },
-    ref: graphContainerRef
   };
 
   //prevent scroll on UMAP
@@ -93,7 +91,7 @@ const IcreActivityUMAP = <T extends PointMetadata>({ accession, selected, sorted
 
   const scatterData: Point<PointMetadata>[] = useMemo(() => {
     if (!data) return []
-    
+
     const isHighlighted = (d: PointMetadata) => selected.some(x => x.name === d.name)
 
     return data.map((x) => {
@@ -101,7 +99,7 @@ const IcreActivityUMAP = <T extends PointMetadata>({ accession, selected, sorted
 
       const getColor = () => {
         if ((isHighlighted(x) || selected.length === 0)) {
-          if (colorScheme === 'Zscore'){
+          if (colorScheme === 'Zscore') {
             return gradientColor
           } else return getCellCategoryColor(x.lineage)
         } else return '#CCCCCC'
@@ -133,7 +131,7 @@ const IcreActivityUMAP = <T extends PointMetadata>({ accession, selected, sorted
         label: getCellCategoryDisplayname(cellType),
         color: getCellCategoryColor(cellType),
         value: count
-      })).sort((a,b) => b.value - a.value);
+      })).sort((a, b) => b.value - a.value);
     }
   }, [scatterData, colorScheme]);
 
@@ -189,86 +187,81 @@ const IcreActivityUMAP = <T extends PointMetadata>({ accession, selected, sorted
   }
 
   return (
-    <Stack spacing={2}>
+    <>
       <Stack direction={"row"} spacing={2}>
         <ColorBySelect />
         <AssaySelect />
       </Stack>
-      <Box padding={1} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, position: "relative" }} ref={graphContainerRef}>
-        <ParentSize>
-          {({ width, height }) => {
-            return (
-              <>
-                <Typography variant="body2" align="right">
-                  {"\u25EF unstimulated, \u25B3 stimulated "}
-                </Typography>
-                <ScatterPlot
-                  {...rest}
-                  width={width}
-                  height={width}
-                  pointData={scatterData}
-                  selectable
-                  loading={loading}
-                  leftAxisLable=""
-                  bottomAxisLabel=""
-                  miniMap={map}
-                  groupPointsAnchor="lineage"
-                  tooltipBody={(point) => <TooltipBody {...point} />
-                }
-                />
-              </>
-            )
-          }}
-        </ParentSize>
+      <Box
+        padding={1}
+        //hacky height, have to subtract the pixel value of the Colorby select and the margin to line it up with the table
+        sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, position: "relative", width: "100%", height: "calc(100% - 72px)" }}
+        ref={graphContainerRef}
+        mt={2}
+        mb={2}
+      >
+        <Typography variant="body2" align="right">
+          {"\u25EF unstimulated, \u25B3 stimulated "}
+        </Typography>
+        <ScatterPlot
+          {...rest}
+          pointData={scatterData}
+          selectable
+          loading={loading}
+          miniMap={map}
+          groupPointsAnchor="lineage"
+          tooltipBody={(point) => <TooltipBody {...point} />
+          }
+        />
         <Button variant="outlined" sx={{ position: "absolute", bottom: 10, left: 10, textTransform: "none" }} onClick={() => setShowLegend(!showLegend)}>Toggle Legend</Button>
       </Box>
       {/* legend */}
       {showLegend && (
-          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            <Typography mb={1}><b>Legend</b></Typography>
-            {colorScheme === "Zscore" ? (
-              <>
-                <Typography>Z-score</Typography>
-                <Box sx={{ display: "flex", alignItems: "center", width: "200px" }}>
-                  <Typography sx={{ mr: 1 }}>{'< 0'}</Typography>
-                  <Box
-                    sx={{
-                      height: "16px",
-                      flexGrow: 1,
-                      background: `linear-gradient(to right, ${generateGradient(maxValue)})`,
-                      border: "1px solid #ccc"
-                    }}
-                  />
-                  <Typography sx={{ ml: 1 }}>{maxValue.toFixed(2)}</Typography>
-                </Box>
-              </>
-            ) : (
-              /**
-               * @todo clean this up. No way this legend needs to be this complicated
-               */
-              /* Normal legend for cell types */
-              <Box sx={{ display: 'flex', justifyContent: legendEntries.length / 4 >= 3 ? "space-between" : "flex-start", gap: legendEntries.length / 4 >= 4 ? 0 : 10 }}>
-                {Array.from({ length: Math.ceil(legendEntries.length / 4) }, (_, colIndex) => (
-                  <Box key={colIndex} sx={{ marginRight: 2 }}>
-                    {legendEntries.slice(colIndex * 4, colIndex * 4 + 4).map((cellType, index) => (
-                      <Box key={index} sx={{ display: 'flex', alignItems: 'center', marginBottom: 1 }}>
-                        <Box sx={{ width: '12px', height: '12px', backgroundColor: cellType.color, marginRight: 1 }} />
-                        <Typography>
-                          {`${cellType.label
-                            .split(' ')
-                            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                            .join(' ')}`}
-                          {colorScheme === "lineage" ? `: ${cellType.value}` : ""}
-                        </Typography>
-                      </Box>
-                    ))}
-                  </Box>
-                ))}
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          <Typography mb={1}><b>Legend</b></Typography>
+          {colorScheme === "Zscore" ? (
+            <>
+              <Typography>Z-score</Typography>
+              <Box sx={{ display: "flex", alignItems: "center", width: "200px" }}>
+                <Typography sx={{ mr: 1 }}>{'< 0'}</Typography>
+                <Box
+                  sx={{
+                    height: "16px",
+                    flexGrow: 1,
+                    background: `linear-gradient(to right, ${generateGradient(maxValue)})`,
+                    border: "1px solid #ccc"
+                  }}
+                />
+                <Typography sx={{ ml: 1 }}>{maxValue.toFixed(2)}</Typography>
               </Box>
-            )}
-          </Box>
+            </>
+          ) : (
+            /**
+             * @todo clean this up. No way this legend needs to be this complicated
+             */
+            /* Normal legend for cell types */
+            <Box sx={{ display: 'flex', justifyContent: legendEntries.length / 4 >= 3 ? "space-between" : "flex-start", gap: legendEntries.length / 4 >= 4 ? 0 : 10 }}>
+              {Array.from({ length: Math.ceil(legendEntries.length / 4) }, (_, colIndex) => (
+                <Box key={colIndex} sx={{ marginRight: 2 }}>
+                  {legendEntries.slice(colIndex * 4, colIndex * 4 + 4).map((cellType, index) => (
+                    <Box key={index} sx={{ display: 'flex', alignItems: 'center', marginBottom: 1 }}>
+                      <Box sx={{ width: '12px', height: '12px', backgroundColor: cellType.color, marginRight: 1 }} />
+                      <Typography>
+                        {`${cellType.label
+                          .split(' ')
+                          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                          .join(' ')}`}
+                        {colorScheme === "lineage" ? `: ${cellType.value}` : ""}
+                      </Typography>
+                    </Box>
+                  ))}
+                </Box>
+              ))}
+            </Box>
+          )}
+        </Box>
       )}
-    </Stack>
+    </>
   )
 }
 
