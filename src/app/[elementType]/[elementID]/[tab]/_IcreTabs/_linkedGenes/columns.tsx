@@ -1,16 +1,11 @@
 import { Typography } from "@mui/material";
 import { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { LinkedGeneInfo } from "common/hooks/useLinkedGenes";
-import {
-  CreateLink,
-  GeneLink,
-  GeneTypeFormatter,
-  toScientificNotationElement,
-} from "./utils";
+import { CreateLink, GeneLink, GeneTypeFormatter, toScientificNotationElement } from "./utils";
 
-/** 
- * Column definitions for the linked genes tab. 
-*/
+/**
+ * Column definitions for the linked genes tab.
+ */
 export const geneNameCol: GridColDef<LinkedGeneInfo> = {
   field: "gene",
   flex: 1,
@@ -18,7 +13,9 @@ export const geneNameCol: GridColDef<LinkedGeneInfo> = {
   display: "flex",
   headerName: "Common Gene Name",
   renderCell: (params: GridRenderCellParams<LinkedGeneInfo>) => (
-    <Typography variant="body2" sx={{fontStyle: 'italic'}}><GeneLink geneName={params.value} /></Typography>
+    <Typography variant="body2" sx={{ fontStyle: "italic" }}>
+      <GeneLink geneName={params.value} />
+    </Typography>
   ),
 };
 
@@ -77,9 +74,7 @@ export const pValCol: GridColDef<LinkedGeneInfo> = {
     </Typography>
   ),
   renderCell: (params: GridRenderCellParams<LinkedGeneInfo>) =>
-    params.value === 0
-      ? "0"
-      : toScientificNotationElement(params.value, 2, { variant: "body2" }),
+    params.value === 0 ? "0" : toScientificNotationElement(params.value, 2, { variant: "body2" }),
 };
 
 export const assayCol: GridColDef<LinkedGeneInfo> = {
@@ -137,6 +132,18 @@ export const slopeCol: GridColDef<LinkedGeneInfo> = {
   headerName: "Slope",
 };
 
+export const accessionCol: GridColDef<LinkedGeneInfo> = {
+  field: "accession",
+  flex: 1,
+  display: "flex",
+  headerName: "Accession",
+  renderCell: (params: GridRenderCellParams<LinkedGeneInfo>) => (
+    <Typography variant="body2" paddingBlock={1}>
+      <CreateLink linkPrefix="/icre/" linkArg={params.value} label={params.value} showExternalIcon />
+    </Typography>
+  ),
+};
+
 /**
  * Table definitions for the linked genes tab.
  */
@@ -160,9 +167,9 @@ export const ChIAPETCols: GridColDef<LinkedGeneInfo>[] = [
 
 export const CrisprFlowFISHCols: GridColDef<LinkedGeneInfo>[] = [
   geneNameCol,
-  {...geneTypeCol, flex: 1},
+  { ...geneTypeCol, flex: 1 },
   gRNACol,
-  {...experimentCol, flex: 1.25},
+  { ...experimentCol, flex: 1.25 },
   displayNameCol,
   effectSizeCol,
   pValCol,
