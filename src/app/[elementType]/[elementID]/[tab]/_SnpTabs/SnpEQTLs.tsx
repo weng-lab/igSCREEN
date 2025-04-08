@@ -1,7 +1,6 @@
 import { useQuery } from "@apollo/client"
 import { Skeleton } from "@mui/material"
-import { DataGrid } from "@mui/x-data-grid"
-import { GridColDef } from "@mui/x-data-grid-pro"
+import { DataGridPro, GridColDef } from "@mui/x-data-grid-pro"
 import { toScientificNotation } from "common/utils"
 import { gql } from "types/generated/gql"
 import DataGridToolbar from "common/components/dataGridToolbar"
@@ -38,7 +37,7 @@ const SnpEQTLs = ({rsid}: SnpEQTLsProps) => {
   }
 
   return (
-    <DataGrid
+    <DataGridPro
       rows={data?.icreeQTLQuery || []}
       columns={columns}
       initialState={{
@@ -88,28 +87,3 @@ const columns: GridColDef[] = [
 ]
 
 export default SnpEQTLs
-
-{/* <DataTable
-columns={[
-  {
-    header: "Gene Id",
-    value: (row: any) => row.geneid || "",
-  },
-  {
-    header: "P",
-    HeaderRender: () => <Typography variant="body2"><i>P</i></Typography>,
-    value: (row: any) => row.pvalue && toScientificNotation(row.pvalue, 2) || 0,
-  },
-  {
-    header: "Q",
-    HeaderRender: () => <Typography variant="body2"><i>Q</i></Typography>,
-    value: (row: any) => row.qvalue && toScientificNotation(row.qvalue, 2) || 0,
-  },
-  {
-    header: "Celltype",
-    value: (row: any) => row.celltype || "",
-  }
-]}
-tableTitle={`Yazar.Powell eQTLs for ${rsid}`}
-rows={data?.icreeQTLQuery || []}
-itemsPerPage={10} /> */}
