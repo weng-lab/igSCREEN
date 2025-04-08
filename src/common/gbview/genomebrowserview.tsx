@@ -35,7 +35,7 @@ import ControlButtons from "./controls";
 import { GenomicElementType } from "types/globalTypes";
 import HighlightIcon from "@mui/icons-material/Highlight";
 import HighlightDialog, { GBHighlight } from "./highlightDialog";
-import AddTracksModal from "./addTracksModal";
+import AddTracksModal, { BigWig } from "./addTracksModal";
 
 function expandCoordinates(coordinates: GenomicRange) {
   let length = coordinates.end - coordinates.start;
@@ -111,19 +111,28 @@ export default function GenomeBrowserView({
 
   // Bulk ATAC Modal
   const [showAddTracksModal, setShowAddTracksModal] = useState(false);
-  const [selectedTracks, setSelectedTracks] = useState<BigWigTrackProps[]>([]);
+  const [selectedTracks, setSelectedTracks] = useState<BigWig[]>([]);
 
   useEffect(() => {
-    // Add new tracks that aren't already in browser state
     selectedTracks.forEach((track) => {
-      if (!browserState.tracks.some((t) => t.id === track.id)) {
-        browserDispatch({ type: BrowserActionType.ADD_TRACK, track });
+      // check if the track is not already in the browser state
+      if (!browserState.tracks.some((t) => t.id === track.name + "_temp")) {
+        const trackToAdd = {
+          ...DefaultBigWig, 
+          id: track.name + "_temp",
+          title: track.displayName,
+          url: track.url,
+          color: trackColor(track.lineage),
+          height: 75,
+          displayMode: DisplayMode.FULL,
+        };
+        browserDispatch({ type: BrowserActionType.ADD_TRACK, track: trackToAdd });
       }
     });
 
     // Remove tracks that are no longer selected
     browserState.tracks.forEach((track) => {
-      if (track.id?.includes("_merged_signal") && !selectedTracks.some((t) => t.id === track.id)) {
+      if (track.id.includes("_temp") && !selectedTracks.some((t) => t.name + "_temp" === track.id)) {
         browserDispatch({ type: BrowserActionType.DELETE_TRACK, id: track.id });
       }
     });
@@ -339,3 +348,27 @@ function randomColor() {
   return "#" + Math.floor(Math.random() * 16777215).toString(16);
 }
 
+function trackColor(lineage: string) {
+  switch (lineage) {
+    case "Bcells":
+      return "#0000ff";
+    case "CD4_Tcells":
+      return "#980000";
+    case "CD8_Tcells":
+      return "#ff9900";
+    case "Bulk_Tcells":
+      return "#ff0000";
+    case "gd_Tcells":
+      return "#fa0056";
+    case "NK":
+      return "#38761d";
+    case "Myeloid":
+      return "#9900ff";
+    case "Progenitors":
+      return "#666666";
+    case "Leukemia":
+      return "#25e6c9";
+    case "Erythroblasts":
+      return "#684fda"
+  }
+}
