@@ -71,5 +71,5 @@ export default function LinkedGenes({ accession }: { accession: string }) {
     { name: "eQTLs", data: eqtlLinked, columns: eQTLCols },
   ];
 
-  return <LinkedElements loading={loading} tables={tables} />;
+  return <LinkedElements tables={tables} />;
 }
