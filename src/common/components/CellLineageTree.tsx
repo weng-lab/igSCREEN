@@ -501,14 +501,13 @@ const CellLineageTree = ({
           left={left}
           opacity={opacity}
           onMouseEnter={(event: React.MouseEvent<SVGImageElement, MouseEvent>) => {
-            // if (!uninteractive && !isDisabled) {
               event.currentTarget.setAttribute("opacity", "1");
-            // }
           }}
           onMouseOut={(event: React.MouseEvent<SVGImageElement, MouseEvent>) => {
-            // if (!uninteractive && !isDisabled) {
               event.currentTarget.setAttribute("opacity", String(opacity));
-            // }
+          }}
+          style={{
+            transition: "opacity 0.2s ease-in-out",
           }}
         >
           {/* 

@@ -237,7 +237,11 @@ const MultiSelect = <
               sx={chipHidden && { opacity: 0.5 }}
               size="small"
               key={key}
-              label={isLabeledObject(option) ? option.value.toString() : option}
+              /**
+               * If putting this in the component library change this back. Changing to use short cCRE class names in the tags
+               */
+              // label={isLabeledObject(option) ? option.label.toString() : option}
+              label={isLabeledObject(option) ? option.class as string : option}
               {...tagProps}
             />
           );
