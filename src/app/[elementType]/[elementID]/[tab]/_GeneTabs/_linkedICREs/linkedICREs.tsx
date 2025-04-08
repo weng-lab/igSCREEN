@@ -1,85 +1,79 @@
-import { Box, CircularProgress, Grid2 as Grid, Skeleton, Typography } from "@mui/material";
+import { Box, Grid2, Skeleton, Typography } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import useLinkedGenes, { LinkedGeneInfo } from "common/hooks/useLinkedGenes";
-import { ChIAPETCols, CrisprFlowFISHCols, eQTLCols, IntactHiCLoopsCols } from "./columns";
+import useLinkedICREs, { LinkedICREInfo } from "common/hooks/useLinkedICREs";
 import DataGridToolbar from "../../_SharedTabs/dataGridToolbar";
+import { CrisprFlowFISHCols, CTCFChIAPETCols, HiCCols, RNAPIIChIAPETCols } from "./columns";
+import { accessionCol, ChIAPETCols, eQTLCols, IntactHiCLoopsCols } from "../../_IcreTabs/_linkedGenes/columns";
 
-type TableDef = {
-  name: string;
-  data: LinkedGeneInfo[];
-  columns: GridColDef<LinkedGeneInfo>[];
-};
-
-export default function LinkedGenes({ accession }: { accession: string }) {
-  const { data, loading, error } = useLinkedGenes(accession);
+export default function LinkedICREs({ geneid }: { geneid: string }) {
+  const { data, loading, error } = useLinkedICREs(geneid);
 
   if (loading) {
     return (
-      <Grid container spacing={2}>
-        <Grid size={12}>
+      <Grid2 container spacing={2}>
+        <Grid2 size={12}>
           <Skeleton variant="rounded" width={"100%"} height={100} />
-        </Grid>
-        <Grid size={12}>
+        </Grid2>
+        <Grid2 size={12}>
           <Skeleton variant="rounded" width={"100%"} height={100} />
-        </Grid>
-        <Grid size={12}>
+        </Grid2>
+        <Grid2 size={12}>
           <Skeleton variant="rounded" width={"100%"} height={100} />
-        </Grid>
-        <Grid size={12}>
+        </Grid2>
+        <Grid2 size={12}>
           <Skeleton variant="rounded" width={"100%"} height={100} />
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
     );
   }
 
   if (error) {
-    return <Typography>Error: {error.message}</Typography>;
+    throw new Error(JSON.stringify(error));
   }
 
-  // make types for the data
   const HiCLinked = data
-    .filter((x: LinkedGeneInfo) => x.assay === "Intact-HiC")
-    .map((x: LinkedGeneInfo, index: number) => ({
+    .filter((x: LinkedICREInfo) => x.assay === "Intact-HiC")
+    .map((x: LinkedICREInfo, index: number) => ({
       ...x,
       id: index.toString(),
     }));
   const ChIAPETLinked = data
-    .filter((x: LinkedGeneInfo) => x.assay === "RNAPII-ChIAPET" || x.assay === "CTCF-ChIAPET")
-    .map((x: LinkedGeneInfo, index: number) => ({
+    .filter((x: LinkedICREInfo) => x.assay === "RNAPII-ChIAPET" || x.assay === "CTCF-ChIAPET")
+    .map((x: LinkedICREInfo, index: number) => ({
       ...x,
       id: index.toString(),
     }));
   const crisprLinked = data
-    .filter((x: LinkedGeneInfo) => x.method === "CRISPR")
-    .map((x: LinkedGeneInfo, index: number) => ({
+    .filter((x: LinkedICREInfo) => x.method === "CRISPR")
+    .map((x: LinkedICREInfo, index: number) => ({
       ...x,
       id: index.toString(),
     }));
   const eqtlLinked = data
-    .filter((x: LinkedGeneInfo) => x.method === "eQTLs")
-    .map((x: LinkedGeneInfo, index: number) => ({
+    .filter((x: LinkedICREInfo) => x.method === "eQTLs")
+    .map((x: LinkedICREInfo, index: number) => ({
       ...x,
       id: index.toString(),
     }));
 
   const tables: TableDef[] = [
-    { name: "Intact Hi-C Loops", data: HiCLinked, columns: IntactHiCLoopsCols },
+    { name: "Intact Hi-C Loops", data: HiCLinked, columns: [accessionCol, ...IntactHiCLoopsCols.slice(2)] },
     {
       name: "ChIAPET",
       data: ChIAPETLinked,
-      columns: ChIAPETCols,
+      columns: [accessionCol, ...ChIAPETCols.slice(2)],
     },
     {
       name: "CRISPRi-FlowFISH",
       data: crisprLinked,
-      columns: CrisprFlowFISHCols,
+      columns: [accessionCol, ...CrisprFlowFISHCols.slice(2)],
     },
-    { name: "eQTLs", data: eqtlLinked, columns: eQTLCols },
+    { name: "eQTLs", data: eqtlLinked, columns: [accessionCol, ...eQTLCols.slice(2)] },
   ];
 
   return (
-    <Grid container spacing={2} flexDirection="column" sx={{ width: "100%" }}>
-      <Grid size={{ xs: 12, md: 12 }}>
+    <Grid2 container spacing={2}>
+      <Grid2 size={12}>
         {tables.map((table, index) =>
           table.data.length > 0 ? (
             <Box
@@ -95,7 +89,7 @@ export default function LinkedGenes({ accession }: { accession: string }) {
                 columns={table.columns}
                 rows={table.data}
                 getRowHeight={() => "auto"}
-                getRowId={(row: LinkedGeneInfo) => row.id}
+                getRowId={(row: LinkedICREInfo) => row.id}
                 sx={{ width: "100%", height: "auto" }}
                 slots={{ toolbar: DataGridToolbar }}
                 slotProps={{ toolbar: { title: table.name } }}
@@ -121,11 +115,17 @@ export default function LinkedGenes({ accession }: { accession: string }) {
                 marginBottom: 2,
               }}
             >
-              No Genes found for {table.name}
+              No ICREs found for {table.name}
             </Typography>
           )
         )}
-      </Grid>
-    </Grid>
+      </Grid2>
+    </Grid2>
   );
 }
+
+type TableDef = {
+  name: string;
+  data: LinkedICREInfo[];
+  columns: GridColDef<LinkedICREInfo>[];
+};
