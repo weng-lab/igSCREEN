@@ -1,7 +1,5 @@
-import { Box, Grid2, Skeleton, Typography } from "@mui/material";
-import { DataGridPro, GridColDef } from "@mui/x-data-grid-pro";
+import { Grid2, Skeleton } from "@mui/material";
 import useLinkedICREs, { LinkedICREInfo } from "common/hooks/useLinkedICREs";
-import DataGridToolbar from "common/components/dataGridToolbar";
 import { ChIAPETCols, CrisprFlowFISHCols, eQTLCols, IntactHiCLoopsCols } from "../../_IcreTabs/_linkedGenes/columns";
 import LinkedElements from "common/components/linkedElements/linkedElements";
 import { TableDef } from "common/components/linkedElements/columns";

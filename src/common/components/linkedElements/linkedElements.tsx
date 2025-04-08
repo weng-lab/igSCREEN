@@ -26,7 +26,7 @@ export default function LinkedElements({
       <Grid2 size={12}>
         {tables.map((table, index) =>
           table.data.length > 0 ? (
-            loading ? ( 
+            loading ? (
               <Skeleton variant="rounded" width={"100%"} height={100} />
             ) : (
               <Box
@@ -35,26 +35,26 @@ export default function LinkedElements({
                   boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
                   marginBottom: 2,
                 }}
-              key={index}
-            >
-              <DataGridPro
-                density={"compact"}
-                columns={table.columns}
-                rows={table.data}
-                getRowHeight={() => "auto"}
-                getRowId={(row: rowType) => row.id}
-                sx={{ width: "100%", height: "auto" }}
-                slots={{ toolbar: DataGridToolbar }}
-                slotProps={{ toolbar: { title: table.name } }}
-                pagination
-                initialState={{
-                  pagination: {
-                    paginationModel: {
-                      pageSize: 5,
+                key={index}
+              >
+                <DataGridPro
+                  density={"compact"}
+                  columns={table.columns}
+                  rows={table.data}
+                  getRowHeight={() => "auto"}
+                  getRowId={(row: rowType) => row.id}
+                  sx={{ width: "100%", height: "auto" }}
+                  slots={{ toolbar: DataGridToolbar }}
+                  slotProps={{ toolbar: { title: table.name } }}
+                  pagination
+                  initialState={{
+                    pagination: {
+                      paginationModel: {
+                        pageSize: 5,
+                      },
                     },
-                  },
-                }}
-              />
+                  }}
+                />
               </Box>
             )
           ) : (
