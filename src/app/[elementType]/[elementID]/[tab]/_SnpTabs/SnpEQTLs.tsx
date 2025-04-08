@@ -4,7 +4,7 @@ import { DataGrid } from "@mui/x-data-grid"
 import { GridColDef } from "@mui/x-data-grid-pro"
 import { toScientificNotation } from "common/utils"
 import { gql } from "types/generated/gql"
-import DataGridToolbar from "../_SharedTabs/dataGridToolbar"
+import DataGridToolbar from "common/components/dataGridToolbar"
 
 type SnpEQTLsProps = {
   rsid: string

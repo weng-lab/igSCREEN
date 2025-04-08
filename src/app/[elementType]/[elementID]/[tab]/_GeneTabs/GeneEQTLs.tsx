@@ -3,7 +3,8 @@ import { Grid2, Link, Skeleton } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { toScientificNotation } from "common/utils";
 import { gql } from "types/generated";
-import DataGridToolbar from "../_SharedTabs/dataGridToolbar";
+import DataGridToolbar from "common/components/dataGridToolbar";
+import { DataGridPro } from "@mui/x-data-grid-pro";
 
 const COMBINED_EQTL_QUERY = gql(`
   query CombinedEqtl($geneid: String) {
@@ -51,10 +52,6 @@ type GeneEQTLsProps = {
 };
 
 const GeneEQTLs = ({ name, id }: GeneEQTLsProps) => {
-  /**
-   * @todo confirm that this actually works by finding a gene with eQTL data
-   */
-
   const { loading, data, error } = useQuery(COMBINED_EQTL_QUERY, {
     variables: {
       geneid: id.split(".")[0],
@@ -84,7 +81,7 @@ const GeneEQTLs = ({ name, id }: GeneEQTLsProps) => {
   return (
     <Grid2 container spacing={2}>
       <Grid2 size={12}>
-        <DataGrid
+        <DataGridPro
           columns={columns}
           rows={data.GTEX}
           getRowId={(row) => row.variant_id + row.pvalue}
@@ -101,7 +98,7 @@ const GeneEQTLs = ({ name, id }: GeneEQTLsProps) => {
         />
       </Grid2>
       <Grid2 size={12}>
-        <DataGrid
+        <DataGridPro
           columns={YazarPowellColumns}
           rows={data.YazarPowell}
           getRowId={(row) => row.variant_id + row.pvalue}
@@ -118,7 +115,7 @@ const GeneEQTLs = ({ name, id }: GeneEQTLsProps) => {
         />
       </Grid2>
       <Grid2 size={12}>
-        <DataGrid
+        <DataGridPro
           columns={SoskicTrynkaColumns}
           rows={data.SoskicTrynka}
           getRowId={(row) => row.variant_id + row.pvalue}
