@@ -8,7 +8,7 @@ import { gql } from "types/generated/gql";
 import { GenomicElementType, GenomicRange } from "types/globalTypes";
 import Link from "next/link";
 import { calcDistToTSS, calcDistRegionToPosition, calcDistRegionToRegion, NearbyGenomicFeaturesProps } from "./utils";
-import DataGridToolbar from "./dataGridToolbar";
+import DataGridToolbar from "common/components/dataGridToolbar";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 
 export const NEARBY_GENOMIC_FEATURES_QUERY = gql(`
