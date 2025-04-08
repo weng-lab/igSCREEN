@@ -1,9 +1,11 @@
 import { Box, Grid2, Skeleton, Typography } from "@mui/material";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DataGridPro, GridColDef } from "@mui/x-data-grid-pro";
 import useLinkedICREs, { LinkedICREInfo } from "common/hooks/useLinkedICREs";
-import DataGridToolbar from "../../_SharedTabs/dataGridToolbar";
-import { CrisprFlowFISHCols, CTCFChIAPETCols, HiCCols, RNAPIIChIAPETCols } from "./columns";
-import { accessionCol, ChIAPETCols, eQTLCols, IntactHiCLoopsCols } from "../../_IcreTabs/_linkedGenes/columns";
+import DataGridToolbar from "common/components/dataGridToolbar";
+import { ChIAPETCols, CrisprFlowFISHCols, eQTLCols, IntactHiCLoopsCols } from "../../_IcreTabs/_linkedGenes/columns";
+import LinkedElements from "common/components/linkedElements/linkedElements";
+import { TableDef } from "common/components/linkedElements/columns";
+import { accessionCol } from "common/components/linkedElements/columns";
 
 export default function LinkedICREs({ geneid }: { geneid: string }) {
   const { data, loading, error } = useLinkedICREs(geneid);
@@ -71,61 +73,5 @@ export default function LinkedICREs({ geneid }: { geneid: string }) {
     { name: "eQTLs", data: eqtlLinked, columns: [accessionCol, ...eQTLCols.slice(2)] },
   ];
 
-  return (
-    <Grid2 container spacing={2}>
-      <Grid2 size={12}>
-        {tables.map((table, index) =>
-          table.data.length > 0 ? (
-            <Box
-              sx={{
-                borderRadius: 1,
-                boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
-                marginBottom: 2,
-              }}
-              key={index}
-            >
-              <DataGrid
-                density={"compact"}
-                columns={table.columns}
-                rows={table.data}
-                getRowHeight={() => "auto"}
-                getRowId={(row: LinkedICREInfo) => row.id}
-                sx={{ width: "100%", height: "auto" }}
-                slots={{ toolbar: DataGridToolbar }}
-                slotProps={{ toolbar: { title: table.name } }}
-                initialState={{
-                  pagination: {
-                    paginationModel: {
-                      pageSize: 5,
-                    },
-                  },
-                }}
-              />
-            </Box>
-          ) : (
-            <Typography
-              key={index}
-              variant="h6"
-              pl={1}
-              sx={{
-                border: "1px solid #e0e0e0",
-                borderRadius: 1,
-                p: 2,
-                boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
-                marginBottom: 2,
-              }}
-            >
-              No ICREs found for {table.name}
-            </Typography>
-          )
-        )}
-      </Grid2>
-    </Grid2>
-  );
+  return <LinkedElements loading={loading} tables={tables} />;
 }
-
-type TableDef = {
-  name: string;
-  data: LinkedICREInfo[];
-  columns: GridColDef<LinkedICREInfo>[];
-};

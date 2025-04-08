@@ -1,19 +1,8 @@
-import { Box, CircularProgress, Grid2 as Grid, Skeleton, Typography } from "@mui/material";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { Grid2 as Grid, Skeleton, Typography } from "@mui/material";
 import useLinkedGenes, { LinkedGeneInfo } from "common/hooks/useLinkedGenes";
-import {
-  ChIAPETCols,
-  CrisprFlowFISHCols,
-  eQTLCols,
-  IntactHiCLoopsCols,
-} from "./columns";
-import DataGridToolbar from "common/components/dataGridToolbar";
-
-type TableDef = {
-  name: string;
-  data: LinkedGeneInfo[];
-  columns: GridColDef<LinkedGeneInfo>[];
-};
+import { ChIAPETCols, CrisprFlowFISHCols, eQTLCols, IntactHiCLoopsCols } from "./columns";
+import LinkedElements from "common/components/linkedElements/linkedElements";
+import { TableDef } from "common/components/linkedElements/columns";
 
 export default function LinkedGenes({ accession }: { accession: string }) {
   const { data, loading, error } = useLinkedGenes(accession);
@@ -82,55 +71,5 @@ export default function LinkedGenes({ accession }: { accession: string }) {
     { name: "eQTLs", data: eqtlLinked, columns: eQTLCols },
   ];
 
-  return (
-    <Grid container spacing={2} flexDirection="column" sx={{ width: "100%" }}>
-      <Grid size={{ xs: 12, md: 12 }}>
-        {tables.map((table, index) =>
-          table.data.length > 0 ? (
-            <Box
-              sx={{
-                borderRadius: 1,
-                boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
-                marginBottom: 2,
-              }}
-              key={index}
-            >
-              <DataGrid
-                density={"compact"}
-                columns={table.columns}
-                rows={table.data}
-                getRowHeight={() => "auto"}
-                getRowId={(row: LinkedGeneInfo) => row.id}
-                sx={{ width: "100%", height: "auto" }}
-                slots={{ toolbar: DataGridToolbar }}
-                slotProps={{ toolbar: { title: table.name } }}
-                initialState={{
-                  pagination: {
-                    paginationModel: {
-                      pageSize: 5,
-                    },
-                  },
-                }}
-              />
-            </Box>
-          ) : (
-            <Typography
-              key={index}
-              variant="h6"
-              pl={1}
-              sx={{
-                border: "1px solid #e0e0e0",
-                borderRadius: 1,
-                p: 2,
-                boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
-                marginBottom: 2,
-              }}
-            >
-              No Genes found for {table.name}
-            </Typography>
-          )
-        )}
-      </Grid>
-    </Grid>
-  );
+  return <LinkedElements loading={loading} tables={tables} />;
 }
