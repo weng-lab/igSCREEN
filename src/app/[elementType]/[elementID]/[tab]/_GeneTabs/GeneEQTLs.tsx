@@ -1,10 +1,9 @@
-import { useQuery } from "@apollo/client"
-import { CircularProgress, Grid2, Link, Typography } from "@mui/material"
-import { DataGrid, GridColDef } from "@mui/x-data-grid"
-import { DataTable } from "@weng-lab/psychscreen-ui-components"
-import { toScientificNotation } from "common/utils"
-import { gql } from "types/generated"
-import DataGridToolbar from "../_SharedTabs/dataGridToolbar"
+import { useQuery } from "@apollo/client";
+import { Grid2, Link, Skeleton } from "@mui/material";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { toScientificNotation } from "common/utils";
+import { gql } from "types/generated";
+import DataGridToolbar from "../_SharedTabs/dataGridToolbar";
 
 const COMBINED_EQTL_QUERY = gql(`
   query CombinedEqtl($geneid: String) {
@@ -44,31 +43,42 @@ const COMBINED_EQTL_QUERY = gql(`
       pval_beta
     }
   } 
-`)
+`);
 
 type GeneEQTLsProps = {
-  name: string
-  id: string
-}
+  name: string;
+  id: string;
+};
 
 const GeneEQTLs = ({ name, id }: GeneEQTLsProps) => {
-
   /**
    * @todo confirm that this actually works by finding a gene with eQTL data
    */
-  
+
   const { loading, data, error } = useQuery(COMBINED_EQTL_QUERY, {
     variables: {
-      geneid: id.split(".")[0]
+      geneid: id.split(".")[0],
     },
-  })
+  });
 
   if (loading) {
-    return <CircularProgress />
+    return (
+      <Grid2 container spacing={2}>
+        <Grid2 size={12}>
+          <Skeleton variant="rounded" width={"100%"} height={215} />
+        </Grid2>
+        <Grid2 size={12}>
+          <Skeleton variant="rounded" width={"100%"} height={215} />
+        </Grid2>
+        <Grid2 size={12}>
+          <Skeleton variant="rounded" width={"100%"} height={215} />
+        </Grid2>
+      </Grid2>
+    );
   }
 
   if (error) {
-    throw new Error(JSON.stringify(error))
+    throw new Error(JSON.stringify(error));
   }
 
   return (
@@ -125,10 +135,10 @@ const GeneEQTLs = ({ name, id }: GeneEQTLsProps) => {
         />
       </Grid2>
     </Grid2>
-  )
-}
+  );
+};
 
-export default GeneEQTLs
+export default GeneEQTLs;
 
 const columns: GridColDef[] = [
   {
@@ -140,19 +150,15 @@ const columns: GridColDef[] = [
     field: "pval_nominal",
     headerName: "Nominal P",
     flex: 1,
-    renderCell: (params) => (
-        toScientificNotation(params.value, 2)
-    ),
+    renderCell: (params) => toScientificNotation(params.value, 2),
   },
   {
     field: "pval_beta",
     headerName: "Beta P",
     flex: 1,
-    renderCell: (params) => (
-      toScientificNotation(params.value, 2)
-    ),
-  }
-]
+    renderCell: (params) => toScientificNotation(params.value, 2),
+  },
+];
 
 const YazarPowellColumns: GridColDef[] = [
   {
@@ -160,35 +166,27 @@ const YazarPowellColumns: GridColDef[] = [
     headerName: "SNP",
     flex: 2,
     renderCell: (params) => {
-      return (
-        <Link href={`/snp/${params.value}`}>
-          {params.value}
-        </Link>
-      )
-    }
+      return <Link href={`/snp/${params.value}`}>{params.value}</Link>;
+    },
   },
   {
     field: "pvalue",
     headerName: "P",
     flex: 1,
-    renderCell: (params) => (
-      toScientificNotation(params.value, 2)
-    ),
+    renderCell: (params) => toScientificNotation(params.value, 2),
   },
   {
     field: "qvalue",
     headerName: "Q",
     flex: 1,
-    renderCell: (params) => (
-      toScientificNotation(params.value, 2)
-    ),
+    renderCell: (params) => toScientificNotation(params.value, 2),
   },
   {
     field: "celltype",
     headerName: "Celltype",
     flex: 2,
-  }
-]
+  },
+];
 
 const SoskicTrynkaColumns: GridColDef[] = [
   {
@@ -200,21 +198,17 @@ const SoskicTrynkaColumns: GridColDef[] = [
     field: "pval_nominal",
     headerName: "Nominal P",
     flex: 1,
-    renderCell: (params) => (
-      toScientificNotation(params.value, 2)
-    ),
+    renderCell: (params) => toScientificNotation(params.value, 2),
   },
   {
     field: "pval_beta",
     headerName: "Beta P",
     flex: 1,
-    renderCell: (params) => (
-      toScientificNotation(params.value, 2)
-    ),
+    renderCell: (params) => toScientificNotation(params.value, 2),
   },
   {
     field: "celltype",
     headerName: "Celltype",
     flex: 2,
-  }
-]
+  },
+];

@@ -7,12 +7,7 @@ import { DataTable } from "@weng-lab/psychscreen-ui-components";
 import { gql } from "types/generated/gql";
 import { GenomicElementType, GenomicRange } from "types/globalTypes";
 import Link from "next/link";
-import {
-  calcDistToTSS,
-  calcDistRegionToPosition,
-  calcDistRegionToRegion,
-  NearbyGenomicFeaturesProps,
-} from "./utils";
+import { calcDistToTSS, calcDistRegionToPosition, calcDistRegionToRegion, NearbyGenomicFeaturesProps } from "./utils";
 import DataGridToolbar from "./dataGridToolbar";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 
@@ -52,11 +47,7 @@ export const NEARBY_GENOMIC_FEATURES_QUERY = gql(`
   }
 `);
 
-const NearbyGenomicFeatures = ({
-  coordinates,
-  elementType,
-  elementID,
-}: NearbyGenomicFeaturesProps) => {
+const NearbyGenomicFeatures = ({ coordinates, elementType, elementID }: NearbyGenomicFeaturesProps) => {
   const { loading, data, error } = useQuery(NEARBY_GENOMIC_FEATURES_QUERY, {
     variables: {
       //The coordinates need to be repeated twice since the nested queries take different inputs
@@ -76,11 +67,7 @@ const NearbyGenomicFeatures = ({
     .map((gene) => {
       return {
         ...gene,
-        distance: calcDistToTSS(
-          coordinates,
-          gene.transcripts,
-          gene.strand as "+" | "-"
-        ),
+        distance: calcDistToTSS(coordinates, gene.transcripts, gene.strand as "+" | "-"),
       };
     })
     .filter((gene) => {
@@ -106,12 +93,7 @@ const NearbyGenomicFeatures = ({
     .map((snp) => {
       return {
         ...snp,
-        distance: calcDistRegionToPosition(
-          coordinates.start,
-          coordinates.end,
-          "closest",
-          snp.coordinates.start
-        ),
+        distance: calcDistRegionToPosition(coordinates.start, coordinates.end, "closest", snp.coordinates.start),
       };
     })
     .filter((snp) => {
@@ -140,7 +122,7 @@ const NearbyGenomicFeatures = ({
                     </MuiLink>
                   ),
                 },
-                distanceCol
+                distanceCol,
               ] as GridColDef[]
             }
             getRowId={(row) => row.name}
@@ -177,7 +159,7 @@ const NearbyGenomicFeatures = ({
                     </MuiLink>
                   ),
                 },
-                distanceCol
+                distanceCol,
               ] as GridColDef[]
             }
             getRowId={(row) => row.accession}
@@ -245,24 +227,5 @@ const distanceCol: GridColDef = {
     return params.value.toLocaleString();
   },
 };
-
-{
-  /* <DataGrid
-density={"compact"}
-columns={table.columns}
-rows={table.data}
-getRowHeight={() => "auto"}
-getRowId={(row: LinkedGeneInfo) => row.id}
-sx={{ width: "100%", height: "auto" }}
-slots={{ toolbar: DataGridToolbar }}
-slotProps={{ toolbar: { title: table.name } }}
-initialState={{
-  pagination: {
-    paginationModel: {
-      pageSize: 5,
-    },
-  },
-}} */
-}
 
 export default NearbyGenomicFeatures;
