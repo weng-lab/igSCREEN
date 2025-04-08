@@ -71,5 +71,5 @@ export default function LinkedICREs({ geneid }: { geneid: string }) {
     { name: "eQTLs", data: eqtlLinked, columns: [accessionCol, ...eQTLCols.slice(2)] },
   ];
 
-  return <LinkedElements loading={loading} tables={tables} />;
+  return <LinkedElements tables={tables} />;
 }

@@ -1,4 +1,4 @@
-import { Skeleton, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 
 import { Grid2 } from "@mui/material";
 
@@ -10,14 +10,12 @@ import { LinkedICREInfo } from "common/hooks/useLinkedICREs";
 
 export default function LinkedElements({
   tables,
-  loading,
 }: {
   tables: {
     name: string;
     data: LinkedICREInfo[] | LinkedGeneInfo[];
     columns: GridColDef<LinkedICREInfo | LinkedGeneInfo>[];
   }[];
-  loading: boolean;
 }) {
   type rowType = LinkedICREInfo | LinkedGeneInfo;
 
@@ -26,37 +24,33 @@ export default function LinkedElements({
       <Grid2 size={12}>
         {tables.map((table, index) =>
           table.data.length > 0 ? (
-            loading ? (
-              <Skeleton variant="rounded" width={"100%"} height={100} />
-            ) : (
-              <Box
-                sx={{
-                  borderRadius: 1,
-                  boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
-                  marginBottom: 2,
-                }}
-                key={index}
-              >
-                <DataGridPro
-                  density={"compact"}
-                  columns={table.columns}
-                  rows={table.data}
-                  getRowHeight={() => "auto"}
-                  getRowId={(row: rowType) => row.id}
-                  sx={{ width: "100%", height: "auto" }}
-                  slots={{ toolbar: DataGridToolbar }}
-                  slotProps={{ toolbar: { title: table.name } }}
-                  pagination
-                  initialState={{
-                    pagination: {
-                      paginationModel: {
-                        pageSize: 5,
-                      },
+            <Box
+              sx={{
+                borderRadius: 1,
+                boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
+                marginBottom: 2,
+              }}
+              key={index}
+            >
+              <DataGridPro
+                density={"compact"}
+                columns={table.columns}
+                rows={table.data}
+                getRowHeight={() => "auto"}
+                getRowId={(row: rowType) => row.id}
+                sx={{ width: "100%", height: "auto" }}
+                slots={{ toolbar: DataGridToolbar }}
+                slotProps={{ toolbar: { title: table.name } }}
+                pagination
+                initialState={{
+                  pagination: {
+                    paginationModel: {
+                      pageSize: 5,
                     },
-                  }}
-                />
-              </Box>
-            )
+                  },
+                }}
+              />
+            </Box>
           ) : (
             <Typography
               key={index}
