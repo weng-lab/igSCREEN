@@ -1,10 +1,9 @@
 import { useQuery } from "@apollo/client";
 import { Grid2, Link, Skeleton } from "@mui/material";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DataGridPro, GridColDef } from "@mui/x-data-grid-pro";
 import { toScientificNotation } from "common/utils";
 import { gql } from "types/generated";
 import DataGridToolbar from "common/components/dataGridToolbar";
-import { DataGridPro } from "@mui/x-data-grid-pro";
 
 const COMBINED_EQTL_QUERY = gql(`
   query CombinedEqtl($geneid: String) {
