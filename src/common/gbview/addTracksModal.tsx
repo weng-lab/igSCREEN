@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -6,39 +6,42 @@ import {
   DialogContentText,
   DialogActions,
   Button,
-  FormGroup,
-  FormControlLabel,
-  Checkbox,
   Box,
-  Typography,
-  Divider,
   IconButton,
+  Checkbox,
+  Accordion,
+  AccordionSummary,
+  Typography,
 } from "@mui/material";
-import { BigWigTrackProps } from "@weng-lab/genomebrowser";
-import { atacTracks, dnaseTracks } from "./tracks";
 import EditIcon from "@mui/icons-material/Edit";
 import CloseIcon from "@mui/icons-material/Close";
 import { theme } from "app/theme";
+import bigwigsData from "./bigwigs.json";
 
 type ModalProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
-  setSelectedTracks: (tracks: BigWigTrackProps[]) => void;
-  selectedTracks: BigWigTrackProps[];
+  setSelectedTracks: (tracks: BigWig[]) => void;
+  selectedTracks: BigWig[];
+};
+
+export type BigWig = {
+  name: string;
+  lineage: string;
+  assay: string;
+  displayName: string;
+  fileID: string;
+  url: string;
 };
 
 function AddTracksModal({ open, setOpen, setSelectedTracks, selectedTracks }: ModalProps) {
-  const tracks = atacTracks.concat(dnaseTracks);
-  const [newTracks, setNewTracks] = useState<BigWigTrackProps[]>(selectedTracks);
+  const [newTracks, setNewTracks] = useState<BigWig[]>(selectedTracks);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const track = tracks.find((t) => t.id === event.target.name);
-    if (!track) return;
-
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>, track: BigWig) => {
     if (event.target.checked) {
       setNewTracks([...newTracks, track]);
     } else {
-      setNewTracks(newTracks.filter((t) => t.id !== track.id));
+      setNewTracks(newTracks.filter((t) => t.name !== track.name));
     }
   };
 
@@ -56,8 +59,6 @@ function AddTracksModal({ open, setOpen, setSelectedTracks, selectedTracks }: Mo
     setSelectedTracks([...newTracks]);
     setOpen(false);
   };
-
-  const trackGroups = ["B Cells", "CD4 T Cells", "Erythroblasts", "Myeloid", "NK", "Progenitors", "GD T Cells"];
 
   return (
     <Dialog open={open} onClose={handleCancel}>
@@ -81,19 +82,62 @@ function AddTracksModal({ open, setOpen, setSelectedTracks, selectedTracks }: Mo
         <DialogContentText sx={{ color: "#cccccc" }}>Select tracks you wish to display</DialogContentText>
       </DialogTitle>
       <DialogContent>
-        {trackGroups.map((group, index) => {
-          let dnaseTrack = dnaseTracks[index];
-          let atacTrack = atacTracks[index];
-          return (
-            <Box display="flex" flexDirection="row" gap={1} justifyContent="space-between" alignItems="center" key={index}>
-              <Typography variant="h6">{group}</Typography>
-              <Box display="flex" flexDirection="row" gap={1}>
-                <Checkbox checked={newTracks.includes(dnaseTrack)} onChange={handleChange} name={dnaseTrack.id} />
-                <Checkbox checked={newTracks.includes(atacTrack)} onChange={handleChange} name={atacTrack.id} />
+        {Object.entries(bigwigsData).map(([lineage, assays]) => (
+          <Box
+            display="flex"
+            marginBlock={0.5}
+            flexDirection="row"
+            justifyContent="space-between"
+            alignItems={"center"}
+            key={lineage}
+          >
+            <Accordion sx={{ width: "100%" }}>
+              <AccordionSummary>
+                <Box width="100%" display="flex" gap={1} flexDirection="row" justifyContent="center">
+                  <Typography>{lineage} tracks</Typography>
+                </Box>
+              </AccordionSummary>
+              <Box display="flex" gap={1} flexDirection="column" justifyContent="space-between">
+                <Box display="flex" gap={4} justifyContent="space-around" width="100%">
+                  <Typography>DNAse</Typography>
+                  <Typography>ATAC</Typography>
+                </Box>
+                <Box display="flex" gap={1} flexDirection="row" justifyContent="space-between">
+                  <Box width="50%" display="flex" gap={1} flexDirection="column">
+                    {assays.dnase.length == 0 ? (
+                      <Typography>No DNAse tracks available</Typography>
+                    ) : (
+                      assays.dnase.map((track: BigWig) => (
+                        <Box key={track.name} display="flex" gap={1} alignItems="center">
+                          <Checkbox
+                            checked={newTracks.some((t) => t.name === track.name)}
+                            onChange={(event) => handleChange(event, track)}
+                          />
+                          {track.name}
+                        </Box>
+                      ))
+                    )}
+                  </Box>
+                  <Box width="50%" display="flex" gap={1} flexDirection="column">
+                    {assays.atac.length == 0 ? (
+                      <Typography>No ATAC tracks available</Typography>
+                    ) : (
+                      assays.atac.map((track: BigWig) => (
+                        <Box key={track.name} display="flex" gap={1} alignItems="center">
+                          <Checkbox
+                            checked={newTracks.some((t) => t.name === track.name)}
+                            onChange={(event) => handleChange(event, track)}
+                          />
+                          {track.name}
+                        </Box>
+                      ))
+                    )}
+                  </Box>
+                </Box>
               </Box>
-            </Box>
-          );
-        })}
+            </Accordion>
+          </Box>
+        ))}
       </DialogContent>
       <DialogActions sx={{ justifyContent: "space-between" }}>
         <Button onClick={handleDeselectAll}>Clear</Button>
