@@ -1,8 +1,13 @@
 import { Box, CircularProgress, Grid2 as Grid, Skeleton, Typography } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import useLinkedGenes, { LinkedGeneInfo } from "common/hooks/useLinkedGenes";
-import { ChIAPETCols, CrisprFlowFISHCols, eQTLCols, IntactHiCLoopsCols } from "./columns";
-import DataGridToolbar from "../../_SharedTabs/dataGridToolbar";
+import {
+  ChIAPETCols,
+  CrisprFlowFISHCols,
+  eQTLCols,
+  IntactHiCLoopsCols,
+} from "./columns";
+import DataGridToolbar from "common/components/dataGridToolbar";
 
 type TableDef = {
   name: string;
