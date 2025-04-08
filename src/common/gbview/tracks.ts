@@ -57,6 +57,15 @@ export const atacTracks: BigWigTrackProps[] = [
     height: HEIGHT,
     displayMode: DisplayMode.FULL,
   },
+  {
+    ...DefaultBigWig,
+    id: "ATAC_gd_Tcells_merged_signal",
+    title: "ATAC GD T Cells Merged Signal",
+    url: "https://downloads.wenglab.org/igscreen/ATAC_gd_Tcells_merged_signal.bigWig",
+    color: "#fa0056",
+    height: HEIGHT,
+    displayMode: DisplayMode.FULL,
+  },
 ];
 
 export const dnaseTracks: BigWigTrackProps[] = [
@@ -111,6 +120,15 @@ export const dnaseTracks: BigWigTrackProps[] = [
     title: "DNase Progenitors Merged Signal",
     url: "https://downloads.wenglab.org/igscreen/DNase_Progenitors_merged_signal.bigWig",
     color: "#666666",
+    height: HEIGHT,
+    displayMode: DisplayMode.FULL,
+  },
+  {
+    ...DefaultBigWig,
+    id: "DNase_Bulk_Tcells_merged_signal",
+    title: "DNase Bulk T Cells Merged Signal",
+    url: "https://downloads.wenglab.org/igscreen/DNase_Bulk_Tcells_merged_signal.bigWig",
+    color: "#ff0000",
     height: HEIGHT,
     displayMode: DisplayMode.FULL,
   },
