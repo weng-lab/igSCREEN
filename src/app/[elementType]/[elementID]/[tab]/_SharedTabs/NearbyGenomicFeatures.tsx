@@ -105,7 +105,7 @@ const NearbyGenomicFeatures = ({ coordinates, elementType, elementID }: NearbyGe
     });
 
   return (
-    <Grid container spacing={4}>
+    <Grid container spacing={2}>
       <Grid size={{ xs: 12, md: 6, xl: 4 }}>
         {loading ? (
           <Skeleton variant="rounded" width={"100%"} height={705} />
@@ -128,6 +128,7 @@ const NearbyGenomicFeatures = ({ coordinates, elementType, elementID }: NearbyGe
               ] as GridColDef[]
             }
             getRowId={(row) => row.name}
+            pagination
             initialState={{
               sorting: {
                 sortModel: [{ field: "distance", sort: "asc" }],
@@ -165,6 +166,7 @@ const NearbyGenomicFeatures = ({ coordinates, elementType, elementID }: NearbyGe
               ] as GridColDef[]
             }
             getRowId={(row) => row.accession}
+            pagination
             initialState={{
               sorting: {
                 sortModel: [{ field: "distance", sort: "asc" }],
@@ -202,6 +204,7 @@ const NearbyGenomicFeatures = ({ coordinates, elementType, elementID }: NearbyGe
               ] as GridColDef[]
             }
             getRowId={(row) => row.id}
+            pagination
             initialState={{
               sorting: {
                 sortModel: [{ field: "distance", sort: "asc" }],
