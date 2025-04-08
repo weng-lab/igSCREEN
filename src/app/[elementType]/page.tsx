@@ -1,9 +1,11 @@
 "use client";
-import { Box, Grid2, Typography } from "@mui/material";
+import { Box, Button, Divider, Grid2, IconButton, Stack, Typography } from "@mui/material";
 import { GenomeSearch, Result } from "@weng-lab/psychscreen-ui-components";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { isValidGenomicElement } from "types/globalTypes";
+import { ExpandMore } from "@mui/icons-material";
+
 
 type PortalConfig = {
   image: string;
@@ -54,11 +56,18 @@ export default function PortalPage({
     elementType === "gene"
       ? geneConfig
       : elementType === "icre"
-      ? icreConfig
-      : snpConfig;
+        ? icreConfig
+        : snpConfig;
+
+  const popularSearches = [
+    { name: "APOE", id: "ENSG00000130203.10", region: "chr19: 44905791-44909393" },
+    { name: "Name", id: "shjdflwdbwl", region: "chr1:15000-20000" },
+    { name: "Name", id: "ausdla", region: "chr1:15000-20000" },
+    // add more as needed
+  ];
 
   return (
-    <Grid2 container marginInline={5} marginTop={5}>
+    <Grid2 container marginInline={5} marginTop={5} spacing={2}>
       <Grid2 size={12} display={"flex"} flexDirection={"column"}>
         {/* Panel container */}
         <Grid2
@@ -96,8 +105,8 @@ export default function PortalPage({
                   elementType === "gene"
                     ? "Gene"
                     : elementType === "icre"
-                    ? "iCRE"
-                    : "SNP",
+                      ? "iCRE"
+                      : "SNP",
                 ]}
                 sx={{ width: "100%" }}
               />
@@ -126,16 +135,58 @@ export default function PortalPage({
             />
           </Grid2>
         </Grid2>
-        {/* Content container */}
-        <Grid2
-          size={12}
-          display="flex"
-          flexDirection="row"
-          justifyContent="center"
-          spacing={2}
-        >
-          {/* MORE CONTENT HERE */}
-        </Grid2>
+      </Grid2>
+      <Grid2 size={12} display={"flex"} flexDirection={"column"}>
+        <Divider sx={{ display: "flex" }} variant="fullWidth">
+          <IconButton
+            onClick={() => {
+              var element = document.getElementById("searches");
+              element.scrollIntoView({ behavior: "smooth", block: "start" });
+            }}
+            sx={{ cursor: 'pointer' }}
+          >
+            <ExpandMore />
+          </IconButton>
+        </Divider>
+      </Grid2>
+      <Grid2 size={6} display={"flex"} justifyContent={"center"}>
+        <Typography variant="h3" id="searches">Popular Searches</Typography>
+      </Grid2>
+      <Grid2 container spacing={2} justifyContent="center" marginTop={2} size={12}>
+        {popularSearches.map((element, index) => (
+          <Grid2
+            key={index}
+            size={{
+              xs: 12,
+              md: 4,
+              lg: 3,
+            }}
+            display="flex"
+            flexDirection="column"
+            alignItems="flex-start"
+            p={2}
+            border={1}
+            borderRadius={2}
+            borderColor="divider"
+          >
+            <Stack spacing={1}>
+              <Typography variant="h6">{element.name}</Typography>
+              <Typography variant="body2" color="text.secondary">
+                {element.id}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {element.region}
+              </Typography>
+            </Stack>
+            <Button
+              variant="contained"
+              sx={{ alignSelf: "flex-end", marginTop: 2 }}
+              onClick={() => handleSearchSubmit(element.name)}
+            >
+              Go
+            </Button>
+          </Grid2>
+        ))}
       </Grid2>
     </Grid2>
   );
