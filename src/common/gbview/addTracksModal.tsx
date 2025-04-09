@@ -90,10 +90,11 @@ function AddTracksModal({ open, setOpen, setSelectedTracks, selectedTracks }: Mo
             justifyContent="space-between"
             alignItems={"center"}
             key={lineage}
+            width={500}
           >
-            <Accordion sx={{ width: "100%" }}>
+            <Accordion sx={{ width: "100%" }} slotProps={{transition: {unmountOnExit: true}}}>
               <AccordionSummary>
-                <Box width="100%" display="flex" gap={1} flexDirection="row" justifyContent="center">
+                <Box width="100%" display="flex" gap={1} flexDirection="row" justifyContent="center" alignItems="center">
                   <Typography>{lineage} tracks</Typography>
                 </Box>
               </AccordionSummary>
@@ -102,8 +103,8 @@ function AddTracksModal({ open, setOpen, setSelectedTracks, selectedTracks }: Mo
                   <Typography>DNAse</Typography>
                   <Typography>ATAC</Typography>
                 </Box>
-                <Box display="flex" gap={1} flexDirection="row" justifyContent="space-between">
-                  <Box width="50%" display="flex" gap={1} flexDirection="column">
+                <Box display="flex" gap={1} flexDirection="row" justifyContent="space-evenly" paddingInline={1}>
+                  <Box width="45%" display="flex" gap={1} flexDirection="column">
                     {assays.dnase.length == 0 ? (
                       <Typography>No DNAse tracks available</Typography>
                     ) : (

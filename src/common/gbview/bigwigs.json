@@ -2,6 +2,14 @@
     "Bcells": {
         "dnase": [
             {
+                "name": "DNase Bcells-merged",
+                "lineage": "Bcells",
+                "assay": "DNase",
+                "displayName": "B cells merged",
+                "fileID": "",
+                "url": "https://downloads.wenglab.org/igscreen/DNase_Bcells_merged_signal.bigWig"
+            },
+            {
                 "name": "Bcells-ENCSR109DTU",
                 "lineage": "Bcells",
                 "assay": "DNase",
@@ -147,6 +155,14 @@
             }
         ],
         "atac": [
+            {
+                "name": "ATAC Bcells-merged",
+                "lineage": "Bcells",
+                "assay": "ATAC",
+                "displayName": "B cells merged",
+                "fileID": "",
+                "url": "https://downloads.wenglab.org/igscreen/ATAC_Bcells_merged_signal.bigWig"
+            },
             {
                 "name": "1001-Bulk_B-S",
                 "lineage": "Bcells",
@@ -383,6 +399,14 @@
     },
     "Bulk_Tcells": {
         "dnase": [
+            {
+                "name": "DNase Bulk_Tcells-merged",
+                "lineage": "Bulk_Tcells",
+                "assay": "DNase",
+                "displayName": "Bulk T cells merged",
+                "fileID": "",
+                "url": "https://downloads.wenglab.org/igscreen/DNase_Bulk_Tcells_merged_signal.bigWig"
+            },
             {
                 "name": "Bulk_Tcells-ENCSR496UER",
                 "lineage": "Bulk_Tcells",
@@ -876,6 +900,14 @@
     },
     "CD4_Tcells": {
         "dnase": [
+            {
+                "name": "DNase CD4_Tcells-merged",
+                "lineage": "CD4_Tcells",
+                "assay": "DNase",
+                "displayName": "CD4 T cells merged",
+                "fileID": "",
+                "url": "https://downloads.wenglab.org/igscreen/DNase_CD4_Tcells_merged_signal.bigWig"
+            },
             {
                 "name": "CD4_Tcells-ENCSR173HPQ",
                 "lineage": "CD4_Tcells",
@@ -2527,6 +2559,14 @@
         ],
         "atac": [
             {
+                "name": "ATAC CD4_Tcells-merged",
+                "lineage": "CD4_Tcells",
+                "assay": "ATAC",
+                "displayName": "CD4 T cells merged",
+                "fileID": "",
+                "url": "https://downloads.wenglab.org/igscreen/ATAC_CD4_Tcells_merged_signal.bigWig"
+            },
+            {
                 "name": "4983-CD4Tcell-SRX1427837",
                 "lineage": "CD4_Tcells",
                 "assay": "ATAC",
@@ -3178,6 +3218,14 @@
     },
     "CD8_Tcells": {
         "dnase": [
+            {
+                "name": "DNase CD8_Tcells-merged",
+                "lineage": "CD8_Tcells",
+                "assay": "DNase",
+                "displayName": "CD8 T cells merged",
+                "fileID": "",
+                "url": "https://downloads.wenglab.org/igscreen/DNase_CD8_Tcells_merged_signal.bigWig"
+            },
             {
                 "name": "CD8_Tcells-ENCSR129HDK",
                 "lineage": "CD8_Tcells",
@@ -3917,6 +3965,14 @@
         ],
         "atac": [
             {
+                "name": "ATAC CD8_Tcells-merged",
+                "lineage": "CD8_Tcells",
+                "assay": "ATAC",
+                "displayName": "CD8 T cells merged",
+                "fileID": "",
+                "url": "https://downloads.wenglab.org/igscreen/ATAC_CD8_Tcells_merged_signal.bigWig"
+            },
+            {
                 "name": "1003-CD8pos_T-U",
                 "lineage": "CD8_Tcells",
                 "assay": "ATAC",
@@ -4209,6 +4265,14 @@
     "Erythroblasts": {
         "dnase": [
             {
+                "name": "DNase Erythroblasts-merged",
+                "lineage": "Erythroblasts",
+                "assay": "DNase",
+                "displayName": "Erythroblasts merged",
+                "fileID": "",
+                "url": "https://downloads.wenglab.org/igscreen/DNase_Erythroblasts_merged_signal.bigWig"
+            },
+            {
                 "name": "Erythroblasts-ENCSR115YPI",
                 "lineage": "Erythroblasts",
                 "assay": "DNase",
@@ -4283,6 +4347,14 @@
         ],
         "atac": [
             {
+                "name": "ATAC Erythroblasts-merged",
+                "lineage": "Erythroblasts",
+                "assay": "ATAC",
+                "displayName": "Erythroblasts merged",
+                "fileID": "",
+                "url": "https://downloads.wenglab.org/igscreen/ATAC_Erythroblasts_merged_signal.bigWig"
+            },
+            {
                 "name": "2596-Ery-SRX1427827",
                 "lineage": "Erythroblasts",
                 "assay": "ATAC",
@@ -4351,6 +4423,14 @@
     "Leukemia": {
         "dnase": [],
         "atac": [
+            {
+                "name": "ATAC Leukemia-merged",
+                "lineage": "Leukemia",
+                "assay": "ATAC",
+                "displayName": "Leukemia merged",
+                "fileID": "",
+                "url": "http://downloads.wenglab.org/igscreen/ATAC_Leukemia_merged_signal.bigWig"
+            },
             {
                 "name": "SU070-Blast-SRX1427877",
                 "lineage": "Leukemia",
@@ -4604,6 +4684,14 @@
     "Myeloid": {
         "dnase": [
             {
+                "name": "DNase Myeloid-merged",
+                "lineage": "Myeloid",
+                "assay": "DNase",
+                "displayName": "Myeloid merged",
+                "fileID": "",
+                "url": "https://downloads.wenglab.org/igscreen/DNase_Myeloid_merged_signal.bigWig"
+            },
+            {
                 "name": "Myeloid-ENCSR464ETX",
                 "lineage": "Myeloid",
                 "assay": "DNase",
@@ -4782,6 +4870,14 @@
         ],
         "atac": [
             {
+                "name": "ATAC Myeloid-merged",
+                "lineage": "Myeloid",
+                "assay": "ATAC",
+                "displayName": "Myeloid merged",
+                "fileID": "",
+                "url": "https://downloads.wenglab.org/igscreen/ATAC_Myeloid_merged_signal.bigWig"
+            },
+            {
                 "name": "1001-Monocytes-U",
                 "lineage": "Myeloid",
                 "assay": "ATAC",
@@ -4954,6 +5050,14 @@
     "NK": {
         "dnase": [
             {
+                "name": "DNase NK-merged",
+                "lineage": "NK",
+                "assay": "DNase",
+                "displayName": "NK merged",
+                "fileID": "",
+                "url": "https://downloads.wenglab.org/igscreen/DNase_NK_merged_signal.bigWig"
+            },
+            {
                 "name": "NK-ENCSR407WGG",
                 "lineage": "NK",
                 "assay": "DNase",
@@ -5011,6 +5115,14 @@
             }
         ],
         "atac": [
+            {
+                "name": "ATAC NK-merged",
+                "lineage": "NK",
+                "assay": "ATAC",
+                "displayName": "NK merged",
+                "fileID": "",
+                "url": "https://downloads.wenglab.org/igscreen/ATAC_NK_merged_signal.bigWig"
+            },
             {
                 "name": "5483-NKcell-SRX1427850",
                 "lineage": "NK",
@@ -5232,6 +5344,14 @@
     "Progenitors": {
         "dnase": [
             {
+                "name": "DNase Progenitors-merged",
+                "lineage": "Progenitors",
+                "assay": "DNase",
+                "displayName": "Progenitors merged",
+                "fileID": "",
+                "url": "https://downloads.wenglab.org/igscreen/DNase_Progenitors_merged_signal.bigWig"
+            },
+            {
                 "name": "Progenitors-ENCSR328UMC",
                 "lineage": "Progenitors",
                 "assay": "DNase",
@@ -5345,6 +5465,14 @@
             }
         ],
         "atac": [
+            {
+                "name": "ATAC Progenitors-merged",
+                "lineage": "Progenitors",
+                "assay": "ATAC",
+                "displayName": "Progenitors merged",
+                "fileID": "",
+                "url": "https://downloads.wenglab.org/igscreen/ATAC_Progenitors_merged_signal.bigWig"
+            },
             {
                 "name": "7291-CD34_Bone_Marrow-SRX1427812",
                 "lineage": "Progenitors",
@@ -5887,6 +6015,14 @@
             }
         ],
         "atac": [
+            {
+                "name": "ATAC gd_Tcells-merged",
+                "lineage": "gd_Tcells",
+                "assay": "ATAC",
+                "displayName": "gd_Tcells merged",
+                "fileID": "",
+                "url": "https://downloads.wenglab.org/igscreen/ATAC_gd_Tcells_merged_signal.bigWig"
+            },
             {
                 "name": "1002-Gamma_delta_T-S",
                 "lineage": "gd_Tcells",
