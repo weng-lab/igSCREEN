@@ -15,9 +15,8 @@ export type BarsProps = {
   width: number;
   height: number;
   data: UpSetPlotDatum[];
-  /** @todo fix this */
   onBarClicked?: (grouping: UpSetPlotDatum) => void;
-  reference?: any;
+  reference?: React.LegacyRef<SVGSVGElement>;
   loadingDownload?: boolean;
 };
 
@@ -308,8 +307,8 @@ export default function NewUpSetPlot({
                     tooltipTop: event.pageY,
                     tooltipLeft: event.pageX,
                     tooltipData: {
-                      message: `${"Intersecting " + d.includedCelltypes.join(", ")} ${
-                        d.excludedCelltypes.length > 0 ? "\nExcluding " + d.excludedCelltypes.join(", ") : ""
+                      message: `${"Intersecting: " + d.includedCelltypes.join(", ")} ${
+                        d.excludedCelltypes.length > 0 ? "\nExcluding: " + d.excludedCelltypes.join(", ") : ""
                       }`,
                       count: d.count,
                     },
