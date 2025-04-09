@@ -182,7 +182,7 @@ const CellLineagePage = () => {
   );
 
   const [getUpSetData, { data: UpSetData, loading: UpSetLoading, error: UpSetError }] = useLazyQuery(GET_UPSET_COUNTS);
-  const [getUpSetFile, { data: UrlData, loading: UrlLoading, error: UrlError }] = useLazyQuery(GET_UPSET_FILE);
+  const [getUpSetFile, { data: FileData, loading: FileLoading, error: FileError }] = useLazyQuery(GET_UPSET_FILE);
 
   const handleGenerateUpSet = useCallback(() => {
     if (selectedCellsWithStim.length > 6) {
@@ -210,11 +210,33 @@ const CellLineagePage = () => {
       dnasecelltypes: grouping.includedCelltypes.map(x => [x]),
       dnaseexcludecelltypes: grouping?.excludedCelltypes?.length > 0 ? grouping.excludedCelltypes.map(x => [x]) : undefined
     }
-    getUpSetFile({variables: {
+    getUpSetFile({
+      variables: {
       ...vars,
       group: selectedClasses.length === ccreClasses.length ? undefined : selectedClasses.map((x) => x.class),
-      uuid: uuidv4()
-    }}).then(x => console.log(x.data.createicresFilesQuery))
+      uuid: uuidv4(),
+      },
+    }).then((x) => {
+      fetch(x.data.createicresFilesQuery)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.blob(); // Get the response body as a Blob
+      })
+      .then((blob) => {
+        const a = document.createElement("a");
+        const blobUrl = URL.createObjectURL(blob);
+        a.href = blobUrl;
+        a.download = `Intersect(${grouping.includedCelltypes.join(',')
+        })Exclude(${grouping.excludedCelltypes.join(',')}).bed`;
+        a.click();
+        URL.revokeObjectURL(blobUrl);
+      })
+      .catch((error) => {
+        console.error("Error fetching the file:", error);
+      });
+    });
   }, []) 
 
   return (
@@ -311,7 +333,7 @@ const CellLineagePage = () => {
           data={UpSetData.upsetploticrecounts}
           onBarClicked={handleUpSetBarClick}
           // reference={ref}
-          loadingDownload={UpSetLoading}
+          loadingDownload={FileLoading}
         />
       )}
     </Stack>

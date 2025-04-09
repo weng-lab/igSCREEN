@@ -199,7 +199,7 @@ export default function NewUpSetPlot({
         </Group>
         {loadingDownload && (
           <Group top={25} left={totalWidth - 10}>
-            <Text textAnchor="end">Downloading...</Text>
+            <Text textAnchor="end">Generating File...</Text>
           </Group>
         )}
         {/* The set size plot */}

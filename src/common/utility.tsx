@@ -1,7 +1,5 @@
 import { GenomicRange, PortalName } from "types/globalTypes"
 import { cellCategoryColors, cellCategoryDisplaynames, studyLinks } from "./consts"
-import { OverridableStringUnion } from '@mui/types';
-import { Variant } from "@mui/material/styles/createTypography";
 import { Launch } from "@mui/icons-material";
 import { Link, LinkProps, TypographyPropsVariantOverrides } from "@mui/material";
 
