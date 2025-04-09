@@ -9,14 +9,16 @@ import { JoinFull } from "@mui/icons-material";
 import { defaultStyles as defaultTooltipStyles, useTooltip, TooltipWithBounds } from "@visx/tooltip";
 import { GetIcreCountsQuery } from "types/generated/graphql";
 
+export type UpSetPlotDatum = GetIcreCountsQuery["upsetploticrecounts"][number]
+
 export type BarsProps = {
   width: number;
   height: number;
-  data: GetIcreCountsQuery["upsetploticrecounts"];
+  data: UpSetPlotDatum[];
   /** @todo fix this */
-  handleDownload: (downloadKey: string) => Promise<void>;
+  onBarClicked?: (grouping: UpSetPlotDatum) => void;
   reference?: any;
-  loading?: boolean;
+  loadingDownload?: boolean;
 };
 
 interface TooltipData {
@@ -33,15 +35,14 @@ export default function NewUpSetPlot({
   width,
   height,
   data,
-  handleDownload,
+  onBarClicked = () => {},
   reference = null,
-  loading = false,
+  loadingDownload = false,
 }: BarsProps) {
   const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip, updateTooltip } =
     useTooltip<TooltipData>();
 
   const celltypes: string[] = [...new Set(data.flatMap((x) => [...x.includedCelltypes, ...x.excludedCelltypes]))];
-
   /**
    * Sorted Individual Cell Set Sizes
    */
@@ -171,7 +172,7 @@ export default function NewUpSetPlot({
           top={30}
           left={30}
           cursor="pointer"
-          onClick={() => handleDownload("Union_All")}
+          onClick={() => onBarClicked({includedCelltypes: celltypes})}
           onMouseMove={(event) => {
             showTooltip({
               tooltipTop: event.pageY,
@@ -196,7 +197,7 @@ export default function NewUpSetPlot({
             </tspan>
           </text>
         </Group>
-        {loading && (
+        {loadingDownload && (
           <Group top={25} left={totalWidth - 10}>
             <Text textAnchor="end">Downloading...</Text>
           </Group>
@@ -236,7 +237,7 @@ export default function NewUpSetPlot({
                   />
                 )}
                 <Group
-                  onClick={() => handleDownload(d.name)}
+                  onClick={() => onBarClicked({includedCelltypes: [d.name]})}
                   onMouseMove={(event) => {
                     showTooltip({
                       tooltipTop: event.pageY,
@@ -261,8 +262,6 @@ export default function NewUpSetPlot({
                     width={barWidth}
                     height={barHeight}
                     fill="black"
-                    onClick={() => handleDownload(d.name)}
-                    cursor="pointer"
                   />
                   <Text
                     textAnchor="end"
@@ -302,7 +301,7 @@ export default function NewUpSetPlot({
             return (
               <Group
                 key={`Group-${d.id}`}
-                // onClick={() => handleDownload(d.name)}
+                onClick={() => onBarClicked(d)}
                 cursor="pointer"
                 onMouseMove={(event) => {
                   showTooltip({

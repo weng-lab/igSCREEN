@@ -26,7 +26,8 @@ import { BarChartOutlined, Close, Sync } from "@mui/icons-material";
 import { gql } from "types/generated";
 import { useLazyQuery } from "@apollo/client";
 import { AssayEnum } from "types/generated/graphql";
-import NewUpSetPlot from "app/celllineage/NewUpSetPlot";
+import NewUpSetPlot, { UpSetPlotDatum } from "app/celllineage/NewUpSetPlot";
+import { v4 as uuidv4 } from "uuid";
 
 type Assay = "DNase" | "ATAC";
 
@@ -47,6 +48,26 @@ const GET_UPSET_COUNTS = gql(`
       includedCelltypes
       excludedCelltypes
     }
+  }
+`);
+
+const GET_UPSET_FILE = gql(`
+  query getSetFile(
+    $celltypes: [[String]]
+    $excludecelltypes: [[String]]
+    $dnasecelltypes: [[String]]
+    $dnaseexcludecelltypes: [[String]]
+    $uuid: String!
+    $group: [String!]
+  ) {
+    createicresFilesQuery(
+      uuid: $uuid
+      celltypes: $celltypes
+      excludecelltypes: $excludecelltypes
+      dnasecelltypes: $dnasecelltypes
+      dnaseexcludecelltypes: $dnaseexcludecelltypes
+      group: $group
+    )
   }
 `);
 
@@ -161,6 +182,7 @@ const CellLineagePage = () => {
   );
 
   const [getUpSetData, { data: UpSetData, loading: UpSetLoading, error: UpSetError }] = useLazyQuery(GET_UPSET_COUNTS);
+  const [getUpSetFile, { data: UrlData, loading: UrlLoading, error: UrlError }] = useLazyQuery(GET_UPSET_FILE);
 
   const handleGenerateUpSet = useCallback(() => {
     if (selectedCellsWithStim.length > 6) {
@@ -176,6 +198,24 @@ const CellLineagePage = () => {
       },
     })
   }, [selectedAssay, selectedCellsWithStim, selectedClasses])
+
+  const handleUpSetBarClick = useCallback((grouping: UpSetPlotDatum) => {
+    const vars = selectedAssay === "ATAC" ?
+    {
+      celltypes: grouping.includedCelltypes.map(x => [x]),
+      excludecelltypes: grouping?.excludedCelltypes?.length > 0 ? grouping.excludedCelltypes.map(x => [x]) : undefined
+    }
+    :
+    {
+      dnasecelltypes: grouping.includedCelltypes.map(x => [x]),
+      dnaseexcludecelltypes: grouping?.excludedCelltypes?.length > 0 ? grouping.excludedCelltypes.map(x => [x]) : undefined
+    }
+    getUpSetFile({variables: {
+      ...vars,
+      group: selectedClasses.length === ccreClasses.length ? undefined : selectedClasses.map((x) => x.class),
+      uuid: uuidv4()
+    }}).then(x => console.log(x.data.createicresFilesQuery))
+  }, []) 
 
   return (
     <Stack alignItems={"center"} spacing={2} m={2}>
@@ -269,9 +309,9 @@ const CellLineagePage = () => {
           width={700}
           height={500}
           data={UpSetData.upsetploticrecounts}
-          handleDownload={() => null}
+          onBarClicked={handleUpSetBarClick}
           // reference={ref}
-          loading={UpSetLoading}
+          loadingDownload={UpSetLoading}
         />
       )}
     </Stack>
