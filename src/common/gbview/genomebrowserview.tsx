@@ -120,7 +120,7 @@ export default function GenomeBrowserView({
         const trackToAdd = {
           ...DefaultBigWig, 
           id: track.name + "_temp",
-          title: track.displayName,
+          title: track.assay + "-seq " + track.displayName,
           url: track.url,
           color: trackColor(track.lineage),
           height: 75,
