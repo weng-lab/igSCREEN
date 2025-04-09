@@ -355,7 +355,8 @@ const CellLineagePage = () => {
   return (
     <Stack direction={{ xs: "column", lg: "row" }} spacing={2} m={2}>
       <AssaySelectAndTree />
-      <div>
+      <Stack spacing={2} alignItems={"flex-start"}>
+        <SelectedCellsList />
         <MultiSelect
           options={ccreClasses}
           value={selectedClasses}
@@ -365,7 +366,6 @@ const CellLineagePage = () => {
           placeholder="Include iCRE classes"
           limitTags={2}
         />
-        <SelectedCellsList />
         <GenerateUpSetButton />
         {UpSetData && (
           <NewUpSetPlot
@@ -378,7 +378,7 @@ const CellLineagePage = () => {
           />
         )}
         {UpSetData && <DownloadUpSetButton />}
-      </div>
+      </Stack>
     </Stack>
   );
 };
