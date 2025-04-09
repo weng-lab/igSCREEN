@@ -13,6 +13,7 @@ import {
   Checkbox,
   IconButton,
   Button,
+  Paper,
 } from "@mui/material";
 import CellLineageTree, { cellTypeConfig, getCellImagePath, NodeInfo } from "common/components/CellLineageTree";
 import React, { useCallback, useMemo, useRef, useState } from "react";
@@ -201,50 +202,53 @@ const CellLineagePage = () => {
         icreclasses: selectedClasses.length === ccreClasses.length ? undefined : selectedClasses.map((x) => x.class),
       },
     });
-  }, [selectedAssay, selectedCellsWithStim, selectedClasses]);
+  }, [getUpSetData, selectedAssay, selectedCellsWithStim, selectedClasses]);
 
-  const handleUpSetBarClick = useCallback((grouping: UpSetPlotDatum) => {
-    const vars =
-      selectedAssay === "ATAC"
-        ? {
-            celltypes: grouping.includedCelltypes.map((x) => [x]),
-            excludecelltypes:
-              grouping?.excludedCelltypes?.length > 0 ? grouping.excludedCelltypes.map((x) => [x]) : undefined,
-          }
-        : {
-            dnasecelltypes: grouping.includedCelltypes.map((x) => [x]),
-            dnaseexcludecelltypes:
-              grouping?.excludedCelltypes?.length > 0 ? grouping.excludedCelltypes.map((x) => [x]) : undefined,
-          };
-    getUpSetFile({
-      variables: {
-        ...vars,
-        group: selectedClasses.length === ccreClasses.length ? undefined : selectedClasses.map((x) => x.class),
-        uuid: uuidv4(),
-      },
-    }).then((x) => {
-      fetch(x.data.createicresFilesQuery)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-          return response.blob(); // Get the response body as a Blob
-        })
-        .then((blob) => {
-          const a = document.createElement("a");
-          const blobUrl = URL.createObjectURL(blob);
-          a.href = blobUrl;
-          a.download = `Intersect(${grouping.includedCelltypes.join(",")})Exclude(${grouping.excludedCelltypes.join(
-            ","
-          )}).bed`;
-          a.click();
-          URL.revokeObjectURL(blobUrl);
-        })
-        .catch((error) => {
-          console.error("Error fetching the file:", error);
-        });
-    });
-  }, []);
+  const handleUpSetBarClick = useCallback(
+    (grouping: UpSetPlotDatum) => {
+      const vars =
+        selectedAssay === "ATAC"
+          ? {
+              celltypes: grouping.includedCelltypes.map((x) => [x]),
+              excludecelltypes:
+                grouping?.excludedCelltypes?.length > 0 ? grouping.excludedCelltypes.map((x) => [x]) : undefined,
+            }
+          : {
+              dnasecelltypes: grouping.includedCelltypes.map((x) => [x]),
+              dnaseexcludecelltypes:
+                grouping?.excludedCelltypes?.length > 0 ? grouping.excludedCelltypes.map((x) => [x]) : undefined,
+            };
+      getUpSetFile({
+        variables: {
+          ...vars,
+          group: selectedClasses.length === ccreClasses.length ? undefined : selectedClasses.map((x) => x.class),
+          uuid: uuidv4(),
+        },
+      }).then((x) => {
+        fetch(x.data.createicresFilesQuery)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.blob(); // Get the response body as a Blob
+          })
+          .then((blob) => {
+            const a = document.createElement("a");
+            const blobUrl = URL.createObjectURL(blob);
+            a.href = blobUrl;
+            a.download = `Intersect(${grouping.includedCelltypes.join(",")})Exclude(${grouping.excludedCelltypes.join(
+              ","
+            )}).bed`;
+            a.click();
+            URL.revokeObjectURL(blobUrl);
+          })
+          .catch((error) => {
+            console.error("Error fetching the file:", error);
+          });
+      });
+    },
+    [getUpSetFile, selectedAssay, selectedClasses]
+  );
 
   const AssayRadio = () => (
     <FormControl>
@@ -259,6 +263,19 @@ const CellLineagePage = () => {
         <FormControlLabel value="DNase" control={<Radio />} label="DNase" />
       </RadioGroup>
     </FormControl>
+  );
+
+  const AssaySelectAndTree = () => (
+    <Stack component={Paper} alignItems={"center"} p={2} elevation={2}>
+      <AssayRadio />
+      <CellLineageTree
+        width={900}
+        height={1100}
+        onNodeClicked={handleNodeClick}
+        assay={selectedAssay}
+        selected={selectedCelltypeNames.length > 0 ? selectedCelltypeNames : null}
+      />
+    </Stack>
   );
 
   const SelectedCellsList = () => (
@@ -336,37 +353,32 @@ const CellLineagePage = () => {
   );
 
   return (
-    <Stack alignItems={"center"} spacing={2} m={2}>
-      <AssayRadio />
-      <CellLineageTree
-        width={900}
-        height={1100}
-        onNodeClicked={handleNodeClick}
-        assay={selectedAssay}
-        selected={selectedCelltypeNames.length > 0 ? selectedCelltypeNames : null}
-      />
-      <MultiSelect
-        options={ccreClasses}
-        value={selectedClasses}
-        onChange={(_, value) => {
-          setSelectedClasses(value);
-        }}
-        placeholder="Include iCRE classes"
-        limitTags={2}
-      />
-      <SelectedCellsList />
-      <GenerateUpSetButton />
-      {UpSetData && (
-        <NewUpSetPlot
-          width={700}
-          height={500}
-          data={UpSetData.upsetploticrecounts}
-          onBarClicked={handleUpSetBarClick}
-          reference={svgRef}
-          loadingDownload={FileLoading}
+    <Stack direction={{ xs: "column", lg: "row" }} spacing={2} m={2}>
+      <AssaySelectAndTree />
+      <div>
+        <MultiSelect
+          options={ccreClasses}
+          value={selectedClasses}
+          onChange={(_, value) => {
+            setSelectedClasses(value);
+          }}
+          placeholder="Include iCRE classes"
+          limitTags={2}
         />
-      )}
-      {UpSetData && <DownloadUpSetButton />}
+        <SelectedCellsList />
+        <GenerateUpSetButton />
+        {UpSetData && (
+          <NewUpSetPlot
+            width={700}
+            height={500}
+            data={UpSetData.upsetploticrecounts}
+            onBarClicked={handleUpSetBarClick}
+            reference={svgRef}
+            loadingDownload={FileLoading}
+          />
+        )}
+        {UpSetData && <DownloadUpSetButton />}
+      </div>
     </Stack>
   );
 };
