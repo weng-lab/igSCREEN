@@ -36,6 +36,7 @@ import { GenomicElementType } from "types/globalTypes";
 import HighlightIcon from "@mui/icons-material/Highlight";
 import HighlightDialog, { GBHighlight } from "./highlightDialog";
 import AddTracksModal, { BigWig } from "./addTracksModal";
+import { randomColor, trackColor } from "./utils";
 
 function expandCoordinates(coordinates: GenomicRange) {
   let length = coordinates.end - coordinates.start;
@@ -118,12 +119,13 @@ export default function GenomeBrowserView({
       // check if the track is not already in the browser state
       if (!browserState.tracks.some((t) => t.id === track.name + "_temp")) {
         const trackToAdd = {
-          ...DefaultBigWig, 
+          ...DefaultBigWig,
           id: track.name + "_temp",
           title: track.assay + "-seq " + track.displayName,
           url: track.url,
           color: trackColor(track.lineage),
-          height: 75,
+          height: 100,
+          titleSize: 16,
           displayMode: DisplayMode.FULL,
         };
         browserDispatch({ type: BrowserActionType.ADD_TRACK, track: trackToAdd });
@@ -325,50 +327,34 @@ function defaultTracks(
     displayMode: DisplayMode.DENSE,
     color: "#9378bc",
     rowHeight: 20,
-    height: 75,
+    height: 100,
     onMouseOver: icreMouseOver,
     onMouseOut: icreMouseOut,
     onClick: onIcreClick,
-    url: "https://downloads.wenglab.org/Calderon-Corces_activeCREs_iSCREEN_withcolors.bigBed",
+    url: "http://downloads.wenglab.org/igscreen/iCREs.bigBed",
   } as BigBedTrackProps;
 
-  const allImmuneBigWig = {
+  const atacBigWig = {
     ...DefaultBigWig,
-    title: "All Immune Cells (Aggregate Signal)",
-    url: "https://downloads.wenglab.org/all_immune.bigWig",
-    color: "#000000",
-    height: 75,
+    title: "ATAC merged signal",
+    url: "https://downloads.wenglab.org/igscreen/ATAC_merged_signal.bigWig",
+    color: "#02c7b9",
+    height: 100,
+    titleSize: 16,
     displayMode: DisplayMode.FULL,
-    id: "all-immune-bigwig",
+    id: "atac-bigwig",
   };
-  return [geneTrack, icreTrack, allImmuneBigWig];
+
+  const dnaseBigWig = {
+    ...DefaultBigWig,
+    title: "DNase merged signal",
+    url: "https://downloads.wenglab.org/igscreen/DNase_merged_signal.bigWig",
+    color: "#06DA93",
+    height: 100,
+    titleSize: 16,
+    displayMode: DisplayMode.FULL,
+    id: "dnase-bigwig",
+  };
+  return [geneTrack, icreTrack, atacBigWig, dnaseBigWig];
 }
 
-function randomColor() {
-  return "#" + Math.floor(Math.random() * 16777215).toString(16);
-}
-
-function trackColor(lineage: string) {
-  switch (lineage) {
-    case "Bcells":
-      return "#0000ff";
-    case "CD4_Tcells":
-      return "#980000";
-    case "CD8_Tcells":
-      return "#ff9900";
-    case "Bulk_Tcells":
-      return "#ff0000";
-    case "gd_Tcells":
-      return "#fa0056";
-    case "NK":
-      return "#38761d";
-    case "Myeloid":
-      return "#9900ff";
-    case "Progenitors":
-      return "#666666";
-    case "Leukemia":
-      return "#25e6c9";
-    case "Erythroblasts":
-      return "#684fda"
-  }
-}
