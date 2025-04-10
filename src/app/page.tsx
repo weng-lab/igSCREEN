@@ -231,7 +231,7 @@ const Home = () => {
                     }}>
                     <Typography variant="h4">Immune cCRE Activity by Cell Type</Typography>
                     <Typography mb={2}>Compare immune cCRE activity between immune cell types.</Typography>
-                    <Button LinkComponent={Link} variant="contained" href="/celllineage" endIcon={<ArrowForwardIos />}>
+                    <Button LinkComponent={Link} variant="contained" href="/lineage" endIcon={<ArrowForwardIos />}>
                       Explore cCRE activity
                     </Button>
                   </Grid2>

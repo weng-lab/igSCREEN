@@ -6,7 +6,6 @@ import { useIcreActivity, UseIcreActivityReturn } from "common/hooks/useIcreActi
 import IcreActivityBarPlot from "./IcreActivityBarPlot"
 import IcreActivityUMAP from "./IcreActivityUMAP"
 import { BarChart, ScatterPlot, SchemaRounded } from "@mui/icons-material"
-import NewCellTypeTree from "common/components/CellLineageTree"
 import IcreActivityTree from "./IcreActivityTree"
 
 

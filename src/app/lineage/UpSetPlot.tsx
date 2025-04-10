@@ -8,7 +8,6 @@ import { GridRows, GridColumns } from "@visx/grid";
 import { JoinFull } from "@mui/icons-material";
 import { defaultStyles as defaultTooltipStyles, useTooltip, TooltipWithBounds } from "@visx/tooltip";
 import { GetIcreCountsQuery } from "types/generated/graphql";
-import { useParentSize } from "@visx/responsive";
 
 export type UpSetPlotDatum = GetIcreCountsQuery["upsetploticrecounts"][number]
 
@@ -31,7 +30,7 @@ interface TooltipData {
  * stuff like `index * fontSize * 1.5 + 0.5 * fontSize * 1.5` isn't great
  */
 
-export default function NewUpSetPlot({
+export default function UpSetPlot({
   width,
   height,
   data,

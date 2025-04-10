@@ -21,17 +21,16 @@ import {
 } from "@mui/material";
 import CellLineageTree, { cellTypeConfig, getCellImagePath, NodeInfo } from "common/components/CellLineageTree";
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import MultiSelect from "../celllineage/_components/multiselect";
+import MultiSelect from "./multiselect";
 import Image from "next/image";
-import { BarChartOutlined, Close, Download, Info, InfoOutlined, NavigateNext, Sync } from "@mui/icons-material";
+import { BarChartOutlined, Close, Download, Info, NavigateNext, Sync } from "@mui/icons-material";
 import { gql } from "types/generated";
 import { useLazyQuery } from "@apollo/client";
 import { AssayEnum } from "types/generated/graphql";
-import NewUpSetPlot, { UpSetPlotDatum } from "app/celllineage/NewUpSetPlot";
+import NewUpSetPlot, { UpSetPlotDatum } from "app/lineage/UpSetPlot";
 import { v4 as uuidv4 } from "uuid";
-import { downloadSVG } from "app/celllineage/utils";
+import { downloadSVG } from "./utils";
 import MuiLink from "common/components/MuiLink";
-import { formatPortal } from "common/utility";
 
 type Assay = "DNase" | "ATAC";
 
@@ -221,7 +220,6 @@ const CellLineagePage = () => {
         targetedcelltypes: selectedCellsWithStim,
         icreclasses: selectedClasses.length === ccreClasses.length ? undefined : selectedClasses.map((x) => x.class),
       },
-      fetchPolicy: "network-only",
     });
   }, [getUpSetData, selectedAssay, selectedCellsWithStim, selectedClasses]);
 
