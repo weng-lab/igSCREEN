@@ -268,66 +268,78 @@ const CellLineagePage = () => {
   );
 
   const SelectedCellsList = () => (
-    <List component={Paper} elevation={2} sx={{ width: "100%", maxWidth: "500px" }} disablePadding>
-      {selectedCelltypes.map((cell, i) => (
-        <ListItem key={i} disablePadding>
-          <IconButton onClick={() => handleNodeClick(cell)}>
-            <Close />
-          </IconButton>
-          <Image width={40} height={40} src={getCellImagePath(cell.celltype)} alt={cell.celltype + " Image"} />
-          {!cell.stim && !cell.unstim ? (
-            <ListItemText sx={{ paddingX: 1 }}>
-              <s>{cell.celltype}</s>
-            </ListItemText>
-          ) : (
-            <ListItemText sx={{ paddingX: 1 }}>{cell.celltype}</ListItemText>
-          )}
-          <FormGroup row sx={{ flexShrink: 0 }}>
-            <FormControlLabel
-              disabled={!cell.hasStim}
-              control={
-                <Checkbox
-                  size="small"
-                  checked={cell.stim}
-                  onChange={(_, checked) => handleChangeStim(cell, "stim", checked)}
-                />
-              }
-              label="S"
-            />
-            <FormControlLabel
-              disabled={!cell.hasUnstim}
-              control={
-                <Checkbox
-                  size="small"
-                  checked={cell.unstim}
-                  onChange={(_, checked) => handleChangeStim(cell, "unstim", checked)}
-                />
-              }
-              label="U"
-            />
-          </FormGroup>
-        </ListItem>
-      ))}
-    </List>
+    <Stack id="Selected-Cells" sx={{ width: "100%" }} spacing={1}>
+      <Typography variant="h5">Currently Selected:</Typography>
+      <Divider />
+      <List disablePadding sx={{ width: { xs: "100%", lg: "500px" } }}>
+        {selectedCelltypes.length > 0 ? (
+          selectedCelltypes.map((cell, i) => (
+            <div key={i}>
+              <ListItem disablePadding>
+                <IconButton onClick={() => handleNodeClick(cell)}>
+                  <Close />
+                </IconButton>
+                <Image width={40} height={40} src={getCellImagePath(cell.celltype)} alt={cell.celltype + " Image"} />
+                <ListItemText sx={{ paddingX: 1 }}>
+                  {!cell.stim && !cell.unstim ? <s>{cell.celltype}</s> : cell.celltype}
+                </ListItemText>
+                <FormGroup row sx={{ flexShrink: 0 }}>
+                  <FormControlLabel
+                    disabled={!cell.hasStim}
+                    control={
+                      <Checkbox
+                        size="small"
+                        checked={cell.stim}
+                        onChange={(_, checked) => handleChangeStim(cell, "stim", checked)}
+                      />
+                    }
+                    label="S"
+                  />
+                  <FormControlLabel
+                    disabled={!cell.hasUnstim}
+                    control={
+                      <Checkbox
+                        size="small"
+                        checked={cell.unstim}
+                        onChange={(_, checked) => handleChangeStim(cell, "unstim", checked)}
+                      />
+                    }
+                    label="U"
+                  />
+                </FormGroup>
+              </ListItem>
+              <Divider sx={{ width: "100%" }} />
+            </div>
+          ))
+        ) : (
+          <Typography variant="subtitle2">
+            Select Up to 6 cells. Stimulated and Unstimulated counted separately
+          </Typography>
+        )}
+      </List>
+    </Stack>
   );
 
   const GenerateUpSetButton = () => (
-    <Button
-      loading={UpSetLoading}
-      loadingPosition="end"
-      disabled={selectedCelltypes.length === 0}
-      endIcon={UpSetData ? <Sync /> : <BarChartOutlined />}
-      variant="contained"
-      onClick={handleGenerateUpSet}
-    >
-      <span>
-        {UpSetLoading
-          ? "Generating"
-          : selectedCelltypes.length === 0
-          ? "Select Cells to Generate UpSet"
-          : "Generate UpSet"}
-      </span>
-    </Button>
+    <Stack direction="row" spacing={2}>
+      <Button
+        loading={UpSetLoading}
+        loadingPosition="end"
+        disabled={selectedCelltypes.length === 0}
+        endIcon={UpSetData ? <Sync /> : <BarChartOutlined />}
+        variant="contained"
+        onClick={handleGenerateUpSet}
+      >
+        <span>
+          {UpSetLoading
+            ? "Generating"
+            : selectedCelltypes.length === 0
+            ? "Select Cells to Generate UpSet"
+            : "Generate UpSet"}
+        </span>
+      </Button>
+      {UpSetData && <DownloadUpSetButton />}
+    </Stack>
   );
 
   const DownloadUpSetButton = () => (
@@ -343,7 +355,7 @@ const CellLineagePage = () => {
 
   return (
     <Stack direction={{ xs: "column", lg: "row" }} spacing={2} m={2}>
-      <Stack component={Paper} p={2} elevation={2} flexGrow={1} spacing={1}>
+      <Stack component={Paper} p={2} flexGrow={1} spacing={1}>
         <Typography variant="h5">Select Cells</Typography>
         <Divider />
         <AssayRadio />
@@ -355,7 +367,7 @@ const CellLineagePage = () => {
           selected={selectedCelltypeNames.length > 0 ? selectedCelltypeNames : null}
         />
       </Stack>
-      <Stack spacing={2} alignItems={"flex-start"} flexGrow={1}>
+      <Stack component={Paper} p={2} flexGrow={1} spacing={2}>
         <SelectedCellsList />
         <MultiSelect
           options={ccreClasses}
@@ -368,16 +380,17 @@ const CellLineagePage = () => {
         />
         <GenerateUpSetButton />
         {UpSetData && (
-          <NewUpSetPlot
-            width={700}
-            height={500}
-            data={UpSetData.upsetploticrecounts}
-            onBarClicked={handleUpSetBarClick}
-            reference={svgRef}
-            loadingDownload={FileLoading}
-          />
+          <Paper elevation={2}>
+            <NewUpSetPlot
+              width={700}
+              height={500}
+              data={UpSetData.upsetploticrecounts}
+              onBarClicked={handleUpSetBarClick}
+              reference={svgRef}
+              loadingDownload={FileLoading}
+            />
+          </Paper>
         )}
-        {UpSetData && <DownloadUpSetButton />}
       </Stack>
     </Stack>
   );
