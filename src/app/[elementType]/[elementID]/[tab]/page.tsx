@@ -9,6 +9,7 @@ import GeneEQTLs from "./_GeneTabs/GeneEQTLs"
 import GeneExpression from "./_GeneTabs/_GeneExpression/GeneExpression"
 import IcreActivity from "./_IcreTabs/_IcreActivity/IcreActivity"
 import LinkedGenes from "./_IcreTabs/_linkedGenes/linkedGenes"
+import LinkedICREs from "./_GeneTabs/_linkedICREs/linkedICREs"
 
 export default function DetailsPage({
   params: { elementType, elementID, tab },
@@ -71,7 +72,7 @@ export default function DetailsPage({
 
       switch (tab) {
         case ("eQTLs"): return <GeneEQTLs name={geneData.name} id={geneData.id} />
-        case ("linked"): return <p>Viewing {tab} for {elementID} in {elementType} Portal</p>
+        case ("linked"): return <LinkedICREs geneid={geneData.id}/>
         case ("expression"): return <GeneExpression name={geneData.name} id={geneData.id} />
       }
     }
