@@ -93,7 +93,7 @@ const Home = () => {
                     <Box position={"relative"} height={"100%"} width={'100%'} sx={{ objectPosition: { md: "right bottom", xs: "left bottom" } }}>
                       <Image
                         style={{ objectFit: "contain", objectPosition: "inherit" }}
-                        src="/assets/gene-bcre.png"
+                        src="/assets/GenePortal.png"
                         fill
                         alt="igSCREEN logo"
                       />
@@ -119,7 +119,7 @@ const Home = () => {
                     <Box position={"relative"} height={"100%"} width={'100%'} sx={{ objectPosition: { md: "left bottom", xs: "left bottom" } }}>
                       <Image
                         style={{ objectFit: "contain", objectPosition: "inherit" }}
-                        src="/assets/disease-trait.png"
+                        src="/assets/iCREPortal.png"
                         fill
                         alt="igSCREEN logo"
                       />
@@ -167,7 +167,7 @@ const Home = () => {
                     <Box position={"relative"} height={"100%"} width={'100%'} sx={{ objectPosition: { md: "right bottom", xs: "left bottom" } }}>
                       <Image
                         style={{ objectFit: "contain", objectPosition: "inherit" }}
-                        src="/assets/snp-qtl.png"
+                        src="/assets/SNPPortal.png"
                         fill
                         alt="igSCREEN logo"
                       />
@@ -193,7 +193,7 @@ const Home = () => {
                     <Box position={"relative"} height={"100%"} width={'100%'} sx={{ objectPosition: { md: "left bottom", xs: "left bottom" } }}>
                       <Image
                         style={{ objectFit: "contain", objectPosition: "inherit" }}
-                        src="/assets/phenotype.png"
+                        src="/assets/PhenotypePage.png"
                         fill
                         alt="igSCREEN logo"
                       />
@@ -245,7 +245,7 @@ const Home = () => {
                     <Box position={"relative"} height={"100%"} width={'100%'} sx={{ objectPosition: { md: "right bottom", xs: "left bottom" } }}>
                       <Image
                         style={{ objectFit: "contain", objectPosition: "inherit" }}
-                        src="/assets/upset.png"
+                        src="/assets/LineagePage.png"
                         fill
                         alt="igSCREEN logo"
                       />

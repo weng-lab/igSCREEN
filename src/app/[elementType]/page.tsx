@@ -12,21 +12,21 @@ type PortalConfig = {
 };
 
 const geneConfig: PortalConfig = {
-  image: "/assets/gene-bcre.png",
+  image: "/assets/GenePortal.png",
   title: "Gene",
   description:
     "Explore gene expression across immune cell types at bulk and single-cell resolution for 63 cell types across 736 experiments.",
 };
 
 const icreConfig: PortalConfig = {
-  image: "/assets/disease-trait.png",
+  image: "/assets/iCREPortal.png",
   title: "Explore",
   description:
     "Explore regulatory element activity (immune cCREs) across immune cell types at bulk and single-cell resolution for 63 cell types across 736 experiments.",
 };
 
 const snpConfig: PortalConfig = {
-  image: "/assets/snp-qtl.png",
+  image: "/assets/SNPPortal.png",
   title: "SNP",
   description:
     "Search SNPs of interest and explore their impact on gene expression, chromatin accessibility, transcription factor (TF) binding and other molecular traits in immune cells.",
