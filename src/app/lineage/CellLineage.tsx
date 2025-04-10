@@ -321,25 +321,22 @@ const CellLineagePage = () => {
   );
 
   const GenerateUpSetButton = () => (
-    <Stack direction="row" spacing={2}>
-      <Button
-        loading={UpSetLoading}
-        loadingPosition="end"
-        disabled={selectedCelltypes.length === 0}
-        endIcon={UpSetData ? <Sync /> : <BarChartOutlined />}
-        variant="contained"
-        onClick={handleGenerateUpSet}
-      >
-        <span>
-          {UpSetLoading
-            ? "Generating"
-            : selectedCelltypes.length === 0
-            ? "Select Cells to Generate UpSet"
-            : "Generate UpSet"}
-        </span>
-      </Button>
-      {UpSetData && <DownloadUpSetButton />}
-    </Stack>
+    <Button
+      loading={UpSetLoading}
+      loadingPosition="end"
+      disabled={selectedCelltypes.length === 0}
+      endIcon={UpSetData ? <Sync /> : <BarChartOutlined />}
+      variant="contained"
+      onClick={handleGenerateUpSet}
+    >
+      <span>
+        {UpSetLoading
+          ? "Generating"
+          : selectedCelltypes.length === 0
+          ? "Select Cells to Generate UpSet"
+          : "Generate UpSet"}
+      </span>
+    </Button>
   );
 
   const DownloadUpSetButton = () => (
@@ -378,7 +375,11 @@ const CellLineagePage = () => {
           placeholder="Include iCRE classes"
           limitTags={2}
         />
-        <GenerateUpSetButton />
+
+        <Stack direction="row" spacing={2}>
+          <GenerateUpSetButton />
+          {UpSetData && <DownloadUpSetButton />}
+        </Stack>
         {UpSetData && (
           <Paper elevation={2}>
             <NewUpSetPlot
