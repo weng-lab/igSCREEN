@@ -8,6 +8,7 @@ import { GridRows, GridColumns } from "@visx/grid";
 import { JoinFull } from "@mui/icons-material";
 import { defaultStyles as defaultTooltipStyles, useTooltip, TooltipWithBounds } from "@visx/tooltip";
 import { GetIcreCountsQuery } from "types/generated/graphql";
+import { useParentSize } from "@visx/responsive";
 
 export type UpSetPlotDatum = GetIcreCountsQuery["upsetploticrecounts"][number]
 
@@ -40,6 +41,8 @@ export default function NewUpSetPlot({
 }: BarsProps) {
   const { tooltipOpen, tooltipLeft, tooltipTop, tooltipData, hideTooltip, showTooltip, updateTooltip } =
     useTooltip<TooltipData>();
+
+  // const { parentRef, width: parentWidth, height: parentHeight } = useParentSize()
 
   const celltypes: string[] = [...new Set(data.flatMap((x) => [...x.includedCelltypes, ...x.excludedCelltypes]))];
   /**
@@ -157,12 +160,13 @@ export default function NewUpSetPlot({
   );
 
   return totalWidth < 10 ? null : (
-    <div>
+    <>
       <svg
         fontSize={fontSize}
         id="UpSet-Plot"
-        width={totalWidth}
-        height={totalHeight}
+        width="100%"
+        style={{ height: 'auto', display: 'block' }}
+        preserveAspectRatio="xMidYMid meet"
         viewBox={`0 0 ${totalWidth} ${totalHeight}`}
         ref={reference}
       >
@@ -171,7 +175,7 @@ export default function NewUpSetPlot({
           top={30}
           left={30}
           cursor="pointer"
-          onClick={() => onBarClicked({includedCelltypes: celltypes})}
+          onClick={() => onBarClicked({ includedCelltypes: celltypes })}
           onMouseMove={(event) => {
             showTooltip({
               tooltipTop: event.pageY,
@@ -208,7 +212,7 @@ export default function NewUpSetPlot({
             top={setSizePlotBarsHeight}
             scale={setSizePlotWidthScale}
             label="Set Size"
-            numTicks={2}
+            numTicks={1}
           />
           <GridColumns
             left={spaceForCellCounts}
@@ -236,7 +240,7 @@ export default function NewUpSetPlot({
                   />
                 )}
                 <Group
-                  onClick={() => onBarClicked({includedCelltypes: [d.name]})}
+                  onClick={() => onBarClicked({ includedCelltypes: [d.name] })}
                   onMouseMove={(event) => {
                     showTooltip({
                       tooltipTop: event.pageY,
@@ -255,13 +259,7 @@ export default function NewUpSetPlot({
                   <Text textAnchor="end" verticalAnchor="middle" x={barX} dx={-4} y={barY} dy={0.5 * barHeight}>
                     {d.count.toLocaleString()}
                   </Text>
-                  <Bar
-                    x={barX}
-                    y={barY}
-                    width={barWidth}
-                    height={barHeight}
-                    fill="black"
-                  />
+                  <Bar x={barX} y={barY} width={barWidth} height={barHeight} fill="black" />
                   <Text
                     textAnchor="end"
                     verticalAnchor="middle"
@@ -382,6 +380,6 @@ export default function NewUpSetPlot({
           </div>
         </TooltipWithBounds>
       )}
-    </div>
+    </>
   );
 }

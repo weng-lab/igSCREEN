@@ -14,6 +14,8 @@ import {
   IconButton,
   Button,
   Paper,
+  Divider,
+  Typography,
 } from "@mui/material";
 import CellLineageTree, { cellTypeConfig, getCellImagePath, NodeInfo } from "common/components/CellLineageTree";
 import React, { useCallback, useMemo, useRef, useState } from "react";
@@ -252,7 +254,7 @@ const CellLineagePage = () => {
 
   const AssayRadio = () => (
     <FormControl>
-      <FormLabel id="assay-radio">Assay</FormLabel>
+      <FormLabel id="assay-radio">Intersect active iCREs identified by:</FormLabel>
       <RadioGroup
         row
         aria-labelledby="assay-radio"
@@ -265,21 +267,8 @@ const CellLineagePage = () => {
     </FormControl>
   );
 
-  const AssaySelectAndTree = () => (
-    <Stack component={Paper} alignItems={"center"} p={2} elevation={2}>
-      <AssayRadio />
-      <CellLineageTree
-        width={900}
-        height={1100}
-        onNodeClicked={handleNodeClick}
-        assay={selectedAssay}
-        selected={selectedCelltypeNames.length > 0 ? selectedCelltypeNames : null}
-      />
-    </Stack>
-  );
-
   const SelectedCellsList = () => (
-    <List sx={{ width: "100%", maxWidth: "500px" }} disablePadding>
+    <List component={Paper} elevation={2} sx={{ width: "100%", maxWidth: "500px" }} disablePadding>
       {selectedCelltypes.map((cell, i) => (
         <ListItem key={i} disablePadding>
           <IconButton onClick={() => handleNodeClick(cell)}>
@@ -354,8 +343,19 @@ const CellLineagePage = () => {
 
   return (
     <Stack direction={{ xs: "column", lg: "row" }} spacing={2} m={2}>
-      <AssaySelectAndTree />
-      <Stack spacing={2} alignItems={"flex-start"}>
+      <Stack component={Paper} p={2} elevation={2} flexGrow={1} spacing={1}>
+        <Typography variant="h5">Select Cells</Typography>
+        <Divider />
+        <AssayRadio />
+        <CellLineageTree
+          width={900}
+          height={1100}
+          onNodeClicked={handleNodeClick}
+          assay={selectedAssay}
+          selected={selectedCelltypeNames.length > 0 ? selectedCelltypeNames : null}
+        />
+      </Stack>
+      <Stack spacing={2} alignItems={"flex-start"} flexGrow={1}>
         <SelectedCellsList />
         <MultiSelect
           options={ccreClasses}

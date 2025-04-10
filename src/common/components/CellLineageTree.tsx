@@ -565,8 +565,12 @@ const CellLineageTree = ({
   );
 
   return innerWidth < 10 ? null : (
-    <svg width={width} height={height}>
-      <Tree<TreeNode> root={data} size={[innerWidth, innerHeight]} separation={(a, b) => a.parent == b.parent ? 1.6 : 2}>
+    <svg width={'100%'} viewBox={`0 0 ${width} ${height}`}>
+      <Tree<TreeNode>
+        root={data}
+        size={[innerWidth, innerHeight]}
+        separation={(a, b) => (a.parent == b.parent ? 1.6 : 2)}
+      >
         {(tree) => (
           <Group top={innerMarginTop} left={innerMarginLeft}>
             {tree.links().map((link, i) => (
