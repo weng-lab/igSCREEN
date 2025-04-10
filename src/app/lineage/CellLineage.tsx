@@ -16,18 +16,22 @@ import {
   Paper,
   Divider,
   Typography,
+  Breadcrumbs,
+  Tooltip,
 } from "@mui/material";
 import CellLineageTree, { cellTypeConfig, getCellImagePath, NodeInfo } from "common/components/CellLineageTree";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import MultiSelect from "../celllineage/_components/multiselect";
 import Image from "next/image";
-import { BarChartOutlined, Close, Download, Sync } from "@mui/icons-material";
+import { BarChartOutlined, Close, Download, Info, InfoOutlined, NavigateNext, Sync } from "@mui/icons-material";
 import { gql } from "types/generated";
 import { useLazyQuery } from "@apollo/client";
 import { AssayEnum } from "types/generated/graphql";
 import NewUpSetPlot, { UpSetPlotDatum } from "app/celllineage/NewUpSetPlot";
 import { v4 as uuidv4 } from "uuid";
 import { downloadSVG } from "app/celllineage/utils";
+import MuiLink from "common/components/MuiLink";
+import { formatPortal } from "common/utility";
 
 type Assay = "DNase" | "ATAC";
 
@@ -132,6 +136,15 @@ const CellLineagePage = () => {
   const [selectedAssay, setSelectedAssay] = useState<Assay>("ATAC");
   const [selectedCelltypes, setSelectedCelltypes] = useState<SelectedCelltype[]>([]);
   const [selectedClasses, setSelectedClasses] = useState<{ label: string; class: CCRE_CLASS }[]>(ccreClasses);
+  const [previousSelections, setPreviousSelections] = useState<{
+    cells: string[];
+    classes: { label: string; class: CCRE_CLASS }[];
+    assay: Assay;
+  }>({
+    cells: [],
+    classes: [],
+    assay: "ATAC",
+  });
   const selectedCelltypeNames = useMemo(() => selectedCelltypes.map((x) => x.celltype), [selectedCelltypes]);
   const selectedCellsWithStim = useMemo(
     () =>
@@ -197,12 +210,18 @@ const CellLineagePage = () => {
       window.alert("6 cell maximum for generating UpSet");
       return;
     }
+    setPreviousSelections({
+      cells: selectedCellsWithStim,
+      classes: selectedClasses,
+      assay: selectedAssay,
+    }); // Update previous selections
     getUpSetData({
       variables: {
         assay: selectedAssay === "ATAC" ? AssayEnum.Atac : AssayEnum.Dnase,
         targetedcelltypes: selectedCellsWithStim,
         icreclasses: selectedClasses.length === ccreClasses.length ? undefined : selectedClasses.map((x) => x.class),
       },
+      fetchPolicy: "network-only",
     });
   }, [getUpSetData, selectedAssay, selectedCellsWithStim, selectedClasses]);
 
@@ -240,7 +259,7 @@ const CellLineagePage = () => {
             a.href = blobUrl;
             a.download = `Intersect(${grouping.includedCelltypes.join(",")})Exclude(${grouping.excludedCelltypes.join(
               ","
-            )}).bed`;
+            )})Classes(${selectedClasses.length === ccreClasses.length ? "all" : selectedClasses.join(",")}).bed`;
             a.click();
             URL.revokeObjectURL(blobUrl);
           })
@@ -267,15 +286,22 @@ const CellLineagePage = () => {
     </FormControl>
   );
 
+  const selectedCellsTooltip = "Select between 2 and 6 cells to generate UpSet plot. The 'U' and 'S' checkboxes represent the unstimulated and stimulated versions of the cell (if available). Stimulated and Unstimulated versions of the cell are intersected separately."
+
   const SelectedCellsList = () => (
-    <Stack id="Selected-Cells" sx={{ width: "100%" }} spacing={1}>
-      <Typography variant="h5">Currently Selected:</Typography>
+    <Stack id="Selected-Cells" sx={{ width: "100%" }}>
+      <Typography variant="h5" mb={1}>
+        Currently Selected:
+        <Tooltip title={selectedCellsTooltip}>
+          <Info color="primary" sx={{ verticalAlign: "text-top" }} />
+        </Tooltip>
+      </Typography>
       <Divider />
       <List disablePadding sx={{ width: { xs: "100%", lg: "500px" } }}>
         {selectedCelltypes.length > 0 ? (
           selectedCelltypes.map((cell, i) => (
             <div key={i}>
-              <ListItem disablePadding>
+              <ListItem disablePadding sx={{ paddingY: 0.5 }}>
                 <IconButton onClick={() => handleNodeClick(cell)}>
                   <Close />
                 </IconButton>
@@ -312,8 +338,8 @@ const CellLineagePage = () => {
             </div>
           ))
         ) : (
-          <Typography variant="subtitle2">
-            Select Up to 6 cells. Stimulated and Unstimulated counted separately
+          <Typography variant="subtitle2" mt={1}>
+            Select between 2 and 6 cells. Stimulated and Unstimulated counted separately
           </Typography>
         )}
       </List>
@@ -324,7 +350,12 @@ const CellLineagePage = () => {
     <Button
       loading={UpSetLoading}
       loadingPosition="end"
-      disabled={selectedCelltypes.length === 0}
+      disabled={
+        selectedCelltypes.length === 0 ||
+        (JSON.stringify(selectedCellsWithStim) === JSON.stringify(previousSelections.cells) &&
+          JSON.stringify(selectedClasses) === JSON.stringify(previousSelections.classes) &&
+          selectedAssay === previousSelections.assay)
+      }
       endIcon={UpSetData ? <Sync /> : <BarChartOutlined />}
       variant="contained"
       onClick={handleGenerateUpSet}
@@ -334,7 +365,7 @@ const CellLineagePage = () => {
           ? "Generating"
           : selectedCelltypes.length === 0
           ? "Select Cells to Generate UpSet"
-          : "Generate UpSet"}
+          : `${UpSetData ? "Reg" : "G"}enerate UpSet`}
       </span>
     </Button>
   );
@@ -344,44 +375,57 @@ const CellLineagePage = () => {
       variant="text"
       endIcon={<Download />}
       sx={{ textTransform: "none" }}
-      onClick={() => downloadSVG(svgRef, "UpSet.svg")}
+      onClick={() => downloadSVG(svgRef, `UpSet(${selectedCellsWithStim.join(",")}).svg`)}
     >
       Download UpSet Plot
     </Button>
   );
 
-  return (
-    <Stack direction={{ xs: "column", lg: "row" }} spacing={2} m={2}>
-      <Stack component={Paper} p={2} flexGrow={1} spacing={1}>
-        <Typography variant="h5">Select Cells</Typography>
-        <Divider />
-        <AssayRadio />
-        <CellLineageTree
-          width={900}
-          height={1100}
-          onNodeClicked={handleNodeClick}
-          assay={selectedAssay}
-          selected={selectedCelltypeNames.length > 0 ? selectedCelltypeNames : null}
-        />
-      </Stack>
-      <Stack component={Paper} p={2} flexGrow={1} spacing={2}>
-        <SelectedCellsList />
-        <MultiSelect
-          options={ccreClasses}
-          value={selectedClasses}
-          onChange={(_, value) => {
-            setSelectedClasses(value);
-          }}
-          placeholder="Include iCRE classes"
-          limitTags={2}
-        />
+  const Header = () => (
+    <div id="Page-Header">
+      <Breadcrumbs separator={<NavigateNext fontSize="small" />} aria-label="breadcrumbs" sx={{mb: 1}}>
+        <MuiLink underline="hover" key="1" color="inherit" href="/">
+          Home
+        </MuiLink>
+        <Typography>Cell Lineage</Typography>
+      </Breadcrumbs>
+      <Typography variant="h4">Immune cCRE Activity by Cell Type</Typography>
+      <Typography>Generate an UpSet plot comparing iCRE activity in selected cell types</Typography>
+    </div>
+  );
 
-        <Stack direction="row" spacing={2}>
-          <GenerateUpSetButton />
-          {UpSetData && <DownloadUpSetButton />}
+  return (
+    <Stack m={2} spacing={2}>
+      <Header />
+      <Stack direction={{ xs: "column", lg: "row" }} spacing={2}>
+        <Stack component={Paper} p={2} flexGrow={1} spacing={1}>
+          <Typography variant="h5">Select Cells</Typography>
+          <Divider />
+          <AssayRadio />
+          <CellLineageTree
+            width={900}
+            height={1100}
+            onNodeClicked={handleNodeClick}
+            assay={selectedAssay}
+            selected={selectedCelltypeNames.length > 0 ? selectedCelltypeNames : null}
+          />
         </Stack>
-        {UpSetData && (
-          <Paper elevation={2}>
+        <Stack component={Paper} p={2} flexGrow={1} spacing={2}>
+          <SelectedCellsList />
+          <MultiSelect
+            options={ccreClasses}
+            value={selectedClasses}
+            onChange={(_, value) => {
+              setSelectedClasses(value);
+            }}
+            placeholder="Classes"
+            limitTags={2}
+          />
+          <Stack direction="row" spacing={2}>
+            <GenerateUpSetButton />
+            {UpSetData && <DownloadUpSetButton />}
+          </Stack>
+          {UpSetData && (
             <NewUpSetPlot
               width={700}
               height={500}
@@ -390,8 +434,8 @@ const CellLineagePage = () => {
               reference={svgRef}
               loadingDownload={FileLoading}
             />
-          </Paper>
-        )}
+          )}
+        </Stack>
       </Stack>
     </Stack>
   );
