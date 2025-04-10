@@ -21,7 +21,7 @@ import {
 } from "@mui/material";
 import CellLineageTree, { cellTypeConfig, getCellImagePath, NodeInfo } from "common/components/CellLineageTree";
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import MultiSelect from "./MultiSelect";
+import MultiSelect from "./MultiSelector";
 import Image from "next/image";
 import { BarChartOutlined, Close, Download, Info, NavigateNext, Sync } from "@mui/icons-material";
 import { gql } from "types/generated";
