@@ -291,7 +291,7 @@ const CellLineagePage = () => {
   const SelectedCellsList = () => (
     <Stack id="Selected-Cells" sx={{ width: "100%" }}>
       <Typography variant="h5" mb={1}>
-        Currently Selected:
+        Currently Selected{' '}
         <Tooltip title={selectedCellsTooltip}>
           <Info color="primary" sx={{ verticalAlign: "text-top" }} />
         </Tooltip>
