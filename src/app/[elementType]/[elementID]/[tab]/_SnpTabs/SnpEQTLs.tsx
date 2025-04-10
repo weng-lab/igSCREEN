@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client"
 import { Skeleton } from "@mui/material"
 import { DataGridPro, GridColDef } from "@mui/x-data-grid-pro"
-import { toScientificNotation } from "common/utils"
+import { toScientificNotation } from "common/utility"
 import { gql } from "types/generated/gql"
 import DataGridToolbar from "common/components/dataGridToolbar"
 
