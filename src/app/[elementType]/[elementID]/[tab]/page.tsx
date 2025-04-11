@@ -11,6 +11,8 @@ import GeneExpression from "./_GeneTabs/_GeneExpression/GeneExpression"
 import IcreActivity from "./_IcreTabs/_IcreActivity/IcreActivity"
 import LinkedGenes from "./_IcreTabs/_linkedGenes/linkedGenes"
 import LinkedICREs from "./_GeneTabs/_linkedICREs/linkedICREs"
+import GWASLdr from "./_IcreTabs/_GWASLdr/GWASLdr"
+import SnpGWASLdr from "./_SnpTabs/_SnpGWASLdr/SnpGWASLdr"
 
 export default function DetailsPage({
   params: { elementType, elementID, tab },
@@ -58,6 +60,7 @@ export default function DetailsPage({
 
       switch (tab) {
         case ("eQTLs"): return <SnpEQTLs rsid={snpData.id} />
+        case ("gwasldr"): return <SnpGWASLdr snpid={snpData.id}/> 
       }
     }
 
@@ -85,6 +88,7 @@ export default function DetailsPage({
       switch (tab) {
         case ("linked"): return <LinkedGenes accession={icreData.accession}/>
         case ("activity"): return <IcreActivity accession={icreData.accession}/>
+        case ("gwasldr"): return <GWASLdr accession={icreData.accession}/> 
       }
     }
   }
