@@ -148,12 +148,14 @@ const GeneExpressionUMAP = <T extends PointMetadata, S extends true, Z extends b
         </Typography>
         <ScatterPlot
           {...rest}
+          controlsHighlight="#c83444"
           pointData={scatterData}
           selectable
           loading={loading}
           miniMap={map}
           groupPointsAnchor="lineage"
-          tooltipBody={(point) => <TooltipBody {...point} />
+          tooltipBody={(point) => <TooltipBody {...point}
+          />
           }
         />
         <Button variant="outlined" sx={{ position: "absolute", bottom: 10, left: 10, textTransform: "none" }} onClick={() => setShowLegend(!showLegend)}>Toggle Legend</Button>

@@ -187,7 +187,7 @@ export default function PortalPage({
           <Typography variant="body1" id="searches">We reccomend to start with these {title}s</Typography>
         </Stack>
       </Grid2>
-      <Grid2 container spacing={5} justifyContent="flex-start" marginTop={2} paddingX={{ md: 5, xs: "none" }}>
+      <Grid2 container spacing={5} justifyContent="flex-start" marginTop={2}>
         {popularSearches[title].map((element, index) => (
           <Grid2
             key={index}

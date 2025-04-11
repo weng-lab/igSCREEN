@@ -205,6 +205,7 @@ const IcreActivityUMAP = <T extends PointMetadata, S extends true, Z extends boo
         </Typography>
         <ScatterPlot
           {...rest}
+          controlsHighlight="#c83444"
           pointData={scatterData}
           selectable
           loading={loading}
