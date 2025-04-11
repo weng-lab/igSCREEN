@@ -1,6 +1,6 @@
 import { BarChart, CloseFullscreenRounded, TableChartRounded } from "@mui/icons-material"
 import { Stack, Box, Typography, Tabs, Tab, TabOwnProps, IconButton, TooltipClassKey, Tooltip } from "@mui/material"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 /**
  * type argument is type of the row object passed to table
@@ -17,6 +17,27 @@ export type TwoPaneLayoutProps = {
 const TwoPaneLayout = ({ TableComponent, plots }: TwoPaneLayoutProps) => {
   const [tab, setTab] = useState<number>(0)
   const [tableOpen, setTableOpen] = useState(true)
+  const tableRef = useRef<HTMLDivElement>(null);
+  const [tableHeight, setTableHeight] = useState<number | null>(null);
+
+  //listens for changes in the size of the table component and passes that height into the figure container
+  useEffect(() => {
+    if (!tableRef.current) return;
+
+    const observer = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        if (entry.contentRect) {
+          if (entry.contentRect.height > 0) {
+            setTableHeight(entry.contentRect.height);
+          }
+        }
+      }
+    });
+
+    observer.observe(tableRef.current);
+
+    return () => observer.disconnect();
+  }, []);
 
   const handleSetTab = (_, newTab: number) => {
     setTab(newTab)
@@ -27,7 +48,7 @@ const TwoPaneLayout = ({ TableComponent, plots }: TwoPaneLayoutProps) => {
   }
 
   const plotTabs = plots.map(x => { return { tabTitle: x.tabTitle, icon: x.icon } })
-  const figures = plots.map(x => x.plotComponent)
+  const figures = plots.map(x => { return { title: x.tabTitle, component: x.plotComponent } })
 
   const TableIconButton = () => {
     return (
@@ -58,7 +79,7 @@ const TwoPaneLayout = ({ TableComponent, plots }: TwoPaneLayoutProps) => {
             {/* Used to force this container to have the same height as the below tabs. Prevents layout shift when closing the table */}
             <Tab sx={{visibility: "hidden", minWidth: 0, px: 0}}/>
           </Stack>
-          <div>
+          <div ref={tableRef}>
             {TableComponent}
           </div>
         </Box>
@@ -76,8 +97,14 @@ const TwoPaneLayout = ({ TableComponent, plots }: TwoPaneLayoutProps) => {
           </Tabs>
         </Stack>
         {figures.map((Figure, i) =>
-          <Box display={tab === i ? "block" : "none"} key={i} id={"figure_container"}>
-            {Figure}
+          <Box 
+            display={tab === i ? "block" : "none"} 
+            key={i} id={"figure_container"}
+            //use table height unless itso not open, then set px height for umap so it doesnt slowly resize
+            height={tableOpen ? tableHeight : Figure.title === "UMAP" ? "700px" : "100%"} 
+            maxHeight={Figure.title === "UMAP" ? "700px" : "none"}
+          >
+            {Figure.component}
           </Box>
         )}
       </Box>
