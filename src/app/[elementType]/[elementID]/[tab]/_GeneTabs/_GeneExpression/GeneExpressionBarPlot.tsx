@@ -2,6 +2,7 @@ import { GeneExpressionProps, PointMetadata, SharedGeneExpressionPlotProps } fro
 import VerticalBarPlot, { BarData, BarPlotProps } from "../../VerticalBarPlot"
 import { useMemo } from "react"
 import { getCellCategoryColor, getCellCategoryDisplayname } from "common/utility"
+import { Box } from "@mui/material"
 
 export type GeneExpressionBarPlotProps = 
   GeneExpressionProps & 
@@ -31,11 +32,13 @@ const GeneExpressionBarPlot = ({name, id, selected, sortedFilteredData, ...rest}
   }, [sortedFilteredData, selected])
 
   return(
-    <VerticalBarPlot
-      {...rest}
-      data={plotData}
-      topAxisLabel={`${name} Expression - Linear TPM`}
-    />
+    <Box width={"100%"} height={"100%"} overflow={"auto"} padding={1} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, position: "relative"}}>
+      <VerticalBarPlot
+        {...rest}
+        data={plotData}
+        topAxisLabel={`${name} Expression - Linear TPM`}
+      />
+    </Box>
   )
 }
 
