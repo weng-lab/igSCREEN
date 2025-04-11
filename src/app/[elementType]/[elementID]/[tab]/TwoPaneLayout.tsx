@@ -27,7 +27,9 @@ const TwoPaneLayout = ({ TableComponent, plots }: TwoPaneLayoutProps) => {
     const observer = new ResizeObserver((entries) => {
       for (let entry of entries) {
         if (entry.contentRect) {
-          setTableHeight(entry.contentRect.height);
+          if (entry.contentRect.height > 0) {
+            setTableHeight(entry.contentRect.height);
+          }
         }
       }
     });
@@ -95,7 +97,7 @@ const TwoPaneLayout = ({ TableComponent, plots }: TwoPaneLayoutProps) => {
           </Tabs>
         </Stack>
         {figures.map((Figure, i) =>
-          <Box display={tab === i ? "block" : "none"} key={i} id={"figure_container"} height={tableHeight} maxHeight={Figure.title === "UMAP" ? "700px" : "none"}>
+          <Box display={tab === i ? "block" : "none"} key={i} id={"figure_container"} height={tableOpen ? tableHeight : Figure.title === "UMAP" ? "700px" : "100%"} maxHeight={Figure.title === "UMAP" ? "700px" : "none"}>
             {Figure.component}
           </Box>
         )}
