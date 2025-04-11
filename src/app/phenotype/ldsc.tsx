@@ -7,7 +7,7 @@ import { Group } from "@visx/group";
 import { defaultStyles as defaultTooltipStyles, useTooltip, TooltipWithBounds } from "@visx/tooltip";
 import { Text } from "@visx/text";
 import { MouseEvent } from "react";
-import { toScientificNotation } from "../../common/utils";
+import { toScientificNotation } from "../../common/utility";
 import { Box, Typography } from "@mui/material";
 import { getCellCategoryDisplayname, getCellCategoryColor } from "common/utility";
 

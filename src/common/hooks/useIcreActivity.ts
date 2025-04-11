@@ -6,27 +6,26 @@ const GET_ICRE_ACTIVITY = gql(`
   query IcresZscores($accession: [String]!) {
     immuneiCREsUmapQuery(accession: $accession) {
       source
-      value
-      umap_atac_1
+      study
+      link
+      lineage
+      celltype
+      biosample
+      biosampleid
+      celltype_stim
+      stimulation
+      celltype_stim_order
+      biosample_order
+      name
+      expid
       assay
+      value
+      umap_1
+      umap_2
+      umap_atac_1
       umap_atac_2
       umap_dnase_1
       umap_dnase_2
-      umap_1
-      link
-      umap_2
-      celltype
-      lineage
-      biosample
-      biosampleid
-      expid
-      name
-      study
-      start
-      class
-      chromosome
-      end
-      stimulation
       accession
     }
   }

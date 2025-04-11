@@ -8,7 +8,8 @@ const ICRES_QUERY = gql(`
     iCREQuery(coordinates: $coordinates, accession: $accession) {
       accession
       group
-      celltypes
+      ataccelltypes: celltypes
+      dnasecelltypes
       coordinates {
         start
         end

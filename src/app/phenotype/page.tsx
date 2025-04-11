@@ -22,7 +22,6 @@ import {
 import Grid2 from "@mui/material/Grid2";
 import { getCellCategoryColor, getCellCategoryDisplayname } from "common/utility";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { client } from "../../common/utils";
 import LDSCplot from "./ldsc";
 import { iCRE_LDSC_BASELINE_QUERY, ICRE_STUDIES, pValMarks, scale } from "./const";
 import { iCRE_LDSC_QUERY } from "./const";
@@ -52,16 +51,14 @@ export default function Phenotype() {
   const [pValCutoff, setPValCutoff] = useState<number>(0.05);
   const [stimView, setStimView] = useState<"S" | "U" | "B">("B");
 
-  const { data: dataStudies } = useQuery(ICRE_STUDIES, { client });
+  const { data: dataStudies } = useQuery(ICRE_STUDIES);
 
   const { data: dataiCRELDSC, loading: loadingiCRELDSC } = useQuery(iCRE_LDSC_QUERY, {
-    client,
     variables: { study: selectedStudy },
     skip: !selectedStudy,
   });
 
   const { data: dataBaseline } = useQuery(iCRE_LDSC_BASELINE_QUERY, {
-    client,
     variables: { study: selectedStudy },
     skip: !selectedStudy,
   });
