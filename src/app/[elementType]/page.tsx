@@ -93,7 +93,7 @@ export default function PortalPage({
         type: title as ResultType,
         title: element.name,
         domain: {
-          chromosome: match[1], 
+          chromosome: match[1],
           start: parseInt(match[2], 10),
           end: parseInt(match[3], 10)
         }
@@ -104,7 +104,7 @@ export default function PortalPage({
   };
 
   return (
-    <Stack spacing={2} paddingX={20} paddingY={5}>
+    <Stack spacing={2} paddingX={{ md: 20, xs: 2 }} paddingY={5}>
       <Grid2 container spacing={2}>
         <Grid2 size={12} display={"flex"} flexDirection={"column"}>
           {/* Panel container */}
@@ -117,44 +117,12 @@ export default function PortalPage({
             }}
             justifyContent={"space-between"}
             spacing={2}
+            order={{ xs: 2, md: 1 }}
           >
-            {/* Left Panel */}
-            <Grid2
-              size={{
-                xs: 12,
-                md: 4,
-              }}
-              display={"flex"}
-              flexDirection={"column"}
-              justifyContent={"center"}
-            >
-              <Typography variant="h3" mb={2}>{title} Portal</Typography>
-              <Box
-                display={"flex"}
-                flexDirection={"column"}
-                alignItems={"flex-start"}
-              >
-                <Typography mb={2}>{description}</Typography>
-                <GenomeSearch
-                  assembly="GRCh38"
-                  onSearchSubmit={handleSearchSubmit}
-                  queries={[
-                    elementType === "gene"
-                      ? "Gene"
-                      : elementType === "icre"
-                        ? "iCRE"
-                        : "SNP",
-                  ]}
-                  sx={{ width: "100%" }}
-                />
-              </Box>
-            </Grid2>
             {/* Right Panel */}
             <Grid2
-              size={{
-                xs: 12,
-                md: 6,
-              }}
+              size={{ xs: 12, md: 6 }}
+              order={{ xs: 1, md: 2 }}
               position="relative"
               sx={{
                 height: {
@@ -170,6 +138,32 @@ export default function PortalPage({
                 fill
                 alt={`${title} logo`}
               />
+            </Grid2>
+
+            {/* Left Panel */}
+            <Grid2
+              size={{ xs: 12, md: 4 }}
+              order={{ xs: 2, md: 1 }}
+              display={"flex"}
+              flexDirection={"column"}
+              justifyContent={"center"}
+            >
+              <Typography variant="h3" mb={2}>{title} Portal</Typography>
+              <Box display={"flex"} flexDirection={"column"} alignItems={"flex-start"}>
+                <Typography mb={2}>{description}</Typography>
+                <GenomeSearch
+                  assembly="GRCh38"
+                  onSearchSubmit={handleSearchSubmit}
+                  queries={[
+                    elementType === "gene"
+                      ? "Gene"
+                      : elementType === "icre"
+                        ? "iCRE"
+                        : "SNP",
+                  ]}
+                  sx={{ width: "100%" }}
+                />
+              </Box>
             </Grid2>
           </Grid2>
         </Grid2>
@@ -193,7 +187,7 @@ export default function PortalPage({
           <Typography variant="body1" id="searches">We reccomend to start with these {title}s</Typography>
         </Stack>
       </Grid2>
-      <Grid2 container spacing={5} justifyContent="flex-start" marginTop={2} paddingX={5}>
+      <Grid2 container spacing={5} justifyContent="flex-start" marginTop={2} paddingX={{ md: 5, xs: "none" }}>
         {popularSearches[title].map((element, index) => (
           <Grid2
             key={index}
