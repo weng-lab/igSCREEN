@@ -33,7 +33,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-, "next.config.mjs"  ],
+, "next.config.mjs", "src/app/[elementType]/[elementID]/[tab]/_GeneTabs/_linkedICREs"  ],
   "exclude": [
     "node_modules",
     "yarn.lock",

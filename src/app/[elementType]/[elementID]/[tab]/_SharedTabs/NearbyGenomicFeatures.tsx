@@ -2,19 +2,12 @@
 import React from "react";
 import { useQuery } from "@apollo/client";
 import Grid from "@mui/material/Grid2";
-import { Link as MuiLink, Skeleton, Typography } from "@mui/material";
-import { DataTable } from "@weng-lab/psychscreen-ui-components";
+import { Link as MuiLink, Skeleton } from "@mui/material";
 import { gql } from "types/generated/gql";
-import { GenomicElementType, GenomicRange } from "types/globalTypes";
 import Link from "next/link";
-import {
-  calcDistToTSS,
-  calcDistRegionToPosition,
-  calcDistRegionToRegion,
-  NearbyGenomicFeaturesProps,
-} from "./utils";
-import DataGridToolbar from "./dataGridToolbar";
-import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
+import { calcDistToTSS, calcDistRegionToPosition, calcDistRegionToRegion, NearbyGenomicFeaturesProps } from "./utils";
+import DataGridToolbar from "common/components/dataGridToolbar";
+import { DataGridPro, GridColDef } from "@mui/x-data-grid-pro";
 
 export const NEARBY_GENOMIC_FEATURES_QUERY = gql(`
   query nearbyGenomicFeatures($coordinates: [GenomicRangeInput!], $chromosome: String, $start: Int, $end: Int, $version: Int) {
@@ -52,11 +45,7 @@ export const NEARBY_GENOMIC_FEATURES_QUERY = gql(`
   }
 `);
 
-const NearbyGenomicFeatures = ({
-  coordinates,
-  elementType,
-  elementID,
-}: NearbyGenomicFeaturesProps) => {
+const NearbyGenomicFeatures = ({ coordinates, elementType, elementID }: NearbyGenomicFeaturesProps) => {
   const { loading, data, error } = useQuery(NEARBY_GENOMIC_FEATURES_QUERY, {
     variables: {
       //The coordinates need to be repeated twice since the nested queries take different inputs
@@ -72,15 +61,15 @@ const NearbyGenomicFeatures = ({
     },
   });
 
+  if (error) {
+    throw new Error(JSON.stringify(error));
+  }
+
   const genes = data?.gene
     .map((gene) => {
       return {
         ...gene,
-        distance: calcDistToTSS(
-          coordinates,
-          gene.transcripts,
-          gene.strand as "+" | "-"
-        ),
+        distance: calcDistToTSS(coordinates, gene.transcripts, gene.strand as "+" | "-"),
       };
     })
     .filter((gene) => {
@@ -106,12 +95,7 @@ const NearbyGenomicFeatures = ({
     .map((snp) => {
       return {
         ...snp,
-        distance: calcDistRegionToPosition(
-          coordinates.start,
-          coordinates.end,
-          "closest",
-          snp.coordinates.start
-        ),
+        distance: calcDistRegionToPosition(coordinates.start, coordinates.end, "closest", snp.coordinates.start),
       };
     })
     .filter((snp) => {
@@ -121,12 +105,12 @@ const NearbyGenomicFeatures = ({
     });
 
   return (
-    <Grid container spacing={4}>
+    <Grid container spacing={2}>
       <Grid size={{ xs: 12, md: 6, xl: 4 }}>
         {loading ? (
           <Skeleton variant="rounded" width={"100%"} height={705} />
         ) : (
-          <DataGrid
+          <DataGridPro
             rows={genes || []}
             columns={
               [
@@ -140,10 +124,11 @@ const NearbyGenomicFeatures = ({
                     </MuiLink>
                   ),
                 },
-                distanceCol
+                distanceCol,
               ] as GridColDef[]
             }
             getRowId={(row) => row.name}
+            pagination
             initialState={{
               sorting: {
                 sortModel: [{ field: "distance", sort: "asc" }],
@@ -163,7 +148,7 @@ const NearbyGenomicFeatures = ({
         {loading ? (
           <Skeleton variant="rounded" width={"100%"} height={705} />
         ) : (
-          <DataGrid
+          <DataGridPro
             rows={iCREs || []}
             columns={
               [
@@ -177,10 +162,11 @@ const NearbyGenomicFeatures = ({
                     </MuiLink>
                   ),
                 },
-                distanceCol
+                distanceCol,
               ] as GridColDef[]
             }
             getRowId={(row) => row.accession}
+            pagination
             initialState={{
               sorting: {
                 sortModel: [{ field: "distance", sort: "asc" }],
@@ -200,7 +186,7 @@ const NearbyGenomicFeatures = ({
         {loading ? (
           <Skeleton variant="rounded" width={"100%"} height={705} />
         ) : (
-          <DataGrid
+          <DataGridPro
             rows={snps || []}
             columns={
               [
@@ -218,6 +204,7 @@ const NearbyGenomicFeatures = ({
               ] as GridColDef[]
             }
             getRowId={(row) => row.id}
+            pagination
             initialState={{
               sorting: {
                 sortModel: [{ field: "distance", sort: "asc" }],
@@ -245,24 +232,5 @@ const distanceCol: GridColDef = {
     return params.value.toLocaleString();
   },
 };
-
-{
-  /* <DataGrid
-density={"compact"}
-columns={table.columns}
-rows={table.data}
-getRowHeight={() => "auto"}
-getRowId={(row: LinkedGeneInfo) => row.id}
-sx={{ width: "100%", height: "auto" }}
-slots={{ toolbar: DataGridToolbar }}
-slotProps={{ toolbar: { title: table.name } }}
-initialState={{
-  pagination: {
-    paginationModel: {
-      pageSize: 5,
-    },
-  },
-}} */
-}
 
 export default NearbyGenomicFeatures;
