@@ -184,7 +184,7 @@ export default function PortalPage({
       <Grid2 size={6} display={"flex"} justifyContent={"flex-start"}>
         <Stack spacing={1}>
           <Typography variant="h4" id="searches">Not sure where to start?</Typography>
-          <Typography variant="body1" id="searches">We reccomend to start with these {title}s</Typography>
+          <Typography variant="body1" id="searches">We recommend to start with these {title}s</Typography>
         </Stack>
       </Grid2>
       <Grid2 container spacing={5} justifyContent="flex-start" marginTop={2}>
