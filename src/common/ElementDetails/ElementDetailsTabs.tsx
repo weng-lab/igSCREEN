@@ -46,7 +46,9 @@ const drawerWidth =  250;
       boxSizing: 'border-box',
       position: 'static',
       '& .MuiDrawer-paper': {
-        backgroundColor: "#F2F2F2",
+        [theme.breakpoints.up('md')]: {
+          backgroundColor: '#F2F2F2',
+        },
         border: 'none',
         zIndex: theme.zIndex.appBar - 1,
       },

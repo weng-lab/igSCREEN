@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { isValidGenomicElement } from "types/globalTypes";
 import { ExpandMore } from "@mui/icons-material";
-
+import Link from "next/link";
 
 type PortalConfig = {
   image: string;
@@ -81,26 +81,6 @@ export default function PortalPage({
       { name: "rs80230724", region: "chr6:21,302,562-21,302,563" },
       { name: "rs12528501", region: "chr6:21,316,401-21,316,402" },
     ]
-  };
-
-  const parseRegion = (element) => {
-    const cleanRegion = element.region.replace(/,/g, ""); // remove commas
-    const regex = /^(\w+):(\d+)-(\d+)$/;
-    const match = cleanRegion.match(regex);
-
-    if (match) {
-      const submission: Result = {
-        type: title as ResultType,
-        title: element.name,
-        domain: {
-          chromosome: match[1],
-          start: parseInt(match[2], 10),
-          end: parseInt(match[3], 10)
-        }
-      };
-      handleSearchSubmit(submission)
-    }
-
   };
 
   return (
@@ -230,7 +210,8 @@ export default function PortalPage({
                   backgroundColor: "#f0f0f0",
                 },
               }}
-              onClick={() => parseRegion(element)}
+              LinkComponent={Link} 
+              href={`/${title}/${element.name}`}
             >
               Quick search
             </Button>
