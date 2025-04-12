@@ -34,11 +34,7 @@ const snpConfig: PortalConfig = {
     "Search SNPs of interest and explore their impact on gene expression, chromatin accessibility, transcription factor (TF) binding and other molecular traits in immune cells.",
 };
 
-export default function PortalPage({
-  params: { elementType },
-}: {
-  params: { elementType: string };
-}) {
+export default function PortalPage({ params: { elementType } }: { params: { elementType: string } }) {
   if (!isValidGenomicElement(elementType)) {
     throw new Error("Unknown genomic element type: " + elementType);
   }
@@ -53,11 +49,7 @@ export default function PortalPage({
   };
 
   const { image, title, description } =
-    elementType === "gene"
-      ? geneConfig
-      : elementType === "icre"
-        ? icreConfig
-        : snpConfig;
+    elementType === "gene" ? geneConfig : elementType === "icre" ? icreConfig : snpConfig;
 
   const popularSearches = {
     Gene: [
@@ -80,93 +72,59 @@ export default function PortalPage({
       { name: "rs9466028", region: "chr6:21,300,773-21,300,774" },
       { name: "rs80230724", region: "chr6:21,302,562-21,302,563" },
       { name: "rs12528501", region: "chr6:21,316,401-21,316,402" },
-    ]
+    ],
   };
 
   return (
-    <Stack spacing={2} paddingX={{ md: 20, xs: 2 }} paddingY={5}>
-      <Grid2 container spacing={2}>
-        <Grid2 size={12} display={"flex"} flexDirection={"column"}>
-          {/* Panel container */}
-          <Grid2
-            size={12}
-            display={"flex"}
-            flexDirection={{
-              xs: "column",
-              md: "row",
-            }}
-            justifyContent={"space-between"}
-            spacing={2}
-            order={{ xs: 2, md: 1 }}
-          >
-            {/* Right Panel */}
-            <Grid2
-              size={{ xs: 12, md: 6 }}
-              order={{ xs: 1, md: 2 }}
-              position="relative"
-              sx={{
-                height: {
-                  lg: "350px",
-                  md: "250px",
-                  xs: "200px",
-                },
-              }}
-            >
-              <Image
-                style={{ objectFit: "contain", objectPosition: "center" }}
-                src={image}
-                fill
-                alt={`${title} logo`}
-              />
-            </Grid2>
-
-            {/* Left Panel */}
-            <Grid2
-              size={{ xs: 12, md: 4 }}
-              order={{ xs: 2, md: 1 }}
-              display={"flex"}
-              flexDirection={"column"}
-              justifyContent={"center"}
-            >
-              <Typography variant="h3" mb={2}>{title} Portal</Typography>
-              <Box display={"flex"} flexDirection={"column"} alignItems={"flex-start"}>
-                <Typography mb={2}>{description}</Typography>
-                <GenomeSearch
-                  assembly="GRCh38"
-                  onSearchSubmit={handleSearchSubmit}
-                  queries={[
-                    elementType === "gene"
-                      ? "Gene"
-                      : elementType === "icre"
-                        ? "iCRE"
-                        : "SNP",
-                  ]}
-                  sx={{ width: "100%" }}
-                />
-              </Box>
-            </Grid2>
-          </Grid2>
-        </Grid2>
-      </Grid2>
-      <Grid2 size={12} display={"flex"} flexDirection={"column"}>
-        <Divider sx={{ display: "flex" }} variant="fullWidth">
-          <IconButton
-            onClick={() => {
-              var element = document.getElementById("searches");
-              element.scrollIntoView({ behavior: "smooth", block: "start" });
-            }}
-            sx={{ cursor: 'pointer' }}
-          >
-            <ExpandMore />
-          </IconButton>
-        </Divider>
-      </Grid2>
-      <Grid2 size={6} display={"flex"} justifyContent={"flex-start"}>
-        <Stack spacing={1}>
-          <Typography variant="h4" id="searches">Not sure where to start?</Typography>
-          <Typography variant="body1" id="searches">We recommend to start with these {title}s</Typography>
+    <Stack
+      spacing={2}
+      width={{ xl: "75%", lg: "80%", md: "85%", sm: "90%", xs: "95%" }}
+      maxWidth={"1600px"}
+      marginX={"auto"}
+      marginY={5}
+    >
+      <Stack direction={{ xs: "column-reverse", md: "row" }} alignItems={"center"} spacing={4}>
+        <Stack alignItems={{ xs: "center", md: "flex-start" }} textAlign={{ xs: "center", md: "initial" }}>
+          <Typography variant="h4" mb={1}>
+            {title} Portal
+          </Typography>
+          <Typography mb={2}>{description}</Typography>
+          <GenomeSearch
+            assembly="GRCh38"
+            onSearchSubmit={handleSearchSubmit}
+            queries={[elementType === "gene" ? "Gene" : elementType === "icre" ? "iCRE" : "SNP"]}
+            sx={{ width: "100%" }}
+          />
         </Stack>
-      </Grid2>
+        <Box
+          position={"relative"}
+          width={"100%"}
+          height={{xs: 250, sm: 300, md: 350, lg: 400, xl: 450}}
+          //affects alignment of the image
+          sx={{ objectPosition: { md: "right", xs: "center" } }}
+        >
+          <Image style={{ objectFit: "contain", objectPosition: "inherit" }} src={image} fill alt={title + " image"} />
+        </Box>
+      </Stack>
+      <Divider sx={{ display: "flex" }} variant="fullWidth">
+        <IconButton
+          onClick={() => {
+            var element = document.getElementById("searches");
+            element.scrollIntoView({ behavior: "smooth", block: "start" });
+          }}
+          sx={{ cursor: "pointer" }}
+        >
+          <ExpandMore />
+        </IconButton>
+      </Divider>
+      <Stack spacing={1}>
+        <Typography variant="h4" id="searches">
+          Not sure where to start?
+        </Typography>
+        <Typography variant="body1" id="searches">
+          We recommend to start with these {title}s
+        </Typography>
+      </Stack>
       <Grid2 container spacing={5} justifyContent="flex-start" marginTop={2}>
         {popularSearches[title].map((element, index) => (
           <Grid2
@@ -206,11 +164,11 @@ export default function PortalPage({
                 color: "#444",
                 textTransform: "none",
                 boxShadow: 3,
-                '&:hover': {
+                "&:hover": {
                   backgroundColor: "#f0f0f0",
                 },
               }}
-              LinkComponent={Link} 
+              LinkComponent={Link}
               href={`/${title}/${element.name}`}
             >
               Quick search
@@ -218,7 +176,6 @@ export default function PortalPage({
           </Grid2>
         ))}
       </Grid2>
-
     </Stack>
   );
 }
