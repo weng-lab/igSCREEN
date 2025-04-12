@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Tabs, Tab, useMediaQuery, useTheme, Typography, Divider, Stack, IconButton, Drawer, Theme, CSSObject, styled } from "@mui/material";
+import { Box, Tabs, Tab, Typography, Divider, Stack, IconButton, Drawer, Theme, CSSObject, styled } from "@mui/material";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useMemo } from "react";
@@ -85,13 +85,9 @@ const ElementDetailsTabs = ({ elementType, orientation }: ElementDetailsTabsProp
   const [value, setValue] = React.useState(currentTab);
   const [open, setOpen] = React.useState(true);
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
+  const toggleDrawer = () => {
+    setOpen(!open)
+  }
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
@@ -125,38 +121,23 @@ const ElementDetailsTabs = ({ elementType, orientation }: ElementDetailsTabsProp
 
   const horizontalTabs = orientation === "horizontal"
 
-  
-
   return (
-    <MiniDrawer variant="permanent" open={open || horizontalTabs} sx={{width: horizontalTabs ? "100%" : drawerWidth}}>
-      <Box>
-        <Stack display={horizontalTabs ? "none" : "flex"} direction={"row"} justifyContent={open ? "space-between" : "center"} alignItems={"center"} mt={2}>
-          <Typography variant="h6" sx={[!open && { display: 'none' },]} ml={2}>
-            Contents
-          </Typography>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            sx={[
-              open && { display: 'none' },
-            ]}
-          >
-            <MenuIcon />
-          </IconButton>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerClose}
-            sx={[
-              { display: !open ? 'none' : "flex"},
-            ]}
-          >
-            <ChevronLeftIcon />
-          </IconButton>
-        </Stack>
-        <Divider variant="middle" />
-      </Box>
+    <MiniDrawer variant="permanent" open={open || horizontalTabs} sx={{ width: horizontalTabs ? "100%" : drawerWidth }}>
+      {!horizontalTabs && (
+        <Box>
+          <Stack direction={"row"} justifyContent={open ? "space-between" : "center"} alignItems={"center"} my={1}>
+            {open && (
+              <Typography variant="h6" ml={2}>
+                Contents
+              </Typography>
+            )}
+            <IconButton color="inherit" aria-label={open ? "close drawer" : "open drawer"} onClick={toggleDrawer}>
+              {open ? <ChevronLeftIcon /> : <MenuIcon />}
+            </IconButton>
+          </Stack>
+          <Divider variant="middle" id="This" />
+        </Box>
+      )}
       <Tabs
         value={value}
         onChange={handleChange}
@@ -166,29 +147,32 @@ const ElementDetailsTabs = ({ elementType, orientation }: ElementDetailsTabsProp
         variant="scrollable"
         scrollButtons={horizontalTabs ? true : false}
         sx={{
-          '& .MuiTab-root': {
-            alignItems: open ? 'flex-start' : 'center',
+          "& .MuiTab-root": {
+            alignItems: open ? "flex-start" : "center",
             paddingLeft: open ? 2 : 0,
           },
-          '& .MuiTabs-scrollButtons.Mui-disabled': {
-            opacity: 0.3
-          }
+          "& .MuiTabs-scrollButtons.Mui-disabled": {
+            opacity: 0.3,
+          },
         }}
       >
-        {tabs.map((tab, index) =>
+        {tabs.map((tab, index) => (
           <Tab
             label={tab.label}
             value={tab.href}
             LinkComponent={Link}
-            href={basepath + '/' + tab.href}
+            href={basepath + "/" + tab.href}
             key={tab.href}
-            icon={!open && (index % 2 === 0 ? <CropSquareIcon sx={{ fontSize: 40 }} /> : <SquareIcon sx={{ fontSize: 40 }} />)}
+            icon={
+              !open &&
+              (index % 2 === 0 ? <CropSquareIcon sx={{ fontSize: 40 }} /> : <SquareIcon sx={{ fontSize: 40 }} />)
+            }
             sx={{ mb: !open ? 2 : 0 }}
           />
-        )}
+        ))}
       </Tabs>
     </MiniDrawer>
-  )
+  );
 }
 
 export default ElementDetailsTabs

@@ -1,4 +1,4 @@
-import { Grid2 as Grid, Skeleton, Typography } from "@mui/material";
+import { Box, Grid2 as Grid, Skeleton, Typography } from "@mui/material";
 import useGWASLdr from "common/hooks/useGWASLdr";
 import DataGridToolbar from "common/components/dataGridToolbar";
 import { DataGridPro, GridColDef } from "@mui/x-data-grid-pro";
@@ -9,12 +9,10 @@ export default function GWASLdr({ accession }: { accession: string }) {
   const { data, loading, error } = useGWASLdr([accession]);
 
   return (
-    <Grid container spacing={2}>
-      <Grid size={12}>
+    <Box width={'100%'}>
         {loading ? (
           <Skeleton variant="rounded" width={"100%"} height={100} />
         ) : data.length > 0 ? (
-          <>
             <DataGridPro
               rows={data || []}
               columns={
@@ -87,11 +85,10 @@ export default function GWASLdr({ accession }: { accession: string }) {
               }}
               slots={{ toolbar: DataGridToolbar }}
               slotProps={{ toolbar: { title: "GWAS Ldr" } }}
+              disableRowSelectionOnClick
               density="compact"
-              sx={{ width: "100%", height: "auto" }}
-              style={{ boxShadow: "0px 6px 12px rgba(0,0,0,0.2)" }}
+              sx={{ width: "100%", height: "auto", borderRadius: 1, boxShadow: "0px 2px 4px rgba(0,0,0,0.1)" }}
             />
-          </>
         ) : (
           <Typography
             variant="h6"
@@ -104,10 +101,9 @@ export default function GWASLdr({ accession }: { accession: string }) {
               marginBottom: 2,
             }}
           >
-            No GWAS ldr data found
+            No GWAS LDR data found
           </Typography>
         )}
-      </Grid>
-    </Grid>
+    </Box>
   );
 }
