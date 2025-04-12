@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { Grid2, Link, Skeleton } from "@mui/material";
+import { Grid2, Link, Skeleton, Stack } from "@mui/material";
 import { DataGridPro, GridColDef } from "@mui/x-data-grid-pro";
 import { toScientificNotation } from "common/utility";
 import { gql } from "types/generated";
@@ -78,59 +78,63 @@ const GeneEQTLs = ({ name, id }: GeneEQTLsProps) => {
   }
 
   return (
-    <Grid2 container spacing={2}>
-      <Grid2 size={12}>
-        <DataGridPro
-          columns={columns}
-          rows={data.GTEX}
-          getRowId={(row) => row.variant_id + row.pvalue}
-          slots={{ toolbar: DataGridToolbar }}
-          slotProps={{ toolbar: { title: `GTEX whole-blood eQTLs for ${name}` } }}
-          pagination
-          initialState={{
-            pagination: {
-              paginationModel: { pageSize: 10 },
-            },
-          }}
-          density="compact"
-          style={{ boxShadow: "0px 6px 12px rgba(0,0,0,0.2)" }}
-        />
-      </Grid2>
-      <Grid2 size={12}>
-        <DataGridPro
-          columns={YazarPowellColumns}
-          rows={data.YazarPowell}
-          getRowId={(row) => row.variant_id + row.pvalue}
-          slots={{ toolbar: DataGridToolbar }}
-          slotProps={{ toolbar: { title: `Yazar.Powell eQTLs for ${name}` } }}
-          pagination
-          initialState={{
-            pagination: {
-              paginationModel: { pageSize: 10 },
-            },
-          }}
-          density="compact"
-          style={{ boxShadow: "0px 6px 12px rgba(0,0,0,0.2)" }}
-        />
-      </Grid2>
-      <Grid2 size={12}>
-        <DataGridPro
-          columns={SoskicTrynkaColumns}
-          rows={data.SoskicTrynka}
-          getRowId={(row) => row.variant_id + row.pvalue}
-          slots={{ toolbar: DataGridToolbar }}
-          slotProps={{ toolbar: { title: `Soskic.Trynka eQTLs for ${name}` } }}
-          pagination
-          initialState={{
-            pagination: {
-              paginationModel: { pageSize: 10 },
-            },
-          }}
-          density="compact"
-          style={{ boxShadow: "0px 6px 12px rgba(0,0,0,0.2)" }}
-        />
-      </Grid2>
-    </Grid2>
+    <Stack spacing={2}>
+      <DataGridPro
+        columns={columns}
+        rows={data.GTEX}
+        getRowId={(row) => row.variant_id + row.pvalue}
+        slots={{ toolbar: DataGridToolbar }}
+        slotProps={{ toolbar: { title: `GTEX whole-blood eQTLs for ${name}` } }}
+        pagination
+        initialState={{
+          pagination: {
+            paginationModel: { pageSize: 10 },
+          },
+        }}
+        density="compact"
+        sx={{
+          borderRadius: 1,
+          boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
+        }}
+      />
+
+      <DataGridPro
+        columns={YazarPowellColumns}
+        rows={data.YazarPowell}
+        getRowId={(row) => row.variant_id + row.pvalue}
+        slots={{ toolbar: DataGridToolbar }}
+        slotProps={{ toolbar: { title: `Yazar.Powell eQTLs for ${name}` } }}
+        pagination
+        initialState={{
+          pagination: {
+            paginationModel: { pageSize: 10 },
+          },
+        }}
+        density="compact"
+        sx={{
+          borderRadius: 1,
+          boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
+        }}
+      />
+      <DataGridPro
+        columns={SoskicTrynkaColumns}
+        rows={data.SoskicTrynka}
+        getRowId={(row) => row.variant_id + row.pvalue}
+        slots={{ toolbar: DataGridToolbar }}
+        slotProps={{ toolbar: { title: `Soskic.Trynka eQTLs for ${name}` } }}
+        pagination
+        initialState={{
+          pagination: {
+            paginationModel: { pageSize: 10 },
+          },
+        }}
+        density="compact"
+        sx={{
+          borderRadius: 1,
+          boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
+        }}
+      />
+    </Stack>
   );
 };
 

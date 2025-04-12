@@ -1,8 +1,9 @@
 import { GenomicRange, PortalName } from "types/globalTypes"
 import { cellCategoryColors, cellCategoryDisplaynames, studyLinks } from "./consts"
 import { Launch } from "@mui/icons-material";
-import { Link, LinkProps, TypographyPropsVariantOverrides } from "@mui/material";
-
+import { Link as MuiLink, LinkProps as MuiLinkProps, Typography, TypographyOwnProps, TypographyPropsVariantOverrides } from "@mui/material";
+import NextLink from 'next/link'
+import { LinkProps as NextLinkProps } from "next/link";
 /**
  * @todo Merge with utility.ts
  */
@@ -83,19 +84,38 @@ export function getStudyLink(study: string) {
   return studyLinks[study] || "Unknown Study"
 }
 
+//Combines the props of Next Link and Mui Link, adds the custom props
+export type LinkComponentProps = Omit<MuiLinkProps, "component" | "href"> &
+  Omit<NextLinkProps, "passHref"> & {
+    showExternalIcon?: boolean;
+    openInNewTab?: boolean;
+  };
+
 /**
- * 
+ * Mui Link styled component, Next Link behavior
  * @param props ```MuiLinkProps & { showExternalIcon?: boolean }```
  * @returns 
  */
-export const ExternalLink: React.FC<LinkProps & { showExternalIcon?: boolean }> = ({showExternalIcon, children, ...rest}) => {
+export const LinkComponent = ({
+  showExternalIcon,
+  openInNewTab = false,
+  children,
+  ...rest
+}: LinkComponentProps) => {
   return (
-    <Link rel="noopener noreferrer" target="_blank" {...rest}>
+    <MuiLink
+      component={NextLink}
+      rel={openInNewTab ? "noopener noreferrer" : undefined}
+      target={openInNewTab ? "_blank" : undefined}
+      {...rest}
+    >
       {children}
-      {showExternalIcon && <Launch sx={{ display: "inline-flex", verticalAlign: "middle", ml: 0.5 }} color="inherit" fontSize="inherit" />}
-    </Link>
-  )
-}
+      {showExternalIcon && (
+        <Launch sx={{ display: "inline-flex", verticalAlign: "middle", ml: 0.5 }} color="inherit" fontSize="inherit" />
+      )}
+    </MuiLink>
+  );
+};
 
 export function toScientificNotation(num: number, sigFigs?: number) {
   // Convert the number to scientific notation using toExponential
@@ -119,6 +139,32 @@ export function toScientificNotation(num: number, sigFigs?: number) {
   
   // Combine the coefficient with the superscript exponent
   return coefficient + '×10' + superscriptExponent;
+}
+
+/**
+ * @param num Number to convert to Sci Notation
+ * @param variant MUI Typography Variant to be used
+ * @param sigFigs Number of desired significant figures
+ * @returns
+ */
+export function toScientificNotationElement(
+  num: number,
+  sigFigs: number,
+  typographyProps?: TypographyOwnProps
+) {
+  if (num > 0.01) {
+    return <Typography {...typographyProps}>{num.toFixed(2)}</Typography>;
+  }
+
+  // Convert the number to scientific notation using toExponential
+  let scientific = num.toExponential(sigFigs);
+  let [coefficient, exponent] = scientific.split("e");
+
+  return (
+    <Typography {...typographyProps}>
+      {coefficient}&nbsp;×&nbsp;10<sup>{exponent}</sup>
+    </Typography>
+  );
 }
 
 const svgData = (_svg): string => {

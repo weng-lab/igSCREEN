@@ -1,7 +1,7 @@
 "use client";
 
 import { Accordion, AccordionDetails, AccordionSummary, List, ListItem, Link as MuiLink, Skeleton, Typography } from "@mui/material";
-import { ExternalLink, getCellCategoryDisplayname, getClassDisplayname } from "common/utility";
+import { LinkComponent, getCellCategoryDisplayname, getClassDisplayname } from "common/utility";
 import { GenomicRange } from "types/globalTypes";
 import { useIcreData, UseIcreDataReturn } from "common/hooks/useIcreData";
 import { useIcreActivity, UseIcreActivityReturn } from "common/hooks/useIcreActivity";
@@ -64,9 +64,7 @@ const IntersectingiCREs = ({ region }: { region: GenomicRange }) => {
       headerName: "Accession",
       width: 130,
       renderCell: (params) => (
-        <MuiLink href={`/icre/${params.value}`} component={Link}>
-          {params.value}
-        </MuiLink>
+        <LinkComponent href={`/icre/${params.value}`}>{params.value}</LinkComponent>
       ),
     },
     {
@@ -129,19 +127,26 @@ const IntersectingiCREs = ({ region }: { region: GenomicRange }) => {
             <AccordionSummary expandIcon={<ExpandMore />}>
               Active in {Object.values(activeExps).flat().length} Experiments
             </AccordionSummary>
-            <AccordionDetails sx={{paddingY:0}}>
+            <AccordionDetails sx={{ paddingY: 0 }}>
               {Object.entries(activeExps).map(([lineage, exps], i) => (
                 <Accordion key={i} elevation={0} sx={{ background: "transparent" }}>
-                  <AccordionSummary expandIcon={<ExpandMore />} sx={{p: 0}}>
+                  <AccordionSummary expandIcon={<ExpandMore />} sx={{ p: 0 }}>
                     {getCellCategoryDisplayname(lineage)} ({exps.length})
                   </AccordionSummary>
                   <AccordionDetails>
                     <List disablePadding sx={{ listStyleType: "disc" }}>
-                    {exps.map((exp, i) => (
-                      <ExternalLink href={exp.link} showExternalIcon underline="hover" display={"list-item"} key={i}>
-                        {exp.biosampleid} - {exp.source}
-                      </ExternalLink>
-                    ))}
+                      {exps.map((exp, i) => (
+                        <LinkComponent
+                          href={exp.link}
+                          showExternalIcon
+                          openInNewTab
+                          underline="hover"
+                          display={"list-item"}
+                          key={i}
+                        >
+                          {exp.biosampleid} - {exp.source}
+                        </LinkComponent>
+                      ))}
                     </List>
                   </AccordionDetails>
                 </Accordion>

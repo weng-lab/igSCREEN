@@ -1,4 +1,6 @@
-import { gql, useQuery } from "@apollo/client"
+import { useQuery } from "@apollo/client"
+import { gql } from "types/generated"
+import { GetimmuneGwasLdrQuery } from "types/generated/graphql"
 
 function useGWASLdr(icres?: string[], snps?: string[] ) {
   const { loading, error, data } = useQuery(GWAS_LDR_QUERY, {
@@ -8,35 +10,15 @@ function useGWASLdr(icres?: string[], snps?: string[] ) {
     }
   })
   
-  return {data: data?.immuneGWASLdrQuery as ImmuneGWASLdr[], loading, error}
+  return {data: data?.immuneGWASLdrQuery as useGWASLdrReturn, loading, error}
 }
 
 export default useGWASLdr
 
-export type ImmuneGWASLdr = {
-    snp_chr: string;
-    snp_start: number;
-    snp_end: number;
-    snpid: string;
-    effect_allele: string;
-    ref_allele: string;
-    zscore: number;
-    icre_chr?: string;
-    icre_start?: number;
-    icre_end?: number;
-    icre?: string;
-    icre_class?: string;
-    study: string;
-
-    author?: string;
-    category: string;    
-    study_source: string;
-    disease: string;
-}
-
+export type useGWASLdrReturn = GetimmuneGwasLdrQuery["immuneGWASLdrQuery"]
 
 const GWAS_LDR_QUERY = gql(`
-query getimmuneGWASLdrQuery($icres: [String], $snps: [String]) {
+query getimmuneGWASLdr($icres: [String], $snps: [String]) {
     immuneGWASLdrQuery(snps: $snps, icres: $icres) {
       snp_chr
       snp_end

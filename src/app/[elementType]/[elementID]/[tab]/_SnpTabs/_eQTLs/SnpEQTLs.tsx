@@ -51,7 +51,10 @@ const SnpEQTLs = ({rsid}: SnpEQTLsProps) => {
       slots={{ toolbar: DataGridToolbar }}
       slotProps={{ toolbar: { title: `Yazar.Powell eQTLs for ${rsid}` } }}
       density="compact"
-      style={{ boxShadow: "0px 6px 12px rgba(0,0,0,0.2)" }}
+      sx={{
+        borderRadius: 1,
+        boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
+      }}
       getRowId={(row) => row.variant_id + row.pvalue}
     />
   )
