@@ -54,7 +54,7 @@ export default function Home() {
   return (
     <Stack
       width={{ xl: "60%", lg: "75%", md: "85%", sm: "90%", xs: "95%" }}
-      maxWidth={"800px"}
+      maxWidth={"1000px"}
       marginX={"auto"}
       marginY={5}
       spacing={3}
