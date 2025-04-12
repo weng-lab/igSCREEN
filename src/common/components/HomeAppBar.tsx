@@ -44,7 +44,7 @@ const pageLinks: PageInfo[] = [
       { pageName: "Gene", link: "/gene" },
       { pageName: "SNP", link: "/snp" },
       { pageName: "iCREs", link: "/icre" },
-      { pageName: "Cell Lineage", link: "/celllineage" },
+      { pageName: "Cell Lineage", link: "/lineage" },
       { pageName: "Phenotype", link: "/phenotype" },
     ],
   },

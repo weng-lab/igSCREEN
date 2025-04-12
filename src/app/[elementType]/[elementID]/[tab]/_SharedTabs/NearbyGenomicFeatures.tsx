@@ -140,7 +140,11 @@ const NearbyGenomicFeatures = ({ coordinates, elementType, elementID }: NearbyGe
             slots={{ toolbar: DataGridToolbar }}
             slotProps={{ toolbar: { title: "Nearby Genes" } }}
             density="compact"
-            style={{ boxShadow: "0px 6px 12px rgba(0,0,0,0.2)" }}
+            disableRowSelectionOnClick
+            sx={{
+              borderRadius: 1,
+              boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
+            }}
           />
         )}
       </Grid>
@@ -167,6 +171,7 @@ const NearbyGenomicFeatures = ({ coordinates, elementType, elementID }: NearbyGe
             }
             getRowId={(row) => row.accession}
             pagination
+            disableRowSelectionOnClick
             initialState={{
               sorting: {
                 sortModel: [{ field: "distance", sort: "asc" }],
@@ -178,7 +183,10 @@ const NearbyGenomicFeatures = ({ coordinates, elementType, elementID }: NearbyGe
             slots={{ toolbar: DataGridToolbar }}
             slotProps={{ toolbar: { title: "Nearby iCREs" } }}
             density="compact"
-            style={{ boxShadow: "0px 6px 12px rgba(0,0,0,0.2)" }}
+            sx={{
+              borderRadius: 1,
+              boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
+            }}
           />
         )}
       </Grid>
@@ -205,6 +213,7 @@ const NearbyGenomicFeatures = ({ coordinates, elementType, elementID }: NearbyGe
             }
             getRowId={(row) => row.id}
             pagination
+            disableRowSelectionOnClick
             initialState={{
               sorting: {
                 sortModel: [{ field: "distance", sort: "asc" }],
@@ -216,7 +225,10 @@ const NearbyGenomicFeatures = ({ coordinates, elementType, elementID }: NearbyGe
             slots={{ toolbar: DataGridToolbar }}
             slotProps={{ toolbar: { title: "Nearby SNPs" } }}
             density="compact"
-            style={{ boxShadow: "0px 6px 12px rgba(0,0,0,0.2)" }}
+            sx={{
+              borderRadius: 1,
+              boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
+            }}
           />
         )}
       </Grid>
