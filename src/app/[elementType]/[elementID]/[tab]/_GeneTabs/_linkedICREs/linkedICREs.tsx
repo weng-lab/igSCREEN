@@ -5,9 +5,10 @@ import LinkedElements from "common/components/linkedElements/linkedElements";
 import { TableDef } from "common/components/linkedElements/columns";
 import { accessionCol } from "common/components/linkedElements/columns";
 
-export default function LinkedICREs({ geneid }: { geneid: string }) {
-  const { data, loading, error } = useLinkedICREs(geneid);
 
+export default function LinkedICREs({ geneid }: { geneid: string }) {
+  const { data, loading, error } = useLinkedICREs(geneid);  
+  
   if (loading) {
     return (
       <Grid2 container spacing={2}>
