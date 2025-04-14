@@ -171,7 +171,8 @@ const VerticalBarPlot = <T,>({
   }, [data, xScale, spaceForLabel, labelSpaceDecided, SVGref, ParentWidth, topAxisLabel, uniqueID]);
 
   return (
-    <div ref={parentRef} style={{position: "relative", width: '100%'}}>
+    // Min width of 500 to ensure that on mobile the calculated bar width is not negative
+    <div ref={parentRef} style={{position: "relative", width: '100%', minWidth: '500px'}}>
       {data.length === 0 ?
         <p>No Data To Display</p>
         :

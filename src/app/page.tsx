@@ -79,7 +79,7 @@ export default function Home() {
           Search <em>immune</em> Candidate cis-Regulatory Elements, Genes, SNPs or a Genomic Region
         </Typography>
         <AutoComplete
-          style={{ width: 400 }}
+          style={{ width: 400, maxWidth: '100%' }}
           slots={{
             button: (
               <IconButton color="primary">

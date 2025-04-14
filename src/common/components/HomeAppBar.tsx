@@ -121,6 +121,7 @@ const ResponsiveAppBar = () => {
                 priority
                 src="/igSCREEN_red.png"
                 fill
+                sizes="110px"
                 alt="igSCREEN logo"
                 style={{ objectFit: "contain", objectPosition: "left center" }}
               />
