@@ -21,6 +21,7 @@ export type LinkedGeneInfo = {
   gene: string
   geneid: string
   genetype: string
+  isiCRE?: boolean
   method: "CRISPR" | "Chromatin" | "eQTLs"
   accession: string
   grnaid: string
