@@ -76,9 +76,10 @@ function AddTracksModal({ open, setOpen, setSelectedTracks, selectedTracks }: Mo
           alignItems: "left",
           backgroundColor: theme.palette.primary.main,
           color: "white",
+          width: "600px",
         }}
       >
-        <Box display="flex" alignItems="center" justifyContent="space-between" gap={1} mb={0}>
+        <Box display="flex" width="100%" alignItems="center" justifyContent="space-between" gap={1} mb={0}>
           <Box display="flex" alignItems="center" gap={1}>
             <EditIcon /> Select signal tracks
           </Box>
@@ -89,9 +90,9 @@ function AddTracksModal({ open, setOpen, setSelectedTracks, selectedTracks }: Mo
         <DialogContentText sx={{ color: "#cccccc" }}>Select up to 10 DNase and ATAC signal track</DialogContentText>
       </DialogTitle>
       {/* Content */}
-      <DialogContent>
+      <DialogContent sx={{ width: "600px" }}>
         {Object.entries(bigwigsData).map(([lineage, assays]) => (
-          <Accordion key={lineage} sx={{ width: "500px" }} slotProps={{ transition: { unmountOnExit: true } }}>
+          <Accordion key={lineage} sx={{ width: "550px" }} slotProps={{ transition: { unmountOnExit: true } }}>
             <AccordionSummary>
               <Box
                 width="100%"
@@ -166,7 +167,7 @@ function TrackCheckboxes({
               checked={newTracks.some((t) => t.name === track.name)}
               onChange={(event) => handleChange(event, track)}
             />
-            {track.name}
+            {track.displayName}
           </Box>
         ))
       )}
