@@ -160,9 +160,19 @@ export const accessionCol: colDef = {
   flex: 1,
   display: "flex",
   headerName: "Accession",
-  renderCell: (params: renderCellParams) => (
-    <LinkComponent href={`/icre/${params.value}`} underline="hover">
-      {params.value}
-    </LinkComponent>
-  ),
+  renderCell: (params: renderCellParams) => {
+    const href = !params.row.isiCRE
+      ? `https://screen.wenglab.org/search/?q=${params.value}&uuid=0&assembly=GRCh38`
+      : `/icre/${params.value}`;
+    return (
+      <LinkComponent
+        underline="hover"
+        href={href}        
+        showExternalIcon={!params.row.isiCRE}
+        openInNewTab={!params.row.isiCRE}
+      >
+        {params.value}
+      </LinkComponent>
+    );
+  },
 };
