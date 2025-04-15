@@ -6,39 +6,44 @@ import {
   DialogContentText,
   DialogActions,
   Button,
-  FormGroup,
-  FormControlLabel,
-  Checkbox,
   Box,
-  Typography,
-  Divider,
   IconButton,
+  Checkbox,
+  Accordion,
+  AccordionSummary,
+  Typography,
+  AccordionDetails,
 } from "@mui/material";
-import { BigWigTrackProps } from "@weng-lab/genomebrowser";
-import { atacTracks, dnaseTracks } from "./consts";
 import EditIcon from "@mui/icons-material/Edit";
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from "@mui/icons-material/Close";
 import { theme } from "app/theme";
+import bigwigsData from "./bigwigs.json";
+import { lineageName, trackColor } from "./utils";
 
 type ModalProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
-  setSelectedTracks: (tracks: BigWigTrackProps[]) => void;
-  selectedTracks: BigWigTrackProps[];
+  setSelectedTracks: (tracks: BigWig[]) => void;
+  selectedTracks: BigWig[];
+};
+
+export type BigWig = {
+  name: string;
+  lineage: string;
+  assay: string;
+  displayName: string;
+  fileID: string;
+  url: string;
 };
 
 function AddTracksModal({ open, setOpen, setSelectedTracks, selectedTracks }: ModalProps) {
-  const tracks = atacTracks.concat(dnaseTracks);
-  const [newTracks, setNewTracks] = useState<BigWigTrackProps[]>(selectedTracks);
+  const [newTracks, setNewTracks] = useState<BigWig[]>(selectedTracks);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const track = tracks.find((t) => t.id === event.target.name);
-    if (!track) return;
-
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>, track: BigWig) => {
     if (event.target.checked) {
       setNewTracks([...newTracks, track]);
     } else {
-      setNewTracks(newTracks.filter((t) => t.id !== track.id));
+      setNewTracks(newTracks.filter((t) => t.name !== track.name));
     }
   };
 
@@ -53,12 +58,17 @@ function AddTracksModal({ open, setOpen, setSelectedTracks, selectedTracks }: Mo
   };
 
   const handleAccept = () => {
+    if (newTracks.length > 10) {
+      alert("You can only display up to 10 tracks at a time");
+      return;
+    }
     setSelectedTracks([...newTracks]);
     setOpen(false);
   };
 
   return (
     <Dialog open={open} onClose={handleCancel}>
+      {/* Header */}
       <DialogTitle
         sx={{
           display: "flex",
@@ -66,9 +76,10 @@ function AddTracksModal({ open, setOpen, setSelectedTracks, selectedTracks }: Mo
           alignItems: "left",
           backgroundColor: theme.palette.primary.main,
           color: "white",
+          width: "600px",
         }}
       >
-        <Box display="flex" alignItems="center" justifyContent="space-between" gap={1} mb={0}>
+        <Box display="flex" width="100%" alignItems="center" justifyContent="space-between" gap={1} mb={0}>
           <Box display="flex" alignItems="center" gap={1}>
             <EditIcon /> Select signal tracks
           </Box>
@@ -76,45 +87,91 @@ function AddTracksModal({ open, setOpen, setSelectedTracks, selectedTracks }: Mo
             <CloseIcon />
           </IconButton>
         </Box>
-        <DialogContentText sx={{ color: "#cccccc" }}>Select tracks you wish to display</DialogContentText>
+        <DialogContentText sx={{ color: "#cccccc" }}>Select up to 10 DNase and ATAC signal track</DialogContentText>
       </DialogTitle>
-      <DialogContent>
-        <FormGroup sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-            <Typography mt={1} variant="h5">
-              ATAC-seq
-            </Typography>
-            {atacTracks.map((track, i) => (
-              <FormControlLabel
-                key={i}
-                control={<Checkbox checked={newTracks.includes(track)} onChange={handleChange} name={track.id} />}
-                label={track.title.replace("ATAC ", "")}
-              />
-            ))}
-          </Box>
-          <Divider orientation="vertical" flexItem />
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-            <Typography mt={1} variant="h5">
-              DNase-seq
-            </Typography>
-            {dnaseTracks.map((track, i) => (
-              <FormControlLabel
-                key={i}
-                control={<Checkbox checked={newTracks.includes(track)} onChange={handleChange} name={track.id} />}
-                label={track.title.replace("DNase ", "")}
-              />
-            ))}
-          </Box>
-        </FormGroup>
+      {/* Content */}
+      <DialogContent sx={{ width: "600px" }}>
+        {Object.entries(bigwigsData).map(([lineage, assays]) => (
+          <Accordion key={lineage} sx={{ width: "550px" }} slotProps={{ transition: { unmountOnExit: true } }}>
+            <AccordionSummary>
+              <Box
+                width="100%"
+                display="flex"
+                gap={1}
+                flexDirection="row"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Typography fontWeight="bold" sx={{ color: trackColor(lineage) }}>
+                  {lineageName(lineage)}
+                </Typography>
+                <Typography>
+                  {newTracks.filter((t) => t.lineage === lineage).length} / {assays.dnase.length + assays.atac.length}
+                </Typography>
+              </Box>
+            </AccordionSummary>
+            <AccordionDetails
+              sx={{ display: "flex", flexDirection: "column", gap: 1, justifyContent: "space-between" }}
+            >
+              <Box display="flex" flexDirection="row" justifyContent="space-around" width="100%">
+                <Typography fontWeight="bold">DNase</Typography>
+                <Typography fontWeight="bold">ATAC</Typography>
+              </Box>
+              {/* Track columns */}
+              <Box display="flex" gap={1} flexDirection="row" justifyContent="space-evenly" paddingInline={1}>
+                <TrackCheckboxes tracks={assays.dnase} newTracks={newTracks} handleChange={handleChange} />
+                <TrackCheckboxes tracks={assays.atac} newTracks={newTracks} handleChange={handleChange} />
+              </Box>
+            </AccordionDetails>
+          </Accordion>
+        ))}
       </DialogContent>
-      <DialogActions sx={{ justifyContent: "space-between" }}>
-        <Button onClick={handleDeselectAll}>Clear</Button>
-        <Box display="flex" gap={1}>
-          <Button variant="outlined" onClick={handleCancel}>Cancel</Button>
-          <Button variant="contained" onClick={handleAccept}>Apply</Button>
+      {/* Actions */}
+      <DialogActions sx={{ justifyContent: "space-between", alignItems: "center" }}>
+        <Button variant="text" color="error" onClick={handleDeselectAll}>
+          Clear
+        </Button>
+        <Box display="flex" gap={1} alignItems="center">
+          <Typography fontWeight="bold" color={newTracks.length > 10 ? "error" : "primary"}>
+            {newTracks.length} / 10
+          </Typography>
+          <Button variant="outlined" onClick={handleCancel}>
+            Cancel
+          </Button>
+          <Button variant="contained" onClick={handleAccept}>
+            Apply
+          </Button>
         </Box>
       </DialogActions>
     </Dialog>
+  );
+}
+
+function TrackCheckboxes({
+  tracks,
+  newTracks,
+  handleChange,
+}: {
+  tracks: BigWig[];
+  newTracks: BigWig[];
+  handleChange: (event: React.ChangeEvent<HTMLInputElement>, track: BigWig) => void;
+}) {
+  return (
+    <Box width="50%" display="flex" gap={1} flexDirection="column">
+      {tracks.length == 0 ? (
+        <Typography>No tracks available</Typography>
+      ) : (
+        tracks.map((track: BigWig) => (
+          <Box key={track.name} display="flex" gap={1} alignItems="center">
+            <Checkbox
+              checked={newTracks.some((t) => t.name === track.name)}
+              onChange={(event) => handleChange(event, track)}
+            />
+            {track.displayName}
+          </Box>
+        ))
+      )}
+    </Box>
   );
 }
 
