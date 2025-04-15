@@ -44,7 +44,7 @@ const pageLinks: PageInfo[] = [
       { pageName: "Gene", link: "/gene" },
       { pageName: "SNP", link: "/snp" },
       { pageName: "iCREs", link: "/icre" },
-      { pageName: "Cell Lineage", link: "/celllineage" },
+      { pageName: "Cell Lineage", link: "/lineage" },
       { pageName: "Phenotype", link: "/phenotype" },
     ],
   },
@@ -121,6 +121,7 @@ const ResponsiveAppBar = () => {
                 priority
                 src="/igSCREEN_red.png"
                 fill
+                sizes="110px"
                 alt="igSCREEN logo"
                 style={{ objectFit: "contain", objectPosition: "left center" }}
               />

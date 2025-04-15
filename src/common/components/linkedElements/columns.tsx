@@ -2,7 +2,7 @@ import { GridColDef, GridRenderCellParams } from "@mui/x-data-grid-pro";
 import { Typography } from "@mui/material";
 import { LinkedICREInfo } from "common/hooks/useLinkedICREs";
 import { LinkedGeneInfo } from "common/hooks/useLinkedGenes";
-import { CreateLink, GeneLink, GeneTypeFormatter, toScientificNotationElement } from "./utils";
+import { LinkComponent, toScientificNotationElement } from "common/utility";
 
 // Combined types for GridColDef and GridRenderCellParams for linkedGenes and linkedICREs
 export type colDef = GridColDef<LinkedGeneInfo> | GridColDef<LinkedICREInfo>;
@@ -24,11 +24,22 @@ export const geneNameCol: colDef = {
   display: "flex",
   headerName: "Common Gene Name",
   renderCell: (params: renderCellParams) => (
-    <Typography variant="body2" sx={{ fontStyle: "italic" }}>
-      <GeneLink geneName={params.value} />
-    </Typography>
+    <LinkComponent href={`/gene/${params.value}`} underline="hover">
+      <i>{params.value}</i>
+    </LinkComponent>
   ),
 };
+
+const GeneTypeFormatter = (value: string, row: LinkedGeneInfo) =>
+  row.genetype
+    ? row.genetype === "lncRNA"
+      ? row.genetype
+      : row.genetype
+          .replaceAll("_", " ")
+          .split(" ")
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ")
+    : value;
 
 export const geneTypeCol: colDef = {
   field: "genetype",
@@ -45,13 +56,14 @@ export const experimentCol: colDef = {
   display: "flex",
   headerName: "Experiment ID",
   renderCell: (params: renderCellParams) => (
-    <CreateLink
-      linkPrefix="https://www.encodeproject.org/experiments/"
-      linkArg={params.value}
-      label={params.value}
+    <LinkComponent
+      href={`https://www.encodeproject.org/experiments/${params.value}`}
+      openInNewTab
       showExternalIcon
       underline="hover"
-    />
+    >
+      {params.value}
+    </LinkComponent>
   ),
 };
 
@@ -148,9 +160,19 @@ export const accessionCol: colDef = {
   flex: 1,
   display: "flex",
   headerName: "Accession",
-  renderCell: (params: renderCellParams) => (
-    <Typography variant="body2" paddingBlock={1}>
-      <CreateLink linkPrefix="/icre/" linkArg={params.value} label={params.value} showExternalIcon />
-    </Typography>
-  ),
+  renderCell: (params: renderCellParams) => {
+    const href = !params.row.isiCRE
+      ? `https://screen.wenglab.org/search/?q=${params.value}&uuid=0&assembly=GRCh38`
+      : `/icre/${params.value}`;
+    return (
+      <LinkComponent
+        underline="hover"
+        href={href}        
+        showExternalIcon={!params.row.isiCRE}
+        openInNewTab={!params.row.isiCRE}
+      >
+        {params.value}
+      </LinkComponent>
+    );
+  },
 };
