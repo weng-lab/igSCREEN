@@ -1,21 +1,16 @@
 "use client";
 import { Search } from "@mui/icons-material";
 import EditIcon from "@mui/icons-material/Edit";
+import HighlightIcon from "@mui/icons-material/Highlight";
 import {
   Box,
   Button,
-  DialogTitle,
-  Dialog,
   IconButton,
-  DialogContent,
-  DialogContentText,
-  Typography,
 } from "@mui/material";
 import Grid2 from "@mui/material/Grid2";
 import { useTheme } from "@mui/material/styles";
 import {
   BigBedTrackProps,
-  BigWigTrackProps,
   BrowserActionType,
   DefaultBigBed,
   DefaultBigWig,
@@ -28,14 +23,14 @@ import {
   useBrowserState,
 } from "@weng-lab/genomebrowser";
 import { GenomeSearch, Result } from "@weng-lab/psychscreen-ui-components";
-import React, { useCallback, useEffect, useState } from "react";
-import { Rect } from "umms-gb/dist/components/tracks/bigbed/types";
-import { GenomicRange } from "./types";
-import ControlButtons from "./controls";
+import { useCallback, useEffect, useState } from "react";
 import { GenomicElementType } from "types/globalTypes";
-import HighlightIcon from "@mui/icons-material/Highlight";
+import { Rect } from "umms-gb/dist/components/tracks/bigbed/types";
+import AddTracksModal, { BigWig } from "./addTracksModal";
+import ControlButtons from "./controls";
 import HighlightDialog, { GBHighlight } from "./highlightDialog";
-import AddTracksModal from "./addTracksModal";
+import { GenomicRange } from "./types";
+import { randomColor, trackColor } from "./utils";
 
 function expandCoordinates(coordinates: GenomicRange) {
   let length = coordinates.end - coordinates.start;
@@ -111,19 +106,29 @@ export default function GenomeBrowserView({
 
   // Bulk ATAC Modal
   const [showAddTracksModal, setShowAddTracksModal] = useState(false);
-  const [selectedTracks, setSelectedTracks] = useState<BigWigTrackProps[]>([]);
+  const [selectedTracks, setSelectedTracks] = useState<BigWig[]>([]);
 
   useEffect(() => {
-    // Add new tracks that aren't already in browser state
     selectedTracks.forEach((track) => {
-      if (!browserState.tracks.some((t) => t.id === track.id)) {
-        browserDispatch({ type: BrowserActionType.ADD_TRACK, track });
+      // check if the track is not already in the browser state
+      if (!browserState.tracks.some((t) => t.id === track.name + "_temp")) {
+        const trackToAdd = {
+          ...DefaultBigWig,
+          id: track.name + "_temp",
+          title: track.assay + " " + track.displayName,
+          url: track.url,
+          color: trackColor(track.lineage),
+          height: 100,
+          titleSize: 16,
+          displayMode: DisplayMode.FULL,
+        };
+        browserDispatch({ type: BrowserActionType.ADD_TRACK, track: trackToAdd });
       }
     });
 
     // Remove tracks that are no longer selected
     browserState.tracks.forEach((track) => {
-      if (track.id?.includes("_merged_signal") && !selectedTracks.some((t) => t.id === track.id)) {
+      if (track.id.includes("_temp") && !selectedTracks.some((t) => t.name + "_temp" === track.id)) {
         browserDispatch({ type: BrowserActionType.DELETE_TRACK, id: track.id });
       }
     });
@@ -316,26 +321,34 @@ function defaultTracks(
     displayMode: DisplayMode.DENSE,
     color: "#9378bc",
     rowHeight: 20,
-    height: 75,
+    height: 100,
     onMouseOver: icreMouseOver,
     onMouseOut: icreMouseOut,
     onClick: onIcreClick,
-    url: "https://downloads.wenglab.org/Calderon-Corces_activeCREs_iSCREEN_withcolors.bigBed",
+    url: "http://downloads.wenglab.org/igscreen/iCREs.bigBed",
   } as BigBedTrackProps;
 
-  const allImmuneBigWig = {
+  const atacBigWig = {
     ...DefaultBigWig,
-    title: "All Immune Cells (Aggregate Signal)",
-    url: "https://downloads.wenglab.org/all_immune.bigWig",
-    color: "#000000",
-    height: 75,
+    title: "ATAC merged signal",
+    url: "https://downloads.wenglab.org/igscreen/ATAC_merged_signal.bigWig",
+    color: "#02c7b9",
+    height: 100,
+    titleSize: 16,
     displayMode: DisplayMode.FULL,
-    id: "all-immune-bigwig",
+    id: "atac-bigwig",
   };
-  return [geneTrack, icreTrack, allImmuneBigWig];
-}
 
-function randomColor() {
-  return "#" + Math.floor(Math.random() * 16777215).toString(16);
+  const dnaseBigWig = {
+    ...DefaultBigWig,
+    title: "DNase merged signal",
+    url: "https://downloads.wenglab.org/igscreen/DNase_merged_signal.bigWig",
+    color: "#06DA93",
+    height: 100,
+    titleSize: 16,
+    displayMode: DisplayMode.FULL,
+    id: "dnase-bigwig",
+  };
+  return [geneTrack, icreTrack, atacBigWig, dnaseBigWig];
 }
 
