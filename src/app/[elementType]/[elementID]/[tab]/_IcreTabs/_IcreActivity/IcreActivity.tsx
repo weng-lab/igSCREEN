@@ -5,7 +5,8 @@ import IcreActivityTable from "./IcreActivityTable"
 import { useIcreActivity, UseIcreActivityReturn } from "common/hooks/useIcreActivity"
 import IcreActivityBarPlot from "./IcreActivityBarPlot"
 import IcreActivityUMAP from "./IcreActivityUMAP"
-import { BarChart, ScatterPlot } from "@mui/icons-material"
+import { BarChart, ScatterPlot, SchemaRounded } from "@mui/icons-material"
+import IcreActivityTree from "./IcreActivityTree"
 
 
 export type IcreActivityProps = {
@@ -76,6 +77,12 @@ const IcreActivity = ({ accession }: IcreActivityProps) => {
               selected={selected}
               onSelectionChange={(points) => handlePointsSelected(points.map(x => x.metaData))}
             />
+        },
+        {
+          tabTitle: "Activity in Cell Lineage",
+          icon: <SchemaRounded sx={{ transform: "rotate(270deg)" }}/>,
+          plotComponent: 
+            <IcreActivityTree accession={accession} />
         }
       ]}
     />

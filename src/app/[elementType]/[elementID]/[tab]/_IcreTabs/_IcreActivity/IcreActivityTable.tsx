@@ -147,6 +147,7 @@ const IcreActivityTable = ({ accession, selected, onSelectionChange, iCREActivit
       getRowId={(row) => row.name}
       getRowHeight={() => 'auto'}
       keepNonExistentRowsSelected //needed to prevent clearing selections on changing filters
+      //Not really supposed to be using this, is not documented by MUI
       onStateChange={handleSync}
     />
   )
