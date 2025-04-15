@@ -1,21 +1,16 @@
 "use client";
 import { Search } from "@mui/icons-material";
 import EditIcon from "@mui/icons-material/Edit";
+import HighlightIcon from "@mui/icons-material/Highlight";
 import {
   Box,
   Button,
-  DialogTitle,
-  Dialog,
   IconButton,
-  DialogContent,
-  DialogContentText,
-  Typography,
 } from "@mui/material";
 import Grid2 from "@mui/material/Grid2";
 import { useTheme } from "@mui/material/styles";
 import {
   BigBedTrackProps,
-  BigWigTrackProps,
   BrowserActionType,
   DefaultBigBed,
   DefaultBigWig,
@@ -28,14 +23,13 @@ import {
   useBrowserState,
 } from "@weng-lab/genomebrowser";
 import { GenomeSearch, Result } from "@weng-lab/psychscreen-ui-components";
-import React, { useCallback, useEffect, useState } from "react";
-import { Rect } from "umms-gb/dist/components/tracks/bigbed/types";
-import { GenomicRange } from "./types";
-import ControlButtons from "./controls";
+import { useCallback, useEffect, useState } from "react";
 import { GenomicElementType } from "types/globalTypes";
-import HighlightIcon from "@mui/icons-material/Highlight";
-import HighlightDialog, { GBHighlight } from "./highlightDialog";
+import { Rect } from "umms-gb/dist/components/tracks/bigbed/types";
 import AddTracksModal, { BigWig } from "./addTracksModal";
+import ControlButtons from "./controls";
+import HighlightDialog, { GBHighlight } from "./highlightDialog";
+import { GenomicRange } from "./types";
 import { randomColor, trackColor } from "./utils";
 
 function expandCoordinates(coordinates: GenomicRange) {
@@ -121,7 +115,7 @@ export default function GenomeBrowserView({
         const trackToAdd = {
           ...DefaultBigWig,
           id: track.name + "_temp",
-          title: track.assay + "-seq " + track.displayName,
+          title: track.assay + " " + track.displayName,
           url: track.url,
           color: trackColor(track.lineage),
           height: 100,
