@@ -58,17 +58,21 @@ const GET_UPSET_FILE = gql(`
   query getSetFile(
     $celltypes: [[String]]
     $excludecelltypes: [[String]]
+    $allcelltypes: [[String]]
     $dnasecelltypes: [[String]]
     $dnaseexcludecelltypes: [[String]]
+    $dnaseallcelltypes: [[String]]
     $uuid: String!
     $group: [String!]
   ) {
     createicresFilesQuery(
-      uuid: $uuid
       celltypes: $celltypes
       excludecelltypes: $excludecelltypes
+      allcelltypes: $allcelltypes
       dnasecelltypes: $dnasecelltypes
       dnaseexcludecelltypes: $dnaseexcludecelltypes
+      dnaseallcelltypes: $dnaseallcelltypes
+      uuid: $uuid
       group: $group
     )
   }
@@ -224,19 +228,32 @@ export default function CellLineagePage() {
   }, [getUpSetData, selectedAssay, selectedCellsWithStim, selectedClasses]);
 
   const handleUpSetBarClick = useCallback(
-    (grouping: UpSetPlotDatum) => {
+    (grouping: UpSetPlotDatum & {
+      unionCelltypes?: string[];
+  }) => {
       const vars =
         selectedAssay === "ATAC"
           ? {
-              celltypes: grouping.includedCelltypes.map((x) => [x]),
-              excludecelltypes:
-                grouping?.excludedCelltypes?.length > 0 ? grouping.excludedCelltypes.map((x) => [x]) : undefined,
-            }
-          : {
-              dnasecelltypes: grouping.includedCelltypes.map((x) => [x]),
-              dnaseexcludecelltypes:
-                grouping?.excludedCelltypes?.length > 0 ? grouping.excludedCelltypes.map((x) => [x]) : undefined,
-            };
+          allcelltypes: grouping.includedCelltypes?.length
+            ? grouping.includedCelltypes.map((x) => [x])
+            : undefined,
+          excludecelltypes: grouping.excludedCelltypes?.length
+            ? grouping.excludedCelltypes.map((x) => [x])
+            : undefined,
+          celltypes: grouping.unionCelltypes?.length
+            ? grouping.unionCelltypes.map((x) => [x])
+            : undefined,
+        } : {
+          dnaseallcelltypes: grouping.includedCelltypes?.length
+            ? grouping.includedCelltypes.map((x) => [x])
+            : undefined,
+          dnaseexcludecelltypes: grouping.excludedCelltypes?.length
+            ? grouping.excludedCelltypes.map((x) => [x])
+            : undefined,
+          dnasecelltypes: grouping.unionCelltypes?.length
+            ? grouping.unionCelltypes.map((x) => [x])
+            : undefined,
+        };
       getUpSetFile({
         variables: {
           ...vars,
@@ -255,9 +272,14 @@ export default function CellLineagePage() {
             const a = document.createElement("a");
             const blobUrl = URL.createObjectURL(blob);
             a.href = blobUrl;
-            a.download = `Intersect(${grouping.includedCelltypes.join(",")})Exclude(${grouping.excludedCelltypes.join(
-              ","
-            )})Classes(${selectedClasses.length === ccreClasses.length ? "all" : selectedClasses.join(",")}).bed`;
+            const filename = grouping.unionCelltypes
+              ? `Union(${grouping.unionCelltypes.join(",")}).bed`
+              : `Intersect(${grouping.includedCelltypes.join(",")})Exclude(${
+                  grouping.excludedCelltypes?.join(",") ?? "none"
+                })Classes(${
+                  selectedClasses.length === ccreClasses.length ? "all" : selectedClasses.map((x) => x.class).join(",")
+                }).bed`;
+            a.download = filename;
             a.click();
             URL.revokeObjectURL(blobUrl);
           })
