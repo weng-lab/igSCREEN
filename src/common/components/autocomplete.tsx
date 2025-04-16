@@ -33,6 +33,13 @@ export default function AutoComplete({closeDrawer, ...props}: AutoCompleteProps)
       case "iCRE":
         url = `/icre/${r.title}`;
         break;
+      case "cCRE": 
+        if (r.description.includes("iCRE")) {
+          url = `/icre/${r.title}`;
+        } else {
+          url = `/ccre?accession=${r.title}`;
+        }
+        break;
       case "Coordinate":
         url = `/region/${r.domain.chromosome}:${r.domain.start}-${r.domain.end}`;
         break;
@@ -47,7 +54,8 @@ export default function AutoComplete({closeDrawer, ...props}: AutoCompleteProps)
     <GenomeSearch
       {...props}
       assembly="GRCh38"
-      queries={["Gene", "iCRE", "SNP", "Coordinate"]}
+      queries={["Gene", "cCRE", "SNP", "Coordinate"]}
+      showiCREFlag
       onSearchSubmit={handleSearchSubmit}
       //This is needed to prevent the enter key press from triggering the onClick of the Menu IconButton
       onKeyDown={(e) => {
