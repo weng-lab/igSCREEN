@@ -198,7 +198,7 @@ const MultiSelect = <
       disableCloseOnSelect
       disablePortal
       slotProps={{ popper: { sx: { zIndex: 1 } } }} //used to make options appear under header
-      style={{ width: 400 }}
+      style={{ maxWidth: 400 }}
       renderInput={(params) => (
         <TextField {...params} placeholder={placeholder} />
       )}
