@@ -6,7 +6,8 @@ export default function Footer() {
   return (
     <Box id="Footer" sx={{
       textAlign: "center", width: "100%", height: "3rem",
-      backgroundColor: theme => theme.palette.primary.main
+      backgroundColor: theme => theme.palette.primary.main,
+      zIndex: theme => theme.zIndex.appBar,
     }}>
       <Typography variant="body2" color="#ffffff">
         {"Copyright © "}
