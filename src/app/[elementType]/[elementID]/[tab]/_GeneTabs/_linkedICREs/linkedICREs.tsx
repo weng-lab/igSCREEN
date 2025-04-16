@@ -9,10 +9,10 @@ import { useState } from "react";
 
 export default function LinkedICREs({ geneid }: { geneid: string }) {
   const { data, loading, error } = useLinkedICREs(geneid);
-  const [onlyICREs, setOnlyICREs] = useState<boolean>(true)
+  const [allcCREs, setAllcCREs] = useState<boolean>(false)
 
   const toggleOnlyICREs = () => {
-    setOnlyICREs(!onlyICREs)
+    setAllcCREs(!allcCREs)
   }
   
   if (loading) {
@@ -39,25 +39,25 @@ export default function LinkedICREs({ geneid }: { geneid: string }) {
   }
 
   const HiCLinked = data
-    .filter((x: LinkedICREInfo) => x.assay === "Intact-HiC" && (!onlyICREs || x.isiCRE))
+    .filter((x: LinkedICREInfo) => x.assay === "Intact-HiC" && (allcCREs || x.isiCRE))
     .map((x: LinkedICREInfo, index: number) => ({
       ...x,
       id: index.toString(),
     }));
   const ChIAPETLinked = data
-    .filter((x: LinkedICREInfo) => (x.assay === "RNAPII-ChIAPET" || x.assay === "CTCF-ChIAPET") && (!onlyICREs || x.isiCRE))
+    .filter((x: LinkedICREInfo) => (x.assay === "RNAPII-ChIAPET" || x.assay === "CTCF-ChIAPET") && (allcCREs || x.isiCRE))
     .map((x: LinkedICREInfo, index: number) => ({
       ...x,
       id: index.toString(),
     }));
   const crisprLinked = data
-    .filter((x: LinkedICREInfo) => x.method === "CRISPR" && (!onlyICREs || x.isiCRE))
+    .filter((x: LinkedICREInfo) => x.method === "CRISPR" && (allcCREs || x.isiCRE))
     .map((x: LinkedICREInfo, index: number) => ({
       ...x,
       id: index.toString(),
     }));
   const eqtlLinked = data
-    .filter((x: LinkedICREInfo) => x.method === "eQTLs" && (!onlyICREs || x.isiCRE))
+    .filter((x: LinkedICREInfo) => x.method === "eQTLs" && (allcCREs || x.isiCRE))
     .map((x: LinkedICREInfo, index: number) => ({
       ...x,
       id: index.toString(),
@@ -81,10 +81,10 @@ export default function LinkedICREs({ geneid }: { geneid: string }) {
   return (
     <Stack spacing={2}>
       <FormControlLabel
-        label="Show only iCREs"
+        label="Show all cCREs"
         control={<Checkbox />}
         sx={{width: "200px"}}
-        checked={onlyICREs}
+        checked={allcCREs}
         onChange={toggleOnlyICREs}
       />
       <LinkedElements tables={tables} />
