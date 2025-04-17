@@ -44,7 +44,7 @@ export default function AutoComplete({closeDrawer, ...props}: AutoCompleteProps)
         url = `/region/${r.domain.chromosome}:${r.domain.start}-${r.domain.end}`;
         break;
       case "SNP":
-        url = `/snp/${r.title}`;
+        url = `/variant/${r.title}`;
         break;
     }
     router.push(url);

@@ -37,6 +37,7 @@ export type UseGeneDataReturn<T extends UseGeneDataParams> =
 
 export const useGeneData = <T extends UseGeneDataParams>({ name, coordinates, elementType }: T): UseGeneDataReturn<T> => {
   const [geneData, setGeneData] = useState<GeneData[] | GeneData | undefined>(undefined);
+  const [descriptionsLoading, setDescriptionsLoading] = useState<boolean>(false)
 
   const fetchGeneDescription = async (geneName: string) => {
     try {
@@ -64,7 +65,7 @@ export const useGeneData = <T extends UseGeneDataParams>({ name, coordinates, el
   useEffect(() => {
     const mergeWithDescriptions = async () => {
       if (!data?.gene) return;
-
+      setDescriptionsLoading(true)
       const genes = data.gene;
 
       if (Array.isArray(name) || coordinates) {
@@ -83,6 +84,7 @@ export const useGeneData = <T extends UseGeneDataParams>({ name, coordinates, el
 
         }
       }
+      setDescriptionsLoading(false)
     };
 
     mergeWithDescriptions();
@@ -90,7 +92,7 @@ export const useGeneData = <T extends UseGeneDataParams>({ name, coordinates, el
 
   return {
     data: geneData,
-    loading,
+    loading: loading || descriptionsLoading,
     error,
   } as UseGeneDataReturn<T>;
 }

@@ -37,7 +37,7 @@ export default function MobileMenu({pageLinks, drawerOpen, toggleDrawer}: Mobile
                             box: { gap: 1 },
                             input: {
                                 size: "small",
-                                label: "Enter a gene, snp, icre or locus",
+                                label: "Enter a gene, iCRE, variant or locus",
                                 sx: {
                                     "& .MuiOutlinedInput-root": {
                                         backgroundColor: "#ffffff",
