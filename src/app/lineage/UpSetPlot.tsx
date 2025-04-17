@@ -15,7 +15,7 @@ export type BarsProps = {
   width: number;
   height: number;
   data: UpSetPlotDatum[];
-  onBarClicked?: (grouping: UpSetPlotDatum) => void;
+  onBarClicked?: (grouping: UpSetPlotDatum & {unionCelltypes?: string[]}) => void;
   reference?: React.LegacyRef<SVGSVGElement>;
   loadingDownload?: boolean;
 };
@@ -174,7 +174,7 @@ export default function UpSetPlot({
           top={30}
           left={30}
           cursor="pointer"
-          onClick={() => onBarClicked({ includedCelltypes: celltypes })}
+          onClick={() => onBarClicked({ unionCelltypes: celltypes })}
           onMouseMove={(event) => {
             showTooltip({
               tooltipTop: event.pageY,
