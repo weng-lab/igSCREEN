@@ -38,33 +38,82 @@ const ElementDetailsHeader = ({ elementType, elementID }: ElementDetailsHeaderPr
           {loading ? <Skeleton width={215} /> : coordinatesDisplay}
         </Typography>
       </Stack>
-      <Grid2 container spacing={2}>
-        <Grid2 size={6}>
-          <Button
-            variant="contained"
-            href={elementID ? `http://screen.wenglab.org/search/?q=${elementID}&uuid=0&assembly=GRCh38` : undefined}
-            target="_blank"
-            rel="noopener noreferrer"
-            sx={{ minWidth: 125, height: "100%", backgroundColor: "white" }}
+      <Grid2
+        container
+        direction="column"
+        spacing={1}
+        sx={{ height: "100%" }} // Make this stretch within the parent
+      >
+        <Grid2>
+          <Typography
+            sx={{ textAlign: "right", width: "100%" }}
           >
-            <Image style={{ objectFit: "contain", padding: 4 }} src="/SCREEN_logo_light_large.png" fill alt="screen-card-button" />
-          </Button>
+            {coordinatesDisplay}
+          </Typography>
         </Grid2>
-        <Grid2 size={6} display={elementType === "icre" && "none"}>
-          <Button
-            variant="contained"
-            href={
-              elementID ?
-              elementType === "gene" ?
-              "https://www.genecards.org/cgi-bin/carddisp.pl?gene=" + elementID 
-              : `https://www.ncbi.nlm.nih.gov/snp/${elementID}`
-              : undefined}
-            target="_blank"
-            rel="noopener noreferrer"
-            sx={{ minWidth: 125, height: "100%", backgroundColor: "white" }}
+
+        <Grid2 container spacing={1} sx={{ flexGrow: 1 }}>
+          <Grid2 size={6} sx={{ display: "flex" }}>
+            <Button
+              variant="contained"
+              href={
+                elementID
+                  ? `http://screen.wenglab.org/search/?q=${elementID}&uuid=0&assembly=GRCh38`
+                  : undefined
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                minWidth: 125,
+                flexGrow: 1,
+                backgroundColor: "white",
+                p: 0,
+              }}
+            >
+              <Image
+                style={{ objectFit: "contain", padding: 4 }}
+                src="/SCREEN_logo_light_large.png"
+                fill
+                alt="screen-card-button"
+              />
+            </Button>
+          </Grid2>
+
+          <Grid2
+            size={6}
+            display={elementType === "icre" && "none"}
+            sx={{ display: "flex" }}
           >
-            <Image style={{ objectFit: "contain" }} src={elementType === "gene" ? "https://geneanalytics.genecards.org/media/81632/gc.png" : "https://www.ncbi.nlm.nih.gov/core/assets/style-guide/img/NLM-square-logo.png"} fill alt="genecard-snpcard-button" />
-          </Button>
+            <Button
+              variant="contained"
+              href={
+                elementID
+                  ? elementType === "gene"
+                    ? "https://www.genecards.org/cgi-bin/carddisp.pl?gene=" + elementID
+                    : `https://www.ncbi.nlm.nih.gov/snp/${elementID}`
+                  : undefined
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
+                minWidth: 125,
+                flexGrow: 1,
+                backgroundColor: "white",
+                p: 0,
+              }}
+            >
+              <Image
+                style={{ objectFit: "contain" }}
+                src={
+                  elementType === "gene"
+                    ? "https://geneanalytics.genecards.org/media/81632/gc.png"
+                    : "https://www.ncbi.nlm.nih.gov/core/assets/style-guide/img/NLM-square-logo.png"
+                }
+                fill
+                alt="genecard-snpcard-button"
+              />
+            </Button>
+          </Grid2>
         </Grid2>
       </Grid2>
     </Stack>
