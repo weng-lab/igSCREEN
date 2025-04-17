@@ -27,11 +27,11 @@ const icreConfig: PortalConfig = {
     "Explore regulatory element activity (immune cCREs) across immune cell types at bulk and single-cell resolution for 63 cell types across 736 experiments.",
 };
 
-const snpConfig: PortalConfig = {
+const variantConfig: PortalConfig = {
   image: "/assets/SNPPortal.png",
-  title: "SNP",
+  title: "Variant",
   description:
-    "Search SNPs of interest and explore their impact on gene expression, chromatin accessibility, transcription factor (TF) binding and other molecular traits in immune cells.",
+    "Search Variants of interest and explore their impact on gene expression, chromatin accessibility, transcription factor (TF) binding and other molecular traits in immune cells.",
 };
 
 export default function PortalPage({ params: { elementType } }: { params: { elementType: string } }) {
@@ -46,7 +46,7 @@ export default function PortalPage({ params: { elementType } }: { params: { elem
   };
 
   const { image, title, description } =
-    elementType === "gene" ? geneConfig : elementType === "icre" ? icreConfig : snpConfig;
+    elementType === "gene" ? geneConfig : elementType === "icre" ? icreConfig : variantConfig;
 
   const popularSearches = {
     Gene: [
@@ -63,8 +63,7 @@ export default function PortalPage({ params: { elementType } }: { params: { elem
       { name: "EH38E3934197", region: "chrX:49,264,498-49,264,848" },
       { name: "EH38E1728788", region: "chr14:75,523,789-75,524,136" },
     ],
-
-    SNP: [
+    Variant: [
       { name: "rs9466027", region: "chr6:21,298,226-21,298,227" },
       { name: "rs9466028", region: "chr6:21,300,773-21,300,774" },
       { name: "rs80230724", region: "chr6:21,302,562-21,302,563" },

@@ -1,4 +1,4 @@
-import { GenePortalTab, IcrePortalTab, SharedTab, SnpPortalTab } from "types/globalTypes";
+import { GenePortalTab, IcrePortalTab, SharedTab, VariantPortalTab } from "types/globalTypes";
 
 const GbIconPath = '/assets/GenomeBrowserIcon.svg'
 const IcreIconPath = '/assets/IcreIcon.svg'
@@ -13,9 +13,9 @@ export const sharedTabs: SharedTab[] = [
   },
 ];
 
-export const snpPortalTabs: SnpPortalTab[] = [
+export const variantPortalTabs: VariantPortalTab[] = [
   {
-    label: "SNP",
+    label: "Variant",
     href: "",
     iconPath: VariantIconPath
   },

@@ -106,7 +106,7 @@ const NearbyGenomicFeatures = ({ coordinates, elementType, elementID }: NearbyGe
       };
     })
     .filter((snp) => {
-      if (elementType === "snp") {
+      if (elementType === "variant") {
         return snp.id !== elementID;
       } else return true;
     });
@@ -210,7 +210,7 @@ const NearbyGenomicFeatures = ({ coordinates, elementType, elementID }: NearbyGe
                   headerName: "SNP ID",
                   flex: 1,
                   renderCell: (params) => (
-                    <MuiLink component={Link} href={"/snp/" + params.value}>
+                    <MuiLink component={Link} href={"/variant/" + params.value}>
                       {params.value}
                     </MuiLink>
                   ),

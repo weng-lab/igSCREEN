@@ -28,7 +28,7 @@ export const useElementMetadata = <T extends GenomicElementType>({ elementType, 
       return geneMetadata as useElementMetadataReturn<T>;
     case "icre":
       return icreMetadata as useElementMetadataReturn<T>;
-    case "snp":
+    case "variant":
       return snpMetadata as useElementMetadataReturn<T>;
   }
 }

@@ -19,7 +19,7 @@ const IntersectingSNPs = ({ region }: { region: GenomicRange }) => {
       headerName: "rsID",
       width: 130,
       renderCell: (params) => (
-        <MuiLink href={`/snp/${params.value}`} component={Link}>
+        <MuiLink href={`/variant/${params.value}`} component={Link}>
           {params.value}
         </MuiLink>
       ),

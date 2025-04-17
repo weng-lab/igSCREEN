@@ -2,7 +2,7 @@
 import { CircularProgress, Typography } from "@mui/material"
 import GenomeBrowserView from "common/gbview/genomebrowserview"
 import { useElementMetadata, useElementMetadataReturn } from "common/hooks/useElementMetadata"
-import { GenomicElementType, isValidGeneTab, isValidIcreTab, isValidSnpTab, isValidTab } from "types/globalTypes"
+import { GenomicElementType, isValidGeneTab, isValidIcreTab, isValidVariantTab, isValidTab } from "types/globalTypes"
 import SnpEQTLs from "./_SnpTabs/_eQTLs/SnpEQTLs"
 import GeneEQTLs from "./_GeneTabs/_eQTLs/GeneEQTLs"
 import GeneExpression from "./_GeneTabs/_GeneExpression/GeneExpression"
@@ -21,10 +21,18 @@ export default function DetailsPage({
    */
   params: { elementType: GenomicElementType, elementID: string, tab: string } 
 }){
+  if (tab === undefined) {
+    tab = "";
+  } else {
+    tab = tab[0];
+  }
   /**
    * Configure valid tabs in globalTypes.ts
    */
   if (!isValidTab(tab)){
+    console.log(tab)
+    console.log(isValidTab(tab))
+    console.log(isValidIcreTab(tab))
     throw new Error("Unknown tab: " + tab)
   }
 
@@ -44,22 +52,21 @@ export default function DetailsPage({
 
   //Handle shared tabs
   if (tab === "browser") {
-    const elementType = elementMetadata.__typename === "Gene" ? "gene" : elementMetadata.__typename === "ICRE" ? "icre" : "snp"
-    return <GenomeBrowserView coordinates={elementMetadata.coordinates} name={elementMetadata.__typename === "Gene" ? elementMetadata.name : elementMetadata.__typename === "ICRE" ? elementMetadata.accession : elementMetadata.id} type={elementType as GenomicElementType} />
+    return <GenomeBrowserView coordinates={elementMetadata.coordinates} name={elementMetadata.__typename === "Gene" ? elementMetadata.name : elementMetadata.__typename === "ICRE" ? elementMetadata.accession : elementMetadata.id} type={elementType} />
   }
 
   switch (elementType) {
-    case ("snp"): {
-      if (!isValidSnpTab(tab)) {
-        throw new Error("Unknown SNP details tab: " + tab)
+    case ("variant"): {
+      if (!isValidVariantTab(tab)) {
+        throw new Error("Unknown variant details tab: " + tab)
       }
 
-      const snpData = elementMetadata as useElementMetadataReturn<"snp">["data"]
+      const variantData = elementMetadata as useElementMetadataReturn<"variant">["data"]
 
       switch (tab) {
-        case (""): return <SnpGWASLdr snpid={snpData.id}/> 
+        case (""): return <SnpGWASLdr snpid={variantData.id}/> 
         case ("icres"): return <p>This page should have the intersecting iCRE</p>
-        case ("genes"): return <SnpEQTLs rsid={snpData.id} />
+        case ("genes"): return <SnpEQTLs rsid={variantData.id} />
       }
     }
 

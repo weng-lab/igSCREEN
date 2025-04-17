@@ -4,41 +4,19 @@ import { Box, Tabs, Tab, Typography, Divider, Stack, IconButton, Drawer, Theme, 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useMemo } from "react";
-import { ElementDetailsTab, GenePortalTab, GenomicElementType, IcrePortalTab, SnpPortalTab } from "types/globalTypes";
-import { genePortalTabs, icrePortalTabs, sharedTabs, snpPortalTabs } from "./tabsConfig";
+import { ElementDetailsTab, GenePortalTab, GenomicElementType, IcrePortalTab, VariantPortalTab } from "types/globalTypes";
+import { genePortalTabs, icrePortalTabs, sharedTabs, variantPortalTabs } from "./tabsConfig";
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import Image from "next/image";
 
 export type ElementDetailsTabsProps = {
   elementType: GenomicElementType
+  elementID: string
   orientation: "horizontal" | "vertical"
 }
 
 const drawerWidth =  250;
-
-const ElementDetailsTabs = ({ elementType, orientation }: ElementDetailsTabsProps) => {
-  const pathname = usePathname();
-  const currentTab = pathname.substring(pathname.lastIndexOf('/') + 1);
-  const basepath = pathname.substring(0, pathname.lastIndexOf('/'));
-
-  const [value, setValue] = React.useState(currentTab);
-  const [open, setOpen] = React.useState(true);
-
-  const toggleDrawer = () => {
-    setOpen(!open)
-  }
-
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    setValue(newValue);
-  };
-
-  //If we ever use parallel routes to nest multiple elements in the same view, this will probably break
-  useEffect(() => {
-    if (currentTab !== value) {
-      setValue(currentTab)
-    }
-  }, [currentTab, value])
 
   const openedMixin = (theme: Theme): CSSObject => ({
     transition: theme.transitions.create('width', {
@@ -60,7 +38,31 @@ const ElementDetailsTabs = ({ elementType, orientation }: ElementDetailsTabsProp
     },
   });
 
-  const MiniDrawer = styled(Drawer, { shouldForwardProp: (prop) => prop !== 'open' })(
+const ElementDetailsTabs = ({ elementType, elementID, orientation }: ElementDetailsTabsProps) => {
+  const pathname = usePathname();
+  const currentTab = pathname.substring(pathname.lastIndexOf('/') + 1) === elementID ? "" : pathname.substring(pathname.lastIndexOf('/') + 1)
+
+  const [value, setValue] = React.useState(currentTab);
+  const [open, setOpen] = React.useState(false);
+
+  const toggleDrawer = () => {
+    setOpen(!open)
+  }
+
+  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+    setValue(newValue);
+  };
+
+  //If we ever use parallel routes to nest multiple elements in the same view, this will probably break
+  useEffect(() => {
+    if (currentTab !== value) {
+      setValue(currentTab)
+    }
+  }, [currentTab, value])
+
+
+
+  const MiniDrawer = useMemo(() => styled(Drawer, { shouldForwardProp: (prop) => prop !== 'open' })(
     ({ theme }) => ({
       flexShrink: 0,
       whiteSpace: 'nowrap',
@@ -71,7 +73,7 @@ const ElementDetailsTabs = ({ elementType, orientation }: ElementDetailsTabsProp
         },
         border: 'none',
         zIndex: theme.zIndex.appBar - 1,
-        position: orientation === "vertical" &&' fixed',
+        position: orientation === "vertical" && 'fixed',
         top: orientation === "vertical" && 64,
         left: orientation === "vertical" && 0,
         height: orientation === "vertical" && '100vh',
@@ -100,16 +102,16 @@ const ElementDetailsTabs = ({ elementType, orientation }: ElementDetailsTabsProp
         },
       ],
     }),
-  );
+  ), [orientation]);
 
   const tabs: ElementDetailsTab[] = useMemo(() => {
-    let elementSpecificTabs: SnpPortalTab[] | GenePortalTab[] | IcrePortalTab[];
+    let elementSpecificTabs: VariantPortalTab[] | GenePortalTab[] | IcrePortalTab[];
     switch (elementType) {
       case ("gene"):
         elementSpecificTabs = genePortalTabs
         break
-      case ("snp"):
-        elementSpecificTabs = snpPortalTabs
+      case ("variant"):
+        elementSpecificTabs = variantPortalTabs
         break
       case ("icre"):
         elementSpecificTabs = icrePortalTabs
@@ -143,7 +145,7 @@ const ElementDetailsTabs = ({ elementType, orientation }: ElementDetailsTabsProp
       <Tabs
         value={value}
         onChange={handleChange}
-        aria-label="SNP Details Tabs"
+        aria-label="Tabs"
         orientation={orientation}
         allowScrollButtonsMobile
         variant="scrollable"
@@ -163,7 +165,7 @@ const ElementDetailsTabs = ({ elementType, orientation }: ElementDetailsTabsProp
             label={tab.label}
             value={tab.href}
             LinkComponent={Link}
-            href={basepath + "/" + tab.href}
+            href={`/${elementType}/${elementID}/${tab.href}`}
             key={tab.href}
             icon={
               !open && <Image width={50} height={50} src={tab.iconPath} alt={tab.label + ' icon'} />

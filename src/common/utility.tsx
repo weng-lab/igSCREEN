@@ -1,4 +1,4 @@
-import { GenomicRange, PortalName } from "types/globalTypes"
+import { GenomicRange } from "types/globalTypes"
 import { cellCategoryColors, cellCategoryDisplaynames, studyLinks } from "./consts"
 import { Launch } from "@mui/icons-material";
 import { Link as MuiLink, LinkProps as MuiLinkProps, Typography, TypographyOwnProps, TypographyPropsVariantOverrides } from "@mui/material";
@@ -48,9 +48,9 @@ export function parseGenomicRangeString(input: string): GenomicRange {
  * @param subpath 
  * @returns A formatted portal name for the passed string. If no matching portal returns null
  */
-export function formatPortal(subpath: string): PortalName | null {
+export function formatPortal(subpath: string): string {
   switch (subpath) {
-    case ("snp"): return "SNP"
+    case ("variant"): return "Variant"
     case ("gene"): return "Gene"
     case ("icre"): return "iCRE"
     default: return null
