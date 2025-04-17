@@ -1,4 +1,4 @@
-import { GenomicElementType, GenomicRange } from "types/globalTypes";
+import { GenomicRange } from "types/globalTypes";
 
 /**
  *
@@ -74,9 +74,3 @@ export function calcDistRegionToRegion(
     return 0;
   }
 }
-
-export type NearbyGenomicFeaturesProps = {
-  coordinates: GenomicRange;
-  elementType: GenomicElementType;
-  elementID: string;
-};

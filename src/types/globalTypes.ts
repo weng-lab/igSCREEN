@@ -8,40 +8,39 @@ export interface GenomicRange {
   end: number;
 }
 
-export type PortalName = "SNP" | "Gene" | "iCRE"
-
-export type GenomicElementType = "snp" | "gene" | "icre"
+export type GenomicElementType = "variant" | "gene" | "icre"
 
 export function isValidGenomicElement(value: string): value is GenomicElementType {
-  return value === "snp" || value === "gene" || value === "icre";
+  return value === "variant" || value === "gene" || value === "icre";
 }
 
-export type SharedRoute = "nearby" | "browser"
+export type SharedRoute = "browser" | ""
 
-export type SnpRoute = SharedRoute | "eQTLs" | "gwassnps"
+//empty route is for the elements default tab. For example /gene/SP1 will be the gene expression. Otherwise would need to assign /gene/SP1/gene
+export type VariantRoute = SharedRoute | "icres" | "genes"
 
-export type GeneRoute = SharedRoute | "eQTLs" | "linked" | "expression"
+export type GeneRoute = SharedRoute | "icres" | "variants"
 
-export type IcreRoute = SharedRoute | "linked" | "activity" | "gwassnps"
+export type IcreRoute = SharedRoute | "genes" | "variants"
 
 export function isValidSharedTab(tab: string): tab is SharedRoute {
-  return tab === "nearby" || tab === "browser"
+  return tab === "browser" || tab === ""
 }
 
-export function isValidSnpTab(tab: string): tab is SnpRoute {
-  return isValidSharedTab(tab) || tab === "eQTLs" || tab === "gwassnps"
+export function isValidVariantTab(tab: string): tab is VariantRoute {
+  return isValidSharedTab(tab) || tab === "icres" || tab === "genes"
 }
 
 export function isValidGeneTab(tab: string): tab is GeneRoute {
-  return isValidSharedTab(tab) || tab === "eQTLs" || tab === "linked" || tab === "expression"
+  return isValidSharedTab(tab) || tab === "icres" || tab === "variants"
 }
 
 export function isValidIcreTab(tab: string): tab is IcreRoute {
-  return isValidSharedTab(tab) || tab === "linked" || tab === "activity" || tab === "gwassnps"
+  return isValidSharedTab(tab) || tab === "genes" || tab === "variants"
 }
 
-export function isValidTab(tab: string): tab is SharedRoute | SnpRoute | GeneRoute | IcreRoute {
-  return isValidSharedTab(tab) || isValidSnpTab(tab) || isValidGeneTab(tab) || isValidIcreTab(tab)
+export function isValidTab(tab: string): tab is SharedRoute | VariantRoute | GeneRoute | IcreRoute {
+  return isValidSharedTab(tab) || isValidVariantTab(tab) || isValidGeneTab(tab) || isValidIcreTab(tab)
 }
 
 /**
@@ -50,15 +49,16 @@ export function isValidTab(tab: string): tab is SharedRoute | SnpRoute | GeneRou
  */
 export type ElementDetailsTab = {
   label: string,
-  href: SnpRoute | GeneRoute | IcreRoute
+  href: VariantRoute | GeneRoute | IcreRoute
+  iconPath: string
 }
 
 export interface SharedTab extends ElementDetailsTab {
   href: SharedRoute
 }
 
-export interface SnpPortalTab extends ElementDetailsTab {
-  href: SnpRoute
+export interface VariantPortalTab extends ElementDetailsTab {
+  href: VariantRoute
 }
 
 export interface GenePortalTab extends ElementDetailsTab {

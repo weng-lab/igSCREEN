@@ -76,7 +76,7 @@ export default function Home() {
           />
         </Box>
         <Typography variant="h6">
-          Search <em>immune</em> Candidate cis-Regulatory Elements, Genes, SNPs or a Genomic Region
+          Search <em>immune</em> Candidate cis-Regulatory Elements, Genes, Variants or a Genomic Region
         </Typography>
         <AutoComplete
           style={{ width: 400, maxWidth: '100%' }}
@@ -90,7 +90,7 @@ export default function Home() {
           slotProps={{
             box: { gap: 2 },
             input: {
-              label: "Enter a gene, snp, icre or locus",
+              label: "Enter a gene, iCRE, variant, or locus",
               sx: {
                 backgroundColor: "white",
                 "& label.Mui-focused": {
@@ -145,12 +145,12 @@ export default function Home() {
         <PortalTile
           imagePosition={"right"}
           imagePath={"/assets/SNPPortal.png"}
-          title={"SNP Portal"}
+          title={"Variant Portal"}
           description={
-            "Search SNPs of interest and explore their impact on gene expression, chromatin accessibility, transcription factor (TF) binding and other molecular traits in immune cells."
+            "Search Variants of interest and explore their impact on gene expression, chromatin accessibility, transcription factor (TF) binding and other molecular traits in immune cells."
           }
-          link={"/snp"}
-          buttonText={"Explore SNPs"}
+          link={"/variant"}
+          buttonText={"Explore Variants"}
         />
         <PortalTile
           imagePosition={"left"}
