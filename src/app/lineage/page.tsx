@@ -272,13 +272,16 @@ export default function CellLineagePage() {
             const a = document.createElement("a");
             const blobUrl = URL.createObjectURL(blob);
             a.href = blobUrl;
-            const filename = grouping.unionCelltypes
-              ? `Union(${grouping.unionCelltypes.join(",")}).bed`
-              : `Intersect(${grouping.includedCelltypes.join(",")})Exclude(${
-                  grouping.excludedCelltypes?.join(",") ?? "none"
-                })Classes(${
-                  selectedClasses.length === ccreClasses.length ? "all" : selectedClasses.map((x) => x.class).join(",")
-                }).bed`;
+            let filename: string;
+            if (grouping.unionCelltypes) {
+              filename = `Union(${grouping.unionCelltypes.join(",")}).bed`;
+            } else {
+              filename = `Intersect(${grouping.includedCelltypes.join(",")})Exclude(${
+                grouping.excludedCelltypes?.join(",") ?? "none"
+              })Classes(${
+                selectedClasses.length === ccreClasses.length ? "all" : selectedClasses.map((x) => x.class).join(",")
+              }).bed`;
+            }
             a.download = filename;
             a.click();
             URL.revokeObjectURL(blobUrl);

@@ -136,6 +136,7 @@ const MultiSelect = <
       {paperProps.children}
     </Paper>
   );
+
   // A warning forced usage of React.forwardRef here, even though the ref is not used. Not sure why
   const ListboxComponent = React.forwardRef(function ListboxComponent(
     listboxProps: React.HTMLAttributes<HTMLElement>,
@@ -197,31 +198,29 @@ const MultiSelect = <
       getOptionDisabled={getOptionDisabled}
       disableCloseOnSelect
       disablePortal
-      slotProps={{ popper: { sx: { zIndex: 1 } } }} //used to make options appear under header
+      slotProps={{
+        //used to make options appear under header
+        popper: { sx: { zIndex: 1 } },
+        //the <ul> for the options
+        listbox: { component: ListboxComponent },
+        //Provides the "Select All" checkbox
+        paper: { component: PaperComponent },
+      }} 
       style={{ maxWidth: 400 }}
-      renderInput={(params) => (
-        <TextField {...params} placeholder={placeholder} />
-      )}
-      ListboxComponent={ListboxComponent}
-      //Immediate child of popper
-      PaperComponent={PaperComponent}
+      renderInput={(params) => <TextField {...params} placeholder={placeholder} />}
       //Each option
       renderOption={(props, option, { selected }) => {
         const { key, ...optionProps } = props;
         return (
           <li key={key} style={{ listStyle: "none" }} {...optionProps}>
             <Checkbox
-              id={
-                "checkbox-" + (isLabeledObject(option) ? option.label : option)
-              }
+              id={"checkbox-" + (isLabeledObject(option) ? option.label : option)}
               icon={icon}
               size="small"
               checkedIcon={checkedIcon}
               style={{ marginRight: 8, marginLeft: 0 }}
               checked={selected}
-              indeterminate={
-                selected && getOptionDisabled && getOptionDisabled(option)
-              }
+              indeterminate={selected && getOptionDisabled && getOptionDisabled(option)}
             />
             {capitalizeWords(isLabeledObject(option) ? option.label : option)}
           </li>
@@ -241,7 +240,7 @@ const MultiSelect = <
                * If putting this in the component library change this back. Changing to use short cCRE class names in the tags
                */
               // label={isLabeledObject(option) ? option.label.toString() : option}
-              label={isLabeledObject(option) ? option.class as string : option}
+              label={isLabeledObject(option) ? (option.class as string) : option}
               {...tagProps}
             />
           );
