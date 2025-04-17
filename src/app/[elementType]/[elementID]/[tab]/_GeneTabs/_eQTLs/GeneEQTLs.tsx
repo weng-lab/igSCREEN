@@ -1,48 +1,27 @@
 import { useQuery } from "@apollo/client";
-import { Grid2, Link, Skeleton, Stack } from "@mui/material";
+import { Grid2, Link, Skeleton, Stack, Box } from "@mui/material";
 import { DataGridPro, GridColDef } from "@mui/x-data-grid-pro";
 import { toScientificNotation } from "common/utility";
 import { gql } from "types/generated";
 import DataGridToolbar from "common/components/dataGridToolbar";
 
-const COMBINED_EQTL_QUERY = gql(`
-  query CombinedEqtl($geneid: String) {
-    GTEX: icreeQTLQuery(study: "GTEX", geneid: $geneid) {
-      variant_id
-      qvalue
-      geneid
-      pval_nominal
-      phenotype_id
-      celltype
-      study
-      rsid
-      pval_beta
-    }
-      SoskicTrynka: icreeQTLQuery(study: "Soskic.Trynka", phenotype_id: $geneid) {
-      variant_id
-      pvalue
-      qvalue
-      geneid
-      pval_nominal
-      phenotype_id
-      celltype
-      study
-      rsid
-      pval_beta
-    }
-      YazarPowell: icreeQTLQuery(study: "Yazar.Powell", geneid: $geneid) {
-      variant_id
-      pvalue
-      qvalue
-      geneid
-      pval_nominal
-      phenotype_id
-      celltype
-      study
-      rsid
-      pval_beta
-    }
-  } 
+const GENE_EQTL_QUERY = gql(`
+query getimmuneeQTLsQuery($genes: [String], $snps: [String]) {
+  immuneeQTLsQuery(genes: $genes, snps: $snps) {
+    rsid
+    genename
+    study
+    fdr
+    celltype
+    ref
+    chromosome
+    position
+    alt
+    variant_id    
+    pval_nominal
+    ccre
+  }
+} 
 `);
 
 type GeneEQTLsProps = {
@@ -51,10 +30,11 @@ type GeneEQTLsProps = {
 };
 
 const GeneEQTLs = ({ name, id }: GeneEQTLsProps) => {
-  const { loading, data, error } = useQuery(COMBINED_EQTL_QUERY, {
+  const { loading, data, error } = useQuery(GENE_EQTL_QUERY, {
     variables: {
-      geneid: id.split(".")[0],
+      genes: [name],
     },
+    skip: !name,
   });
 
   if (loading) {
@@ -79,61 +59,60 @@ const GeneEQTLs = ({ name, id }: GeneEQTLsProps) => {
 
   return (
     <Stack spacing={2}>
-      <DataGridPro
-        columns={columns}
-        rows={data.GTEX}
-        getRowId={(row) => row.variant_id + row.pvalue}
-        slots={{ toolbar: DataGridToolbar }}
-        slotProps={{ toolbar: { title: `GTEX whole-blood eQTLs for ${name}` } }}
-        pagination
-        initialState={{
-          pagination: {
-            paginationModel: { pageSize: 10 },
-          },
-        }}
-        density="compact"
-        sx={{
-          borderRadius: 1,
-          boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
-        }}
-      />
-
-      <DataGridPro
-        columns={YazarPowellColumns}
-        rows={data.YazarPowell}
-        getRowId={(row) => row.variant_id + row.pvalue}
-        slots={{ toolbar: DataGridToolbar }}
-        slotProps={{ toolbar: { title: `Yazar.Powell eQTLs for ${name}` } }}
-        pagination
-        initialState={{
-          pagination: {
-            paginationModel: { pageSize: 10 },
-          },
-        }}
-        density="compact"
-        sx={{
-          borderRadius: 1,
-          boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
-        }}
-      />
-      <DataGridPro
-        columns={SoskicTrynkaColumns}
-        rows={data.SoskicTrynka}
-        getRowId={(row) => row.variant_id + row.pvalue}
-        slots={{ toolbar: DataGridToolbar }}
-        slotProps={{ toolbar: { title: `Soskic.Trynka eQTLs for ${name}` } }}
-        pagination
-        initialState={{
-          pagination: {
-            paginationModel: { pageSize: 10 },
-          },
-        }}
-        density="compact"
-        sx={{
-          borderRadius: 1,
-          boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
-        }}
-      />
+      <Box sx={{ flex: "1 1 auto" }}>
+        <DataGridPro
+          columns={columns}
+          rows={data.immuneeQTLsQuery.filter((i) => i.study === "GTEX") || []}
+          getRowId={(row) => row.variant_id + row.rsid + row.pval_nominal}
+          slots={{ toolbar: DataGridToolbar }}
+          slotProps={{ toolbar: { title: `GTEX whole-blood eQTLs for ${name}` } }}
+          pagination          
+          initialState={{
+            sorting: {
+              sortModel: [{ field: "pval_nominal", sort: "asc" }],
+            },
+            pagination: {
+              paginationModel: {
+                pageSize: 5,
+                page: 0,
+              },
+            },
+          }}
+          pageSizeOptions={[5, 10]}
+          density="compact"
+          sx={{
+            borderRadius: 1,
+            boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
+          }}
+        />
+      </Box>
+      <Box sx={{ flex: "1 1 auto" }}>
+        <DataGridPro
+          columns={OneK1KColumns}
+          rows={data.immuneeQTLsQuery.filter((i) => i.study === "OneK1K") || []}
+          getRowId={(row) => row.variant_id + row.fdr}
+          slots={{ toolbar: DataGridToolbar }}
+          slotProps={{ toolbar: { title: `OneK1K eQTLs for ${name}` } }}
+          pagination
+          initialState={{
+            sorting: {
+              sortModel: [{ field: "fdr", sort: "asc" }],
+            },
+            pagination: {
+              paginationModel: {
+                pageSize: 5,
+                page: 0,
+              },
+            },
+          }}
+          pageSizeOptions={[5, 10]}
+          density="compact"
+          sx={{
+            borderRadius: 1,
+            boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
+          }}
+        />
+      </Box>
     </Stack>
   );
 };
@@ -146,6 +125,35 @@ const columns: GridColDef[] = [
     headerName: "Variant Id",
     flex: 2,
   },
+
+  {
+    field: "rsid",
+    headerName: "SNP Id",
+    flex: 2,
+    renderCell: (params) => {
+      return params.value === "." ? <>{params.value}</> : <Link href={`/snp/${params.value}`}>{params.value}</Link>;
+    },
+  },
+  {
+    field: "chromosome",
+    headerName: "Chromosome",
+    flex: 2,
+  },
+  {
+    field: "position",
+    headerName: "Position",
+    flex: 2,
+  },
+  {
+    field: "ref",
+    headerName: "Ref",
+    flex: 2,
+  },
+  {
+    field: "alt",
+    headerName: "Alt",
+    flex: 2,
+  },
   {
     field: "pval_nominal",
     headerName: "Nominal P",
@@ -153,56 +161,47 @@ const columns: GridColDef[] = [
     renderCell: (params) => toScientificNotation(params.value, 2),
   },
   {
-    field: "pval_beta",
-    headerName: "Beta P",
-    flex: 1,
-    renderCell: (params) => toScientificNotation(params.value, 2),
+    field: "ccre",
+    headerName: "iCRE",
+    flex: 2,
+    renderCell: (params) => {
+      return params.value === "." ? <>{params.value}</> : <Link href={`/icre/${params.value}`}>{params.value}</Link>;
+    },
   },
 ];
 
-const YazarPowellColumns: GridColDef[] = [
+const OneK1KColumns: GridColDef[] = [
   {
     field: "rsid",
-    headerName: "SNP",
+    headerName: "SNP Id",
     flex: 2,
     renderCell: (params) => {
       return <Link href={`/snp/${params.value}`}>{params.value}</Link>;
     },
   },
   {
-    field: "pvalue",
-    headerName: "P",
-    flex: 1,
-    renderCell: (params) => toScientificNotation(params.value, 2),
-  },
-  {
-    field: "qvalue",
-    headerName: "Q",
-    flex: 1,
-    renderCell: (params) => toScientificNotation(params.value, 2),
-  },
-  {
-    field: "celltype",
-    headerName: "Celltype",
-    flex: 2,
-  },
-];
-
-const SoskicTrynkaColumns: GridColDef[] = [
-  {
-    field: "variant_id",
-    headerName: "Variant Id",
+    field: "chromosome",
+    headerName: "Chromosome",
     flex: 2,
   },
   {
-    field: "pval_nominal",
-    headerName: "Nominal P",
-    flex: 1,
-    renderCell: (params) => toScientificNotation(params.value, 2),
+    field: "position",
+    headerName: "Position",
+    flex: 2,
   },
   {
-    field: "pval_beta",
-    headerName: "Beta P",
+    field: "ref",
+    headerName: "A1",
+    flex: 2,
+  },
+  {
+    field: "alt",
+    headerName: "A2",
+    flex: 2,
+  },
+  {
+    field: "fdr",
+    headerName: "FDR",
     flex: 1,
     renderCell: (params) => toScientificNotation(params.value, 2),
   },

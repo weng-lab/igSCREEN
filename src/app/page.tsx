@@ -135,7 +135,7 @@ export default function Home() {
         <PortalTile
           imagePosition={"left"}
           imagePath={"/assets/iCREPortal.png"}
-          title={"Element Portal"}
+          title={"iCRE Portal"}
           description={
             "Explore regulatory element activity (immune cCREs) across immune cell types at bulk and single-cell resolution for 63 cell types across 736 experiments."
           }
