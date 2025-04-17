@@ -6,30 +6,27 @@ import { useRouter } from "next/navigation";
 import { isValidGenomicElement } from "types/globalTypes";
 import { ExpandMore } from "@mui/icons-material";
 import Link from "next/link";
+import { formatPortal } from "common/utility";
 
 type PortalConfig = {
   image: string;
-  title: string;
   description: string;
 };
 
 const geneConfig: PortalConfig = {
   image: "/assets/GenePortal.png",
-  title: "Gene",
   description:
     "Explore gene expression across immune cell types at bulk and single-cell resolution for 63 cell types across 736 experiments.",
 };
 
 const icreConfig: PortalConfig = {
   image: "/assets/iCREPortal.png",
-  title: "iCRE",
   description:
     "Explore regulatory element activity (immune cCREs) across immune cell types at bulk and single-cell resolution for 63 cell types across 736 experiments.",
 };
 
 const variantConfig: PortalConfig = {
   image: "/assets/SNPPortal.png",
-  title: "Variant",
   description:
     "Search Variants of interest and explore their impact on gene expression, chromatin accessibility, transcription factor (TF) binding and other molecular traits in immune cells.",
 };
@@ -45,11 +42,11 @@ export default function PortalPage({ params: { elementType } }: { params: { elem
     router.push(result.type + "/" + result.title);
   };
 
-  const { image, title, description } =
+  const { image, description } =
     elementType === "gene" ? geneConfig : elementType === "icre" ? icreConfig : variantConfig;
 
   const popularSearches = {
-    Gene: [
+    gene: [
       { name: "SPIB", region: "chr19:50,418,938-50,431,313" },
       { name: "NCAM1", region: "chr11:112,961,247-113,278,436" },
       { name: "FOXP3", region: "chrX:49,250,436-49,264,826" },
@@ -57,13 +54,13 @@ export default function PortalPage({ params: { elementType } }: { params: { elem
       { name: "APOE", region: "chr19:44,905,754-44,909,393" },
     ],
 
-    iCRE: [
+    icre: [
       { name: "EH38E3314260", region: "chr19:50,417,519-50,417,853" },
       { name: "EH38E2984813", region: "chr11:112,886,979-112,887,323" },
       { name: "EH38E3934197", region: "chrX:49,264,498-49,264,848" },
       { name: "EH38E1728788", region: "chr14:75,523,789-75,524,136" },
     ],
-    Variant: [
+    variant: [
       { name: "rs9466027", region: "chr6:21,298,226-21,298,227" },
       { name: "rs9466028", region: "chr6:21,300,773-21,300,774" },
       { name: "rs80230724", region: "chr6:21,302,562-21,302,563" },
@@ -82,7 +79,7 @@ export default function PortalPage({ params: { elementType } }: { params: { elem
       <Stack direction={{ xs: "column-reverse", md: "row" }} alignItems={"center"} spacing={4}>
         <Stack alignItems={{ xs: "center", md: "flex-start" }} textAlign={{ xs: "center", md: "initial" }}>
           <Typography variant="h4" mb={1}>
-            {title} Portal
+            {formatPortal(elementType)} Portal
           </Typography>
           <Typography mb={2}>{description}</Typography>
           <GenomeSearch
@@ -99,7 +96,7 @@ export default function PortalPage({ params: { elementType } }: { params: { elem
           //affects alignment of the image
           sx={{ objectPosition: { md: "right", xs: "center" } }}
         >
-          <Image style={{ objectFit: "contain", objectPosition: "inherit" }} src={image} fill alt={title + " image"} />
+          <Image style={{ objectFit: "contain", objectPosition: "inherit" }} src={image} fill alt={elementType + " image"} />
         </Box>
       </Stack>
       <Divider sx={{ display: "flex" }} variant="fullWidth">
@@ -118,11 +115,11 @@ export default function PortalPage({ params: { elementType } }: { params: { elem
           Not sure where to start?
         </Typography>
         <Typography variant="body1" id="searches">
-          We recommend to start with these {title}s
+          We recommend to start with these {formatPortal(elementType)}s
         </Typography>
       </Stack>
       <Grid2 container spacing={5} justifyContent="flex-start" marginTop={2}>
-        {popularSearches[title].map((element, index) => (
+        {popularSearches[elementType].map((element, index) => (
           <Grid2
             key={index}
             size={{
@@ -165,7 +162,7 @@ export default function PortalPage({ params: { elementType } }: { params: { elem
                 },
               }}
               LinkComponent={Link}
-              href={`/${title}/${element.name}`}
+              href={`/${elementType}/${element.name}`}
             >
               Quick search
             </Button>
