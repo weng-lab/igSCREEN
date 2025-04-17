@@ -38,7 +38,7 @@
     "@visx/text": "^3",
     "@visx/tooltip": "^3",
     "@weng-lab/genomebrowser": "^0.0.22",
-    "@weng-lab/psychscreen-ui-components": "^2.0.21",
+    "@weng-lab/psychscreen-ui-components": "^2.0.24",
     "bpnet-ui": "^0.3.8",
     "d3-scale-chromatic": "^3.1.0",
     "eslint": "^8",
