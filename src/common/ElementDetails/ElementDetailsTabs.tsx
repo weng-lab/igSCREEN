@@ -18,65 +18,6 @@ export type ElementDetailsTabsProps = {
 
 const drawerWidth =  250;
 
-  const openedMixin = (theme: Theme): CSSObject => ({
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-    overflowX: 'hidden',
-  });
-
-  const closedMixin = (theme: Theme): CSSObject => ({
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    overflowX: 'hidden',
-    width: `calc(${theme.spacing(7)} + 15px)`,
-    [theme.breakpoints.up('sm')]: {
-      width: `calc(${theme.spacing(8)} + 15px)`,
-    },
-  });
-
-  const MiniDrawer = styled(Drawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-    ({ theme }) => ({
-      height: "100%",
-      flexShrink: 0,
-      whiteSpace: 'nowrap',
-      boxSizing: 'border-box',
-      position: 'static',
-      '& .MuiDrawer-paper': {
-        [theme.breakpoints.up('md')]: {
-          backgroundColor: '#F2F2F2',
-        },
-        border: 'none',
-        zIndex: theme.zIndex.appBar - 1,
-      },
-      variants: [
-        {
-          props: ({ open }) => open,
-          style: {
-            ...openedMixin(theme),
-            '& .MuiDrawer-paper': {
-              ...openedMixin(theme),
-              position: 'relative',
-            },
-          },
-        },
-        {
-          props: ({ open }) => !open,
-          style: {
-            ...closedMixin(theme),
-            '& .MuiDrawer-paper': {
-              ...closedMixin(theme),
-              position: 'relative',
-            },
-          },
-        },
-      ],
-    }),
-  );
-
 const ElementDetailsTabs = ({ elementType, orientation }: ElementDetailsTabsProps) => {
   const pathname = usePathname();
   const currentTab = pathname.substring(pathname.lastIndexOf('/') + 1);
@@ -99,6 +40,68 @@ const ElementDetailsTabs = ({ elementType, orientation }: ElementDetailsTabsProp
       setValue(currentTab)
     }
   }, [currentTab, value])
+
+  const openedMixin = (theme: Theme): CSSObject => ({
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+    overflowX: 'hidden',
+  });
+
+  const closedMixin = (theme: Theme): CSSObject => ({
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    overflowX: 'hidden',
+    width: `calc(${theme.spacing(7)} + 15px)`,
+    [theme.breakpoints.up('sm')]: {
+      width: `calc(${theme.spacing(8)} + 15px)`,
+    },
+  });
+
+  const MiniDrawer = styled(Drawer, { shouldForwardProp: (prop) => prop !== 'open' })(
+    ({ theme }) => ({
+      flexShrink: 0,
+      whiteSpace: 'nowrap',
+      boxSizing: 'border-box',
+      '& .MuiDrawer-paper': {
+        [theme.breakpoints.up('md')]: {
+          backgroundColor: '#F2F2F2',
+        },
+        border: 'none',
+        zIndex: theme.zIndex.appBar - 1,
+        position: orientation === "vertical" &&' fixed',
+        top: orientation === "vertical" && 64,
+        left: orientation === "vertical" && 0,
+        height: orientation === "vertical" && '100vh',
+        width: orientation === "vertical" && drawerWidth
+      },
+      variants: [
+        {
+          props: ({ open }) => open,
+          style: {
+            ...openedMixin(theme),
+            '& .MuiDrawer-paper': {
+              ...openedMixin(theme),
+              position: orientation === "horizontal" && 'relative',
+            },
+          },
+        },
+        {
+          props: ({ open }) => !open,
+          style: {
+            ...closedMixin(theme),
+            '& .MuiDrawer-paper': {
+              ...closedMixin(theme),
+              position: orientation === "horizontal" && 'relative',
+            },
+          },
+        },
+      ],
+    }),
+  );
 
   const tabs: ElementDetailsTab[] = useMemo(() => {
     let elementSpecificTabs: SnpPortalTab[] | GenePortalTab[] | IcrePortalTab[];

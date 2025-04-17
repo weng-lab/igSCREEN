@@ -1,13 +1,19 @@
-import { Grid2, Skeleton } from "@mui/material";
+import { Checkbox, FormControlLabel, Grid2, Skeleton, Stack } from "@mui/material";
 import useLinkedICREs, { LinkedICREInfo } from "common/hooks/useLinkedICREs";
 import { ChIAPETCols, CrisprFlowFISHCols, eQTLCols, IntactHiCLoopsCols } from "../../_IcreTabs/_linkedGenes/columns";
 import LinkedElements from "common/components/linkedElements/linkedElements";
 import { TableDef } from "common/components/linkedElements/columns";
 import { accessionCol } from "common/components/linkedElements/columns";
+import { useState } from "react";
 
 
 export default function LinkedICREs({ geneid }: { geneid: string }) {
-  const { data, loading, error } = useLinkedICREs(geneid);  
+  const { data, loading, error } = useLinkedICREs(geneid);
+  const [allcCREs, setAllcCREs] = useState<boolean>(false)
+
+  const toggleOnlyICREs = () => {
+    setAllcCREs(!allcCREs)
+  }
   
   if (loading) {
     return (
@@ -33,25 +39,25 @@ export default function LinkedICREs({ geneid }: { geneid: string }) {
   }
 
   const HiCLinked = data
-    .filter((x: LinkedICREInfo) => x.assay === "Intact-HiC")
+    .filter((x: LinkedICREInfo) => x.assay === "Intact-HiC" && (allcCREs || x.isiCRE))
     .map((x: LinkedICREInfo, index: number) => ({
       ...x,
       id: index.toString(),
     }));
   const ChIAPETLinked = data
-    .filter((x: LinkedICREInfo) => x.assay === "RNAPII-ChIAPET" || x.assay === "CTCF-ChIAPET")
+    .filter((x: LinkedICREInfo) => (x.assay === "RNAPII-ChIAPET" || x.assay === "CTCF-ChIAPET") && (allcCREs || x.isiCRE))
     .map((x: LinkedICREInfo, index: number) => ({
       ...x,
       id: index.toString(),
     }));
   const crisprLinked = data
-    .filter((x: LinkedICREInfo) => x.method === "CRISPR")
+    .filter((x: LinkedICREInfo) => x.method === "CRISPR" && (allcCREs || x.isiCRE))
     .map((x: LinkedICREInfo, index: number) => ({
       ...x,
       id: index.toString(),
     }));
   const eqtlLinked = data
-    .filter((x: LinkedICREInfo) => x.method === "eQTLs")
+    .filter((x: LinkedICREInfo) => x.method === "eQTLs" && (allcCREs || x.isiCRE))
     .map((x: LinkedICREInfo, index: number) => ({
       ...x,
       id: index.toString(),
@@ -72,5 +78,16 @@ export default function LinkedICREs({ geneid }: { geneid: string }) {
     { name: "eQTLs", data: eqtlLinked, columns: [accessionCol, ...eQTLCols.slice(2)] },
   ];
 
-  return <LinkedElements tables={tables} />;
+  return (
+    <Stack spacing={2}>
+      <FormControlLabel
+        label="Show all cCREs"
+        control={<Checkbox />}
+        sx={{width: "200px"}}
+        checked={allcCREs}
+        onChange={toggleOnlyICREs}
+      />
+      <LinkedElements tables={tables} />
+    </Stack>
+  );
 }

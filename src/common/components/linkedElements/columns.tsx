@@ -127,6 +127,18 @@ export const variantIDCol: colDef = {
   flex: 1.25,
   display: "flex",
   headerName: "Variant ID",
+  renderCell: (params) => (
+    <div
+      style={{
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        width: "100%",
+      }}
+    >
+      {params.value}
+    </div>
+  ),
 };
 
 export const sourceCol: colDef = {
