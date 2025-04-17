@@ -20,7 +20,7 @@ export default function GWASLdr({ accession }: { accession: string }) {
     {
       field: "snp_chr",
       headerName: "Chr",
-      width: 100
+      width: 100,
     },
     {
       field: "snp_start",
@@ -29,21 +29,22 @@ export default function GWASLdr({ accession }: { accession: string }) {
         return params.value.toLocaleString();
       },
     },
-    {
-      field: "ref_allele",
-      headerName: "Ref Allele",
-    },
+
     {
       field: "effect_allele",
-      headerName: "Effect Allele",
+      headerName: "A1",
+    },
+    {
+      field: "ref_allele",
+      headerName: "A2",
     },
     {
       field: "zscore",
       headerName: "Z-score",
-      type: 'number',
+      type: "number",
       valueFormatter: (value?: number) => {
         if (value == null) {
-          return '';
+          return "";
         }
         return `${value.toFixed(2)}`;
       },
@@ -53,13 +54,21 @@ export default function GWASLdr({ accession }: { accession: string }) {
       headerName: "Disease",
       width: 200,
       valueGetter: (value, row) => {
-        return value === "" ? row.study_source : value
+        return value === "" ? row.study_source : value;
       },
     },
     {
       field: "study_source",
       headerName: "Source",
     },
+    {
+      field: "author",
+      headerName: "Author",
+      renderCell: (params) => {
+        return params.value ? `${params.value.replace(/(\d+)$/, " $1")}` : <></>
+      },
+    },
+    
   ];
 
   return (
@@ -67,29 +76,38 @@ export default function GWASLdr({ accession }: { accession: string }) {
       {loading ? (
         <Skeleton variant="rounded" width={"100%"} height={100} />
       ) : data.length > 0 ? (
-        <DataGridPro
-          rows={data || []}
-          columns={cols.map(col => { return { ...col, display: 'flex' } })}
-          getRowId={(row) => row.zscore + row.study}
-          pagination
-          initialState={{
-            sorting: {
-              sortModel: [{ field: "zscore", sort: "desc" }],
-            },
-            pagination: {
-              paginationModel: { pageSize: 10 },
-            },
-          }}
-          slots={{ toolbar: DataGridToolbar }}
-          slotProps={{ toolbar: { title: "GWAS Ldr" } }}
-          getRowHeight={() => 'auto'}
-          sx={{
-            [`& .${gridClasses.cell}`]: {
-              py: 1,
-            },
-          }}
-          disableRowSelectionOnClick
-        />
+        <Box sx={{ flex: "1 1 auto" }}>
+          <DataGridPro
+            rows={data || []}
+            columns={cols.map((col) => {
+              return { ...col, display: "flex" };
+            })}            
+            getRowId={(row) => row.zscore + row.study}
+            pagination
+            initialState={{
+              sorting: {
+                sortModel: [{ field: "zscore", sort: "desc" }],
+              },
+              pagination: {
+                paginationModel: {
+                  pageSize: 5,
+                  page: 0,
+                },
+              },
+            }}
+            density="compact"
+            pageSizeOptions={[5, 10]}
+            slots={{ toolbar: DataGridToolbar }}
+            slotProps={{ toolbar: { title: "GWAS SNPs" } }}
+            getRowHeight={() => "auto"}
+            sx={{
+              [`& .${gridClasses.cell}`]: {
+                py: 1,
+              },
+            }}
+            disableRowSelectionOnClick
+          />
+        </Box>
       ) : (
         <Typography
           variant="h6"
@@ -101,7 +119,7 @@ export default function GWASLdr({ accession }: { accession: string }) {
             marginBottom: 2,
           }}
         >
-          No GWAS LDR data found
+          No GWAS SNPs data found
         </Typography>
       )}
     </Box>

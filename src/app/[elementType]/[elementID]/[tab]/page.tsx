@@ -62,7 +62,7 @@ export default function DetailsPage({
 
       switch (tab) {
         case ("eQTLs"): return <SnpEQTLs rsid={snpData.id} />
-        case ("gwasldr"): return <SnpGWASLdr snpid={snpData.id}/> 
+        case ("gwassnps"): return <SnpGWASLdr snpid={snpData.id}/> 
       }
     }
 
@@ -90,7 +90,7 @@ export default function DetailsPage({
       switch (tab) {
         case ("linked"): return <LinkedGenes accession={icreData.accession}/>
         case ("activity"): return <IcreActivity accession={icreData.accession}/>
-        case ("gwasldr"): return <GWASLdr accession={icreData.accession}/> 
+        case ("gwassnps"): return <GWASLdr accession={icreData.accession}/> 
       }
     }
   }
