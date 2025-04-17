@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { Skeleton, Link, Stack } from "@mui/material";
+import { Skeleton, Link, Stack, Box } from "@mui/material";
 import { DataGridPro, GridColDef } from "@mui/x-data-grid-pro";
 import { toScientificNotation } from "common/utility";
 import { gql } from "types/generated/gql";
@@ -42,17 +42,23 @@ const SnpEQTLs = ({ rsid }: SnpEQTLsProps) => {
 
   return (
     <Stack spacing={2}>
+      <Box sx={{ flex: "1 1 auto" }}>
       <DataGridPro
         rows={data.immuneeQTLsQuery.filter((i) => i.study === "GTEX") || []}
         columns={columns}
         initialState={{
           sorting: {
-            sortModel: [{ field: "pvalue", sort: "asc" }],
+            sortModel: [{ field: "pval_nominal", sort: "asc" }],
           },
           pagination: {
-            paginationModel: { pageSize: 10 },
+            paginationModel: {
+              pageSize: 5,
+              page: 0,
+            },
           },
         }}
+        pageSizeOptions={[5, 10]}
+       
         slots={{ toolbar: DataGridToolbar }}
         slotProps={{ toolbar: { title: `GTEX whole-blood eQTLs for ${rsid}` } }}
         density="compact"
@@ -62,6 +68,8 @@ const SnpEQTLs = ({ rsid }: SnpEQTLsProps) => {
         }}
         getRowId={(row) => row.variant_id + row.genename + row.pval_nominal}
       />
+      </Box>
+      <Box sx={{ flex: "1 1 auto" }}>
       <DataGridPro
         columns={OneK1KColumns}
         rows={data.immuneeQTLsQuery.filter((i) => i.study === "OneK1K") || []}
@@ -70,8 +78,14 @@ const SnpEQTLs = ({ rsid }: SnpEQTLsProps) => {
         slotProps={{ toolbar: { title: `OneK1K eQTLs for ${rsid}` } }}
         pagination
         initialState={{
+          sorting: {
+            sortModel: [{ field: "fdr", sort: "asc" }],
+          },
           pagination: {
-            paginationModel: { pageSize: 10 },
+            paginationModel: {
+              pageSize: 5,
+              page: 0,
+            },
           },
         }}
         density="compact"
@@ -80,6 +94,7 @@ const SnpEQTLs = ({ rsid }: SnpEQTLsProps) => {
           boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
         }}
       />
+      </Box>
     </Stack>
   );
 };

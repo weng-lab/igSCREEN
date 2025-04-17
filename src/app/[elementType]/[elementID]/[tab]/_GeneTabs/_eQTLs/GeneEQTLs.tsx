@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { Grid2, Link, Skeleton, Stack } from "@mui/material";
+import { Grid2, Link, Skeleton, Stack, Box } from "@mui/material";
 import { DataGridPro, GridColDef } from "@mui/x-data-grid-pro";
 import { toScientificNotation } from "common/utility";
 import { gql } from "types/generated";
@@ -32,9 +32,9 @@ type GeneEQTLsProps = {
 const GeneEQTLs = ({ name, id }: GeneEQTLsProps) => {
   const { loading, data, error } = useQuery(GENE_EQTL_QUERY, {
     variables: {
-      genes: [name]
+      genes: [name],
     },
-    skip: !name
+    skip: !name,
   });
 
   if (loading) {
@@ -59,43 +59,60 @@ const GeneEQTLs = ({ name, id }: GeneEQTLsProps) => {
 
   return (
     <Stack spacing={2}>
-      <DataGridPro
-        columns={columns}
-        rows={data.immuneeQTLsQuery.filter(i=>i.study==="GTEX")|| []}
-        getRowId={(row) => row.variant_id + row.rsid + row.pval_nominal}
-        slots={{ toolbar: DataGridToolbar }}
-        slotProps={{ toolbar: { title: `GTEX whole-blood eQTLs for ${name}` } }}
-        pagination
-        initialState={{
-          pagination: {
-            paginationModel: { pageSize: 10 },
-          },
-        }}
-        density="compact"
-        sx={{
-          borderRadius: 1,
-          boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
-        }}
-      />
-
-      <DataGridPro
-        columns={OneK1KColumns}
-        rows={data.immuneeQTLsQuery.filter(i=>i.study==="OneK1K") || []}
-        getRowId={(row) => row.variant_id + row.fdr}
-        slots={{ toolbar: DataGridToolbar }}
-        slotProps={{ toolbar: { title: `OneK1K eQTLs for ${name}` } }}
-        pagination
-        initialState={{
-          pagination: {
-            paginationModel: { pageSize: 10 },
-          },
-        }}
-        density="compact"
-        sx={{
-          borderRadius: 1,
-          boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
-        }}
-      />      
+      <Box sx={{ flex: "1 1 auto" }}>
+        <DataGridPro
+          columns={columns}
+          rows={data.immuneeQTLsQuery.filter((i) => i.study === "GTEX") || []}
+          getRowId={(row) => row.variant_id + row.rsid + row.pval_nominal}
+          slots={{ toolbar: DataGridToolbar }}
+          slotProps={{ toolbar: { title: `GTEX whole-blood eQTLs for ${name}` } }}
+          pagination          
+          initialState={{
+            sorting: {
+              sortModel: [{ field: "pval_nominal", sort: "asc" }],
+            },
+            pagination: {
+              paginationModel: {
+                pageSize: 5,
+                page: 0,
+              },
+            },
+          }}
+          pageSizeOptions={[5, 10]}
+          density="compact"
+          sx={{
+            borderRadius: 1,
+            boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
+          }}
+        />
+      </Box>
+      <Box sx={{ flex: "1 1 auto" }}>
+        <DataGridPro
+          columns={OneK1KColumns}
+          rows={data.immuneeQTLsQuery.filter((i) => i.study === "OneK1K") || []}
+          getRowId={(row) => row.variant_id + row.fdr}
+          slots={{ toolbar: DataGridToolbar }}
+          slotProps={{ toolbar: { title: `OneK1K eQTLs for ${name}` } }}
+          pagination
+          initialState={{
+            sorting: {
+              sortModel: [{ field: "fdr", sort: "asc" }],
+            },
+            pagination: {
+              paginationModel: {
+                pageSize: 5,
+                page: 0,
+              },
+            },
+          }}
+          pageSizeOptions={[5, 10]}
+          density="compact"
+          sx={{
+            borderRadius: 1,
+            boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
+          }}
+        />
+      </Box>
     </Stack>
   );
 };
@@ -108,20 +125,20 @@ const columns: GridColDef[] = [
     headerName: "Variant Id",
     flex: 2,
   },
-  
+
   {
     field: "rsid",
     headerName: "SNP Id",
     flex: 2,
     renderCell: (params) => {
-      return params.value==="." ? <>{params.value}</> : <Link href={`/snp/${params.value}`}>{params.value}</Link>;
+      return params.value === "." ? <>{params.value}</> : <Link href={`/snp/${params.value}`}>{params.value}</Link>;
     },
   },
   {
     field: "chromosome",
     headerName: "Chromosome",
     flex: 2,
-  },  
+  },
   {
     field: "position",
     headerName: "Position",
@@ -146,12 +163,11 @@ const columns: GridColDef[] = [
   {
     field: "ccre",
     headerName: "iCRE",
-    flex: 2, 
+    flex: 2,
     renderCell: (params) => {
-      return params.value==="." ? <>{params.value}</> : <Link href={`/icre/${params.value}`}>{params.value}</Link>;
+      return params.value === "." ? <>{params.value}</> : <Link href={`/icre/${params.value}`}>{params.value}</Link>;
     },
   },
-  
 ];
 
 const OneK1KColumns: GridColDef[] = [
@@ -162,12 +178,12 @@ const OneK1KColumns: GridColDef[] = [
     renderCell: (params) => {
       return <Link href={`/snp/${params.value}`}>{params.value}</Link>;
     },
-  }, 
+  },
   {
     field: "chromosome",
     headerName: "Chromosome",
     flex: 2,
-  },  
+  },
   {
     field: "position",
     headerName: "Position",
@@ -195,4 +211,3 @@ const OneK1KColumns: GridColDef[] = [
     flex: 2,
   },
 ];
-

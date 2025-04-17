@@ -18,18 +18,18 @@ export function isValidGenomicElement(value: string): value is GenomicElementTyp
 
 export type SharedRoute = "nearby" | "browser"
 
-export type SnpRoute = SharedRoute | "eQTLs" | "gwasldr"
+export type SnpRoute = SharedRoute | "eQTLs" | "gwassnps"
 
 export type GeneRoute = SharedRoute | "eQTLs" | "linked" | "expression"
 
-export type IcreRoute = SharedRoute | "linked" | "activity" | "gwasldr"
+export type IcreRoute = SharedRoute | "linked" | "activity" | "gwassnps"
 
 export function isValidSharedTab(tab: string): tab is SharedRoute {
   return tab === "nearby" || tab === "browser"
 }
 
 export function isValidSnpTab(tab: string): tab is SnpRoute {
-  return isValidSharedTab(tab) || tab === "eQTLs" || tab === "gwasldr"
+  return isValidSharedTab(tab) || tab === "eQTLs" || tab === "gwassnps"
 }
 
 export function isValidGeneTab(tab: string): tab is GeneRoute {
@@ -37,7 +37,7 @@ export function isValidGeneTab(tab: string): tab is GeneRoute {
 }
 
 export function isValidIcreTab(tab: string): tab is IcreRoute {
-  return isValidSharedTab(tab) || tab === "linked" || tab === "activity" || tab === "gwasldr"
+  return isValidSharedTab(tab) || tab === "linked" || tab === "activity" || tab === "gwassnps"
 }
 
 export function isValidTab(tab: string): tab is SharedRoute | SnpRoute | GeneRoute | IcreRoute {
