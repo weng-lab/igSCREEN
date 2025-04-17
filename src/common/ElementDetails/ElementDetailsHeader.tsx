@@ -14,8 +14,6 @@ const ElementDetailsHeader = ({ elementType, elementID }: ElementDetailsHeaderPr
 
   const { data: elementMetadata, loading, error } = useElementMetadata({ elementType, elementID })
 
-  console.log(elementMetadata)
-
   const c = elementMetadata?.coordinates
   const coordinatesDisplay = c && `${c.chromosome}:${c.start.toLocaleString()}-${c.end.toLocaleString()}`
 
