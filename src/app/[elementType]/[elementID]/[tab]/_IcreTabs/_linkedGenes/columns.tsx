@@ -20,38 +20,38 @@ import {
  */
 export const IntactHiCLoopsCols: colDef[] = [
   geneNameCol,
-  geneTypeCol,
+  {...geneTypeCol, minWidth: 65},
   experimentCol,
-  displayNameCol,
+  {...displayNameCol, minWidth: 85},
   scoreCol,
-  pValCol,
+  {...pValCol, minWidth: 85},
 ];
 
 export const ChIAPETCols: colDef[] = [
   geneNameCol,
-  geneTypeCol,
-  assayCol,
+  {...geneTypeCol, minWidth: 65},
+  {...assayCol, minWidth: 85},
   experimentCol,
-  displayNameCol,
+  {...displayNameCol, minWidth: 85},
   scoreCol,
 ];
 
 export const CrisprFlowFISHCols: colDef[] = [
   geneNameCol,
-  { ...geneTypeCol, flex: 1 },
+  {...geneTypeCol, minWidth: 65},
   gRNACol,
   { ...experimentCol, flex: 1.25 },
-  displayNameCol,
+  {...displayNameCol, minWidth: 85},
   effectSizeCol,
   pValCol,
 ];
 
 export const eQTLCols: colDef[] = [
   geneNameCol,
-  geneTypeCol,
-  variantIDCol,
-  sourceCol,
-  tissueCol,
+  {...geneTypeCol, minWidth: 100},
+  {...variantIDCol, minWidth: 140},
+  {...sourceCol, minWidth: 75},
+  {...tissueCol, minWidth: 85},
   slopeCol,
-  pValCol,
+  {...pValCol, minWidth: 85},
 ];

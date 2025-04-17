@@ -84,7 +84,7 @@ const TwoPaneLayout = ({ TableComponent, plots }: TwoPaneLayoutProps) => {
           </div>
         </Box>
       }
-      <Box flexGrow={1} id="tabs_figure_container">
+      <Box flex="1 1 0" minWidth={0} id="tabs_figure_container">
         <Stack direction={"row"} alignItems={"center"} mb={2} gap={2}>
           {!tableOpen &&
             <TableIconButton />
@@ -101,7 +101,7 @@ const TwoPaneLayout = ({ TableComponent, plots }: TwoPaneLayoutProps) => {
             display={tab === i ? "block" : "none"} 
             key={i} id={"figure_container"}
             //use table height unless its not open, then set px height for umap so it doesnt slowly resize
-            height={tableOpen ? tableHeight : Figure.title === "UMAP" ? "700px" : "100%"} 
+            height={tableOpen ? tableHeight : Figure.title === "UMAP" ? "700px" : "100%"}
             maxHeight={Figure.title === "UMAP" ? "700px" : "none"}
           >
             {Figure.component}
