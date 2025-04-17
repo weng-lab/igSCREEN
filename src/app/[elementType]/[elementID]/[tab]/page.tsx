@@ -1,6 +1,5 @@
 'use client'
 import { CircularProgress, Typography } from "@mui/material"
-import NearbyGenomicFeatures from "app/[elementType]/[elementID]/[tab]/_SharedTabs/NearbyGenomicFeatures"
 import GenomeBrowserView from "common/gbview/genomebrowserview"
 import { useElementMetadata, useElementMetadataReturn } from "common/hooks/useElementMetadata"
 import { GenomicElementType, isValidGeneTab, isValidIcreTab, isValidSnpTab, isValidTab } from "types/globalTypes"
@@ -44,9 +43,6 @@ export default function DetailsPage({
   }
 
   //Handle shared tabs
-  if (tab === "nearby") {
-    return <NearbyGenomicFeatures coordinates={elementMetadata.coordinates} elementID={elementID} elementType={elementType} />
-  }
   if (tab === "browser") {
     const elementType = elementMetadata.__typename === "Gene" ? "gene" : elementMetadata.__typename === "ICRE" ? "icre" : "snp"
     return <GenomeBrowserView coordinates={elementMetadata.coordinates} name={elementMetadata.__typename === "Gene" ? elementMetadata.name : elementMetadata.__typename === "ICRE" ? elementMetadata.accession : elementMetadata.id} type={elementType as GenomicElementType} />
@@ -61,36 +57,37 @@ export default function DetailsPage({
       const snpData = elementMetadata as useElementMetadataReturn<"snp">["data"]
 
       switch (tab) {
-        case ("eQTLs"): return <SnpEQTLs rsid={snpData.id} />
-        case ("gwasldr"): return <SnpGWASLdr snpid={snpData.id}/> 
+        case (""): return <SnpGWASLdr snpid={snpData.id}/> 
+        case ("icres"): return <p>This page should have the intersecting iCRE</p>
+        case ("genes"): return <SnpEQTLs rsid={snpData.id} />
       }
     }
 
     case ("gene"): {
       if (!isValidGeneTab(tab)) {
-        throw new Error("Unknown SNP details tab: " + tab)
+        throw new Error("Unknown gene details tab: " + tab)
       }
 
       const geneData = elementMetadata as useElementMetadataReturn<"gene">["data"]
 
       switch (tab) {
-        case ("eQTLs"): return <GeneEQTLs name={geneData.name} id={geneData.id} />
-        case ("linked"): return <LinkedICREs geneid={geneData.id}/>
-        case ("expression"): return <GeneExpression name={geneData.name} id={geneData.id} />
+        case (""): return <GeneExpression name={geneData.name} id={geneData.id} />
+        case ("icres"): console.log("hit"); return <LinkedICREs geneid={geneData.id}/>
+        case ("variants"): return <GeneEQTLs name={geneData.name} id={geneData.id} />
       }
     }
 
     case ("icre"): {
       if (!isValidIcreTab(tab)) {
-        throw new Error("Unknown SNP details tab: " + tab)
+        throw new Error("Unknown iCRE details tab: " + tab)
       }
       
       const icreData = elementMetadata as useElementMetadataReturn<"icre">["data"]
 
       switch (tab) {
-        case ("linked"): return <LinkedGenes accession={icreData.accession}/>
-        case ("activity"): return <IcreActivity accession={icreData.accession}/>
-        case ("gwasldr"): return <GWASLdr accession={icreData.accession}/> 
+        case (""): return <IcreActivity accession={icreData.accession}/>
+        case ("genes"): return <LinkedGenes accession={icreData.accession}/>
+        case ("variants"): return <GWASLdr accession={icreData.accession}/> 
       }
     }
   }

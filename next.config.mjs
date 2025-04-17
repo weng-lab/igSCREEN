@@ -9,7 +9,7 @@ const nextConfig = {
         }
     }
 
-    return config;
+    return config
   },
   async redirects() {
     return [
@@ -17,22 +17,7 @@ const nextConfig = {
         source: '/region/:region',
         destination: '/region/:region/icres',
         permanent: true
-      },
-      {
-        source: '/snp/:elementID',
-        destination: '/snp/:elementID/nearby',
-        permanent: true,
-      },
-      {
-        source: '/icre/:elementID',
-        destination: '/icre/:elementID/nearby',
-        permanent: true,
-      },
-      {
-        source: '/gene/:elementID',
-        destination: '/gene/:elementID/nearby',
-        permanent: true,
-      },
+      }
     ]
   }
 }

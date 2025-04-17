@@ -41,9 +41,6 @@ export default function PortalPage({ params: { elementType } }: { params: { elem
 
   const router = useRouter();
 
-  /**
-   * The tab that this ends up directing to is configured in next.config.mjs
-   */
   const handleSearchSubmit = (result: Result) => {
     router.push(result.type + "/" + result.title);
   };

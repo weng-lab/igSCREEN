@@ -5,9 +5,10 @@ import Grid from "@mui/material/Grid2";
 import { Link as MuiLink, Skeleton } from "@mui/material";
 import { gql } from "types/generated/gql";
 import Link from "next/link";
-import { calcDistToTSS, calcDistRegionToPosition, calcDistRegionToRegion, NearbyGenomicFeaturesProps } from "./utils";
+import { calcDistToTSS, calcDistRegionToPosition, calcDistRegionToRegion } from "./utils";
 import DataGridToolbar from "common/components/dataGridToolbar";
 import { DataGridPro, GridColDef } from "@mui/x-data-grid-pro";
+import { GenomicElementType, GenomicRange } from "types/globalTypes";
 
 export const NEARBY_GENOMIC_FEATURES_QUERY = gql(`
   query nearbyGenomicFeatures($coordinates: [GenomicRangeInput!], $chromosome: String, $start: Int, $end: Int, $version: Int) {
@@ -44,6 +45,12 @@ export const NEARBY_GENOMIC_FEATURES_QUERY = gql(`
     }
   }
 `);
+
+export type NearbyGenomicFeaturesProps = {
+  coordinates: GenomicRange;
+  elementType: GenomicElementType;
+  elementID: string;
+};
 
 const NearbyGenomicFeatures = ({ coordinates, elementType, elementID }: NearbyGenomicFeaturesProps) => {
   const { loading, data, error } = useQuery(NEARBY_GENOMIC_FEATURES_QUERY, {

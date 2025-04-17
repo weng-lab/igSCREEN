@@ -8,8 +8,7 @@ import { ElementDetailsTab, GenePortalTab, GenomicElementType, IcrePortalTab, Sn
 import { genePortalTabs, icrePortalTabs, sharedTabs, snpPortalTabs } from "./tabsConfig";
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import CropSquareIcon from '@mui/icons-material/CropSquare';
-import SquareIcon from '@mui/icons-material/Square';
+import Image from "next/image";
 
 export type ElementDetailsTabsProps = {
   elementType: GenomicElementType
@@ -93,7 +92,7 @@ const ElementDetailsTabs = ({ elementType, orientation }: ElementDetailsTabsProp
     setValue(newValue);
   };
 
-  //If we ever use parallel routes, this will probably break
+  //If we ever use parallel routes to nest multiple elements in the same view, this will probably break
   useEffect(() => {
     if (currentTab !== value) {
       setValue(currentTab)
@@ -114,8 +113,8 @@ const ElementDetailsTabs = ({ elementType, orientation }: ElementDetailsTabsProp
         break
     }
     return [
+      ...elementSpecificTabs,
       ...sharedTabs,
-      ...elementSpecificTabs
     ]
   }, [elementType])
 
@@ -164,8 +163,7 @@ const ElementDetailsTabs = ({ elementType, orientation }: ElementDetailsTabsProp
             href={basepath + "/" + tab.href}
             key={tab.href}
             icon={
-              !open &&
-              (index % 2 === 0 ? <CropSquareIcon sx={{ fontSize: 40 }} /> : <SquareIcon sx={{ fontSize: 40 }} />)
+              !open && <Image width={50} height={50} src={tab.iconPath} alt={tab.label + ' icon'} />
             }
             sx={{ mb: !open ? 2 : 0 }}
           />

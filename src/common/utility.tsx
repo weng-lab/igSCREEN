@@ -117,6 +117,9 @@ export const LinkComponent = ({
   );
 };
 
+/**
+ * Only use this function if use case is unable to handle jsx element and needs string. Use `toScientificNotationElement` if possible
+ */
 export function toScientificNotation(num: number, sigFigs?: number) {
   // Convert the number to scientific notation using toExponential
   let scientific = num.toExponential(sigFigs ?? undefined);

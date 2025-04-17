@@ -16,28 +16,62 @@ export function isValidGenomicElement(value: string): value is GenomicElementTyp
   return value === "snp" || value === "gene" || value === "icre";
 }
 
-export type SharedRoute = "nearby" | "browser"
+//What should the routing be?
 
-export type SnpRoute = SharedRoute | "eQTLs" | "gwasldr"
+/**
+ * /icre/EH3812345678/icres
+ * /icre/EH3812345678/gene
+ * /icre/EH3812345678/variants
+ * 
+ * /snp/rs12345/variants
+ * /snp/rs12345/icre
+ * /snp/rs12345/gene
+ * 
+ * /gene/APOE/gene
+ * /gene/APOE/icre
+ * /gene/APOE/variants
+ * 
+ */
 
-export type GeneRoute = SharedRoute | "eQTLs" | "linked" | "expression"
+/**
+ * /icre/EH3812345678
+ * /icre/EH3812345678/genes
+ * /icre/EH3812345678/variants
+ * 
+ * /snp/rs12345
+ * /snp/rs12345/icres
+ * /snp/rs12345/genes
+ * 
+ * /gene/APOE
+ * /gene/APOE/icres
+ * /gene/APOE/variants
+ * 
+ */
 
-export type IcreRoute = SharedRoute | "linked" | "activity" | "gwasldr"
+
+export type SharedRoute = "browser" 
+
+//empty route is for the elements default tab. For example /gene/SP1 will be the gene expression. Otherwise would need to assign /gene/SP1/gene
+export type SnpRoute = SharedRoute | "" | "icres" | "genes"
+
+export type GeneRoute = SharedRoute | "" | "icres" | "variants"
+
+export type IcreRoute = SharedRoute | "" | "genes" | "variants"
 
 export function isValidSharedTab(tab: string): tab is SharedRoute {
-  return tab === "nearby" || tab === "browser"
+  return tab === "browser"
 }
 
 export function isValidSnpTab(tab: string): tab is SnpRoute {
-  return isValidSharedTab(tab) || tab === "eQTLs" || tab === "gwasldr"
+  return isValidSharedTab(tab) || tab === "icres" || tab === "genes"
 }
 
 export function isValidGeneTab(tab: string): tab is GeneRoute {
-  return isValidSharedTab(tab) || tab === "eQTLs" || tab === "linked" || tab === "expression"
+  return isValidSharedTab(tab) || tab === "icres" || tab === "variants"
 }
 
 export function isValidIcreTab(tab: string): tab is IcreRoute {
-  return isValidSharedTab(tab) || tab === "linked" || tab === "activity" || tab === "gwasldr"
+  return isValidSharedTab(tab) || tab === "genes" || tab === "variants"
 }
 
 export function isValidTab(tab: string): tab is SharedRoute | SnpRoute | GeneRoute | IcreRoute {
@@ -51,6 +85,7 @@ export function isValidTab(tab: string): tab is SharedRoute | SnpRoute | GeneRou
 export type ElementDetailsTab = {
   label: string,
   href: SnpRoute | GeneRoute | IcreRoute
+  iconPath: string
 }
 
 export interface SharedTab extends ElementDetailsTab {
