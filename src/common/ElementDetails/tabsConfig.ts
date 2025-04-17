@@ -17,8 +17,8 @@ export const snpPortalTabs: SnpPortalTab[] = [
     href: "eQTLs"
   },  
   {
-    label: "GWAS LDR",
-    href: "gwasldr"
+    label: "GWAS SNPs",
+    href: "gwassnps"
   }
 ]
 
@@ -47,7 +47,7 @@ export const icrePortalTabs: IcrePortalTab[] = [
     href: "activity"
   },  
   {
-    label: "GWAS LDR",
-    href: "gwasldr"
+    label: "GWAS SNPs",
+    href: "gwassnps"
   }
 ]

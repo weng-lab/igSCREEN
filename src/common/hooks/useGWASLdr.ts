@@ -26,6 +26,7 @@ query getimmuneGWASLdr($icres: [String], $snps: [String]) {
       snpid
       icre
       ref_allele
+      author
       effect_allele
       zscore
       study_source
