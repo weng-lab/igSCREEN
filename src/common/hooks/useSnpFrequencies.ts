@@ -43,7 +43,7 @@ export function useSnpFrequencies(rsid: string, elementType: GenomicElementType 
 
         const allele = data["mappings"][0]["allele_string"].split("/");
         const ref = allele[0];
-        const alt = allele[1];
+        const alt = allele[allele.length - 1];
 
         const pop = [
           "1000GENOMES:phase_3:AMR",
