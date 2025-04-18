@@ -561,7 +561,7 @@ const CellLineageTree = ({
         </Group>
       );
     },
-    [getCellSelected, onNodeClicked, uninteractive]
+    [getCellDisabled, getCellSelected, onNodeClicked, uninteractive]
   );
 
   return innerWidth < 10 ? null : (
