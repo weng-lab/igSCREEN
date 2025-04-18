@@ -4,6 +4,7 @@ import { formatPortal } from "common/utility"
 import { GenomicElementType } from "types/globalTypes"
 import Image from "next/image"
 import Grid2 from "@mui/material/Grid2";
+import { useGeneDescription } from "common/hooks/useGeneDescription"
 
 export type ElementDetailsHeaderProps = {
   elementType: GenomicElementType
@@ -17,7 +18,9 @@ const ElementDetailsHeader = ({ elementType, elementID }: ElementDetailsHeaderPr
   const c = elementMetadata?.coordinates
   const coordinatesDisplay = c && `${c.chromosome}:${c.start.toLocaleString()}-${c.end.toLocaleString()}`
 
-  const description = elementMetadata?.__typename === "Gene" ? elementMetadata?.description : ""
+  const description = useGeneDescription(elementID,elementType).description
+  
+  //const description = elementMetadata?.__typename === "Gene" ? elementMetadata?.description : ""
   const id = elementMetadata?.__typename === "Gene" ? elementMetadata?.id : ""
 
   return (

@@ -85,7 +85,7 @@ export default function SnpGWASLdr({ snpid }: { snpid: string }) {
             }}
             pageSizeOptions={[5, 10]}
             slots={{ toolbar: DataGridToolbar }}
-            slotProps={{ toolbar: { title: "GWAS SNPs" } }}
+            slotProps={{ toolbar: { title: "GWAS Variants" } }}
             getRowHeight={() => "auto"}
             sx={{
               [`& .${gridClasses.cell}`]: {
@@ -106,7 +106,7 @@ export default function SnpGWASLdr({ snpid }: { snpid: string }) {
             marginBottom: 2,
           }}
         >
-          No GWAS SNPs data found
+          No GWAS Variants data found
         </Typography>
       )}
     </Box>

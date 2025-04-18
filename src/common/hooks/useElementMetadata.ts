@@ -2,6 +2,7 @@ import { GenomicElementType } from "types/globalTypes";
 import { useGeneData, UseGeneDataReturn } from "./useGeneData";
 import { useIcreData, UseIcreDataReturn } from "./useIcreData";
 import { useSnpData, UseSnpDataReturn } from "./useSnpData";
+import { useSnpFrequencies } from "./useSnpFrequencies";
 
 type useElementMetadataParams<T extends GenomicElementType> = {
   elementType: T,
@@ -22,7 +23,9 @@ export const useElementMetadata = <T extends GenomicElementType>({ elementType, 
   const geneMetadata = useGeneData({name: elementID, elementType});
   const icreMetadata = useIcreData({accession: elementID, elementType});
   const snpMetadata = useSnpData({rsID: elementID, elementType});
-
+  //example to use useSnpFrequencies, returns ref,alt alleles and population frequencies 
+  //const SnpFrequencies= useSnpFrequencies(elementID);
+  
   switch (elementType) {
     case "gene":
       return geneMetadata as useElementMetadataReturn<T>;
