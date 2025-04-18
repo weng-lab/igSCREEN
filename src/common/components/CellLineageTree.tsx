@@ -119,17 +119,17 @@ interface CellTypeTreeProps {
   width: number;
   height: number;
   /**
-   * Highlights cells in the tree, and greys out the rest. Empty array will grey whole tree, null will grey none
+   * Determines if a node is selected (places outline around node)
    */
-  selected?: string[];
+  getCellSelected?: (cellNode: HierarchyPointNode<TreeNode>) => boolean;
+  /**
+   * Determines if a node is disabled (greyed out and uninteractive)
+   */
+  getCellDisabled?: (cellNode: HierarchyPointNode<TreeNode>) => boolean;
   /**
    * Makes it so that nodes do not grow slightly on hover
    */
   uninteractive?: boolean;
-  /**
-   * Disables nodes which do not have data in the specified assay
-   */
-  assay?: "DNase" | "ATAC"
   onNodeClicked?: (node: NodeInfo) => void;
 }
 
@@ -238,7 +238,7 @@ export function getCellImagePath(cellType: CellType): string {
 
 interface TreeNode extends NodeInfo {
   label: string;
-  disabled?: boolean;
+  alwaysDisabled?: boolean;
   children?: TreeNode[];
 }
 
@@ -303,7 +303,7 @@ const tree: TreeNode = {
                 {
                   celltype: null,
                   label: "Double/Negative",
-                  disabled: true,
+                  alwaysDisabled: true,
                   children: [
                     {
                       celltype: "Natural Killer Cells",
@@ -338,7 +338,7 @@ const tree: TreeNode = {
                         {
                           celltype: null,
                           label: "Double/Positive",
-                          disabled: true,
+                          alwaysDisabled: true,
                           children: [
                             {
                               celltype: "CD4+ T Cells",
@@ -464,8 +464,8 @@ const tree: TreeNode = {
 const CellLineageTree = ({
   width,
   height,
-  selected = null,
-  assay = null,
+  getCellSelected = () => true,
+  getCellDisabled = () => false,
   uninteractive = false,
   onNodeClicked = () => {},
 }: CellTypeTreeProps) => {
@@ -488,8 +488,8 @@ const CellLineageTree = ({
       const top = node.y;
       const left = node.x;
 
-      const isSelected = selected?.includes(node.data.celltype);
-      const isDisabled = node.data.disabled || (assay && (!cellTypeConfig[node.data.celltype][assay].Stim && !cellTypeConfig[node.data.celltype][assay].Unstim))
+      const isSelected = getCellSelected(node)
+      const isDisabled = node.data.alwaysDisabled || getCellDisabled(node)
       const opacity = isDisabled ? 0.3 : 1;
 
       const fontSize = 12
@@ -561,7 +561,7 @@ const CellLineageTree = ({
         </Group>
       );
     },
-    [assay, onNodeClicked, selected, uninteractive]
+    [getCellSelected, onNodeClicked, uninteractive]
   );
 
   return innerWidth < 10 ? null : (
@@ -579,7 +579,7 @@ const CellLineageTree = ({
                 data={link}
                 stroke={"#b4b6cc"}
                 strokeWidth={
-                  link.target.descendants().find((childNode) => selected?.includes(childNode.data.celltype)) ? 4 : 0.75
+                  link.target.descendants().find((childNode) => getCellSelected(childNode)) ? 4 : 0.75
                 }
                 fill="none"
                 style={{
