@@ -7,7 +7,7 @@ import { Group } from "@visx/group";
 import { defaultStyles as defaultTooltipStyles, useTooltip, TooltipWithBounds } from "@visx/tooltip";
 import { Text } from "@visx/text";
 import { MouseEvent } from "react";
-import { toScientificNotation } from "../../common/utility";
+import { toScientificNotationElement } from "../../common/utility";
 import { Box, Typography } from "@mui/material";
 import { getCellCategoryDisplayname, getCellCategoryColor } from "common/utility";
 
@@ -252,7 +252,7 @@ export default function LDSCplot({
               <b>
                 Enrichment <i>P</i> :
               </b>{" "}
-              {toScientificNotation(tooltipData.enrichmentP, 2)}
+              {toScientificNotationElement(tooltipData.enrichmentP, 2)}
             </p>
           </div>
           <div>

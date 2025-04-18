@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { Skeleton, Link, Stack, Box } from "@mui/material";
 import { DataGridPro, GridColDef } from "@mui/x-data-grid-pro";
-import { toScientificNotation } from "common/utility";
+import { toScientificNotationElement } from "common/utility";
 import { gql } from "types/generated/gql";
 import DataGridToolbar from "common/components/dataGridToolbar";
 
@@ -127,8 +127,8 @@ const columns: GridColDef[] = [
   {
     field: "pval_nominal",
     headerName: "Nominal P",
-    flex: 1,
-    renderCell: (params) => toScientificNotation(params.value, 2),
+    flex: 1.5,
+    renderCell: (params) => toScientificNotationElement(params.value, 2),
   },
   {
     field: "ccre",
@@ -162,8 +162,8 @@ const OneK1KColumns: GridColDef[] = [
   {
     field: "fdr",
     headerName: "FDR",
-    flex: 1,
-    renderCell: (params) => toScientificNotation(params.value, 2),
+    flex: 1.5,
+    renderCell: (params) => toScientificNotationElement(params.value, 2),
   },
   {
     field: "celltype",
