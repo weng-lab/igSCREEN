@@ -57,7 +57,7 @@ const IcreActivity = ({ accession }: IcreActivityProps) => {
         {
           tabTitle: "Bar Plot",
           icon: <BarChart />,
-          plotComponent:
+          plotComponent: (
             <IcreActivityBarPlot
               accession={accession}
               selected={selected}
@@ -65,28 +65,36 @@ const IcreActivity = ({ accession }: IcreActivityProps) => {
               iCREActivitydata={iCREActivitydata}
               onBarClicked={handleBarClick}
             />
+          ),
         },
         {
           tabTitle: "UMAP",
           icon: <ScatterPlot />,
-          plotComponent:
+          plotComponent: (
             <IcreActivityUMAP
               accession={accession}
               sortedFilteredData={sortedFilteredData}
               iCREActivitydata={iCREActivitydata}
               selected={selected}
-              onSelectionChange={(points) => handlePointsSelected(points.map(x => x.metaData))}
+              onSelectionChange={(points) => handlePointsSelected(points.map((x) => x.metaData))}
             />
+          ),
         },
         {
           tabTitle: "Activity in Cell Lineage",
-          icon: <SchemaRounded sx={{ transform: "rotate(270deg)" }}/>,
-          plotComponent: 
-            <IcreActivityTree accession={accession} />
-        }
+          icon: <SchemaRounded sx={{ transform: "rotate(270deg)" }} />,
+          plotComponent: (
+            <IcreActivityTree
+              accession={accession}
+              sortedFilteredData={sortedFilteredData}
+              iCREActivitydata={iCREActivitydata}
+              selected={selected}
+            />
+          ),
+        },
       ]}
     />
-  )
+  );
 }
 
 export default IcreActivity

@@ -42,8 +42,8 @@ const pageLinks: PageInfo[] = [
     dropdownID: 1,
     subPages: [
       { pageName: "Gene", link: "/gene" },
+      { pageName: "iCRE", link: "/icre" },
       { pageName: "Variant", link: "/variant" },
-      { pageName: "iCREs", link: "/icre" },
       { pageName: "Cell Lineage", link: "/lineage" },
       { pageName: "Phenotype", link: "/phenotype" },
     ],

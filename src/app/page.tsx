@@ -8,6 +8,7 @@ import Image from "next/image";
 import { ArrowForwardIos, ExpandMore, Search } from "@mui/icons-material";
 import AutoComplete from "../common/components/autocomplete";
 import Link from "next/link";
+import { portalDescriptions, portalImagePaths } from "common/consts";
 
 export default function Home() {
   type PortalTileProps = {
@@ -124,49 +125,41 @@ export default function Home() {
       <Stack divider={<Divider />} spacing={5}>
         <PortalTile
           imagePosition={"right"}
-          imagePath={"/assets/GenePortal.png"}
+          imagePath={portalImagePaths.gene}
           title={"Gene Portal"}
-          description={
-            "Explore gene expression across immune cell types at bulk and single-cell resolution for 63 cell types across 736 experiments."
-          }
+          description={portalDescriptions.gene}
           link={"/gene"}
           buttonText={"Explore Genes"}
         />
         <PortalTile
           imagePosition={"left"}
-          imagePath={"/assets/iCREPortal.png"}
+          imagePath={portalImagePaths.icre}
           title={"iCRE Portal"}
-          description={
-            "Explore regulatory element activity (immune cCREs) across immune cell types at bulk and single-cell resolution for 63 cell types across 736 experiments."
-          }
+          description={portalDescriptions.icre}
           link={"/icre"}
           buttonText={"Explore iCREs"}
         />
         <PortalTile
           imagePosition={"right"}
-          imagePath={"/assets/SNPPortal.png"}
+          imagePath={portalImagePaths.variant}
           title={"Variant Portal"}
-          description={
-            "Search Variants of interest and explore their impact on gene expression, chromatin accessibility, transcription factor (TF) binding and other molecular traits in immune cells."
-          }
+          description={portalDescriptions.variant}
           link={"/variant"}
           buttonText={"Explore Variants"}
         />
         <PortalTile
           imagePosition={"left"}
-          imagePath={"/assets/PhenotypePage.png"}
+          imagePath={portalImagePaths.phenotype}
           title={"Phenotype Heritability Enrichment"}
-          description={
-            "Select a phenotype to explore its heritability enrichment (calculated by LD score regression) within 736 immune cell experiments."
-          }
+          description={portalDescriptions.phenotype}
           link={"/phenotype"}
           buttonText={"Explore Phenotypes"}
         />
         <PortalTile
           imagePosition={"right"}
-          imagePath={"/assets/LineagePage.png"}
+          imagePath={portalImagePaths.lineage}
           title={"Immune cCRE Activity by Cell Type"}
-          description={"Compare immune cCRE activity between immune cell types."}
+          description={portalDescriptions.lineage}
           link={"/lineage"}
           buttonText={"Explore cCRE activity"}
         />

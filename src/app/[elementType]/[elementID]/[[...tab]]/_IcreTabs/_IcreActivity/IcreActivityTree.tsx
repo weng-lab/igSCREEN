@@ -1,13 +1,13 @@
 import CellLineageTree from "common/components/CellLineageTree";
-import { IcreActivityProps } from "./IcreActivity"
+import { IcreActivityProps, SharedIcreActivityPlotProps } from "./IcreActivity"
 import { useIcreData } from "common/hooks/useIcreData";
 import { Stack } from "@mui/material";
 import { useMemo } from "react";
 import ActiveCellTypesAccordion from "common/components/ActiveCellTypesAccordion";
 
-export type IcreActivtyTreeProps = IcreActivityProps
+export type IcreActivtyTreeProps = IcreActivityProps & SharedIcreActivityPlotProps;
 
-const IcreActivityTree = ({ accession }: IcreActivtyTreeProps) => {
+const IcreActivityTree = ({ accession, selected }: IcreActivtyTreeProps) => {
   
   const { data, loading, error } = useIcreData({ accession });
 
@@ -25,7 +25,13 @@ const IcreActivityTree = ({ accession }: IcreActivtyTreeProps) => {
         <ActiveCellTypesAccordion celltypes={dnaseCellTypes} assay="DNase" />
         <ActiveCellTypesAccordion celltypes={atacCellTypes} assay="ATAC" />
       </div>
-      <CellLineageTree width={830} height={1100} selected={treeSelected} uninteractive />
+      <CellLineageTree
+        width={830}
+        height={1100}
+        getCellSelected={(cellNode) => treeSelected.some((selected) => selected === cellNode.data.celltype)}
+        getCellDisabled={(cellNode) => selected.length && !selected.some(selection => selection.celltype === cellNode.data.celltype) }
+        uninteractive
+      />
     </Stack>
   );
 }
