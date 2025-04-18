@@ -36,7 +36,7 @@ export const portalDescriptions: {[key in (GenomicElementType | "phenotype" | "l
   icre: "Explore regulatory element activity (immune cCREs) across immune cell types at bulk and single-cell resolution for 63 cell types across 736 experiments.",
   gene: "Explore gene expression across immune cell types at bulk and single-cell resolution for 43 cell types across 312 experiments.",
   variant: "Search variants of interest and explore their impact on gene expression, chromatin accessibility, and other molecular traits in immune cells.",
-  phenotype: "Select a phenotype to explore its heritability enrichment (calculated by LD score regression) within 736 immune cell experiments.",
+  phenotype: "Select between 400 phenotypes to explore heritability enrichment (calculated by LD score regression) within 736 immune cell experiments.",
   lineage: "Compare immune cCRE activity between immune cell types."
 }
 
