@@ -42,7 +42,7 @@ const pageLinks: PageInfo[] = [
     dropdownID: 1,
     subPages: [
       { pageName: "Gene", link: "/gene" },
-      { pageName: "SNP", link: "/snp" },
+      { pageName: "Variant", link: "/variant" },
       { pageName: "iCREs", link: "/icre" },
       { pageName: "Cell Lineage", link: "/lineage" },
       { pageName: "Phenotype", link: "/phenotype" },
@@ -196,7 +196,7 @@ const ResponsiveAppBar = () => {
                   box: { gap: 1 },
                   input: {
                     size: "small",
-                    label: "Enter a gene, snp, icre or locus",
+                    label: "Enter a gene, iCRE, variant or locus",
                     sx: {
                       "& .MuiOutlinedInput-root": {
                         backgroundColor: "#ffffff",

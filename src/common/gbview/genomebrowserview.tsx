@@ -81,7 +81,7 @@ export default function GenomeBrowserView({
   }, [browserDispatch]);
   const onIcreClick = useCallback((item: Rect) => {
     const accession = item.name;
-    window.open(`/icre/${accession}/nearby`, "_blank");
+    window.open(`/icre/${accession}`, "_blank");
   }, []);
 
   // Initialize tracks and highlights

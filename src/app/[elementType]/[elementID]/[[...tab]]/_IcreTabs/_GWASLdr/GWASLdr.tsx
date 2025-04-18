@@ -12,7 +12,7 @@ export default function GWASLdr({ accession }: { accession: string }) {
       field: "snpid",
       headerName: "SNP ID",
       renderCell: (params) => (
-        <LinkComponent href={"/snp/" + params.value} underline="hover">
+        <LinkComponent href={"/variant/" + params.value} underline="hover">
           {params.value}
         </LinkComponent>
       ),

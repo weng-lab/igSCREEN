@@ -33,7 +33,7 @@ export const useSnpData = <T extends UseSnpDataParams>({ rsID, coordinates, elem
         coordinates,
         snpids: rsID
       },
-      skip: (elementType !== undefined) && elementType !== 'snp'
+      skip: (elementType !== undefined) && elementType !== 'variant'
     },
   );
 

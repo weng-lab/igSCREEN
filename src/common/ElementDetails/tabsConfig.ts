@@ -1,53 +1,68 @@
-import { GenePortalTab, IcrePortalTab, SharedTab, SnpPortalTab } from "types/globalTypes"
+import { GenePortalTab, IcrePortalTab, SharedTab, VariantPortalTab } from "types/globalTypes";
+
+const GbIconPath = '/assets/GenomeBrowserIcon.svg'
+const IcreIconPath = '/assets/IcreIcon.svg'
+const GeneIconPath = '/assets/GeneIcon.svg'
+const VariantIconPath = '/assets/VariantIcon.svg'
 
 export const sharedTabs: SharedTab[] = [
   {
-    label: 'Nearby Genomic Features',
-    href: 'nearby'
+    label: "Genome Browser",
+    href: "browser",
+    iconPath: GbIconPath
   },
-  {
-    label: 'Genome Browser',
-    href: 'browser'
-  },
-]
+];
 
-export const snpPortalTabs: SnpPortalTab[] = [
+export const variantPortalTabs: VariantPortalTab[] = [
   {
-    label: "eQTLs",
-    href: "eQTLs"
-  },  
+    label: "Variant",
+    href: "",
+    iconPath: VariantIconPath
+  },
   {
-    label: "GWAS SNPs",
-    href: "gwassnps"
-  }
-]
+    label: "iCREs",
+    href: "icres",
+    iconPath: IcreIconPath
+  },
+  {
+    label: "Genes",
+    href: "genes",
+    iconPath: GeneIconPath
+  },
+];
 
 export const genePortalTabs: GenePortalTab[] = [
   {
-    label: "eQTLs",
-    href: "eQTLs"
+    label: "Gene",
+    href: "",
+    iconPath: GeneIconPath
   },
   {
-    label: "Linked iCREs",
-    href: "linked"
+    label: "iCREs",
+    href: "icres",
+    iconPath: IcreIconPath
   },
   {
-    label: "Gene Expression",
-    href: "expression"
-  }
-]
+    label: "Variants",
+    href: "variants",
+    iconPath: VariantIconPath
+  },
+];
 
 export const icrePortalTabs: IcrePortalTab[] = [
   {
-    label: "Linked Genes",
-    href: "linked"
+    label: "iCRE",
+    href: "",
+    iconPath: IcreIconPath
   },
   {
-    label: "Activity",
-    href: "activity"
-  },  
+    label: "Genes",
+    href: "genes",
+    iconPath: GeneIconPath
+  },
   {
-    label: "GWAS SNPs",
-    href: "gwassnps"
-  }
-]
+    label: "Variants",
+    href: "variants",
+    iconPath: VariantIconPath
+  },
+];

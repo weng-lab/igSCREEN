@@ -131,7 +131,7 @@ const columns: GridColDef[] = [
     headerName: "SNP Id",
     flex: 2,
     renderCell: (params) => {
-      return params.value === "." ? <>{params.value}</> : <Link href={`/snp/${params.value}`}>{params.value}</Link>;
+      return params.value === "." ? <>{params.value}</> : <Link href={`/variant/${params.value}`}>{params.value}</Link>;
     },
   },
   {
@@ -176,7 +176,7 @@ const OneK1KColumns: GridColDef[] = [
     headerName: "SNP Id",
     flex: 2,
     renderCell: (params) => {
-      return <Link href={`/snp/${params.value}`}>{params.value}</Link>;
+      return <Link href={`/variant/${params.value}`}>{params.value}</Link>;
     },
   },
   {

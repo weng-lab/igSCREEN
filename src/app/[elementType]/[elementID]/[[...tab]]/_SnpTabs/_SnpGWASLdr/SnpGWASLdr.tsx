@@ -1,9 +1,7 @@
-import { Box, Grid2 as Grid, Skeleton, Typography } from "@mui/material";
+import { Box, Skeleton, Typography } from "@mui/material";
 import useGWASLdr from "common/hooks/useGWASLdr";
 import DataGridToolbar from "common/components/dataGridToolbar";
 import { DataGridPro, gridClasses, GridColDef } from "@mui/x-data-grid-pro";
-import { Link as MuiLink } from "@mui/material";
-import Link from "next/link";
 import { LinkComponent } from "common/utility";
 
 export default function SnpGWASLdr({ snpid }: { snpid: string }) {
