@@ -85,7 +85,7 @@ const ElementDetailsHeader = ({ elementType, elementID }: ElementDetailsHeaderPr
           textAlign={"right"}
         >
           <Grid2 container spacing={1} sx={{ flexGrow: 1 }} order={{xs: 2, sm: 1}} justifyContent={"flex-end"}>
-            <Grid2 size={6} sx={{ display: "flex" }} height={{xs: 65, sm: "auto"}}>
+            <Grid2 size={{xs: elementType === "icre" ? 12 : 6, sm : 6}} sx={{ display: "flex" }} height={{xs: 65, sm: "auto"}}>
               <Button
                 variant="contained"
                 href={elementID ? `http://screen.wenglab.org/search/?q=${elementID}&uuid=0&assembly=GRCh38` : undefined}
