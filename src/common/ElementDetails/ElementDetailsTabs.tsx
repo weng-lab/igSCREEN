@@ -60,8 +60,6 @@ const ElementDetailsTabs = ({ elementType, elementID, orientation }: ElementDeta
     }
   }, [currentTab, value])
 
-
-
   const MiniDrawer = useMemo(() => styled(Drawer, { shouldForwardProp: (prop) => prop !== 'open' })(
     ({ theme }) => ({
       flexShrink: 0,
@@ -154,6 +152,10 @@ const ElementDetailsTabs = ({ elementType, elementID, orientation }: ElementDeta
           "& .MuiTab-root": {
             alignItems: open ? "flex-start" : "center",
             paddingLeft: open ? 2 : 0,
+            "&.Mui-selected": {
+              backgroundColor: "rgba(73, 77, 107, .15)",
+              borderRadius: 1,
+            },
           },
           "& .MuiTabs-scrollButtons.Mui-disabled": {
             opacity: 0.3,
