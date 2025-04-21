@@ -119,11 +119,14 @@ const closestGenesCols: GridColDef[] = [
     field: "name",
     headerName: "Name",
     flex: 1,
-    renderCell: (params: any) => (
-      <LinkComponent href={`/gene/${params.value}`} underline="hover">
+    renderCell: (params: any) =>
+      params.value.startsWith("ENSG") ? (
         <i>{params.value}</i>
-      </LinkComponent>
-    ),
+      ) : (
+        <LinkComponent href={`/gene/${params.value}`} underline="hover">
+          <i>{params.value}</i>
+        </LinkComponent>
+      ),
   },
   { field: "type", headerName: "Type", flex: 1 },
   { field: "chromosome", headerName: "Chromosome", flex: 1 },
