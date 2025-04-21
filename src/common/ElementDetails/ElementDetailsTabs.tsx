@@ -151,7 +151,7 @@ const ElementDetailsTabs = ({ elementType, elementID, orientation }: ElementDeta
         sx={{
           "& .MuiTab-root": {
             alignItems: open ? "flex-start" : "center",
-            paddingLeft: open ? 2 : 0,
+            paddingLeft: open || horizontalTabs ? 2 : 0,
             "&.Mui-selected": {
               backgroundColor: "rgba(73, 77, 107, .15)",
               borderRadius: 1,
