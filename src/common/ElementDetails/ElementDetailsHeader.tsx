@@ -21,7 +21,31 @@ const ElementDetailsHeader = ({ elementType, elementID }: ElementDetailsHeaderPr
   const description = useGeneDescription(elementID,elementType).description
   
   //const description = elementMetadata?.__typename === "Gene" ? elementMetadata?.description : ""
-  const id = elementMetadata?.__typename === "Gene" ? elementMetadata?.id : ""
+  const geneID = elementMetadata?.__typename === "Gene" ? elementMetadata?.id : ""
+  const icreClass = elementMetadata?.__typename === "ICRE" ? elementMetadata?.group : ""
+
+  const icreClassDescriptions: Record<string, string> = {
+    "PLS": "(Promoter-like Signature)",
+    "pELS": "(Proximal Enhancer)",
+    "dELS": "(Distal Enhancer)",
+    "CA-H3K4me3": "(Chromatin Accessibility + H3K4me3)",
+    "CA-CTCF": "(Chromatin Accessibility + CTCF)",
+    "CA-TF": "(Chromatin Accessibility + Transcription Factor)",
+    "CA": "(Chromatin Accessibility)",
+    "TF": "(Transcription Factor)",
+  };
+
+  const subtitle =
+  elementType === "gene" ? (
+    geneID
+  ) : elementType === "icre" ? (
+    <>
+      <strong>Class:</strong> {icreClass} {icreClassDescriptions[icreClass] ?? ""}
+    </>
+  ) : (
+    ""
+  );
+  console.log(subtitle)
 
   return (
     <Grid2
@@ -41,14 +65,14 @@ const ElementDetailsHeader = ({ elementType, elementID }: ElementDetailsHeaderPr
             {elementType === "gene" ? <i>{elementID}</i> : elementID}
             {loading && elementType === "gene" ? (
               <Skeleton width={215} sx={{ display: 'inline-block', ml: 2 }} />
-            ) : elementType === "gene" ? (
+            ) : elementType === "gene" && description !== null ? (
               ` (${description})`
             ) : (
               ""
             )}
           </Typography>
-          <Typography display={elementType !== "gene" && "none"}>
-            {loading ? <Skeleton width={215} /> : id}
+          <Typography>
+            {loading ? <Skeleton width={215} /> : subtitle}
           </Typography>
         </Stack>
       </Grid2>
@@ -60,7 +84,7 @@ const ElementDetailsHeader = ({ elementType, elementID }: ElementDetailsHeaderPr
           sx={{ height: "100%" }}
           textAlign={"right"}
         >
-          <Grid2 container spacing={1} sx={{ flexGrow: 1 }} order={{xs: 2, sm: 1}}>
+          <Grid2 container spacing={1} sx={{ flexGrow: 1 }} order={{xs: 2, sm: 1}} justifyContent={"flex-end"}>
             <Grid2 size={6} sx={{ display: "flex" }} height={{xs: 65, sm: "auto"}}>
               <Button
                 variant="contained"
