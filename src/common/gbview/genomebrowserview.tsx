@@ -2,11 +2,7 @@
 import { Search } from "@mui/icons-material";
 import EditIcon from "@mui/icons-material/Edit";
 import HighlightIcon from "@mui/icons-material/Highlight";
-import {
-  Box,
-  Button,
-  IconButton,
-} from "@mui/material";
+import { Box, Button, IconButton } from "@mui/material";
 import Grid2 from "@mui/material/Grid2";
 import { useTheme } from "@mui/material/styles";
 import {
@@ -31,6 +27,7 @@ import ControlButtons from "./controls";
 import HighlightDialog, { GBHighlight } from "./highlightDialog";
 import { GenomicRange } from "./types";
 import { randomColor, trackColor } from "./utils";
+import BedTooltip from "./bedTooltip";
 
 function expandCoordinates(coordinates: GenomicRange) {
   let length = coordinates.end - coordinates.start;
@@ -86,7 +83,7 @@ export default function GenomeBrowserView({
 
   // Initialize tracks and highlights
   useEffect(() => {
-    const tracks = defaultTracks(type === "gene" ? name : "", icreMouseOver, icreMouseOut, onIcreClick);
+    const tracks = defaultTracks(type === "gene" ? name : "", icreMouseOver, icreMouseOut, onIcreClick, BedTooltip);
     tracks.forEach((track) => {
       browserDispatch({ type: BrowserActionType.ADD_TRACK, track });
     });
@@ -297,7 +294,8 @@ function defaultTracks(
   geneName: string,
   icreMouseOver: (item: Rect) => void,
   icreMouseOut: () => void,
-  onIcreClick: (item: Rect) => void
+  onIcreClick: (item: Rect) => void,
+  tooltipContent: React.FC<Rect>
 ) {
   const geneTrack = {
     ...DefaultTranscript,
@@ -317,14 +315,15 @@ function defaultTracks(
     ...DefaultBigBed,
     titleSize: 16,
     id: "default-icre",
-    title: "All Immune cCres",
+    title: "All Immune cCREs",
     displayMode: DisplayMode.DENSE,
     color: "#9378bc",
-    rowHeight: 20,
-    height: 100,
+    rowHeight: 10,
+    height: 50,
     onMouseOver: icreMouseOver,
     onMouseOut: icreMouseOut,
     onClick: onIcreClick,
+    tooltipContent: tooltipContent,
     url: "http://downloads.wenglab.org/igscreen/iCREs.bigBed",
   } as BigBedTrackProps;
 
@@ -351,4 +350,3 @@ function defaultTracks(
   };
   return [geneTrack, icreTrack, atacBigWig, dnaseBigWig];
 }
-
