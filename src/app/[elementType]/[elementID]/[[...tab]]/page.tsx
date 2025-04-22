@@ -14,6 +14,7 @@ import SnpGWASLdr from "./_SnpTabs/_SnpGWASLdr/SnpGWASLdr";
 import IcreEQTLs from "./_IcreTabs/_variants/IcreEQTLs";
 import IntersectingSNPs from "app/region/[region]/variants/IntersectingSNPs";
 import IcreVariantsTab from "./_IcreTabs/_variants/IcreVariantsTab";
+import SnpFrequencies from "./_SnpTabs/SnpFrequencies";
 
 export default function DetailsPage({
   params: { elementType, elementID, tab },
@@ -80,7 +81,7 @@ export default function DetailsPage({
 
       switch (tab) {
         case "":
-          return <SnpGWASLdr snpid={variantData.id} />;
+          return <> <SnpFrequencies snpid={variantData.id}/> <SnpGWASLdr snpid={variantData.id}/> </>;
         case "icres":
           return <p>This page should have the intersecting iCRE</p>;
         case "genes":
