@@ -20,12 +20,11 @@ import {
 } from "@weng-lab/genomebrowser";
 import { Domain, GenomeSearch, Result } from "@weng-lab/psychscreen-ui-components";
 import { useCallback, useEffect, useState } from "react";
-import { GenomicElementType } from "types/globalTypes";
+import { GenomicElementType, GenomicRange } from "types/globalTypes";
 import { Rect } from "umms-gb/dist/components/tracks/bigbed/types";
 import AddTracksModal, { BigWig } from "./addTracksModal";
 import ControlButtons from "./controls";
 import HighlightDialog, { GBHighlight } from "./highlightDialog";
-import { GenomicRange } from "./types";
 import { randomColor, trackColor } from "./utils";
 import BedTooltip from "./bedTooltip";
 import { Exon } from "types/generated/graphql";
