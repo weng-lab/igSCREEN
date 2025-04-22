@@ -11,22 +11,24 @@ type SnpEQTLsProps = {
 
 const SnpEQTLs = ({ rsid }: SnpEQTLsProps) => {
   const SNP_EQTL_QUERY = gql(`
-    query getimmuneeQTLsQuery($genes: [String], $snps: [String]) {
-      immuneeQTLsQuery(genes: $genes, snps: $snps) {
-        rsid
-        genename
-        study
-        fdr
-        celltype
-        ref
-        chromosome
-        position
-        alt
-        variant_id    
-        pval_nominal
-        ccre
-      }
-    } 
+ query getimmuneeQTLsQuery($genes: [String], $snps: [String],$ccre: [String]) {
+  immuneeQTLsQuery(genes: $genes, snps: $snps, ccre: $ccre) {
+    rsid
+    genename
+    study
+    fdr
+    celltype
+    ref
+    chromosome
+    position
+    alt
+    variant_id    
+    pval_nominal
+    ccre
+    slope
+    spearmans_rho
+  }
+} 
     `);
 
   const { loading: loading, data: data } = useQuery(SNP_EQTL_QUERY, {
@@ -102,7 +104,7 @@ const SnpEQTLs = ({ rsid }: SnpEQTLsProps) => {
 const columns: GridColDef[] = [
   {
     field: "variant_id",
-    headerName: "Variant Id",
+    headerName: "Variant Name",
     flex: 2,
   },
 
@@ -115,14 +117,10 @@ const columns: GridColDef[] = [
     },
   },
   {
-    field: "ref",
-    headerName: "Ref",
-    flex: 2,
-  },
-  {
-    field: "alt",
-    headerName: "Alt",
-    flex: 2,
+    field: "slope",
+    headerName: "Slope",
+    flex: 1,
+    renderCell: (params) => toScientificNotation(params.value, 2),
   },
   {
     field: "pval_nominal",
@@ -148,17 +146,7 @@ const OneK1KColumns: GridColDef[] = [
     renderCell: (params) => {
       return <Link href={`/gene/${params.value}`}>{params.value}</Link>;
     },
-  },
-  {
-    field: "ref",
-    headerName: "A1",
-    flex: 2,
-  },
-  {
-    field: "alt",
-    headerName: "A2",
-    flex: 2,
-  },
+  }, 
   {
     field: "fdr",
     headerName: "FDR",
@@ -166,9 +154,24 @@ const OneK1KColumns: GridColDef[] = [
     renderCell: (params) => toScientificNotation(params.value, 2),
   },
   {
+    field: "spearmans_rho",
+    headerName: "Spearman's rho",
+    flex: 1,
+    renderCell: (params) => toScientificNotation(params.value, 2),
+  },
+  
+  {
     field: "celltype",
     headerName: "Celltype",
     flex: 2,
+  }, 
+  {
+    field: "ccre",
+    headerName: "iCRE",
+    flex: 2,
+    renderCell: (params) => {
+      return params.value === "." ? <>{params.value}</> : <Link href={`/icre/${params.value}`}>{params.value}</Link>;
+    },
   },
 ];
 

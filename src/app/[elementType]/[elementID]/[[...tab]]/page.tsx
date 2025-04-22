@@ -11,6 +11,7 @@ import LinkedGenes from "./_IcreTabs/_linkedGenes/linkedGenes"
 import LinkedICREs from "./_GeneTabs/_linkedICREs/linkedICREs"
 import GWASLdr from "./_IcreTabs/_GWASLdr/GWASLdr"
 import SnpGWASLdr from "./_SnpTabs/_SnpGWASLdr/SnpGWASLdr"
+import IcreEQTLs from "./_IcreTabs/_eQTLs/IcreEQTLs"
 
 export default function DetailsPage({
   params: { elementType, elementID, tab },
@@ -94,7 +95,7 @@ export default function DetailsPage({
       switch (tab) {
         case (""): return <IcreActivity accession={icreData.accession}/>
         case ("genes"): return <LinkedGenes accession={icreData.accession}/>
-        case ("variants"): return <GWASLdr accession={icreData.accession}/> 
+        case ("variants"): return <><GWASLdr accession={icreData.accession}/> <IcreEQTLs accession={icreData.accession}/> </> 
       }
     }
   }

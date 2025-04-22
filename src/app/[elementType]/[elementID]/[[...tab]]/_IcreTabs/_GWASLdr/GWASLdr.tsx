@@ -3,14 +3,31 @@ import useGWASLdr from "common/hooks/useGWASLdr";
 import DataGridToolbar from "common/components/dataGridToolbar";
 import { DataGridPro, gridClasses, GridColDef } from "@mui/x-data-grid-pro";
 import { LinkComponent } from "common/utility";
+import { useSnpFrequencies } from "common/hooks/useSnpFrequencies";
 
 export default function GWASLdr({ accession }: { accession: string }) {
   const { data, loading, error } = useGWASLdr([accession]);
 
+  let snpids= [...new Set(data?.map((l) => l.snpid))]
+  const snpAlleles= useSnpFrequencies(snpids)
+  
+  const gwasnps =  data?.map(d=>{
+    let zscore = d.zscore
+    
+    //reverse zscore 
+    if(d.effect_allele === snpAlleles.data[d.snpid]?.alt && d.ref_allele ===  snpAlleles.data[d.snpid]?.ref )
+    {
+      zscore = d.zscore < 0 ? d.zscore :  -d.zscore
+    }
+    return {
+      ...d,
+      zscore
+    }
+  })
   const cols: GridColDef[] = [
     {
       field: "snpid",
-      headerName: "SNP ID",
+      headerName: "rs ID",
       renderCell: (params) => (
         <LinkComponent href={"/variant/" + params.value} underline="hover">
           {params.value}
@@ -19,7 +36,7 @@ export default function GWASLdr({ accession }: { accession: string }) {
     },
     {
       field: "snp_chr",
-      headerName: "Chr",
+      headerName: "Chromosome",
       width: 100,
     },
     {
@@ -29,15 +46,7 @@ export default function GWASLdr({ accession }: { accession: string }) {
         return params.value.toLocaleString();
       },
     },
-
-    {
-      field: "effect_allele",
-      headerName: "A1",
-    },
-    {
-      field: "ref_allele",
-      headerName: "A2",
-    },
+  
     {
       field: "zscore",
       headerName: "Z-score",
@@ -62,6 +71,26 @@ export default function GWASLdr({ accession }: { accession: string }) {
       headerName: "Source",
     },
     {
+          field: "study_link",
+          flex: 1,
+          display: "flex",
+          headerName: "Study",
+          width: 100,
+          renderCell: (params) => {
+           
+            return (
+              <LinkComponent
+                underline="hover"
+                href={params.value}        
+                showExternalIcon={!params.row.isiCRE}
+                openInNewTab={!params.row.isiCRE}
+              >
+                {params.value}
+              </LinkComponent>
+            );
+          },
+        },
+    {
       field: "author",
       headerName: "Author",
       renderCell: (params) => {
@@ -78,7 +107,7 @@ export default function GWASLdr({ accession }: { accession: string }) {
       ) : data.length > 0 ? (
         <Box sx={{ flex: "1 1 auto" }}>
           <DataGridPro
-            rows={data || []}
+            rows={gwasnps || []}
             columns={cols.map((col) => {
               return { ...col, display: "flex" };
             })}            
@@ -98,7 +127,7 @@ export default function GWASLdr({ accession }: { accession: string }) {
             density="compact"
             pageSizeOptions={[5, 10]}
             slots={{ toolbar: DataGridToolbar }}
-            slotProps={{ toolbar: { title: "GWAS SNPs" } }}
+            slotProps={{ toolbar: { title: "GWAS Variants" } }}
             getRowHeight={() => "auto"}
             sx={{
               [`& .${gridClasses.cell}`]: {
@@ -119,7 +148,7 @@ export default function GWASLdr({ accession }: { accession: string }) {
             marginBottom: 2,
           }}
         >
-          No GWAS SNPs data found
+          No GWAS Variants data found
         </Typography>
       )}
     </Box>
