@@ -1,35 +1,13 @@
 "use client";
 import { Box, Button, Divider, Grid2, IconButton, Stack, Typography } from "@mui/material";
-import { GenomeSearch, Result, ResultType } from "@weng-lab/psychscreen-ui-components";
+import { GenomeSearch, Result } from "@weng-lab/psychscreen-ui-components";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { isValidGenomicElement } from "types/globalTypes";
 import { ExpandMore } from "@mui/icons-material";
 import Link from "next/link";
 import { formatPortal } from "common/utility";
-
-type PortalConfig = {
-  image: string;
-  description: string;
-};
-
-const geneConfig: PortalConfig = {
-  image: "/assets/GenePortal.png",
-  description:
-    "Explore gene expression across immune cell types at bulk and single-cell resolution for 63 cell types across 736 experiments.",
-};
-
-const icreConfig: PortalConfig = {
-  image: "/assets/iCREPortal.png",
-  description:
-    "Explore regulatory element activity (immune cCREs) across immune cell types at bulk and single-cell resolution for 63 cell types across 736 experiments.",
-};
-
-const variantConfig: PortalConfig = {
-  image: "/assets/SNPPortal.png",
-  description:
-    "Search Variants of interest and explore their impact on gene expression, chromatin accessibility, transcription factor (TF) binding and other molecular traits in immune cells.",
-};
+import { portalDescriptions, portalImagePaths } from "common/consts";
 
 export default function PortalPage({ params: { elementType } }: { params: { elementType: string } }) {
   if (!isValidGenomicElement(elementType)) {
@@ -39,11 +17,8 @@ export default function PortalPage({ params: { elementType } }: { params: { elem
   const router = useRouter();
 
   const handleSearchSubmit = (result: Result) => {
-    router.push(result.type + "/" + result.title);
+    router.push(result.type.toLowerCase() + "/" + result.title);
   };
-
-  const { image, description } =
-    elementType === "gene" ? geneConfig : elementType === "icre" ? icreConfig : variantConfig;
 
   const popularSearches = {
     gene: [
@@ -54,7 +29,6 @@ export default function PortalPage({ params: { elementType } }: { params: { elem
       { name: "TRDV3", region: "chr14:22,469,041-22,469,698" },
       { name: "SPTA1", region: "chr1:158,610,706-158,686,715" },
     ],
-
     icre: [
       { name: "EH38E3314260", region: "chr19:50,417,519-50,417,853" },
       { name: "EH38E2984813", region: "chr11:112,886,979-112,887,323" },
@@ -86,7 +60,7 @@ export default function PortalPage({ params: { elementType } }: { params: { elem
           <Typography variant="h4" mb={1}>
             {formatPortal(elementType)} Portal
           </Typography>
-          <Typography mb={2}>{description}</Typography>
+          <Typography mb={2}>{portalDescriptions[elementType]}</Typography>
           <GenomeSearch
             assembly="GRCh38"
             onSearchSubmit={handleSearchSubmit}
@@ -101,7 +75,7 @@ export default function PortalPage({ params: { elementType } }: { params: { elem
           //affects alignment of the image
           sx={{ objectPosition: { md: "right", xs: "center" } }}
         >
-          <Image style={{ objectFit: "contain", objectPosition: "inherit" }} src={image} fill alt={elementType + " image"} />
+          <Image style={{ objectFit: "contain", objectPosition: "inherit" }} src={portalImagePaths[elementType]} fill alt={elementType + " image"} />
         </Box>
       </Stack>
       <Divider sx={{ display: "flex" }} variant="fullWidth">

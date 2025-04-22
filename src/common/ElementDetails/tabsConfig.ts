@@ -1,6 +1,6 @@
 import { GenePortalTab, IcrePortalTab, SharedTab, VariantPortalTab } from "types/globalTypes";
 
-const GbIconPath = '/assets/GenomeBrowserIcon.svg'
+const GbIconPath = '/assets/GbIcon.svg'
 const IcreIconPath = '/assets/IcreIcon.svg'
 const GeneIconPath = '/assets/GeneIcon.svg'
 const VariantIconPath = '/assets/VariantIcon.svg'

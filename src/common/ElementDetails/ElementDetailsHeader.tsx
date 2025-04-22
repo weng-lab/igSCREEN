@@ -5,6 +5,7 @@ import { GenomicElementType } from "types/globalTypes"
 import Image from "next/image"
 import Grid2 from "@mui/material/Grid2";
 import { useGeneDescription } from "common/hooks/useGeneDescription"
+import { useSnpFrequencies } from "common/hooks/useSnpFrequencies"
 
 export type ElementDetailsHeaderProps = {
   elementType: GenomicElementType
@@ -19,6 +20,9 @@ const ElementDetailsHeader = ({ elementType, elementID }: ElementDetailsHeaderPr
   const coordinatesDisplay = c && `${c.chromosome}:${c.start.toLocaleString()}-${c.end.toLocaleString()}`
 
   const description = useGeneDescription(elementID,elementType).description
+  //Example on how to use useSnpFrequencies hook
+  //const SnpAlleleFrequencies= useSnpFrequencies([elementID],elementType);
+  //console.log(SnpAlleleFrequencies.data[elementID],"Snp Allele and Frequencies")
   
   //const description = elementMetadata?.__typename === "Gene" ? elementMetadata?.description : ""
   const geneID = elementMetadata?.__typename === "Gene" ? elementMetadata?.id : ""
