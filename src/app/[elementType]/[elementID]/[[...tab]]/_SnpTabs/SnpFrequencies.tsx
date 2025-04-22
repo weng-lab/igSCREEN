@@ -10,7 +10,9 @@ type Frequency = {
 export default function SnpFrequencies({ snpid }: { snpid: string }) {
     const SnpAlleleFrequencies = useSnpFrequencies([snpid], "variant");
     const loading = SnpAlleleFrequencies.loading
-    const frequencies = SnpAlleleFrequencies.data[snpid] ? SnpAlleleFrequencies.data[snpid].frequencies : []
+    const frequencies = (SnpAlleleFrequencies.data && SnpAlleleFrequencies.data[snpid]) ? SnpAlleleFrequencies.data[snpid].frequencies : []
+
+    console.log(SnpAlleleFrequencies.data)
 
     //map populations to
     const populations: Record<string, string> = {

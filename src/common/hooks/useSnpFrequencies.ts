@@ -19,17 +19,17 @@ export interface UseSnpFrequenciesResult {
 }
 
 export function useSnpFrequencies(rsids: string[], elementType: GenomicElementType = "variant"): UseSnpFrequenciesResult {
-  const [data, setData] = useState<{ [rsid: string]: SnpFrequencies | null }>({});
+  const [data, setData] = useState<{ [rsid: string]: SnpFrequencies | null }>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if ((elementType !== undefined) && elementType !== 'variant') return;
     
-    if (!rsids || rsids.length === 0) return; // Avoid fetching if no rsids are provided
+    if (data || loading || !rsids || rsids.length === 0) return; // Avoid fetching if no rsids are provided
 
     // Prevent multiple fetch calls for the same rsid
-    const rsidsToFetch = rsids.filter(rsid => !data[rsid]);
+    const rsidsToFetch = [...new Set(rsids)];
 
     if (rsidsToFetch.length === 0) return; // If all rsids are already fetched, do nothing
 
@@ -89,7 +89,7 @@ export function useSnpFrequencies(rsids: string[], elementType: GenomicElementTy
     };
 
     fetchData();
-  }, [rsids]); // Only trigger fetch if rsids array changes or new rsids are added
+  }, []); // Only trigger fetch if rsids array changes or new rsids are added
 
   return { data, loading, error };
 }
