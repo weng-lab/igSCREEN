@@ -5,7 +5,7 @@ import Grid from "@mui/material/Grid2";
 import { Link as MuiLink, Skeleton } from "@mui/material";
 import { gql } from "types/generated/gql";
 import Link from "next/link";
-import { calcDistToTSS, calcDistRegionToPosition, calcDistRegionToRegion } from "./utils";
+import { calcDistToTSS, calcDistRegionToPosition, calcDistRegionToRegion } from "common/utility";
 import DataGridToolbar from "common/components/dataGridToolbar";
 import { DataGridPro, GridColDef } from "@mui/x-data-grid-pro";
 import { GenomicElementType, GenomicRange } from "types/globalTypes";
