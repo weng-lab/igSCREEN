@@ -45,7 +45,7 @@ const ElementDetailsHeader = ({ elementType, elementID }: ElementDetailsHeaderPr
       geneID
     ) : elementType === "icre" ? (
       <>
-        <strong>Class:</strong> {icreClass} {icreClassDescriptions[icreClass] ?? ""}
+         {icreClass} {icreClassDescriptions[icreClass] ?? ""}
       </>
     ) : elementType === "variant" ? (
       ref === undefined ? (
