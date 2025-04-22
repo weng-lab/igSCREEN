@@ -12,6 +12,7 @@ import LinkedICREs from "./_GeneTabs/_linkedICREs/linkedICREs"
 import GWASLdr from "./_IcreTabs/_GWASLdr/GWASLdr"
 import SnpGWASLdr from "./_SnpTabs/_SnpGWASLdr/SnpGWASLdr"
 import IcreEQTLs from "./_IcreTabs/_eQTLs/IcreEQTLs"
+import SnpFrequencies from "./_SnpTabs/SnpFrequencies"
 
 export default function DetailsPage({
   params: { elementType, elementID, tab },
@@ -65,7 +66,7 @@ export default function DetailsPage({
       const variantData = elementMetadata as useElementMetadataReturn<"variant">["data"]
 
       switch (tab) {
-        case (""): return <SnpGWASLdr snpid={variantData.id}/> 
+        case (""): return <> <SnpFrequencies snpid={variantData.id}/> <SnpGWASLdr snpid={variantData.id}/> </>
         case ("icres"): return <p>This page should have the intersecting iCRE</p>
         case ("genes"): return <SnpEQTLs rsid={variantData.id} />
       }
