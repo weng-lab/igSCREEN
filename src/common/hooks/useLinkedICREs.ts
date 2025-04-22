@@ -10,8 +10,8 @@ const CCRE_ICRE_QUERY = gql(`query cCREAutocompleteQuery(
     assembly: $assembly    
     accession: $accession
   ) {    
-    accession
-    isiCRE
+    accession    
+    isiCRE    
   }
 }`);
 export default function useLinkedICREs(geneid: string) {

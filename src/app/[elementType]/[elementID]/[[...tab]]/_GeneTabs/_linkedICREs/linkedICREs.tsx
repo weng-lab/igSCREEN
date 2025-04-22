@@ -5,10 +5,12 @@ import LinkedElements from "common/components/linkedElements/linkedElements";
 import { TableDef } from "common/components/linkedElements/columns";
 import { accessionCol } from "common/components/linkedElements/columns";
 import { useState } from "react";
+import useNearbycCREs from "common/hooks/useNearBycCREs";
 
 
 export default function LinkedICREs({ geneid }: { geneid: string }) {
   const { data, loading, error } = useLinkedICREs(geneid);
+  
   const [allcCREs, setAllcCREs] = useState<boolean>(false)
 
   const toggleOnlyICREs = () => {

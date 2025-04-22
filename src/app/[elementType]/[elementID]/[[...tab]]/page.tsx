@@ -12,6 +12,7 @@ import LinkedICREs from "./_GeneTabs/_linkedICREs/linkedICREs"
 import GWASLdr from "./_IcreTabs/_GWASLdr/GWASLdr"
 import SnpGWASLdr from "./_SnpTabs/_SnpGWASLdr/SnpGWASLdr"
 import IcreEQTLs from "./_IcreTabs/_eQTLs/IcreEQTLs"
+import NearbycCREs from "./_GeneTabs/_nearbycCREs/nearbycCREs"
 
 export default function DetailsPage({
   params: { elementType, elementID, tab },
@@ -80,7 +81,7 @@ export default function DetailsPage({
 
       switch (tab) {
         case (""): return <GeneExpression name={geneData.name} id={geneData.id} />
-        case ("icres"): console.log("hit"); return <LinkedICREs geneid={geneData.id}/>
+        case ("icres"): console.log("hit"); return <>   <LinkedICREs geneid={geneData.id}/> <NearbycCREs geneid={geneData.id} coordinates={geneData.coordinates}/> </>
         case ("variants"): return <GeneEQTLs name={geneData.name} id={geneData.id} />
       }
     }
