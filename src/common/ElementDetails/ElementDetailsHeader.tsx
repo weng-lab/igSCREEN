@@ -25,8 +25,8 @@ const ElementDetailsHeader = ({ elementType, elementID }: ElementDetailsHeaderPr
   //All data used in the subtitle of the element header based on the element type
   const geneID = elementMetadata?.__typename === "Gene" ? elementMetadata?.id : ""
   const icreClass = elementMetadata?.__typename === "ICRE" ? elementMetadata?.group : ""
-  const ref = elementMetadata?.__typename === "SNP" ? SnpAlleleFrequencies.data[elementID]?.ref : ""
-  const alt = elementMetadata?.__typename === "SNP" ? SnpAlleleFrequencies.data[elementID]?.alt : ""
+  const ref = elementMetadata?.__typename === "SNP" && SnpAlleleFrequencies.data ? SnpAlleleFrequencies.data[elementID]?.ref : ""
+  const alt = elementMetadata?.__typename === "SNP" && SnpAlleleFrequencies.data ? SnpAlleleFrequencies.data[elementID]?.alt : ""
 
   //map descriptions to the class
   const icreClassDescriptions: Record<string, string> = {
