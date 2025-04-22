@@ -13,9 +13,3 @@ export type BigResponse = {
 export type BigQueryResponse = {
   bigRequests: BigResponse[]
 }
-
-export type GenomicRange = {
-    chromosome?: string
-    start: number
-    end: number
-  }
