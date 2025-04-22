@@ -120,7 +120,7 @@ const columns: GridColDef[] = [
     field: "slope",
     headerName: "Slope",
     flex: 1,
-    renderCell: (params) => toScientificNotation(params.value, 2),
+    renderCell: (params) => toScientificNotationElement(params.value, 2),
   },
   {
     field: "pval_nominal",
@@ -157,7 +157,7 @@ const OneK1KColumns: GridColDef[] = [
     field: "spearmans_rho",
     headerName: "Spearman's rho",
     flex: 1,
-    renderCell: (params) => toScientificNotation(params.value, 2),
+    renderCell: (params) => toScientificNotationElement(params.value, 2),
   },
   
   {
