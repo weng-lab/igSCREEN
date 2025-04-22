@@ -20,14 +20,15 @@ const ElementDetailsHeader = ({ elementType, elementID }: ElementDetailsHeaderPr
   const coordinatesDisplay = c && `${c.chromosome}:${c.start.toLocaleString()}-${c.end.toLocaleString()}`
 
   const description = useGeneDescription(elementID,elementType).description
-  //Example on how to use useSnpFrequencies hook
-  //const SnpAlleleFrequencies= useSnpFrequencies([elementID],elementType);
-  //console.log(SnpAlleleFrequencies.data[elementID],"Snp Allele and Frequencies")
+  const SnpAlleleFrequencies= useSnpFrequencies([elementID],elementType);
   
-  //const description = elementMetadata?.__typename === "Gene" ? elementMetadata?.description : ""
+  //All data used in the subtitle of the element header based on the element type
   const geneID = elementMetadata?.__typename === "Gene" ? elementMetadata?.id : ""
   const icreClass = elementMetadata?.__typename === "ICRE" ? elementMetadata?.group : ""
+  const ref = elementMetadata?.__typename === "SNP" ? SnpAlleleFrequencies.data[elementID]?.ref : ""
+  const alt = elementMetadata?.__typename === "SNP" ? SnpAlleleFrequencies.data[elementID]?.alt : ""
 
+  //map descriptions to the class
   const icreClassDescriptions: Record<string, string> = {
     "PLS": "(Promoter-like Signature)",
     "pELS": "(Proximal Enhancer)",
@@ -40,16 +41,25 @@ const ElementDetailsHeader = ({ elementType, elementID }: ElementDetailsHeaderPr
   };
 
   const subtitle =
-  elementType === "gene" ? (
-    geneID
-  ) : elementType === "icre" ? (
-    <>
-      <strong>Class:</strong> {icreClass} {icreClassDescriptions[icreClass] ?? ""}
-    </>
-  ) : (
-    ""
+    elementType === "gene" ? (
+      geneID
+    ) : elementType === "icre" ? (
+      <>
+        <strong>Class:</strong> {icreClass} {icreClassDescriptions[icreClass] ?? ""}
+      </>
+    ) : elementType === "variant" ? (
+      ref === undefined ? (
+        <>
+          <Skeleton width={215} />
+        </>
+      ) : (
+        <>
+          <strong>Reference Allele:</strong> {ref} <strong>Alternate Allele:</strong> {alt}
+        </>
+      )
+    ) : (
+      ""
   );
-  console.log(subtitle)
 
   return (
     <Grid2
