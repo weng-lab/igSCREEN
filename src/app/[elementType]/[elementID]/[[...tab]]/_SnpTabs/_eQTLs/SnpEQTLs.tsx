@@ -120,13 +120,15 @@ const columns: GridColDef[] = [
     field: "slope",
     headerName: "Slope",
     flex: 1,
-    renderCell: (params) => toScientificNotationElement(params.value, 2),
+    display: "flex",
+    renderCell: (params) => toScientificNotationElement(params.value, 2, {variant: "body2"}),
   },
   {
     field: "pval_nominal",
     headerName: "Nominal P",
     flex: 1.5,
-    renderCell: (params) => toScientificNotationElement(params.value, 2),
+    display: "flex",
+    renderCell: (params) => toScientificNotationElement(params.value, 2, {variant: "body2"}),
   },
   {
     field: "ccre",
@@ -151,13 +153,15 @@ const OneK1KColumns: GridColDef[] = [
     field: "fdr",
     headerName: "FDR",
     flex: 1.5,
-    renderCell: (params) => toScientificNotationElement(params.value, 2),
+    display: "flex",
+    renderCell: (params) => toScientificNotationElement(params.value, 2, {variant: "body2"}),
   },
   {
     field: "spearmans_rho",
     headerName: "Spearman's rho",
     flex: 1,
-    renderCell: (params) => toScientificNotationElement(params.value, 2),
+    display: "flex",
+    renderCell: (params) => toScientificNotationElement(params.value, 2, {variant: "body2"}),
   },
   
   {

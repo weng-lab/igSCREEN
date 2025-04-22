@@ -252,7 +252,7 @@ export default function LDSCplot({
               <b>
                 Enrichment <i>P</i> :
               </b>{" "}
-              {toScientificNotationElement(tooltipData.enrichmentP, 2)}
+              {toScientificNotationElement(tooltipData.enrichmentP, 2, {variant: "body2"})}
             </p>
           </div>
           <div>
