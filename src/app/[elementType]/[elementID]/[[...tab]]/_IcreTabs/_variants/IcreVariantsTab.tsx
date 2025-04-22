@@ -5,8 +5,6 @@ import GWASLdr from "./GWASLdr"
 import IcreEQTLs from "./IcreEQTLs"
 
 const IcreVariantsTab = ({icreData}: {icreData: useElementMetadataReturn<"icre">["data"]}) => {
-
-  
   return (
     <Stack spacing={2}>
       <IntersectingSNPs region={icreData.coordinates} />
