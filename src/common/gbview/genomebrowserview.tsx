@@ -18,7 +18,7 @@ import {
   TranscriptTrackProps,
   useBrowserState,
 } from "@weng-lab/genomebrowser";
-import { GenomeSearch, Result } from "@weng-lab/psychscreen-ui-components";
+import { Domain, GenomeSearch, Result } from "@weng-lab/psychscreen-ui-components";
 import { useCallback, useEffect, useState } from "react";
 import { GenomicElementType } from "types/globalTypes";
 import { Rect } from "umms-gb/dist/components/tracks/bigbed/types";
@@ -28,6 +28,16 @@ import HighlightDialog, { GBHighlight } from "./highlightDialog";
 import { GenomicRange } from "./types";
 import { randomColor, trackColor } from "./utils";
 import BedTooltip from "./bedTooltip";
+import { Exon } from "types/generated/graphql";
+
+interface Transcript {
+  id: string;
+  name: string;
+  coordinates: Domain;
+  strand: string;
+  exons?: Exon[];
+  color?: string;
+}
 
 function expandCoordinates(coordinates: GenomicRange) {
   let length = coordinates.end - coordinates.start;
@@ -80,10 +90,17 @@ export default function GenomeBrowserView({
     const accession = item.name;
     window.open(`/icre/${accession}`, "_blank");
   }, []);
+  const onGeneClick = useCallback((gene: Transcript) => {
+    const name = gene.name;
+    if (name.includes("ENSG")) {
+      return
+    } 
+    window.open(`/gene/${name}`, "_blank");
+  }, [])
 
   // Initialize tracks and highlights
   useEffect(() => {
-    const tracks = defaultTracks(type === "gene" ? name : "", icreMouseOver, icreMouseOut, onIcreClick, BedTooltip);
+    const tracks = defaultTracks(type === "gene" ? name : "", icreMouseOver, icreMouseOut, onIcreClick, BedTooltip, onGeneClick);
     tracks.forEach((track) => {
       browserDispatch({ type: BrowserActionType.ADD_TRACK, track });
     });
@@ -295,7 +312,8 @@ function defaultTracks(
   icreMouseOver: (item: Rect) => void,
   icreMouseOut: () => void,
   onIcreClick: (item: Rect) => void,
-  tooltipContent: React.FC<Rect>
+  tooltipContent: React.FC<Rect>,
+  onGeneClick: (gene: Transcript) => void
 ) {
   const geneTrack = {
     ...DefaultTranscript,
@@ -309,6 +327,7 @@ function defaultTracks(
     queryType: "gene",
     displayMode: DisplayMode.SQUISH,
     geneName: geneName,
+    onTranscriptClick: onGeneClick,
   } as TranscriptTrackProps;
 
   const icreTrack = {

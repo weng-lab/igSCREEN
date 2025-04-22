@@ -7,9 +7,10 @@ import { useQuery } from "@apollo/client";
 import { CLOSEST_GENE_QUERY } from "./query";
 import { DataGridPro, GridColDef } from "@mui/x-data-grid-pro";
 import DataGridToolbar from "common/components/dataGridToolbar";
-import { LinkComponent } from "common/utility";
+import { LinkComponent, calcDistRegionToRegion } from "common/utility";
+import { GenomicRange } from "types/globalTypes";
 
-export default function LinkedGenes({ accession }: { accession: string }) {
+export default function LinkedGenes({ accession, coordinates }: { accession: string, coordinates: GenomicRange }) {
   const { data: linkedGenes, loading, error } = useLinkedGenes(accession);
   const {
     data: closestGeneData,
@@ -20,8 +21,6 @@ export default function LinkedGenes({ accession }: { accession: string }) {
       ccre: [accession],
     },
   });
-
-  console.log(closestGeneData?.closestGenetocCRE);
 
   if (loading || closestGeneLoading) {
     const NUM_TABLES = 5;
@@ -81,15 +80,21 @@ export default function LinkedGenes({ accession }: { accession: string }) {
     { name: "eQTLs", data: eqtlLinked, columns: eQTLCols },
   ];
 
-  const closestGenes = closestGeneData.closestGenetocCRE.map((item: any) => item.gene);
-
+  const genes: any[] = closestGeneData.closestGenetocCRE.map((item: any) => item.gene);
+  const closestPC = genes.find((gene: any) => gene.type === "PC");
+  const closestALL = genes.find((gene: any) => gene.type === "ALL");
+  const pcDistance = calcDistRegionToRegion({start: closestPC.start, end: closestPC.stop}, {start: coordinates.start, end: coordinates.end});
+  const allDistance = calcDistRegionToRegion({start: closestALL.start, end: closestALL.stop}, {start: coordinates.start, end: coordinates.end});
+  const closestGenes = [{...closestPC, distance: Math.abs(pcDistance)}, {...closestALL, distance: Math.abs(allDistance)}];
   return (
     <Stack spacing={2}>
       {closestGenes.length > 0 ? (
         <DataGridPro
           rows={closestGenes}
-          getRowId={(row: any) => row.name}
+          getRowId={(row: any) => row.name + row.type}
           columns={closestGenesCols}
+          pageSizeOptions={[2]}
+          paginationModel={{ page: 0, pageSize: 2 }}
           hideFooter
           slots={{ toolbar: DataGridToolbar }}
           slotProps={{ toolbar: { title: "Closest Genes" } }}
@@ -131,5 +136,6 @@ const closestGenesCols: GridColDef[] = [
   { field: "type", headerName: "Type", flex: 1 },
   { field: "chromosome", headerName: "Chromosome", flex: 1 },
   { field: "start", headerName: "Start", flex: 1 },
-  { field: "stop", headerName: "Stop", flex: 1 },
+  { field: "stop", headerName: "End", flex: 1 },
+  { field: "distance", headerName: "Distance", flex: 1 },
 ];

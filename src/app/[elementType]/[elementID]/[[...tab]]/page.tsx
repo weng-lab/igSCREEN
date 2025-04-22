@@ -94,7 +94,7 @@ export default function DetailsPage({
 
       switch (tab) {
         case (""): return <IcreActivity accession={icreData.accession}/>
-        case ("genes"): return <LinkedGenes accession={icreData.accession}/>
+        case ("genes"): return <LinkedGenes accession={icreData.accession} coordinates={icreData.coordinates}/>
         case ("variants"): return <><GWASLdr accession={icreData.accession}/> <IcreEQTLs accession={icreData.accession}/> </> 
       }
     }
