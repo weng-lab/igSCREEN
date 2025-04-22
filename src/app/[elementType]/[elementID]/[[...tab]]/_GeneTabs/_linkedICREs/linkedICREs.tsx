@@ -66,7 +66,7 @@ export default function LinkedICREs({ geneid }: { geneid: string }) {
   const tables: TableDef[] = [
     { name: "Intact Hi-C Loops", data: HiCLinked, columns: [accessionCol, ...IntactHiCLoopsCols.slice(2)] },
     {
-      name: "ChIAPET",
+      name: "ChIA-PET",
       data: ChIAPETLinked,
       columns: [accessionCol, ...ChIAPETCols.slice(2)],
     },

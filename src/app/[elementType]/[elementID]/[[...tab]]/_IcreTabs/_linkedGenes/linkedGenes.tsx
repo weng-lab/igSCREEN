@@ -59,7 +59,7 @@ export default function LinkedGenes({ accession }: { accession: string }) {
   const tables: TableDef[] = [
     { name: "Intact Hi-C Loops", data: HiCLinked, columns: IntactHiCLoopsCols },
     {
-      name: "ChIAPET",
+      name: "ChIA-PET",
       data: ChIAPETLinked,
       columns: ChIAPETCols,
     },

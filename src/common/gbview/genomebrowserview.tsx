@@ -317,7 +317,7 @@ function defaultTracks(
     ...DefaultBigBed,
     titleSize: 16,
     id: "default-icre",
-    title: "All Immune cCres",
+    title: "All Immune cCREs",
     displayMode: DisplayMode.DENSE,
     color: "#9378bc",
     rowHeight: 20,
