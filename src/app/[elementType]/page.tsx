@@ -26,19 +26,24 @@ export default function PortalPage({ params: { elementType } }: { params: { elem
       { name: "NCAM1", region: "chr11:112,961,247-113,278,436" },
       { name: "FOXP3", region: "chrX:49,250,436-49,264,826" },
       { name: "BATF", region: "chr14:75,522,425-75,547,015" },
-      { name: "APOE", region: "chr19:44,905,754-44,909,393" },
+      { name: "TRDV3", region: "chr14:22,469,041-22,469,698" },
+      { name: "SPTA1", region: "chr1:158,610,706-158,686,715" },
     ],
     icre: [
       { name: "EH38E3314260", region: "chr19:50,417,519-50,417,853" },
       { name: "EH38E2984813", region: "chr11:112,886,979-112,887,323" },
       { name: "EH38E3934197", region: "chrX:49,264,498-49,264,848" },
       { name: "EH38E1728788", region: "chr14:75,523,789-75,524,136" },
+      { name: "EH38E4100454", region: "chr14:22,469,199-22,469,379" },
+      { name: "EH38E2842082", region: "chr1:158,685,125-158,685,453" },
     ],
     variant: [
       { name: "rs9466027", region: "chr6:21,298,226-21,298,227" },
       { name: "rs9466028", region: "chr6:21,300,773-21,300,774" },
       { name: "rs80230724", region: "chr6:21,302,562-21,302,563" },
       { name: "rs12528501", region: "chr6:21,316,401-21,316,402" },
+      { name: "rs77738700", region: "chr11:112,880,683-112,880,684" },
+      { name: "rs1000329", region: "chr19:16,338,705-16,338,706" },
     ],
   };
 
