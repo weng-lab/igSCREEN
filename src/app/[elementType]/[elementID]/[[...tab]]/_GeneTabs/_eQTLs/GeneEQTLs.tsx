@@ -6,8 +6,8 @@ import { gql } from "types/generated";
 import DataGridToolbar from "common/components/dataGridToolbar";
 
 const GENE_EQTL_QUERY = gql(`
-query getimmuneeQTLsQuery($genes: [String], $snps: [String]) {
-  immuneeQTLsQuery(genes: $genes, snps: $snps) {
+query getimmuneeQTLsQuery($genes: [String], $snps: [String],$ccre: [String]) {
+  immuneeQTLsQuery(genes: $genes, snps: $snps, ccre: $ccre) {
     rsid
     genename
     study
@@ -20,6 +20,8 @@ query getimmuneeQTLsQuery($genes: [String], $snps: [String]) {
     variant_id    
     pval_nominal
     ccre
+    slope
+    spearmans_rho
   }
 } 
 `);
@@ -66,7 +68,7 @@ const GeneEQTLs = ({ name, id }: GeneEQTLsProps) => {
           getRowId={(row) => row.variant_id + row.rsid + row.pval_nominal}
           slots={{ toolbar: DataGridToolbar }}
           slotProps={{ toolbar: { title: `GTEX whole-blood eQTLs for ${name}` } }}
-          pagination          
+          pagination
           initialState={{
             sorting: {
               sortModel: [{ field: "pval_nominal", sort: "asc" }],
@@ -122,13 +124,13 @@ export default GeneEQTLs;
 const columns: GridColDef[] = [
   {
     field: "variant_id",
-    headerName: "Variant Id",
+    headerName: "Variant Name",
     flex: 2,
   },
 
   {
     field: "rsid",
-    headerName: "SNP Id",
+    headerName: "rs ID",
     flex: 2,
     renderCell: (params) => {
       return params.value === "." ? <>{params.value}</> : <Link href={`/variant/${params.value}`}>{params.value}</Link>;
@@ -155,6 +157,12 @@ const columns: GridColDef[] = [
     flex: 2,
   },
   {
+    field: "slope",
+    headerName: "Slope",
+    flex: 1,
+    renderCell: (params) => toScientificNotation(params.value, 2),
+  },
+  {
     field: "pval_nominal",
     headerName: "Nominal P",
     flex: 1,
@@ -173,7 +181,7 @@ const columns: GridColDef[] = [
 const OneK1KColumns: GridColDef[] = [
   {
     field: "rsid",
-    headerName: "SNP Id",
+    headerName: "rs ID",
     flex: 2,
     renderCell: (params) => {
       return <Link href={`/variant/${params.value}`}>{params.value}</Link>;
@@ -206,8 +214,22 @@ const OneK1KColumns: GridColDef[] = [
     renderCell: (params) => toScientificNotation(params.value, 2),
   },
   {
+    field: "spearmans_rho",
+    headerName: "Spearman's rho",
+    flex: 1,
+    renderCell: (params) => toScientificNotation(params.value, 2),
+  },
+  {
     field: "celltype",
     headerName: "Celltype",
     flex: 2,
+  },  
+  {
+    field: "ccre",
+    headerName: "iCRE",
+    flex: 2,
+    renderCell: (params) => {
+      return params.value === "." ? <>{params.value}</> : <Link href={`/icre/${params.value}`}>{params.value}</Link>;
+    },
   },
 ];
