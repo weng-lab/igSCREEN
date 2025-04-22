@@ -3,30 +3,29 @@ import useGWASLdr from "common/hooks/useGWASLdr";
 import DataGridToolbar from "common/components/dataGridToolbar";
 import { DataGridPro, gridClasses, GridColDef } from "@mui/x-data-grid-pro";
 import { LinkComponent } from "common/utility";
+import { useSnpFrequencies } from "common/hooks/useSnpFrequencies";
 
 export default function SnpGWASLdr({ snpid }: { snpid: string }) {
   const { data, loading, error } = useGWASLdr(undefined, [snpid]);
+  const snpAlleles= useSnpFrequencies([snpid])
+  const ref = snpAlleles && (snpAlleles.data[snpid])?.ref
+  const alt = snpAlleles && (snpAlleles.data[snpid])?.alt
+  
 
+  let gwasnps =  data?.map(d=>{
+    let zscore = d.zscore    
+    //reverse zscore 
+    if(d.effect_allele === alt && d.ref_allele === ref )
+    {
+      zscore = d.zscore < 0 ? d.zscore :  -d.zscore
+    }
+    return {
+      ...d,
+      zscore
+    }
+  })
   const cols: GridColDef[] = [
-    {
-      field: "icre",
-      headerName: "Accession",
-      width: 150,
-      renderCell: (params) => (
-        <LinkComponent href={"/icre/" + params.value} underline="hover">
-          {params.value}
-        </LinkComponent>
-      ),
-    },
-
-    {
-      field: "effect_allele",
-      headerName: "A1",
-    },
-    {
-      field: "ref_allele",
-      headerName: "A2",
-    },
+   
     {
       field: "zscore",
       headerName: "Z-score",
@@ -49,6 +48,25 @@ export default function SnpGWASLdr({ snpid }: { snpid: string }) {
     {
       field: "study_source",
       headerName: "Source",
+    },   
+    {
+      field: "study_link",
+      flex: 1,
+      display: "flex",
+      headerName: "Study",
+      renderCell: (params) => {
+       
+        return (
+          <LinkComponent
+            underline="hover"
+            href={params.value}        
+            showExternalIcon={!params.row.isiCRE}
+            openInNewTab={!params.row.isiCRE}
+          >
+            {params.value}
+          </LinkComponent>
+        );
+      },
     },
     {
       field: "author",
@@ -56,7 +74,7 @@ export default function SnpGWASLdr({ snpid }: { snpid: string }) {
       renderCell: (params) => {
         return params.value ? `${params.value.replace(/(\d+)$/, " $1")}` : <></>
       },
-    },
+    }
   ];
 
   return (
@@ -66,7 +84,7 @@ export default function SnpGWASLdr({ snpid }: { snpid: string }) {
       ) : data.length > 0 ? (
         <Box sx={{ flex: "1 1 auto" }}>
           <DataGridPro
-            rows={data || []}
+            rows={gwasnps || []}
             columns={cols.map((col) => {
               return { ...col, display: "flex" };
             })}

@@ -36,6 +36,7 @@ query getimmuneGWASLdr($icres: [String], $snps: [String]) {
       icre_end
       icre_class
       study
+      study_link
     }
   }`)
   

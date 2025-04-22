@@ -429,8 +429,8 @@ export default function CellLineagePage() {
             width={900}
             height={1100}
             onNodeClicked={handleNodeClick}
-            assay={selectedAssay}
-            selected={selectedCelltypeNames.length > 0 ? selectedCelltypeNames : null}
+            getCellSelected={(cellNode) => selectedCelltypeNames.some(selectedCell => selectedCell === cellNode.data.celltype)}
+            getCellDisabled={(cellNode) => !cellTypeConfig[cellNode.data.celltype][selectedAssay].Stim && !cellTypeConfig[cellNode.data.celltype][selectedAssay].Unstim}
           />
         </Stack>
         <Stack component={Paper} p={2} flexGrow={1} spacing={2}>
