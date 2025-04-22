@@ -2,11 +2,7 @@
 import { Search } from "@mui/icons-material";
 import EditIcon from "@mui/icons-material/Edit";
 import HighlightIcon from "@mui/icons-material/Highlight";
-import {
-  Box,
-  Button,
-  IconButton,
-} from "@mui/material";
+import { Box, Button, IconButton } from "@mui/material";
 import Grid2 from "@mui/material/Grid2";
 import { useTheme } from "@mui/material/styles";
 import {
@@ -22,7 +18,7 @@ import {
   TranscriptTrackProps,
   useBrowserState,
 } from "@weng-lab/genomebrowser";
-import { GenomeSearch, Result } from "@weng-lab/psychscreen-ui-components";
+import { Domain, GenomeSearch, Result } from "@weng-lab/psychscreen-ui-components";
 import { useCallback, useEffect, useState } from "react";
 import { GenomicElementType, GenomicRange } from "types/globalTypes";
 import { Rect } from "umms-gb/dist/components/tracks/bigbed/types";
@@ -30,6 +26,17 @@ import AddTracksModal, { BigWig } from "./addTracksModal";
 import ControlButtons from "./controls";
 import HighlightDialog, { GBHighlight } from "./highlightDialog";
 import { randomColor, trackColor } from "./utils";
+import BedTooltip from "./bedTooltip";
+import { Exon } from "types/generated/graphql";
+
+interface Transcript {
+  id: string;
+  name: string;
+  coordinates: Domain;
+  strand: string;
+  exons?: Exon[];
+  color?: string;
+}
 
 function expandCoordinates(coordinates: GenomicRange) {
   let length = coordinates.end - coordinates.start;
@@ -82,10 +89,17 @@ export default function GenomeBrowserView({
     const accession = item.name;
     window.open(`/icre/${accession}`, "_blank");
   }, []);
+  const onGeneClick = useCallback((gene: Transcript) => {
+    const name = gene.name;
+    if (name.includes("ENSG")) {
+      return
+    } 
+    window.open(`/gene/${name}`, "_blank");
+  }, [])
 
   // Initialize tracks and highlights
   useEffect(() => {
-    const tracks = defaultTracks(type === "gene" ? name : "", icreMouseOver, icreMouseOut, onIcreClick);
+    const tracks = defaultTracks(type === "gene" ? name : "", icreMouseOver, icreMouseOut, onIcreClick, BedTooltip, onGeneClick);
     tracks.forEach((track) => {
       browserDispatch({ type: BrowserActionType.ADD_TRACK, track });
     });
@@ -296,7 +310,9 @@ function defaultTracks(
   geneName: string,
   icreMouseOver: (item: Rect) => void,
   icreMouseOut: () => void,
-  onIcreClick: (item: Rect) => void
+  onIcreClick: (item: Rect) => void,
+  tooltipContent: React.FC<Rect>,
+  onGeneClick: (gene: Transcript) => void
 ) {
   const geneTrack = {
     ...DefaultTranscript,
@@ -310,20 +326,22 @@ function defaultTracks(
     queryType: "gene",
     displayMode: DisplayMode.SQUISH,
     geneName: geneName,
+    onTranscriptClick: onGeneClick,
   } as TranscriptTrackProps;
 
   const icreTrack = {
     ...DefaultBigBed,
     titleSize: 16,
     id: "default-icre",
-    title: "All Immune cCres",
+    title: "All Immune cCREs",
     displayMode: DisplayMode.DENSE,
     color: "#9378bc",
-    rowHeight: 20,
-    height: 100,
+    rowHeight: 10,
+    height: 50,
     onMouseOver: icreMouseOver,
     onMouseOut: icreMouseOut,
     onClick: onIcreClick,
+    tooltipContent: tooltipContent,
     url: "http://downloads.wenglab.org/igscreen/iCREs.bigBed",
   } as BigBedTrackProps;
 
@@ -350,4 +368,3 @@ function defaultTracks(
   };
   return [geneTrack, icreTrack, atacBigWig, dnaseBigWig];
 }
-

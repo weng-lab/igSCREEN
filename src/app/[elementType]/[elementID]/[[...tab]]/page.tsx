@@ -117,11 +117,9 @@ export default function DetailsPage({
         case "":
           return <IcreActivity accession={icreData.accession} />;
         case "genes":
-          return <LinkedGenes accession={icreData.accession} />;
+          return <LinkedGenes accession={icreData.accession} coordinates={icreData.coordinates} />;
         case "variants":
-          return (
-            <IcreVariantsTab icreData={icreData} />
-          );
+          return <IcreVariantsTab icreData={icreData} />
       }
     }
   }
