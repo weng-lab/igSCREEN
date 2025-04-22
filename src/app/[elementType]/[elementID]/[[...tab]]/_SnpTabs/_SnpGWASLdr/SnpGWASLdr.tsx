@@ -8,8 +8,8 @@ import { useSnpFrequencies } from "common/hooks/useSnpFrequencies";
 export default function SnpGWASLdr({ snpid }: { snpid: string }) {
   const { data, loading, error } = useGWASLdr(undefined, [snpid]);
   const snpAlleles= useSnpFrequencies([snpid])
-  const ref = snpAlleles && (snpAlleles.data[snpid])?.ref
-  const alt = snpAlleles && (snpAlleles.data[snpid])?.alt
+  const ref = snpAlleles.data && (snpAlleles.data[snpid])?.ref
+  const alt = snpAlleles.data && (snpAlleles.data[snpid])?.alt
   
 
   let gwasnps =  data?.map(d=>{
