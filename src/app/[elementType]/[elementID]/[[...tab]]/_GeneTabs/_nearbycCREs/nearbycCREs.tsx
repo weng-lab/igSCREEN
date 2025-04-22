@@ -6,12 +6,12 @@ import { LinkComponent } from "common/utility";
 import { GenomicRange } from "types/globalTypes";
 
 import useNearbycCREs from "common/hooks/useNearBycCREs";
-import usecCREData from "common/hooks/usecCREData";
+import useCcreDetails from "common/hooks/useCcreDetails";
 
 export default function NearbycCREs({ geneid, coordinates }: { geneid: string, coordinates: GenomicRange }) {
     const { data, loading, error } = useNearbycCREs(geneid);
     
-    const { data: ccreData, loading: ccreLoading, error: ccreError } = usecCREData(data?.map(d=>d.ccre));    
+    const { data: ccreData, loading: ccreLoading, error: ccreError } = useCcreDetails(data?.map(d=>d.ccre));    
 
     const nearbyccres = data?.map(d=>{
         let f = ccreData?.find(c=>c.accession === d.ccre)
