@@ -1,12 +1,11 @@
 import { useGeneExpression } from "common/hooks/useGeneExpression"
 import { GeneExpressionProps, PointMetadata, SharedGeneExpressionPlotProps } from "./GeneExpression"
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Stack, Typography } from "@mui/material"
+import { Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from "@mui/material"
 import { getCellCategoryColor, getCellCategoryDisplayname } from "common/utility"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useMemo, useRef, useState } from "react"
 import { interpolateYlOrRd } from "d3-scale-chromatic";
 import { scaleLinear } from "d3-scale"
 import { Point, ScatterPlot, ChartProps } from "@weng-lab/psychscreen-ui-components"
-import { ParentSize } from "@visx/responsive"
 
 export type GeneExpressionUmapProps<T, S extends boolean | undefined, Z extends boolean | undefined> =
   GeneExpressionProps &
