@@ -51,8 +51,8 @@ const IcreActivityTable = ({ accession, selected, onSelectionChange, iCREActivit
     },
     {
       field: 'stimulation',
-      headerName: 'Stim',
-      valueGetter: (_, row) => row.stimulation.charAt(0).toUpperCase()
+      headerName: 'Stimulation',
+      valueGetter: (_, row) => row.stimulation.charAt(0) === "u" ? "Unstim" : "Stim"
     },
     {
       field: 'lineage',

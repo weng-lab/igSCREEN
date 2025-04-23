@@ -46,9 +46,9 @@ const GeneExpressionTable = ({name, id, selected, onSelectionChange, geneExpress
     },
     {
       field: 'stimulation',
-      headerName: 'Stim',
+      headerName: 'Stimulation',
       width: 80,
-      valueGetter: (_, row) => row.stimulation.charAt(0).toUpperCase()
+      valueGetter: (_, row) => row.stimulation.charAt(0) === "u" ? "Unstim" : "Stim"
     },
     {
       field: 'lineage',
