@@ -1,4 +1,4 @@
-import { Checkbox, FormControlLabel, Grid2, Skeleton, Stack } from "@mui/material";
+import { Box, Checkbox, FormControlLabel, Grid2, Skeleton, Stack } from "@mui/material";
 import useLinkedICREs, { LinkedICREInfo } from "common/hooks/useLinkedICREs";
 import { ChIAPETCols, CrisprFlowFISHCols, eQTLCols, IntactHiCLoopsCols } from "../../_IcreTabs/_linkedGenes/columns";
 import LinkedElements from "common/components/linkedElements/linkedElements";
@@ -8,18 +8,12 @@ import { useState } from "react";
 import useNearbycCREs from "common/hooks/useNearBycCREs";
 
 
-export default function LinkedICREs({ geneid }: { geneid: string }) {
+export default function LinkedICREs({ geneid, allcCREs }: { geneid: string, allcCREs: boolean }) {
   const { data, loading, error } = useLinkedICREs(geneid);
-  
-  const [allcCREs, setAllcCREs] = useState<boolean>(false)
-
-  const toggleOnlyICREs = () => {
-    setAllcCREs(!allcCREs)
-  }
   
   if (loading) {
     return (
-      <Grid2 container spacing={2}>
+      <Grid2 container spacing={2} width={"100%"}>
         <Grid2 size={12}>
           <Skeleton variant="rounded" width={"100%"} height={100} />
         </Grid2>
@@ -81,15 +75,8 @@ export default function LinkedICREs({ geneid }: { geneid: string }) {
   ];
 
   return (
-    <Stack spacing={2}>
-      <FormControlLabel
-        label="Show all cCREs"
-        control={<Checkbox />}
-        sx={{width: "200px"}}
-        checked={allcCREs}
-        onChange={toggleOnlyICREs}
-      />
+    <Box width={"100%"}>
       <LinkedElements tables={tables} />
-    </Stack>
+    </Box>
   );
 }

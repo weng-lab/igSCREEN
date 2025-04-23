@@ -1,5 +1,5 @@
 "use client";
-import { CircularProgress, Typography } from "@mui/material";
+import { CircularProgress, Stack, styled, Typography } from "@mui/material";
 import GenomeBrowserView from "common/gbview/genomebrowserview";
 import { useElementMetadata, useElementMetadataReturn } from "common/hooks/useElementMetadata";
 import { GenomicElementType, isValidGeneTab, isValidIcreTab, isValidVariantTab, isValidTab } from "types/globalTypes";
@@ -9,12 +9,58 @@ import GeneExpression from "./_GeneTabs/_GeneExpression/GeneExpression";
 import IcreActivity from "./_IcreTabs/_IcreActivity/IcreActivity";
 import LinkedGenes from "./_IcreTabs/_linkedGenes/linkedGenes";
 import LinkedICREs from "./_GeneTabs/_linkedICREs/linkedICREs";
-import GWASLdr from "./_IcreTabs/_variants/GWASLdr";
 import SnpGWASLdr from "./_SnpTabs/_SnpGWASLdr/SnpGWASLdr";
-import IcreEQTLs from "./_IcreTabs/_variants/IcreEQTLs";
-import IntersectingSNPs from "app/region/[region]/variants/IntersectingSNPs";
 import IcreVariantsTab from "./_IcreTabs/_variants/IcreVariantsTab";
 import SnpFrequencies from "./_SnpTabs/SnpFrequencies";
+import NearbycCREs from "./_GeneTabs/_nearbycCREs/nearbycCREs";
+import { useState } from "react";
+import Switch from '@mui/material/Switch';
+
+//Styled switch componet from mui docs with our logos and colors
+const CcreSwitch = styled(Switch)(({ theme }) => ({
+  width: 75,
+  height: 34,
+  padding: 7,
+  '& .MuiSwitch-switchBase': {
+    margin: 1,
+    padding: 0,
+    transform: 'translateX(6px)',
+    '&.Mui-checked': {
+      color: '#fff',
+      transform: 'translateX(35px)',
+      '& .MuiSwitch-thumb:before': {
+        backgroundPosition: 'center',
+        backgroundSize: '50%',
+        backgroundImage: `url("/SCREEN_icon.png")`,
+      },
+      '& + .MuiSwitch-track': {
+        opacity: 1,
+        backgroundColor: '#aab4be',
+      },
+    },
+  },
+  '& .MuiSwitch-thumb': {
+    backgroundColor: theme.palette.primary.main,
+    width: 32,
+    height: 32,
+    '&::before': {
+      content: "''",
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+      left: 0,
+      top: 0,
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: 'contain',
+      backgroundImage: `url("/Logo.png")`,
+    },
+  },
+  '& .MuiSwitch-track': {
+    opacity: 1,
+    backgroundColor: '#a75a5f',
+    borderRadius: 20 / 2,
+  },
+}));
 
 export default function DetailsPage({
   params: { elementType, elementID, tab },
@@ -25,6 +71,12 @@ export default function DetailsPage({
    */
   params: { elementType: GenomicElementType; elementID: string; tab: string };
 }) {
+  const [allcCREs, setAllcCREs] = useState<boolean>(false)
+
+  const toggleOnlyICREs = () => {
+    setAllcCREs(!allcCREs)
+  }
+  
   if (tab === undefined) {
     tab = "";
   } else {
@@ -98,7 +150,20 @@ export default function DetailsPage({
 
       switch (tab) {
         case (""): return <GeneExpression name={geneData.name} id={geneData.id} />
-        case ("icres"): console.log("hit"); return <>   <LinkedICREs geneid={geneData.id}/> <NearbycCREs geneid={geneData.id} coordinates={geneData.coordinates}/> </>
+        case ("icres"):  return (
+          <Stack spacing={2} alignItems={"center"}>
+              <Stack direction={"row"} alignItems={"center"} spacing={2}>
+                <Typography>iCREs Only</Typography>
+                <CcreSwitch
+                  checked={allcCREs}
+                  onChange={toggleOnlyICREs}
+                />
+                <Typography>All cCREs</Typography>
+              </Stack>
+              <NearbycCREs geneid={geneData.id} coordinates={geneData.coordinates}/>
+              <LinkedICREs geneid={geneData.id} allcCREs={allcCREs}/>
+            </Stack>
+        )
         case ("variants"): return <GeneEQTLs name={geneData.name} id={geneData.id} />
       }
     }
