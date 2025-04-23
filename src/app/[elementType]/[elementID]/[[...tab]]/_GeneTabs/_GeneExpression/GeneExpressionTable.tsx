@@ -43,6 +43,7 @@ const GeneExpressionTable = ({name, id, selected, onSelectionChange, geneExpress
       headerName: 'TPM',
       type: 'number',
       width: 100,
+      valueGetter: (_, row) => row.value.toFixed(1)
     },
     {
       field: 'stimulation',
