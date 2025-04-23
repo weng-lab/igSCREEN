@@ -1,10 +1,11 @@
 "use client"
 import { Search } from "@mui/icons-material"
-import { Box, Button, Divider, Drawer, IconButton, List, ListItem } from "@mui/material"
+import { Box, Divider, Drawer, IconButton, List, ListItem, Stack } from "@mui/material"
 import MuiLink from "@mui/material/Link"
 import AutoComplete from "./autocomplete"
 import Link from "next/link";
 import { PageInfo } from "./HomeAppBar"
+import CloseIcon from '@mui/icons-material/Close';
 
 export type MobileMenuProps = {
     pageLinks: PageInfo[]
@@ -22,33 +23,38 @@ export default function MobileMenu({pageLinks, drawerOpen, toggleDrawer}: Mobile
     return (
         <>
             <Drawer anchor="right" open={drawerOpen} onClose={closeDrawer}>
-                <Box sx={{ width: 400, p: 2 }}>
-                    <AutoComplete
-                        style={{ width: "100%"}}
-                        closeDrawer={closeDrawer}
-                        slots={{
-                            button: (
-                                <IconButton sx={{ color: "black" }}>
-                                    <Search />
-                                </IconButton>
-                            ),
-                        }}
-                        slotProps={{
-                            box: { gap: 1 },
-                            input: {
-                                size: "small",
-                                label: "Enter a gene, iCRE, variant or locus",
-                                sx: {
-                                    "& .MuiOutlinedInput-root": {
-                                        backgroundColor: "#ffffff",
+                <Box sx={{ width: 350, p: 2 }}>
+                    <Stack direction={"row"} spacing={1} alignItems={"center"}>
+                        <IconButton sx={{ color: "black" }} onClick={closeDrawer}>
+                            <CloseIcon />
+                        </IconButton>
+                        <AutoComplete
+                            style={{ width: "100%"}}
+                            closeDrawer={closeDrawer}
+                            slots={{
+                                button: (
+                                    <IconButton sx={{ color: "black" }}>
+                                        <Search />
+                                    </IconButton>
+                                ),
+                            }}
+                            slotProps={{
+                                box: { gap: 1 },
+                                input: {
+                                    size: "small",
+                                    label: "Enter a gene, iCRE, variant or locus",
+                                    sx: {
+                                        "& .MuiOutlinedInput-root": {
+                                            backgroundColor: "#ffffff",
+                                        },
                                     },
                                 },
-                            },
-                            button: {
-                                onClick: closeDrawer
-                            }
-                        }}
-                    />
+                                button: {
+                                    onClick: closeDrawer
+                                }
+                            }}
+                        />
+                    </Stack>
                     <br/>
                     <Divider />
                     <List>
