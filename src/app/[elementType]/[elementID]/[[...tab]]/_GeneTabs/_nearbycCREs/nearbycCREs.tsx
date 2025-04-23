@@ -8,7 +8,7 @@ import { GenomicRange } from "types/globalTypes";
 import useNearbycCREs from "common/hooks/useNearBycCREs";
 import useCcreDetails from "common/hooks/useCcreDetails";
 
-export default function NearbycCREs({ geneid, coordinates }: { geneid: string, coordinates: GenomicRange }) {
+export default function NearbycCREs({ geneid, coordinates, allcCREs }: { geneid: string, coordinates: GenomicRange, allcCREs: boolean }) {
     const { data, loading, error } = useNearbycCREs(geneid);
     
     const { data: ccreData, loading: ccreLoading, error: ccreError } = useCcreDetails(data?.map(d=>d.ccre));    
@@ -24,7 +24,7 @@ export default function NearbycCREs({ geneid, coordinates }: { geneid: string, c
             distance: Math.abs(f?.coordinates.start-coordinates.start) || 0
 
         }
-    })
+    })?.filter(d => allcCREs || d.isiCRE);
     
   const cols: GridColDef[] = [
    

@@ -152,17 +152,17 @@ export default function DetailsPage({
         case (""): return <GeneExpression name={geneData.name} id={geneData.id} />
         case ("icres"):  return (
           <Stack spacing={2} alignItems={"center"}>
-              <Stack direction={"row"} alignItems={"center"} spacing={2}>
-                <Typography>iCREs Only</Typography>
-                <CcreSwitch
-                  checked={allcCREs}
-                  onChange={toggleOnlyICREs}
-                />
-                <Typography>All cCREs</Typography>
-              </Stack>
-              <NearbycCREs geneid={geneData.id} coordinates={geneData.coordinates}/>
-              <LinkedICREs geneid={geneData.id} allcCREs={allcCREs}/>
+            <Stack direction={"row"} alignItems={"center"} spacing={2}>
+              <Typography>iCREs Only</Typography>
+              <CcreSwitch
+                checked={allcCREs}
+                onChange={toggleOnlyICREs}
+              />
+              <Typography>All cCREs</Typography>
             </Stack>
+            <NearbycCREs geneid={geneData.id} coordinates={geneData.coordinates} allcCREs={allcCREs} />
+            <LinkedICREs geneid={geneData.id} allcCREs={allcCREs} />
+          </Stack>
         )
         case ("variants"): return <GeneEQTLs name={geneData.name} id={geneData.id} />
       }
