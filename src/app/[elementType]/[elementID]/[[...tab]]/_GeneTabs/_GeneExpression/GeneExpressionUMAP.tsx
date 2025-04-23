@@ -107,7 +107,7 @@ const GeneExpressionUMAP = <T extends PointMetadata, S extends true, Z extends b
       <>
         <Typography><b>Lineage:</b> {getCellCategoryDisplayname(point.metaData.lineage)}</Typography>
         <Typography><b>Biosample:</b> {point.metaData.biosample}, {point.metaData.stimulation}</Typography>
-        <Typography><b>Linear TPM:</b> {point.metaData.value.toFixed(2)}</Typography>
+        <Typography><b>TPM:</b> {point.metaData.value.toFixed(1)}</Typography>
         <Typography><b>Source:</b> {point.metaData.source}</Typography>
       </>
     )

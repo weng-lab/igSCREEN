@@ -20,7 +20,7 @@ const GeneExpressionBarPlot = ({name, id, selected, sortedFilteredData, ...rest}
         return (
           {
             category: getCellCategoryDisplayname(x.lineage),
-            label: `${x.value.toFixed(2)}, ${x.biosample.slice(0, 23) + (x.biosample.length > 23 ? "..." : "")}`,
+            label: `${x.value.toFixed(1)}, ${x.biosample.slice(0, 23) + (x.biosample.length > 23 ? "..." : "")}`,
             value: x.value,
             id: i.toString(),
             color: (anySelected && isSelected || !anySelected) ? getCellCategoryColor(x.lineage) : '#CCCCCC',
@@ -36,7 +36,7 @@ const GeneExpressionBarPlot = ({name, id, selected, sortedFilteredData, ...rest}
       <VerticalBarPlot
         {...rest}
         data={plotData}
-        topAxisLabel={`${name} Expression - Linear TPM`}
+        topAxisLabel={`${name} Expression - TPM`}
       />
     </Box>
   )
