@@ -15,6 +15,8 @@ import SnpFrequencies from "./_SnpTabs/SnpFrequencies";
 import NearbycCREs from "./_GeneTabs/_nearbycCREs/nearbycCREs";
 import { useState } from "react";
 import Switch from '@mui/material/Switch';
+import IntersectingiCREs from "app/region/[region]/icres/IntersectingiCREs";
+import SnpiCREs from "./_SnpTabs/SnpiCREs";
 
 //Styled switch componet from mui docs with our logos and colors
 const CcreSwitch = styled(Switch)(({ theme }) => ({
@@ -135,7 +137,7 @@ export default function DetailsPage({
         case "":
           return <> <SnpFrequencies snpid={variantData.id}/> <SnpGWASLdr snpid={variantData.id}/> </>;
         case "icres":
-          return <p>This page should have the intersecting iCRE</p>;
+          return <SnpiCREs coordinates={variantData.coordinates} />;
         case "genes":
           return <SnpEQTLs rsid={variantData.id} />;
       }
