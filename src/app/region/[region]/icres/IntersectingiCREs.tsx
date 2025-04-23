@@ -11,7 +11,7 @@ import { DataGridPro, GridColDef, GridToolbar } from "@mui/x-data-grid-pro";
 import Link from "next/link";
 import ActiveCellTypesAccordion from "common/components/ActiveCellTypesAccordion";
 
-const IntersectingiCREs = ({ region }: { region: GenomicRange }) => {
+const IntersectingiCREs = ({ region, showRowOnly }: { region: GenomicRange, showRowOnly?: boolean }) => {
 
   const { data: dataIcres, loading: loadingIcres, error: errorIcres } = useIcreData({ coordinates: region });
 
@@ -178,7 +178,8 @@ const IntersectingiCREs = ({ region }: { region: GenomicRange }) => {
           sortModel: [{ field: "coordinates", sort: "asc" }],
         },
       }}
-      slots={{ toolbar: GridToolbar }}
+      hideFooter={showRowOnly}
+      slots={{ toolbar: showRowOnly ? undefined : GridToolbar }}
       slotProps={{ toolbar: { showQuickFilter: true, sx: { p: 1 } } }}
       pageSizeOptions={[10, 25, 50]}
       disableRowSelectionOnClick
