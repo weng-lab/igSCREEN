@@ -2,7 +2,7 @@ import { useGeneExpression } from "common/hooks/useGeneExpression"
 import { GeneExpressionProps, PointMetadata, SharedGeneExpressionPlotProps } from "./GeneExpression"
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Stack, Typography } from "@mui/material"
 import { getCellCategoryColor, getCellCategoryDisplayname } from "common/utility"
-import { useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { interpolateYlOrRd } from "d3-scale-chromatic";
 import { scaleLinear } from "d3-scale"
 import { Point, ScatterPlot, ChartProps } from "@weng-lab/psychscreen-ui-components"
@@ -142,6 +142,7 @@ const GeneExpressionUMAP = <T extends PointMetadata, S extends true, Z extends b
         ref={graphContainerRef} 
         mt={2} 
         mb={2}
+        zIndex={0}
       >
         <Typography variant="body2" align="right">
           {"\u25EF unstimulated, \u25B3 stimulated "}
