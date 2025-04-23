@@ -342,7 +342,7 @@ export default function CellLineagePage() {
                         onChange={(_, checked) => handleChangeStim(cell, "stim", checked)}
                       />
                     }
-                    label="S"
+                    label="Stim"
                   />
                   <FormControlLabel
                     disabled={!cell.hasUnstim}
@@ -353,7 +353,7 @@ export default function CellLineagePage() {
                         onChange={(_, checked) => handleChangeStim(cell, "unstim", checked)}
                       />
                     }
-                    label="U"
+                    label="Unstim"
                   />
                 </FormGroup>
               </ListItem>
