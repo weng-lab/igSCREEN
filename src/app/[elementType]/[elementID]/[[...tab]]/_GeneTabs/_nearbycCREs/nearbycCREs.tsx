@@ -7,6 +7,7 @@ import { GenomicRange } from "types/globalTypes";
 
 import useNearbycCREs from "common/hooks/useNearBycCREs";
 import useCcreDetails from "common/hooks/useCcreDetails";
+import CustomDataGrid from "common/components/CustomDataGrid";
 
 export default function NearbycCREs({ geneid, coordinates, allcCREs }: { geneid: string, coordinates: GenomicRange, allcCREs: boolean }) {
     const { data, loading, error } = useNearbycCREs(geneid);
@@ -82,6 +83,62 @@ export default function NearbycCREs({ geneid, coordinates, allcCREs }: { geneid:
       },
   ];
 
+  const newCols: GridColDef[] = [
+   
+    {
+      field: "ccre",
+      flex: 1,
+      display: "flex",
+      headerName: "Accession",
+      renderCell: (params) => {
+        const href = !params.row.isiCRE
+          ? `https://screen.wenglab.org/search/?q=${params.value}&uuid=0&assembly=GRCh38`
+          : `/icre/${params.value}`;
+        return (
+          <LinkComponent
+            underline="hover"
+            href={href}        
+            showExternalIcon={!params.row.isiCRE}
+            openInNewTab={!params.row.isiCRE}
+          >
+            {params.value}
+          </LinkComponent>
+        );
+      },
+    },
+    {
+        field: "group",
+        headerName: "Class",
+        flex: 2,
+      },
+    {
+        field: "chromosome",
+        headerName: "Chromosome",
+        flex: 2,
+      },
+      {
+        field: "start",
+        headerName: "Start",
+        flex: 2,
+        renderCell: (params) => {
+            return params.value?.toLocaleString();
+          },
+      },
+      {
+        field: "end",
+        headerName: "End",
+        flex: 2,
+        renderCell: (params) => {
+            return params.value?.toLocaleString();
+          },
+      },
+      {
+        field: "distance",
+        headerName: "Distance",
+        flex: 2,
+      },
+  ];
+
   return (
     <Box width={"100%"}>
       {loading ? (
@@ -96,9 +153,9 @@ export default function NearbycCREs({ geneid, coordinates, allcCREs }: { geneid:
             getRowId={(row) => row.ccre}
             pagination
             initialState={{
-                sorting: {
-                    sortModel: [{ field: "distance", sort: "asc" }],
-                },
+              sorting: {
+                sortModel: [{ field: "distance", sort: "asc" }],
+              },
               pagination: {
                 paginationModel: {
                   pageSize: 5,
@@ -116,6 +173,11 @@ export default function NearbycCREs({ geneid, coordinates, allcCREs }: { geneid:
               },
             }}
             disableRowSelectionOnClick
+          />
+          <CustomDataGrid
+            rows={nearbyccres}
+            columns={newCols}
+            tableTitle={allcCREs ? "Nearby cCREs" : "Nearby iCREs"}
           />
         </Box>
       ) : (
