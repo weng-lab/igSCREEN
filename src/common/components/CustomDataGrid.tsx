@@ -1,60 +1,121 @@
-import { Paper, PaperProps } from "@mui/material";
-import { DataGridPro, DataGridProProps, gridClasses } from "@mui/x-data-grid-pro";
+import { Box, Paper, PaperOwnProps, PaperProps, Tooltip, Typography } from "@mui/material";
+import { DataGridPro, DataGridProProps, gridClasses, GridColDef } from "@mui/x-data-grid-pro";
 import DataGridToolbar from "./dataGridToolbar";
 import { useMemo } from "react";
+import { InfoOutlined } from "@mui/icons-material";
 
-export interface CustomDataGridProps extends DataGridProProps {
+export type CustomDataGridRow = Record<string, any>
+
+export type CustomDataGridSlotProps = DataGridProProps["slotProps"] & {
+  /**
+   * The wrapper around the DataGrid which provides the box shadow
+   */
+  paper?: PaperProps;
+};
+
+export interface CustomDataGridProps<T extends CustomDataGridRow> extends DataGridProProps {
+  /**
+   * A set of columns of type `CustomDataGridColDef<Row>`, where `Row` is of type `CustomDataGridRow`
+   */
+  columns: CustomDataGridColDef<T>[];
+  rows: Array<T>;
   /**
    * Optional title to be used in the table toolbar
    */
   tableTitle?: string;
   /**
-   * Elevation for wrapper MUI `<Paper>` component
+   * Elevation for wrapper `Paper` element
+   * @default 1
    */
-  elevation?: number;
+  elevation?: PaperProps["elevation"];
   /**
    * Optional prop overrides for the underlying components
    */
-  slotProps?: DataGridProProps["slotProps"] & {
-    /**
-     * The wrapper around the DataGrid which provides the box shadow
-     */
-    paper?: PaperProps;
-  };
+  slotProps?: CustomDataGridSlotProps;
+  /**
+   * @default [5, 10, 25, 100]
+   * @note Overrides MUI default
+   */
+  pageSizeOptions?: DataGridProProps["pageSizeOptions"]
+  /**
+   * @default true
+   * @note Overrides MUI default
+   */
+  disableRowSelectionOnClick?: DataGridProProps["disableRowSelectionOnClick"]
 }
 
-/**
- * Type safe field access
- * Optional tooltip for column headers
- */
+export type CustomDataGridColDef<T extends CustomDataGridRow> = GridColDef & {
+  /**
+   * Attribute of the row object to be used for the column
+   */
+  field: keyof T;
+  /**
+   * Optional tooltip to be displayed with info icon in column header
+   */
+  tooltip?: string;
+};
 
-const CustomDataGrid = (props: CustomDataGridProps) => {
-  const { elevation, tableTitle, slotProps = {}, columns, rows, ...restDataGridProps } = props; // Default elevation and slotProps set
+const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<T>) => {
+  /**
+   * Provide defaults
+   * @todo obey the defaults specified in the theme. 
+   * Ex: Overriding pageSizeOptions like this overrides the defaults specified in the theme
+   */
+  const {
+    elevation, // don't provide elevation default so that it's default obeys the MUI theme 
+    tableTitle,
+    slotProps = {},
+    pageSizeOptions = [5, 10, 25, 100],
+    columns,
+    rows = [],
+    ...restDataGridProps
+  } = props;
   const { paper: paperProps, ...restSlotProps } = slotProps;
 
-  const rowsWithIds = useMemo(() => rows.map((row, index) => ({ ...row, id: row.id || index })), [rows]);
+  const rowsWithIds = useMemo(() => rows.map((row, index) => ({ ...row, id: row?.id || index })), [rows]);
+
+  /**
+   * @todo figure out which built in features I am removing when building in row spacing defaults. Maybe provide some prop to optionally use the default column spacing styles
+   */
+
+  const columnsModified: CustomDataGridColDef<T>[] = useMemo(
+    () =>
+      columns.map((col) => ({
+        ...col,
+        renderHeader: col.tooltip ? (params) => {
+          return (
+            <Box display="inline-flex" alignItems="center">
+              {col.renderHeader ? (
+                <col.renderHeader {...params} />
+              ) : (
+                <Typography variant="inherit">{col?.headerName ?? col.field}</Typography>
+              )}
+              <Tooltip title={col.tooltip}>
+                <InfoOutlined sx={{ fontSize: "inherit", marginLeft: 0.5 }} />
+              </Tooltip>
+            </Box>
+          );
+        } : undefined,
+      })),
+    [columns]
+  );
 
   return (
     <Paper elevation={elevation} {...paperProps}>
       <DataGridPro
-        columns={columns}
-        // handle undefined rows by providing fallback
-        rows={rowsWithIds || []}
+        columns={columnsModified}
+        rows={rowsWithIds}
         getRowHeight={() => "auto"}
         disableRowSelectionOnClick
         slots={{ toolbar: DataGridToolbar }}
         slotProps={{ toolbar: { title: tableTitle }, ...restSlotProps }}
         pagination
-        pageSizeOptions={[5, 10, 25, 100]}
-        // set initial rows per page to first page size option
+        pageSizeOptions={pageSizeOptions}
+        // set initial rows per page to first page size option. Page sizes can be array of numbers or objects with value/label
         initialState={{
           pagination: {
             paginationModel: {
-              pageSize: props.pageSizeOptions
-                ? typeof props.pageSizeOptions[0] === "object"
-                  ? props.pageSizeOptions[0].value
-                  : props.pageSizeOptions[0]
-                : 5,
+              pageSize: typeof pageSizeOptions[0] === "object" ? pageSizeOptions[0].value : pageSizeOptions[0],
             },
           },
         }}

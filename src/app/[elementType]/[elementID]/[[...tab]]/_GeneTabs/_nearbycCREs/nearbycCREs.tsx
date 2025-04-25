@@ -7,7 +7,7 @@ import { GenomicRange } from "types/globalTypes";
 
 import useNearbycCREs from "common/hooks/useNearBycCREs";
 import useCcreDetails from "common/hooks/useCcreDetails";
-import CustomDataGrid from "common/components/CustomDataGrid";
+import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid";
 
 export default function NearbycCREs({ geneid, coordinates, allcCREs }: { geneid: string, coordinates: GenomicRange, allcCREs: boolean }) {
     const { data, loading, error } = useNearbycCREs(geneid);
@@ -28,11 +28,11 @@ export default function NearbycCREs({ geneid, coordinates, allcCREs }: { geneid:
     })?.filter(d => allcCREs || d.isiCRE);
     
   const cols: GridColDef[] = [
-   
     {
       field: "ccre",
       flex: 1,
       display: "flex",
+      type: 'string',
       headerName: "Accession",
       renderCell: (params) => {
         const href = !params.row.isiCRE
@@ -83,12 +83,12 @@ export default function NearbycCREs({ geneid, coordinates, allcCREs }: { geneid:
       },
   ];
 
-  const newCols: GridColDef[] = [
-   
+  const cols2: CustomDataGridColDef<typeof nearbyccres[number]>[] = [
     {
       field: "ccre",
       flex: 1,
       display: "flex",
+      type: 'string',
       headerName: "Accession",
       renderCell: (params) => {
         const href = !params.row.isiCRE
@@ -110,6 +110,7 @@ export default function NearbycCREs({ geneid, coordinates, allcCREs }: { geneid:
         field: "group",
         headerName: "Class",
         flex: 2,
+        tooltip: "See SCREEN for Class definitions",
       },
     {
         field: "chromosome",
@@ -147,9 +148,7 @@ export default function NearbycCREs({ geneid, coordinates, allcCREs }: { geneid:
         <Box sx={{ flex: "1 1 auto" }}>
           <DataGridPro
             rows={nearbyccres || []}
-            columns={cols.map((col) => {
-              return { ...col, display: "flex" };
-            })}
+            columns={cols}
             getRowId={(row) => row.ccre}
             pagination
             initialState={{
@@ -176,7 +175,7 @@ export default function NearbycCREs({ geneid, coordinates, allcCREs }: { geneid:
           />
           <CustomDataGrid
             rows={nearbyccres}
-            columns={newCols}
+            columns={cols2}
             tableTitle={allcCREs ? "Nearby cCREs" : "Nearby iCREs"}
           />
         </Box>
