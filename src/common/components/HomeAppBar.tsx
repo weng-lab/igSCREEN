@@ -9,6 +9,8 @@ import {
   MenuItem,
   Link as MuiLink,
   IconButton,
+  Stack,
+  Typography,
 } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import Link from "next/link";
@@ -18,6 +20,7 @@ import { Search } from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu"
 import { useState } from "react";
 import MobileMenu from "./MobileMenu";
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 
 export type PageInfo = {
   pageName: string,
@@ -50,7 +53,11 @@ const pageLinks: PageInfo[] = [
   },
 ];
 
-const ResponsiveAppBar = () => {
+type ResponsiveAppBarProps = {
+  maintenance?: boolean;
+};
+
+function ResponsiveAppBar({ maintenance }: ResponsiveAppBarProps) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   // Hover dropdowns, deals with setting its position
   const [anchorDropdown0, setAnchorDropdown0] = useState<null | HTMLElement>(null)
@@ -87,7 +94,7 @@ const ResponsiveAppBar = () => {
 
   const handleMouseLeaveLink = (event: React.MouseEvent<HTMLElement>, page: PageInfo) => {
     if (page?.subPages && 'dropdownID' in page) {
-      switch(page.dropdownID){
+      switch (page.dropdownID) {
         case 0: {
           if (anchorDropdown0) {
             handleCloseDropdown(0)
@@ -106,7 +113,27 @@ const ResponsiveAppBar = () => {
 
   return (
     <>
-      <AppBar position="fixed">
+      <Stack
+        direction={"row"}
+        style={{
+          position: 'fixed',
+          width: '100%',
+          height: "40px",
+          backgroundColor: '#ff9800',
+          zIndex: 1301,
+          color: '#fff',
+          textAlign: 'center',
+          display: !maintenance && "none"
+        }}
+        justifyContent={"center"}
+        alignItems={"center"}
+        spacing={2}
+      >
+        <WarningAmberIcon />
+        <Typography sx={{ fontWeight: 'bold' }}>Scheduled maintenance is in progress... Some features may be unavailable</Typography>
+        <WarningAmberIcon />
+      </Stack>
+      <AppBar position="fixed" sx={{ top: maintenance ? '40px' : '0px' }}>
         <Container maxWidth={false}>
           <Toolbar sx={{ justifyContent: "space-between" }}>
             {/* Display Icon on left when >=900px */}
@@ -137,7 +164,7 @@ const ResponsiveAppBar = () => {
                     onMouseMove={(event) => handleMouseMoveLink(event, page)}
                     onMouseLeave={(event) => handleMouseLeaveLink(event, page)}
                     id="LinkBox"
-                    sx={{mr: 2}}
+                    sx={{ mr: 2 }}
                   >
                     <MuiLink
                       id="Link"
@@ -245,7 +272,10 @@ const ResponsiveAppBar = () => {
           </Toolbar>
         </Container>
       </AppBar>
-      {/* <Toolbar /> */}
+      {/* Bumps content down since header is position="fixed" */}
+      {/* Bumps content down even more if banner is open */}
+      {maintenance && <Box sx={{ height: '40px' }} />}
+      <Toolbar />
     </>
   );
 };
