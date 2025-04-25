@@ -22,9 +22,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <AppRouterCacheProvider>
               <ThemeProvider theme={theme}>
                 <CssBaseline />
-                <AppBar />
+                <AppBar maintenance={true}/>
                 <Stack justifyContent={"space-between"} minHeight={"100vh"} height={'100%'}>
-                  <Toolbar /> {/* used to bump content below header */}
                   <Box flexGrow={1}>
                     {children}
                   </Box>
