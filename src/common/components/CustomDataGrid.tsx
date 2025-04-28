@@ -69,6 +69,7 @@ const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<
     pageSizeOptions = [5, 10, 25, 100],
     columns,
     rows = [],
+    initialState,
     ...restDataGridProps
   } = props;
   const { paper: paperProps, ...restSlotProps } = slotProps;
@@ -151,6 +152,7 @@ const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<
               pageSize: typeof pageSizeOptions[0] === "object" ? pageSizeOptions[0].value : pageSizeOptions[0],
             },
           },
+          ...initialState
         }}
         sx={{
           width: "100%",

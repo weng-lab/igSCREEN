@@ -95,37 +95,15 @@ export default function NearbycCREs({ geneid, coordinates, allcCREs }: { geneid:
         <Skeleton variant="rounded" width={"100%"} height={100} />
       ) : nearbyccres.length > 0 ? (
         <Box sx={{ flex: "1 1 auto" }}>
-          <DataGridPro
-            rows={nearbyccres || []}
-            columns={cols}
-            getRowId={(row) => row.ccre}
-            pagination
-            initialState={{
-              sorting: {
-                sortModel: [{ field: "distance", sort: "asc" }],
-              },
-              pagination: {
-                paginationModel: {
-                  pageSize: 5,
-                  page: 0,
-                },
-              },
-            }}
-            pageSizeOptions={[5, 10]}
-            slots={{ toolbar: DataGridToolbar }}
-            slotProps={{ toolbar: { title: "Nearby cCREs" } }}
-            getRowHeight={() => "auto"}
-            sx={{
-              [`& .${gridClasses.cell}`]: {
-                py: 1,
-              },
-            }}
-            disableRowSelectionOnClick
-          />
           <CustomDataGrid
             rows={nearbyccres}
             columns={cols}
             tableTitle={allcCREs ? "Nearby cCREs" : "Nearby iCREs"}
+            initialState={{
+              sorting: {
+                sortModel: [{ field: "distance", sort: "asc" }],
+              },
+            }}
           />
         </Box>
       ) : (
