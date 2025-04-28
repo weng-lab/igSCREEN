@@ -22,7 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <AppRouterCacheProvider>
               <ThemeProvider theme={theme}>
                 <CssBaseline />
-                <AppBar maintenance={true}/>
+                <AppBar maintenance={false}/>
                 <Stack justifyContent={"space-between"} minHeight={"100vh"} height={'100%'}>
                   <Box flexGrow={1}>
                     {children}
