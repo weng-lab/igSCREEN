@@ -8,6 +8,7 @@ import { GenomicRange } from "types/globalTypes";
 import useNearbycCREs from "common/hooks/useNearBycCREs";
 import useCcreDetails from "common/hooks/useCcreDetails";
 import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid";
+import { useMemo } from "react";
 
 export default function NearbycCREs({ geneid, coordinates, allcCREs }: { geneid: string, coordinates: GenomicRange, allcCREs: boolean }) {
     const { data, loading, error } = useNearbycCREs(geneid);
@@ -27,12 +28,9 @@ export default function NearbycCREs({ geneid, coordinates, allcCREs }: { geneid:
         }
     })?.filter(d => allcCREs || d.isiCRE);
     
-  const cols: GridColDef[] = [
+  const cols: CustomDataGridColDef<typeof nearbyccres[number]>[] = useMemo(() => [
     {
       field: "ccre",
-      flex: 1,
-      display: "flex",
-      type: 'string',
       headerName: "Accession",
       renderCell: (params) => {
         const href = !params.row.isiCRE
@@ -53,92 +51,43 @@ export default function NearbycCREs({ geneid, coordinates, allcCREs }: { geneid:
     {
         field: "group",
         headerName: "Class",
-        flex: 2,
-      },
-    {
-        field: "chromosome",
-        headerName: "Chromosome",
-        flex: 2,
-      },
-      {
-        field: "start",
-        headerName: "Start",
-        flex: 2,
-        renderCell: (params) => {
-            return params.value?.toLocaleString();
-          },
-      },
-      {
-        field: "end",
-        headerName: "End",
-        flex: 2,
-        renderCell: (params) => {
-            return params.value?.toLocaleString();
-          },
-      },
-      {
-        field: "distance",
-        headerName: "Distance",
-        flex: 2,
-      },
-  ];
-
-  const cols2: CustomDataGridColDef<typeof nearbyccres[number]>[] = [
-    {
-      field: "ccre",
-      flex: 1,
-      display: "flex",
-      type: 'string',
-      headerName: "Accession",
-      renderCell: (params) => {
-        const href = !params.row.isiCRE
-          ? `https://screen.wenglab.org/search/?q=${params.value}&uuid=0&assembly=GRCh38`
-          : `/icre/${params.value}`;
-        return (
-          <LinkComponent
-            underline="hover"
-            href={href}        
-            showExternalIcon={!params.row.isiCRE}
-            openInNewTab={!params.row.isiCRE}
-          >
-            {params.value}
-          </LinkComponent>
-        );
-      },
-    },
-    {
-        field: "group",
-        headerName: "Class",
-        flex: 2,
         tooltip: "See SCREEN for Class definitions",
       },
     {
         field: "chromosome",
         headerName: "Chromosome",
-        flex: 2,
       },
       {
         field: "start",
         headerName: "Start",
-        flex: 2,
-        renderCell: (params) => {
-            return params.value?.toLocaleString();
-          },
+        valueFormatter: (value?: string) => {
+          if (value == null) {
+            return '';
+          }
+          return value.toLocaleString();
+        },
       },
       {
         field: "end",
         headerName: "End",
-        flex: 2,
-        renderCell: (params) => {
-            return params.value?.toLocaleString();
-          },
+        valueFormatter: (value?: string) => {
+          if (value == null) {
+            return '';
+          }
+          return value.toLocaleString();
+        },
       },
       {
         field: "distance",
         headerName: "Distance",
-        flex: 2,
+        valueFormatter: (value?: string) => {
+          if (value == null) {
+            return '';
+          }
+          return value.toLocaleString();
+        },
       },
-  ];
+  ], [])
 
   return (
     <Box width={"100%"}>
@@ -175,7 +124,7 @@ export default function NearbycCREs({ geneid, coordinates, allcCREs }: { geneid:
           />
           <CustomDataGrid
             rows={nearbyccres}
-            columns={cols2}
+            columns={cols}
             tableTitle={allcCREs ? "Nearby cCREs" : "Nearby iCREs"}
           />
         </Box>

@@ -1,8 +1,9 @@
-import { Box, Paper, PaperOwnProps, PaperProps, Tooltip, Typography } from "@mui/material";
-import { DataGridPro, DataGridProProps, gridClasses, GridColDef } from "@mui/x-data-grid-pro";
+import { Box, Button, Paper, PaperProps, Tooltip, Typography } from "@mui/material";
+import { DataGridPro, DataGridProProps, gridClasses, GridColDef, useGridApiRef } from "@mui/x-data-grid-pro";
 import DataGridToolbar from "./dataGridToolbar";
-import { useMemo } from "react";
+import { useMemo, useEffect, useRef } from "react";
 import { InfoOutlined } from "@mui/icons-material";
+import debounce from "lodash.debounce";
 
 export type CustomDataGridRow = Record<string, any>
 
@@ -82,28 +83,60 @@ const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<
     () =>
       columns.map((col) => ({
         ...col,
-        renderHeader: col.tooltip ? (params) => {
-          return (
-            <Box display="inline-flex" alignItems="center">
-              {col.renderHeader ? (
-                <col.renderHeader {...params} />
-              ) : (
-                <Typography variant="inherit">{col?.headerName ?? col.field}</Typography>
-              )}
-              <Tooltip title={col.tooltip}>
-                <InfoOutlined sx={{ fontSize: "inherit", marginLeft: 0.5 }} />
-              </Tooltip>
-            </Box>
-          );
-        } : undefined,
+        renderHeader: col.tooltip
+          ? (params) => {
+              return (
+                <Tooltip title={col.tooltip}>
+                  <Box display="inline-flex" alignItems="center">
+                    {col.renderHeader ? (
+                      <col.renderHeader {...params} /> // use renderHeader if specified
+                    ) : (
+                      <Typography variant="inherit">{col?.headerName ?? col.field}</Typography> // fallback to headerName and then field
+                    )}
+                    <InfoOutlined sx={{ fontSize: "inherit", marginLeft: 0.5 }} />
+                  </Box>
+                </Tooltip>
+              );
+            }
+          : col.renderHeader,
       })),
     [columns]
   );
 
+  const autosizeOptions = useMemo(
+    () => ({
+      expand: true,
+      includeHeaders: true,
+      includeOutliers: true,
+    }),
+    []
+  );
+
+  const apiRef = useGridApiRef()
+
+  useEffect(() => {
+    if (!apiRef.current) return;
+
+    const observer = new ResizeObserver(
+      debounce(() => {
+        apiRef?.current.autosizeColumns(autosizeOptions);
+      }, 200)
+    );
+
+    observer.observe(apiRef.current.rootElementRef.current);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [apiRef, autosizeOptions]);
+
   return (
-    <Paper elevation={elevation} {...paperProps}>
+    <Paper elevation={elevation} {...paperProps} >
       <DataGridPro
+        apiRef={apiRef}
         columns={columnsModified}
+        autosizeOnMount
+        autosizeOptions={autosizeOptions}
         rows={rowsWithIds}
         getRowHeight={() => "auto"}
         disableRowSelectionOnClick
