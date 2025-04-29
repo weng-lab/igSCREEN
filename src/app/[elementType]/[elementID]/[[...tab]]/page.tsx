@@ -15,9 +15,11 @@ import SnpFrequencies from "./_SnpTabs/SnpFrequencies";
 import NearbycCREs from "./_GeneTabs/_nearbycCREs/nearbycCREs";
 import { useState } from "react";
 import Switch from '@mui/material/Switch';
-import IntersectingiCREs from "app/region/[region]/icres/IntersectingiCREs";
 import SnpiCREs from "./_SnpTabs/SnpiCREs";
 
+/**
+ * @todo move this
+ */
 //Styled switch componet from mui docs with our logos and colors
 const CcreSwitch = styled(Switch)(({ theme }) => ({
   width: 75,
@@ -152,6 +154,9 @@ export default function DetailsPage({
 
       switch (tab) {
         case (""): return <GeneExpression name={geneData.name} id={geneData.id} />
+        /**
+         * @todo move this to a different component
+         */
         case ("icres"):  return (
           <Stack spacing={2} alignItems={"center"}>
             <Stack direction={"row"} alignItems={"center"} spacing={2}>

@@ -1,52 +1,35 @@
 import { Stack, Typography } from "@mui/material";
-import { Box } from "@mui/material";
-import { DataGridPro, GridColDef } from "@mui/x-data-grid-pro";
-import DataGridToolbar from "common/components/dataGridToolbar";
 import { LinkedGeneInfo } from "common/hooks/useLinkedGenes";
 import { LinkedICREInfo } from "common/hooks/useLinkedICREs";
+import CustomDataGrid, { CustomDataGridColDef, CustomDataGridProps } from "../CustomDataGrid";
 
-export default function LinkedElements({
+export interface TableDef<T extends LinkedGeneInfo | LinkedICREInfo> extends CustomDataGridProps<T> {
+  sortColumn: keyof T & string; // Constrain to string keys
+  sortDirection: 'asc' | 'desc';
+};
+
+// Combined types for GridColDef and GridRenderCellParams for linkedGenes and linkedICREs
+export type colDef = CustomDataGridColDef<LinkedGeneInfo> | CustomDataGridColDef<LinkedICREInfo>;
+
+export default function LinkedElements<T extends LinkedGeneInfo | LinkedICREInfo>({
   tables,
 }: {
-  tables: {
-    name: string;
-    data: LinkedICREInfo[] | LinkedGeneInfo[];
-    columns: GridColDef<LinkedICREInfo | LinkedGeneInfo>[];
-  }[];
+  tables: TableDef<T>[];
 }) {
-  type rowType = LinkedICREInfo | LinkedGeneInfo;
 
   return (
     <Stack spacing={2}>
       {tables.map((table, index) =>
-        table.data.length > 0 ? (
-          <Box
-            sx={{
-              borderRadius: 1,
-              boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
-            }}
+        table.rows.length > 0 ? (
+          <CustomDataGrid
             key={index}
-          >
-            <DataGridPro
-              density={"compact"}
-              columns={table.columns}
-              rows={table.data}
-              getRowHeight={() => "auto"}
-              getRowId={(row: rowType) => row.id}
-              sx={{ width: "100%", height: "auto" }}
-              slots={{ toolbar: DataGridToolbar }}
-              slotProps={{ toolbar: { title: table.name } }}
-              pagination
-              disableRowSelectionOnClick
-              initialState={{
-                pagination: {
-                  paginationModel: {
-                    pageSize: 5,
-                  },
-                },
-              }}
-            />
-          </Box>
+            initialState={{
+              sorting: {
+                sortModel: [{ field: table.sortColumn, sort: table.sortDirection }],
+              },
+            }}
+            {...table}
+          />
         ) : (
           <Typography
             key={index}
@@ -56,11 +39,9 @@ export default function LinkedElements({
               border: "1px solid #e0e0e0",
               borderRadius: 1,
               p: 2,
-              boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
-              marginBottom: 2,
             }}
           >
-            No {table.name} found
+            No {table.tableTitle} found
           </Typography>
         )
       )}
