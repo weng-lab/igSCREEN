@@ -1,14 +1,14 @@
 import { Grid2 as Grid, Skeleton, Stack, Typography } from "@mui/material";
 import useLinkedGenes, { LinkedGeneInfo } from "common/hooks/useLinkedGenes";
 import { ChIAPETCols, CrisprFlowFISHCols, eQTLCols, IntactHiCLoopsCols } from "./columns";
-import LinkedElements from "common/components/linkedElements/linkedElements";
-import { TableDef } from "common/components/linkedElements/columns";
+import LinkedElements, { TableDef } from "common/components/linkedElements/linkedElements";
 import { useQuery } from "@apollo/client";
 import { CLOSEST_GENE_QUERY } from "./query";
 import { DataGridPro, GridColDef } from "@mui/x-data-grid-pro";
 import DataGridToolbar from "common/components/dataGridToolbar";
 import { LinkComponent, calcDistRegionToRegion } from "common/utility";
 import { GenomicRange } from "types/globalTypes";
+import CustomDataGrid from "common/components/CustomDataGrid";
 
 export default function LinkedGenes({ accession, coordinates }: { accession: string, coordinates: GenomicRange }) {
   const { data: linkedGenes, loading, error } = useLinkedGenes(accession);
@@ -65,19 +65,23 @@ export default function LinkedGenes({ accession, coordinates }: { accession: str
       id: index.toString(),
     }));
 
-  const tables: TableDef[] = [
-    { name: "Intact Hi-C Loops", data: HiCLinked, columns: IntactHiCLoopsCols },
+  const tables: TableDef<LinkedGeneInfo>[] = [
+    { tableTitle: "Intact Hi-C Loops", rows: HiCLinked, columns: IntactHiCLoopsCols, sortColumn: "p_val", sortDirection: 'asc' },
     {
-      name: "ChIA-PET",
-      data: ChIAPETLinked,
+      tableTitle: "ChIA-PET",
+      rows: ChIAPETLinked,
       columns: ChIAPETCols,
+      sortColumn: "score",
+      sortDirection: "desc",
     },
     {
-      name: "CRISPRi-FlowFISH",
-      data: crisprLinked,
+      tableTitle: "CRISPRi-FlowFISH",
+      rows: crisprLinked,
       columns: CrisprFlowFISHCols,
+      sortColumn: "p_val",
+      sortDirection: "asc",
     },
-    { name: "eQTLs", data: eqtlLinked, columns: eQTLCols },
+    { tableTitle: "eQTLs", rows: eqtlLinked, columns: eQTLCols, sortColumn: "p_val", sortDirection: "asc"},
   ];
 
   const genes: any[] = closestGeneData.closestGenetocCRE.map((item: any) => item.gene);
@@ -89,16 +93,7 @@ export default function LinkedGenes({ accession, coordinates }: { accession: str
   return (
     <Stack spacing={2}>
       {closestGenes.length > 0 ? (
-        <DataGridPro
-          rows={closestGenes}
-          getRowId={(row: any) => row.name + row.type}
-          columns={closestGenesCols}
-          pageSizeOptions={[2]}
-          paginationModel={{ page: 0, pageSize: 2 }}
-          hideFooter
-          slots={{ toolbar: DataGridToolbar }}
-          slotProps={{ toolbar: { title: "Closest Genes" } }}
-        />
+        <CustomDataGrid rows={closestGenes} columns={closestGenesCols} hideFooter tableTitle="Closest Genes" />
       ) : (
         <Typography
           variant="h6"
@@ -133,9 +128,9 @@ const closestGenesCols: GridColDef[] = [
         </LinkComponent>
       ),
   },
-  { field: "type", headerName: "Type", flex: 1 },
-  { field: "chromosome", headerName: "Chromosome", flex: 1 },
-  { field: "start", headerName: "Start", flex: 1 },
-  { field: "stop", headerName: "End", flex: 1 },
-  { field: "distance", headerName: "Distance", flex: 1 },
+  { field: "type", headerName: "Type" },
+  { field: "chromosome", headerName: "Chromosome" },
+  { field: "start", headerName: "Start", type: "number" },
+  { field: "stop", headerName: "End", type: "number" },
+  { field: "distance", headerName: "Distance", type: "number" },
 ];

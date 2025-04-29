@@ -1,11 +1,8 @@
-import { Box, Checkbox, FormControlLabel, Grid2, Skeleton, Stack } from "@mui/material";
+import { Box, Grid2, Skeleton } from "@mui/material";
 import useLinkedICREs, { LinkedICREInfo } from "common/hooks/useLinkedICREs";
 import { ChIAPETCols, CrisprFlowFISHCols, eQTLCols, IntactHiCLoopsCols } from "../../_IcreTabs/_linkedGenes/columns";
-import LinkedElements from "common/components/linkedElements/linkedElements";
-import { TableDef } from "common/components/linkedElements/columns";
+import LinkedElements, { TableDef } from "common/components/linkedElements/linkedElements";
 import { accessionCol } from "common/components/linkedElements/columns";
-import { useState } from "react";
-import useNearbycCREs from "common/hooks/useNearBycCREs";
 
 
 export default function LinkedICREs({ geneid, allcCREs }: { geneid: string, allcCREs: boolean }) {
@@ -59,19 +56,35 @@ export default function LinkedICREs({ geneid, allcCREs }: { geneid: string, allc
       id: index.toString(),
     }));
 
-  const tables: TableDef[] = [
-    { name: "Intact Hi-C Loops", data: HiCLinked, columns: [accessionCol, ...IntactHiCLoopsCols.slice(2)] },
+  const tables: TableDef<LinkedICREInfo>[] = [
     {
-      name: "ChIA-PET",
-      data: ChIAPETLinked,
+      tableTitle: "Intact Hi-C Loops",
+      rows: HiCLinked,
+      columns: [accessionCol, ...IntactHiCLoopsCols.slice(2)],
+      sortColumn: "p_val",
+      sortDirection: "asc",
+    },
+    {
+      tableTitle: "ChIA-PET",
+      rows: ChIAPETLinked,
       columns: [accessionCol, ...ChIAPETCols.slice(2)],
+      sortColumn: "score",
+      sortDirection: "desc",
     },
     {
-      name: "CRISPRi-FlowFISH",
-      data: crisprLinked,
+      tableTitle: "CRISPRi-FlowFISH",
+      rows: crisprLinked,
       columns: [accessionCol, ...CrisprFlowFISHCols.slice(2)],
+      sortColumn: "p_val",
+      sortDirection: "asc",
     },
-    { name: "eQTLs", data: eqtlLinked, columns: [accessionCol, ...eQTLCols.slice(2)] },
+    {
+      tableTitle: "eQTLs",
+      rows: eqtlLinked,
+      columns: [accessionCol, ...eQTLCols.slice(2)],
+      sortColumn: "p_val",
+      sortDirection: "asc",
+    },
   ];
 
   return (

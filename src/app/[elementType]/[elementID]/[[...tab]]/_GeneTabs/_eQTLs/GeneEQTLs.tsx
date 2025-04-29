@@ -1,12 +1,12 @@
 import { useQuery } from "@apollo/client";
-import { Grid2, Link, Skeleton, Stack, Box } from "@mui/material";
-import { DataGridPro, GridColDef } from "@mui/x-data-grid-pro";
-import {  toScientificNotationElement } from "common/utility";
+import { Grid2, Link, Skeleton, Stack } from "@mui/material";
+import { LinkComponent, toScientificNotationElement } from "common/utility";
 import { gql } from "types/generated";
-import DataGridToolbar from "common/components/dataGridToolbar";
+import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid";
+import { GetimmuneeQtLsQuery } from "types/generated/graphql";
 
 const GENE_EQTL_QUERY = gql(`
-query getimmuneeQTLsQuery($genes: [String], $snps: [String],$ccre: [String]) {
+query getimmuneeQTLs($genes: [String], $snps: [String],$ccre: [String]) {
   immuneeQTLsQuery(genes: $genes, snps: $snps, ccre: $ccre) {
     rsid
     genename
@@ -61,77 +61,40 @@ const GeneEQTLs = ({ name, id }: GeneEQTLsProps) => {
 
   return (
     <Stack spacing={2}>
-      <Box sx={{ flex: "1 1 auto" }}>
-        <DataGridPro
-          columns={columns}
-          rows={data.immuneeQTLsQuery.filter((i) => i.study === "GTEX") || []}
-          getRowId={(row) => row.variant_id + row.rsid + row.pval_nominal}
-          slots={{ toolbar: DataGridToolbar }}
-          slotProps={{ toolbar: { title: `GTEX whole-blood eQTLs for ${name}` } }}
-          pagination
-          initialState={{
-            sorting: {
-              sortModel: [{ field: "pval_nominal", sort: "asc" }],
-            },
-            pagination: {
-              paginationModel: {
-                pageSize: 5,
-                page: 0,
-              },
-            },
-          }}
-          pageSizeOptions={[5, 10]}
-          density="compact"
-          sx={{
-            borderRadius: 1,
-            boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
-          }}
-        />
-      </Box>
-      <Box sx={{ flex: "1 1 auto" }}>
-        <DataGridPro
-          columns={OneK1KColumns}
-          rows={data.immuneeQTLsQuery.filter((i) => i.study === "OneK1K") || []}
-          getRowId={(row) => row.variant_id + row.fdr}
-          slots={{ toolbar: DataGridToolbar }}
-          slotProps={{ toolbar: { title: `OneK1K eQTLs for ${name}` } }}
-          pagination
-          initialState={{
-            sorting: {
-              sortModel: [{ field: "fdr", sort: "asc" }],
-            },
-            pagination: {
-              paginationModel: {
-                pageSize: 5,
-                page: 0,
-              },
-            },
-          }}
-          pageSizeOptions={[5, 10]}
-          density="compact"
-          sx={{
-            borderRadius: 1,
-            boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
-          }}
-        />
-      </Box>
+      <CustomDataGrid
+        columns={columns}
+        rows={data.immuneeQTLsQuery.filter((i) => i.study === "GTEX")}
+        tableTitle={`GTEX whole-blood eQTLs for ${name}`}
+        initialState={{
+          sorting: {
+            sortModel: [{ field: "pval_nominal", sort: "asc" }],
+          },
+        }}
+      />
+      <CustomDataGrid
+        columns={OneK1KColumns}
+        rows={data.immuneeQTLsQuery.filter((i) => i.study === "OneK1K")}
+        tableTitle={`OneK1K eQTLs for ${name}`}
+        initialState={{
+          sorting: {
+            sortModel: [{ field: "fdr", sort: "asc" }],
+          },
+        }}
+      />
     </Stack>
   );
 };
 
 export default GeneEQTLs;
 
-const columns: GridColDef[] = [
+const columns: CustomDataGridColDef<GetimmuneeQtLsQuery["immuneeQTLsQuery"][number]>[] = [
   {
     field: "variant_id",
     headerName: "Variant Name",
-    flex: 2,
   },
-
   {
     field: "rsid",
-    headerName: "rs ID",
-    flex: 2,
+    headerName: "rsID",
     renderCell: (params) => {
       return params.value === "." ? <>{params.value}</> : <Link href={`/variant/${params.value}`}>{params.value}</Link>;
     },
@@ -139,101 +102,75 @@ const columns: GridColDef[] = [
   {
     field: "chromosome",
     headerName: "Chromosome",
-    flex: 2,
   },
   {
     field: "position",
     headerName: "Position",
-    flex: 2,
   },
   {
     field: "ref",
     headerName: "Ref",
-    flex: 2,
   },
   {
     field: "alt",
     headerName: "Alt",
-    flex: 2,
   },
   {
     field: "slope",
     headerName: "Slope",
-    flex: 1,
-    display: "flex",
-    renderCell: (params) => toScientificNotationElement(params.value, 2, {variant: "body2"}),
+    renderCell: (params) => toScientificNotationElement(params.value, 2, { variant: "body2" }),
   },
   {
     field: "pval_nominal",
     headerName: "Nominal P",
-    flex: 1.5,
-    display: "flex",
-    renderCell: (params) => toScientificNotationElement(params.value, 2, {variant: "body2"}),
+    renderCell: (params) => toScientificNotationElement(params.value, 2, { variant: "body2" }),
   },
   {
     field: "ccre",
     headerName: "iCRE",
-    flex: 2,
-    renderCell: (params) => {
-      return params.value === "." ? <>{params.value}</> : <Link href={`/icre/${params.value}`}>{params.value}</Link>;
-    },
+    renderCell: (params) => params.value === "." ? params.value : <LinkComponent href={`/icre/${params.value}`}>{params.value}</LinkComponent>
   },
 ];
 
-const OneK1KColumns: GridColDef[] = [
+const OneK1KColumns: CustomDataGridColDef<GetimmuneeQtLsQuery["immuneeQTLsQuery"][number]>[] = [
   {
     field: "rsid",
-    headerName: "rs ID",
-    flex: 2,
-    renderCell: (params) => {
-      return <Link href={`/variant/${params.value}`}>{params.value}</Link>;
-    },
+    headerName: "rsID",
+    renderCell: (params) => <Link href={`/variant/${params.value}`}>{params.value}</Link>,
   },
   {
     field: "chromosome",
     headerName: "Chromosome",
-    flex: 2,
   },
   {
     field: "position",
     headerName: "Position",
-    flex: 2,
   },
   {
     field: "ref",
     headerName: "A1",
-    flex: 2,
   },
   {
     field: "alt",
     headerName: "A2",
-    flex: 2,
   },
   {
     field: "fdr",
     headerName: "FDR",
-    flex: 1.5,
-    display: "flex",
-    renderCell: (params) => toScientificNotationElement(params.value, 2, {variant: "body2"}),
+    renderCell: (params) => toScientificNotationElement(params.value, 2, { variant: "body2" }),
   },
   {
     field: "spearmans_rho",
     headerName: "Spearman's rho",
-    flex: 1,
-    display: "flex",
-    renderCell: (params) => toScientificNotationElement(params.value, 2, {variant: "body2"}),
+    renderCell: (params) => toScientificNotationElement(params.value, 2, { variant: "body2" }),
   },
   {
     field: "celltype",
     headerName: "Celltype",
-    flex: 2,
-  },  
+  },
   {
     field: "ccre",
     headerName: "iCRE",
-    flex: 2,
-    renderCell: (params) => {
-      return params.value === "." ? <>{params.value}</> : <Link href={`/icre/${params.value}`}>{params.value}</Link>;
-    },
+    renderCell: (params) => params.value === "." ? params.value : <LinkComponent href={`/icre/${params.value}`}>{params.value}</LinkComponent>,
   },
 ];

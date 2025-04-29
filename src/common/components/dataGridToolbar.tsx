@@ -1,5 +1,6 @@
 import {
   GridToolbarContainer,
+  GridToolbarDensitySelector,
   GridToolbarExport,
   GridToolbarQuickFilter,
 } from "@mui/x-data-grid-pro";
