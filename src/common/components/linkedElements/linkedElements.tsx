@@ -1,23 +1,35 @@
 import { Stack, Typography } from "@mui/material";
 import { LinkedGeneInfo } from "common/hooks/useLinkedGenes";
 import { LinkedICREInfo } from "common/hooks/useLinkedICREs";
-import CustomDataGrid, { CustomDataGridColDef } from "../CustomDataGrid";
+import CustomDataGrid, { CustomDataGridColDef, CustomDataGridProps } from "../CustomDataGrid";
 
-export default function LinkedElements({
+export interface TableDef<T extends LinkedGeneInfo | LinkedICREInfo> extends CustomDataGridProps<T> {
+  sortColumn: keyof T & string; // Constrain to string keys
+  sortDirection: 'asc' | 'desc';
+};
+
+// Combined types for GridColDef and GridRenderCellParams for linkedGenes and linkedICREs
+export type colDef = CustomDataGridColDef<LinkedGeneInfo> | CustomDataGridColDef<LinkedICREInfo>;
+
+export default function LinkedElements<T extends LinkedGeneInfo | LinkedICREInfo>({
   tables,
 }: {
-  tables: {
-    name: string;
-    data: LinkedICREInfo[] | LinkedGeneInfo[];
-    columns: CustomDataGridColDef<LinkedICREInfo | LinkedGeneInfo>[];
-  }[];
+  tables: TableDef<T>[];
 }) {
 
   return (
     <Stack spacing={2}>
       {tables.map((table, index) =>
-        table.data.length > 0 ? (
-          <CustomDataGrid key={index} columns={table.columns} rows={table.data} tableTitle={table.name} />
+        table.rows.length > 0 ? (
+          <CustomDataGrid
+            key={index}
+            initialState={{
+              sorting: {
+                sortModel: [{ field: table.sortColumn, sort: table.sortDirection }],
+              },
+            }}
+            {...table}
+          />
         ) : (
           <Typography
             key={index}
@@ -29,7 +41,7 @@ export default function LinkedElements({
               p: 2,
             }}
           >
-            No {table.name} found
+            No {table.tableTitle} found
           </Typography>
         )
       )}

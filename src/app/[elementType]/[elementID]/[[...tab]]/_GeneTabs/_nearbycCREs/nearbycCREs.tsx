@@ -28,32 +28,41 @@ export default function NearbycCREs({ geneid, coordinates, allcCREs }: { geneid:
         }
     })?.filter(d => allcCREs || d.isiCRE);
     
-  const cols: CustomDataGridColDef<typeof nearbyccres[number]>[] = useMemo(() => [
-    {
-      field: "ccre",
-      headerName: "Accession",
-      renderCell: (params) => {
-        const href = !params.row.isiCRE
-          ? `https://screen.wenglab.org/search/?q=${params.value}&uuid=0&assembly=GRCh38`
-          : `/icre/${params.value}`;
-        return (
-          <LinkComponent
-            underline="hover"
-            href={href}        
-            showExternalIcon={!params.row.isiCRE}
-            openInNewTab={!params.row.isiCRE}
-          >
-            {params.value}
-          </LinkComponent>
-        );
+  const cols: CustomDataGridColDef<(typeof nearbyccres)[number]>[] = useMemo(
+    () => [
+      {
+        field: "ccre",
+        headerName: "Accession",
+        renderCell: (params) => {
+          const href = !params.row.isiCRE
+            ? `https://screen.wenglab.org/search/?q=${params.value}&uuid=0&assembly=GRCh38`
+            : `/icre/${params.value}`;
+          return (
+            <LinkComponent
+              underline="hover"
+              href={href}
+              showExternalIcon={!params.row.isiCRE}
+              openInNewTab={!params.row.isiCRE}
+            >
+              {params.value}
+            </LinkComponent>
+          );
+        },
       },
-    },
-    {
+      {
         field: "group",
         headerName: "Class",
-        tooltip: "See SCREEN for Class definitions",
+        tooltip: (
+          <div>
+            See{" "}
+            <LinkComponent openInNewTab color="inherit" showExternalIcon href={"https://screen.wenglab.org/about#classifications"}>
+              SCREEN
+            </LinkComponent>{" "}
+            for Class definitions
+          </div>
+        ),
       },
-    {
+      {
         field: "chromosome",
         headerName: "Chromosome",
       },
@@ -62,7 +71,7 @@ export default function NearbycCREs({ geneid, coordinates, allcCREs }: { geneid:
         headerName: "Start",
         valueFormatter: (value?: string) => {
           if (value == null) {
-            return '';
+            return "";
           }
           return value.toLocaleString();
         },
@@ -72,7 +81,7 @@ export default function NearbycCREs({ geneid, coordinates, allcCREs }: { geneid:
         headerName: "End",
         valueFormatter: (value?: string) => {
           if (value == null) {
-            return '';
+            return "";
           }
           return value.toLocaleString();
         },
@@ -80,14 +89,17 @@ export default function NearbycCREs({ geneid, coordinates, allcCREs }: { geneid:
       {
         field: "distance",
         headerName: "Distance",
+        type: "number",
         valueFormatter: (value?: string) => {
           if (value == null) {
-            return '';
+            return "";
           }
           return value.toLocaleString();
         },
       },
-  ], [])
+    ],
+    []
+  );
 
   return (
     <Box width={"100%"}>

@@ -1,8 +1,7 @@
 import { Grid2 as Grid, Skeleton, Stack, Typography } from "@mui/material";
 import useLinkedGenes, { LinkedGeneInfo } from "common/hooks/useLinkedGenes";
 import { ChIAPETCols, CrisprFlowFISHCols, eQTLCols, IntactHiCLoopsCols } from "./columns";
-import LinkedElements from "common/components/linkedElements/linkedElements";
-import { TableDef } from "common/components/linkedElements/columns";
+import LinkedElements, { TableDef } from "common/components/linkedElements/linkedElements";
 import { useQuery } from "@apollo/client";
 import { CLOSEST_GENE_QUERY } from "./query";
 import { DataGridPro, GridColDef } from "@mui/x-data-grid-pro";
@@ -66,19 +65,23 @@ export default function LinkedGenes({ accession, coordinates }: { accession: str
       id: index.toString(),
     }));
 
-  const tables: TableDef[] = [
-    { name: "Intact Hi-C Loops", data: HiCLinked, columns: IntactHiCLoopsCols },
+  const tables: TableDef<LinkedGeneInfo>[] = [
+    { tableTitle: "Intact Hi-C Loops", rows: HiCLinked, columns: IntactHiCLoopsCols, sortColumn: "p_val", sortDirection: 'asc' },
     {
-      name: "ChIA-PET",
-      data: ChIAPETLinked,
+      tableTitle: "ChIA-PET",
+      rows: ChIAPETLinked,
       columns: ChIAPETCols,
+      sortColumn: "score",
+      sortDirection: "desc",
     },
     {
-      name: "CRISPRi-FlowFISH",
-      data: crisprLinked,
+      tableTitle: "CRISPRi-FlowFISH",
+      rows: crisprLinked,
       columns: CrisprFlowFISHCols,
+      sortColumn: "p_val",
+      sortDirection: "asc",
     },
-    { name: "eQTLs", data: eqtlLinked, columns: eQTLCols },
+    { tableTitle: "eQTLs", rows: eqtlLinked, columns: eQTLCols, sortColumn: "p_val", sortDirection: "asc"},
   ];
 
   const genes: any[] = closestGeneData.closestGenetocCRE.map((item: any) => item.gene);

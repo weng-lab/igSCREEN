@@ -1,4 +1,4 @@
-import { Box, Button, Paper, PaperProps, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Paper, PaperProps, Tooltip, TooltipProps, Typography } from "@mui/material";
 import { DataGridPro, DataGridProProps, GridAutosizeOptions, gridClasses, GridColDef, useGridApiRef } from "@mui/x-data-grid-pro";
 import DataGridToolbar from "./dataGridToolbar";
 import { useMemo, useEffect, useRef } from "react";
@@ -57,7 +57,7 @@ export type CustomDataGridColDef<T extends CustomDataGridRow> = GridColDef & {
   /**
    * Optional tooltip to be displayed with info icon in column header
    */
-  tooltip?: string;
+  tooltip?: TooltipProps["title"];
 };
 
 const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<T>) => {

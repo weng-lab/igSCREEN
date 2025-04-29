@@ -4,16 +4,11 @@ import { LinkedICREInfo } from "common/hooks/useLinkedICREs";
 import { LinkedGeneInfo } from "common/hooks/useLinkedGenes";
 import { LinkComponent, toScientificNotationElement } from "common/utility";
 import { CustomDataGridColDef } from "../CustomDataGrid";
+import { colDef } from "./linkedElements";
 
-// Combined types for GridColDef and GridRenderCellParams for linkedGenes and linkedICREs
-export type colDef = CustomDataGridColDef<LinkedGeneInfo> | CustomDataGridColDef<LinkedICREInfo>;
+
 type renderCellParams = GridRenderCellParams<LinkedGeneInfo> | GridRenderCellParams<LinkedICREInfo>;
 
-export type TableDef = {
-  name: string;
-  data: LinkedGeneInfo[] | LinkedICREInfo[];
-  columns: colDef[];
-};
 
 /**
  * Column definitions for the linked elements tab.
