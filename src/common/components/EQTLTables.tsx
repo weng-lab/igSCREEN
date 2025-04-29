@@ -30,346 +30,26 @@ query getimmuneeQTLsQuery($genes: [String], $snps: [String],$ccre: [String]) {
 
 export default function EQTLs<T extends GenomicElementType>({ data, elementType }: { elementType: T, data: useElementMetadataReturn<T>["data"] }) {
 
-    const icreGtexColumns: GridColDef[] = [
-        {
-            field: "variant_id",
-            headerName: "Variant Name",
-            flex: 2,
-        },
-
-        {
-            field: "rsid",
-            headerName: "rs ID",
-            flex: 2,
-            renderCell: (params) => {
-                return params.value === "." ? <>{params.value}</> : <Link href={`/variant/${params.value}`}>{params.value}</Link>;
-            },
-        },
-        {
-            field: "genename",
-            headerName: "Gene",
-            flex: 2,
-            renderCell: (params) => {
-                return params.value === "." ? <>{params.value}</> : <Link href={`/gene/${params.value}`}>{params.value}</Link>;
-            },
-        },
-        {
-            field: "chromosome",
-            headerName: "Chromosome",
-            flex: 2,
-        },
-        {
-            field: "position",
-            headerName: "Position",
-            flex: 2,
-        },
-        {
-            field: "ref",
-            headerName: "Ref",
-            flex: 2,
-        },
-        {
-            field: "alt",
-            headerName: "Alt",
-            flex: 2,
-        },
-        {
-            field: "slope",
-            headerName: "Slope",
-            flex: 1,
-            display: "flex",
-            renderCell: (params) => toScientificNotationElement(params.value, 2, { variant: "body2" }),
-        },
-        {
-            field: "pval_nominal",
-            headerName: "Nominal P",
-            flex: 1,
-            display: "flex",
-            renderCell: (params) => toScientificNotationElement(params.value, 2, { variant: "body2" }),
-        }
-    ];
-
-    const icreOneK1KColumns: GridColDef[] = [
-        {
-            field: "rsid",
-            headerName: "rs ID",
-            flex: 2,
-            renderCell: (params) => {
-                return <Link href={`/variant/${params.value}`}>{params.value}</Link>;
-            },
-        },
-        {
-            field: "chromosome",
-            headerName: "Chromosome",
-            flex: 2,
-        },
-        {
-            field: "position",
-            headerName: "Position",
-            flex: 2,
-        },
-        {
-            field: "genename",
-            headerName: "Gene",
-            flex: 2,
-            renderCell: (params) => {
-                return params.value === "." ? <>{params.value}</> : <Link href={`/gene/${params.value}`}>{params.value}</Link>;
-            },
-        },
-        {
-            field: "ref",
-            headerName: "A1",
-            flex: 2,
-        },
-        {
-            field: "alt",
-            headerName: "A2",
-            flex: 2,
-        },
-        {
-            field: "spearmans_rho",
-            headerName: "Spearman's rho",
-            flex: 1,
-            display: "flex",
-            renderCell: (params) => toScientificNotationElement(params.value, 2, { variant: "body2" }),
-        },
-        {
-            field: "fdr",
-            headerName: "FDR",
-            flex: 1,
-            display: "flex",
-            renderCell: (params) => toScientificNotationElement(params.value, 2, { variant: "body2" }),
-        },
-        {
-            field: "celltype",
-            headerName: "Celltype",
-            flex: 2,
-        },
-    ];
-
-    const snpGtexColumns: GridColDef[] = [
-        {
-            field: "variant_id",
-            headerName: "Variant Name",
-            flex: 2,
-        },
-
-        {
-            field: "genename",
-            headerName: "Gene",
-            flex: 2,
-            renderCell: (params) => {
-                return params.value === "." ? <>{params.value}</> : <Link href={`/gene/${params.value}`}>{params.value}</Link>;
-            },
-        },
-        {
-            field: "slope",
-            headerName: "Slope",
-            flex: 1,
-            display: "flex",
-            renderCell: (params) => toScientificNotationElement(params.value, 2, { variant: "body2" }),
-        },
-        {
-            field: "pval_nominal",
-            headerName: "Nominal P",
-            flex: 1.5,
-            display: "flex",
-            renderCell: (params) => toScientificNotationElement(params.value, 2, { variant: "body2" }),
-        },
-        {
-            field: "ccre",
-            headerName: "iCRE",
-            flex: 2,
-            renderCell: (params) => {
-                return params.value === "." ? <>{params.value}</> : <Link href={`/icre/${params.value}`}>{params.value}</Link>;
-            },
-        },
-    ];
-
-    const snpOneK1KColumns: GridColDef[] = [
-        {
-            field: "genename",
-            headerName: "Gene",
-            flex: 2,
-            renderCell: (params) => {
-                return <Link href={`/gene/${params.value}`}>{params.value}</Link>;
-            },
-        },
-        {
-            field: "fdr",
-            headerName: "FDR",
-            flex: 1.5,
-            display: "flex",
-            renderCell: (params) => toScientificNotationElement(params.value, 2, { variant: "body2" }),
-        },
-        {
-            field: "spearmans_rho",
-            headerName: "Spearman's rho",
-            flex: 1,
-            display: "flex",
-            renderCell: (params) => toScientificNotationElement(params.value, 2, { variant: "body2" }),
-        },
-
-        {
-            field: "celltype",
-            headerName: "Celltype",
-            flex: 2,
-        },
-        {
-            field: "ccre",
-            headerName: "iCRE",
-            flex: 2,
-            renderCell: (params) => {
-                return params.value === "." ? <>{params.value}</> : <Link href={`/icre/${params.value}`}>{params.value}</Link>;
-            },
-        },
-    ];
-
-    const geneGtexColumns: GridColDef[] = [
-        {
-            field: "variant_id",
-            headerName: "Variant Name",
-            flex: 2,
-        },
-
-        {
-            field: "rsid",
-            headerName: "rs ID",
-            flex: 2,
-            renderCell: (params) => {
-                return params.value === "." ? <>{params.value}</> : <Link href={`/variant/${params.value}`}>{params.value}</Link>;
-            },
-        },
-        {
-            field: "chromosome",
-            headerName: "Chromosome",
-            flex: 2,
-        },
-        {
-            field: "position",
-            headerName: "Position",
-            flex: 2,
-        },
-        {
-            field: "ref",
-            headerName: "Ref",
-            flex: 2,
-        },
-        {
-            field: "alt",
-            headerName: "Alt",
-            flex: 2,
-        },
-        {
-            field: "slope",
-            headerName: "Slope",
-            flex: 1,
-            display: "flex",
-            renderCell: (params) => toScientificNotationElement(params.value, 2, { variant: "body2" }),
-        },
-        {
-            field: "pval_nominal",
-            headerName: "Nominal P",
-            flex: 1.5,
-            display: "flex",
-            renderCell: (params) => toScientificNotationElement(params.value, 2, { variant: "body2" }),
-        },
-        {
-            field: "ccre",
-            headerName: "iCRE",
-            flex: 2,
-            renderCell: (params) => {
-                return params.value === "." ? <>{params.value}</> : <Link href={`/icre/${params.value}`}>{params.value}</Link>;
-            },
-        },
-    ];
-
-    const geneOneK1KColumns: GridColDef[] = [
-        {
-            field: "rsid",
-            headerName: "rs ID",
-            flex: 2,
-            renderCell: (params) => {
-                return <Link href={`/variant/${params.value}`}>{params.value}</Link>;
-            },
-        },
-        {
-            field: "chromosome",
-            headerName: "Chromosome",
-            flex: 2,
-        },
-        {
-            field: "position",
-            headerName: "Position",
-            flex: 2,
-        },
-        {
-            field: "ref",
-            headerName: "A1",
-            flex: 2,
-        },
-        {
-            field: "alt",
-            headerName: "A2",
-            flex: 2,
-        },
-        {
-            field: "fdr",
-            headerName: "FDR",
-            flex: 1.5,
-            display: "flex",
-            renderCell: (params) => toScientificNotationElement(params.value, 2, { variant: "body2" }),
-        },
-        {
-            field: "spearmans_rho",
-            headerName: "Spearman's rho",
-            flex: 1,
-            display: "flex",
-            renderCell: (params) => toScientificNotationElement(params.value, 2, { variant: "body2" }),
-        },
-        {
-            field: "celltype",
-            headerName: "Celltype",
-            flex: 2,
-        },
-        {
-            field: "ccre",
-            headerName: "iCRE",
-            flex: 2,
-            renderCell: (params) => {
-                return params.value === "." ? <>{params.value}</> : <Link href={`/icre/${params.value}`}>{params.value}</Link>;
-            },
-        },
-    ];
-
     let variables: Record<string, any> = {};
     let gtexTitle: string;
-    let gtexColumns: GridColDef[];
     let onekTitle: string;
-    let onekColumns: GridColDef[];
 
-    //Change everything based on element type
+    //Change query variables and table title based on element type
     if (elementType === "gene") {
         const geneData = data as useElementMetadataReturn<"gene">["data"];
         variables = { genes: [geneData.name] };
         gtexTitle = `GTEX whole-blood eQTLs for ${geneData.name}`;
-        gtexColumns = geneGtexColumns;
         onekTitle = `OneK1K eQTLs for ${geneData.name}`;
-        onekColumns = geneOneK1KColumns;
     } else if (elementType === "icre") {
         const icreData = data as useElementMetadataReturn<"icre">["data"];
         variables = { ccre: [icreData.accession] };
         gtexTitle = `GTEX whole-blood eQTLs for ${icreData.accession}`;
-        gtexColumns = icreGtexColumns;
         onekTitle = `OneK1K eQTLs for ${icreData.accession}`;
-        onekColumns = icreOneK1KColumns;
     } else {
         const snpData = data as useElementMetadataReturn<"variant">["data"];
         variables = { snps: [snpData.id] };
         gtexTitle = `GTEX whole-blood eQTLs for ${snpData.id}`;
-        gtexColumns = snpGtexColumns;
         onekTitle = `OneK1K eQTLs for ${snpData.id}`;
-        onekColumns = snpOneK1KColumns;
     }
 
     const { loading, error, data: eqtlData } = useQuery(EQTL_QUERY, {
@@ -378,7 +58,172 @@ export default function EQTLs<T extends GenomicElementType>({ data, elementType 
     });
 
     const gtexRows = eqtlData?.immuneeQTLsQuery.filter((i) => i.study === "GTEX");
-    const onekRows = eqtlData?.immuneeQTLsQuery.filter((i) => i.study === "OneK1K");
+    const oneK1KRows = eqtlData?.immuneeQTLsQuery.filter((i) => i.study === "OneK1K");
+
+    const gtexColumns: GridColDef[] = [
+        {
+            field: "variant_id",
+            headerName: "Variant Name",
+            flex: 2,
+        },
+        ...(elementType === "gene" || elementType === "icre"
+            ? [
+                {
+                    field: "rsid",
+                    headerName: "rs ID",
+                    flex: 2,
+                    renderCell: (params) =>
+                        params.value === "." ? (
+                            <>{params.value}</>
+                        ) : (
+                            <Link href={`/variant/${params.value}`}>{params.value}</Link>
+                        ),
+                },
+            ]
+            : []),
+        ...(elementType === "variant" || elementType === "icre"
+            ? [
+                {
+                    field: "genename",
+                    headerName: "Gene",
+                    flex: 2,
+                    renderCell: (params) =>
+                        params.value === "." ? (
+                            <>{params.value}</>
+                        ) : (
+                            <Link href={`/gene/${params.value}`}>{params.value}</Link>
+                        ),
+                },
+            ]
+            : []),
+        ...(elementType === "gene" || elementType === "icre"
+            ? [
+                { field: "chromosome", headerName: "Chromosome", flex: 2 },
+                { field: "position", headerName: "Position", flex: 2 },
+                { field: "ref", headerName: "Ref", flex: 2 },
+                { field: "alt", headerName: "Alt", flex: 2 },
+            ]
+            : []),
+        {
+            field: "slope",
+            headerName: "Slope",
+            flex: 1,
+            display: "flex",
+            renderCell: (params) =>
+                toScientificNotationElement(params.value, 2, { variant: "body2" }),
+        },
+        {
+            field: "pval_nominal",
+            headerName: "Nominal P",
+            flex: 1.5,
+            display: "flex",
+            renderCell: (params) =>
+                toScientificNotationElement(params.value, 2, { variant: "body2" }),
+        },
+        ...(elementType === "gene" || elementType === "variant"
+            ? [
+                {
+                    field: "ccre",
+                    headerName: "iCRE",
+                    flex: 2,
+                    renderCell: (params) =>
+                        params.value === "." ? (
+                            <>{params.value}</>
+                        ) : (
+                            <Link href={`/icre/${params.value}`}>{params.value}</Link>
+                        ),
+                },
+            ]
+            : []),
+    ];
+
+
+    const oneK1KColumns: GridColDef[] = [
+        ...(elementType === "gene" || elementType === "icre"
+            ? [
+                {
+                    field: "rsid",
+                    headerName: "rs ID",
+                    flex: 2,
+                    renderCell: (params) => (
+                        <Link href={`/variant/${params.value}`}>{params.value}</Link>
+                    ),
+                },
+                {
+                    field: "chromosome",
+                    headerName: "Chromosome",
+                    flex: 2,
+                },
+                {
+                    field: "position",
+                    headerName: "Position",
+                    flex: 2,
+                },
+            ]
+            : []),
+        ...(elementType === "variant" || elementType === "icre"
+            ? [
+                {
+                    field: "genename",
+                    headerName: "Gene",
+                    flex: 2,
+                    renderCell: (params) => (
+                        <Link href={`/gene/${params.value}`}>{params.value}</Link>
+                    ),
+                },
+            ]
+            : []),
+        ...(elementType === "gene" || elementType === "icre"
+            ? [
+                {
+                    field: "ref",
+                    headerName: "A1",
+                    flex: 2,
+                },
+                {
+                    field: "alt",
+                    headerName: "A2",
+                    flex: 2,
+                },
+            ]
+            : []),
+        {
+            field: "fdr",
+            headerName: "FDR",
+            flex: 1.5,
+            display: "flex",
+            renderCell: (params) =>
+                toScientificNotationElement(params.value, 2, { variant: "body2" }),
+        },
+        {
+            field: "spearmans_rho",
+            headerName: "Spearman's rho",
+            flex: 1,
+            display: "flex",
+            renderCell: (params) =>
+                toScientificNotationElement(params.value, 2, { variant: "body2" }),
+        },
+        {
+            field: "celltype",
+            headerName: "Celltype",
+            flex: 2,
+        },
+        ...(elementType === "gene" || elementType === "variant"
+            ? [
+                {
+                    field: "ccre",
+                    headerName: "iCRE",
+                    flex: 2,
+                    renderCell: (params) =>
+                        params.value === "." ? (
+                            <>{params.value}</>
+                        ) : (
+                            <Link href={`/icre/${params.value}`}>{params.value}</Link>
+                        ),
+                },
+            ]
+            : []),
+    ];
 
     if (loading) {
         return (
@@ -441,10 +286,10 @@ export default function EQTLs<T extends GenomicElementType>({ data, elementType 
                 )}
             </Box>
             <Box sx={{ flex: "1 1 auto" }}>
-                {onekRows.length > 0 ? (
+                {oneK1KRows.length > 0 ? (
                     <DataGridPro
-                        columns={onekColumns}
-                        rows={onekRows}
+                        columns={oneK1KColumns}
+                        rows={oneK1KRows}
                         getRowId={(row) => row.variant_id + row.genename + row.fdr}
                         slots={{ toolbar: DataGridToolbar }}
                         slotProps={{ toolbar: { title: onekTitle } }}
