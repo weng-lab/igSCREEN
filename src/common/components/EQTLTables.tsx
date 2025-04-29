@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { Grid2, Link, Skeleton, Stack, Box } from "@mui/material";
+import { Grid2, Link, Skeleton, Stack, Box, Typography } from "@mui/material";
 import { DataGridPro, GridColDef } from "@mui/x-data-grid-pro";
 import { toScientificNotationElement } from "common/utility";
 import { gql } from "types/generated";
@@ -27,8 +27,6 @@ query getimmuneeQTLsQuery($genes: [String], $snps: [String],$ccre: [String]) {
   }
 } 
 `);
-
-
 
 export default function EQTLs<T extends GenomicElementType>({ data, elementType }: { elementType: T, data: useElementMetadataReturn<T>["data"] }) {
 
@@ -349,7 +347,7 @@ export default function EQTLs<T extends GenomicElementType>({ data, elementType 
     let gtexColumns: GridColDef[];
     let onekTitle: string;
     let onekColumns: GridColDef[];
-    
+
     //Change everything based on element type
     if (elementType === "gene") {
         const geneData = data as useElementMetadataReturn<"gene">["data"];
@@ -379,6 +377,9 @@ export default function EQTLs<T extends GenomicElementType>({ data, elementType 
         skip: !data,
     });
 
+    const gtexRows = eqtlData?.immuneeQTLsQuery.filter((i) => i.study === "GTEX");
+    const onekRows = eqtlData?.immuneeQTLsQuery.filter((i) => i.study === "OneK1K");
+
     if (loading) {
         return (
             <Grid2 container spacing={2}>
@@ -399,58 +400,87 @@ export default function EQTLs<T extends GenomicElementType>({ data, elementType 
     return (
         <Stack spacing={2}>
             <Box sx={{ flex: "1 1 auto" }}>
-                <DataGridPro
-                    columns={gtexColumns}
-                    rows={eqtlData.immuneeQTLsQuery.filter((i) => i.study === "GTEX") || []}
-                    getRowId={(row) => row.variant_id + row.rsid + row.genename + row.pval_nominal}
-                    slots={{ toolbar: DataGridToolbar }}
-                    slotProps={{ toolbar: { title: gtexTitle } }}
-                    pagination
-                    initialState={{
-                        sorting: {
-                            sortModel: [{ field: "pval_nominal", sort: "asc" }],
-                        },
-                        pagination: {
-                            paginationModel: {
-                                pageSize: 5,
-                                page: 0,
+                {gtexRows.length > 0 ? (
+                    <DataGridPro
+                        columns={gtexColumns}
+                        rows={gtexRows}
+                        getRowId={(row) => row.variant_id + row.rsid + row.genename + row.pval_nominal}
+                        slots={{ toolbar: DataGridToolbar }}
+                        slotProps={{ toolbar: { title: gtexTitle } }}
+                        pagination
+                        initialState={{
+                            sorting: {
+                                sortModel: [{ field: "pval_nominal", sort: "asc" }],
                             },
-                        },
-                    }}
-                    pageSizeOptions={[5, 10]}
-                    density="compact"
-                    sx={{
-                        borderRadius: 1,
-                        boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
-                    }}
-                />
+                            pagination: {
+                                paginationModel: {
+                                    pageSize: 5,
+                                    page: 0,
+                                },
+                            },
+                        }}
+                        pageSizeOptions={[5, 10]}
+                        density="compact"
+                        sx={{
+                            borderRadius: 1,
+                            boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
+                        }}
+                    />
+                ) : (
+                    <Typography
+                        variant="h6"
+                        pl={1}
+                        sx={{
+                            border: "1px solid #e0e0e0",
+                            borderRadius: 1,
+                            p: 2,
+                        }}
+                    >
+                        No GTEX whole-blood eQTLs found
+                    </Typography>
+                )}
             </Box>
             <Box sx={{ flex: "1 1 auto" }}>
-                <DataGridPro
-                    columns={onekColumns}
-                    rows={eqtlData.immuneeQTLsQuery.filter((i) => i.study === "OneK1K") || []}
-                    getRowId={(row) => row.variant_id + row.genename + row.fdr}
-                    slots={{ toolbar: DataGridToolbar }}
-                    slotProps={{ toolbar: { title: onekTitle } }}
-                    pagination
-                    initialState={{
-                        sorting: {
-                            sortModel: [{ field: "fdr", sort: "asc" }],
-                        },
-                        pagination: {
-                            paginationModel: {
-                                pageSize: 5,
-                                page: 0,
+                {onekRows.length > 0 ? (
+                    <DataGridPro
+                        columns={onekColumns}
+                        rows={onekRows}
+                        getRowId={(row) => row.variant_id + row.genename + row.fdr}
+                        slots={{ toolbar: DataGridToolbar }}
+                        slotProps={{ toolbar: { title: onekTitle } }}
+                        pagination
+                        initialState={{
+                            sorting: {
+                                sortModel: [{ field: "fdr", sort: "asc" }],
                             },
-                        },
-                    }}
-                    pageSizeOptions={[5, 10]}
-                    density="compact"
-                    sx={{
-                        borderRadius: 1,
-                        boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
-                    }}
-                />
+                            pagination: {
+                                paginationModel: {
+                                    pageSize: 5,
+                                    page: 0,
+                                },
+                            },
+                        }}
+                        pageSizeOptions={[5, 10]}
+                        density="compact"
+                        sx={{
+                            borderRadius: 1,
+                            boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
+                        }}
+                    />
+                ) : (
+                    <Typography
+                        variant="h6"
+                        pl={1}
+                        sx={{
+                            border: "1px solid #e0e0e0",
+                            borderRadius: 1,
+                            p: 2,
+                        }}
+                    >
+                        No OneK1K eQTLs found
+                    </Typography>
+                )}
+
             </Box>
         </Stack>
     );

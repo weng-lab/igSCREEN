@@ -3,8 +3,6 @@ import { CircularProgress, Stack, styled, Typography } from "@mui/material";
 import GenomeBrowserView from "common/gbview/genomebrowserview";
 import { useElementMetadata, useElementMetadataReturn } from "common/hooks/useElementMetadata";
 import { GenomicElementType, isValidGeneTab, isValidIcreTab, isValidVariantTab, isValidTab } from "types/globalTypes";
-import SnpEQTLs from "./_SnpTabs/_eQTLs/SnpEQTLs";
-import GeneEQTLs from "./_GeneTabs/_eQTLs/GeneEQTLs";
 import GeneExpression from "./_GeneTabs/_GeneExpression/GeneExpression";
 import IcreActivity from "./_IcreTabs/_IcreActivity/IcreActivity";
 import LinkedGenes from "./_IcreTabs/_linkedGenes/linkedGenes";
@@ -15,8 +13,8 @@ import SnpFrequencies from "./_SnpTabs/SnpFrequencies";
 import NearbycCREs from "./_GeneTabs/_nearbycCREs/nearbycCREs";
 import { useState } from "react";
 import Switch from '@mui/material/Switch';
-import IntersectingiCREs from "app/region/[region]/icres/IntersectingiCREs";
 import SnpiCREs from "./_SnpTabs/SnpiCREs";
+import EQTLs from "common/components/EQTLTables";
 
 //Styled switch componet from mui docs with our logos and colors
 const CcreSwitch = styled(Switch)(({ theme }) => ({
@@ -139,7 +137,7 @@ export default function DetailsPage({
         case "icres":
           return <SnpiCREs coordinates={variantData.coordinates} />;
         case "genes":
-          return <SnpEQTLs rsid={variantData.id} />;
+          return <EQTLs data={variantData} elementType="variant" />;
       }
     }
 
@@ -166,7 +164,7 @@ export default function DetailsPage({
             <LinkedICREs geneid={geneData.id} allcCREs={allcCREs} />
           </Stack>
         )
-        case ("variants"): return <GeneEQTLs name={geneData.name} id={geneData.id} />
+        case ("variants"): return <EQTLs data={geneData} elementType="gene" />
       }
     }
 
