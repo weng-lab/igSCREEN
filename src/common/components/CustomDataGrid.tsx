@@ -1,9 +1,8 @@
-import { Box, Button, Paper, PaperProps, Tooltip, TooltipProps, Typography } from "@mui/material";
+import { Box, Paper, PaperProps, Tooltip, TooltipProps, Typography } from "@mui/material";
 import { DataGridPro, DataGridProProps, GridAutosizeOptions, gridClasses, GridColDef, useGridApiRef } from "@mui/x-data-grid-pro";
 import DataGridToolbar from "./dataGridToolbar";
 import { useMemo, useEffect, useRef, useCallback } from "react";
 import { InfoOutlined } from "@mui/icons-material";
-import debounce from "lodash.debounce";
 
 export type CustomDataGridRow = Record<string, any>
 
@@ -51,6 +50,10 @@ export interface CustomDataGridProps<T extends CustomDataGridRow> extends DataGr
    * @default "compact"
    */
   density?: DataGridProProps["density"]
+  /**
+   * @default true
+   */
+  autosizeOnMount?: boolean;
 }
 
 export type CustomDataGridColDef<T extends CustomDataGridRow> = GridColDef & {
@@ -80,6 +83,7 @@ const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<
     density = "compact",
     rows = [],
     initialState,
+    apiRef,
     onPaginationModelChange,
     onResize,
     ...restDataGridProps
@@ -125,26 +129,24 @@ const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<
     []
   );
 
-  const apiRef = useGridApiRef()
+  // prioritize using the provided apiRef if available, otherwise create a new one
+  const internalApiRef = apiRef ?? useGridApiRef()
 
   const handleResizeCols = useCallback(() => {
-    if (!apiRef.current) return;
-    apiRef.current.autosizeColumns(autosizeOptions);
-  }, [apiRef, autosizeOptions]);
+    if (!internalApiRef.current) return;
+    internalApiRef.current.autosizeColumns(autosizeOptions);
+  }, [internalApiRef, autosizeOptions]);
 
+  // trigger resize when rows or columns change so that rows/columns don't need to be memoized outisde of this component
+  // otherwise sometimes would snap back to default widths when rows/columns change
   useEffect(() => {
-    console.log("effect running");
     handleResizeCols();
   }, [rows, columns, handleResizeCols]);
-
-  /**
-   * @todo ensure that passed in ref is merged with the apiRef declared here
-   */
 
   return (
     <Paper sx={{display: "flex"}} elevation={elevation} {...paperProps} >
       <DataGridPro
-        apiRef={apiRef}
+        apiRef={internalApiRef}
         columns={columnsModified}
         autosizeOnMount
         onPaginationModelChange={(model, details) => {
