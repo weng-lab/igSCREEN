@@ -1,10 +1,8 @@
-import { Box, Checkbox, FormControlLabel, Grid2, Skeleton, Stack } from "@mui/material";
+import { Box, Grid2, Skeleton } from "@mui/material";
 import useLinkedICREs, { LinkedICREInfo } from "common/hooks/useLinkedICREs";
 import { ChIAPETCols, CrisprFlowFISHCols, eQTLCols, IntactHiCLoopsCols } from "../../_IcreTabs/_linkedGenes/columns";
 import LinkedElements, { TableDef } from "common/components/linkedElements/linkedElements";
 import { accessionCol } from "common/components/linkedElements/columns";
-import { useState } from "react";
-import useNearbycCREs from "common/hooks/useNearBycCREs";
 
 
 export default function LinkedICREs({ geneid, allcCREs }: { geneid: string, allcCREs: boolean }) {

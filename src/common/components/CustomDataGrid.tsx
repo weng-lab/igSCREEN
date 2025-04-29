@@ -1,7 +1,7 @@
 import { Box, Button, Paper, PaperProps, Tooltip, TooltipProps, Typography } from "@mui/material";
 import { DataGridPro, DataGridProProps, GridAutosizeOptions, gridClasses, GridColDef, useGridApiRef } from "@mui/x-data-grid-pro";
 import DataGridToolbar from "./dataGridToolbar";
-import { useMemo, useEffect, useRef } from "react";
+import { useMemo, useEffect, useRef, useCallback } from "react";
 import { InfoOutlined } from "@mui/icons-material";
 import debounce from "lodash.debounce";
 
@@ -47,6 +47,10 @@ export interface CustomDataGridProps<T extends CustomDataGridRow> extends DataGr
    * @note Overrides MUI default
    */
   disableRowSelectionOnClick?: DataGridProProps["disableRowSelectionOnClick"]
+  /**
+   * @default "compact"
+   */
+  density?: DataGridProProps["density"]
 }
 
 export type CustomDataGridColDef<T extends CustomDataGridRow> = GridColDef & {
@@ -73,8 +77,10 @@ const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<
     pageSizeOptions = [5, 10, 25, 100],
     pagination = true,
     columns,
+    density = "compact",
     rows = [],
     initialState,
+    onPaginationModelChange,
     ...restDataGridProps
   } = props;
   const { paper: paperProps, ...restSlotProps } = slotProps;
@@ -120,12 +126,17 @@ const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<
 
   const apiRef = useGridApiRef()
 
+  const handleResizeCols = useCallback(() => {
+    if (!apiRef.current) return;
+    apiRef.current.autosizeColumns(autosizeOptions);
+  }, [apiRef, autosizeOptions]);
+
   useEffect(() => {
     if (!apiRef.current) return;
 
     const observer = new ResizeObserver(
       debounce(() => {
-        apiRef?.current.autosizeColumns(autosizeOptions);
+        handleResizeCols();
       }, 200)
     );
 
@@ -136,22 +147,23 @@ const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<
     };
   }, [apiRef, autosizeOptions]);
 
-  const handleResizeOnPageChange = () => {
-    if (!apiRef.current) return;
-    apiRef.current.autosizeColumns(autosizeOptions);
-  };
-
   return (
     <Paper sx={{display: "flex"}} elevation={elevation} {...paperProps} >
       <DataGridPro
         apiRef={apiRef}
         columns={columnsModified}
         autosizeOnMount
-        onPaginationModelChange={handleResizeOnPageChange}
+        onPaginationModelChange={(model, details) => {
+          if (onPaginationModelChange) {
+            onPaginationModelChange(model, details);
+          }
+          handleResizeCols();
+        }}
         autosizeOptions={autosizeOptions}
         rows={rowsWithIds}
         disableRowSelectionOnClick
         slots={{ toolbar: DataGridToolbar }}
+        density={density}
         slotProps={{ toolbar: { title: tableTitle }, ...restSlotProps }}
         pagination
         pageSizeOptions={pageSizeOptions}
