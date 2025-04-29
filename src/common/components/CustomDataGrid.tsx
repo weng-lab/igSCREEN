@@ -13,6 +13,8 @@ export type CustomDataGridSlotProps = DataGridProProps["slotProps"] & {
   paper?: PaperProps;
 };
 
+//The props listed here are the props which are new (like elevation) or overridden (like pageSizeOptions) compared to the MUI DataGridProProps
+
 export interface CustomDataGridProps<T extends CustomDataGridRow> extends DataGridProProps {
   /**
    * A set of columns of type `CustomDataGridColDef<Row>`, where `Row` is of type `CustomDataGridRow`
@@ -48,10 +50,12 @@ export interface CustomDataGridProps<T extends CustomDataGridRow> extends DataGr
   disableRowSelectionOnClick?: DataGridProProps["disableRowSelectionOnClick"]
   /**
    * @default "compact"
+   * @note Overrides MUI default
    */
   density?: DataGridProProps["density"]
   /**
    * @default true
+   * @note Overrides MUI default
    */
   autosizeOnMount?: boolean;
 }
@@ -76,6 +80,7 @@ const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<
   const {
     elevation, // don't provide elevation default so that it's default obeys the MUI theme 
     tableTitle,
+    slots,
     slotProps = {},
     pageSizeOptions = [5, 10, 25, 100],
     pagination = true,
@@ -129,13 +134,14 @@ const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<
     []
   );
 
+  const internalApiRef = useGridApiRef()
   // prioritize using the provided apiRef if available, otherwise create a new one
-  const internalApiRef = externalApiRef ?? useGridApiRef()
+  const apiRef = externalApiRef ?? internalApiRef
 
   const handleResizeCols = useCallback(() => {
-    if (!internalApiRef.current) return;
-    internalApiRef.current.autosizeColumns(autosizeOptions);
-  }, [internalApiRef, autosizeOptions]);
+    if (!apiRef.current) return;
+    apiRef.current.autosizeColumns(autosizeOptions);
+  }, [apiRef, autosizeOptions]);
 
   // trigger resize when rows or columns change so that rows/columns don't need to be memoized outisde of this component
   // otherwise sometimes would snap back to default widths when rows/columns change
@@ -146,7 +152,7 @@ const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<
   return (
     <Paper sx={{display: "flex"}} elevation={elevation} {...paperProps} >
       <DataGridPro
-        apiRef={internalApiRef}
+        apiRef={apiRef}
         columns={columnsModified}
         autosizeOnMount
         onPaginationModelChange={(model, details) => {
@@ -164,7 +170,7 @@ const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<
         autosizeOptions={autosizeOptions}
         rows={rowsWithIds}
         disableRowSelectionOnClick
-        slots={{ toolbar: DataGridToolbar }}
+        slots={{ toolbar: DataGridToolbar, ...slots }}
         density={density}
         slotProps={{ toolbar: { title: tableTitle }, ...restSlotProps }}
         pagination
