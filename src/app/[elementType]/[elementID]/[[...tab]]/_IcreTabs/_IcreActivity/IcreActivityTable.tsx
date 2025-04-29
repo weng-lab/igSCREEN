@@ -1,6 +1,6 @@
-import { IconButton, Link, Typography } from "@mui/material"
+import { IconButton, Link } from "@mui/material"
 import { getCellCategoryDisplayname, getStudyLink } from "common/utility"
-import { gridFilteredSortedRowEntriesSelector, GridRowSelectionModel, GridToolbar, useGridApiRef, GRID_CHECKBOX_SELECTION_COL_DEF } from "@mui/x-data-grid-pro"
+import { gridFilteredSortedRowEntriesSelector, GridRowSelectionModel, useGridApiRef, GRID_CHECKBOX_SELECTION_COL_DEF } from "@mui/x-data-grid-pro"
 import { IcreActivityProps, PointMetadata, SharedIcreActivityPlotProps } from "./IcreActivity"
 import { OpenInNew } from "@mui/icons-material"
 import { Dispatch, SetStateAction} from "react"
@@ -116,6 +116,7 @@ const IcreActivityTable = ({ accession, selected, onSelectionChange, iCREActivit
     <CustomDataGrid
       apiRef={apiRef}
       tableTitle={`${accession} Activity`}
+      density="standard"
       rows={data}
       columns={columns}
       loading={loading}

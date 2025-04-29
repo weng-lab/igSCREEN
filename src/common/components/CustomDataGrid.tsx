@@ -20,7 +20,11 @@ export interface CustomDataGridProps<T extends CustomDataGridRow> extends DataGr
    * A set of columns of type `CustomDataGridColDef<Row>`, where `Row` is of type `CustomDataGridRow`
    */
   columns: CustomDataGridColDef<T>[];
-  rows: Array<T>;
+  /**
+   * Rows to be consumed in the table.
+   * ```undefined``` will be given default value of ```[]```
+   */
+  rows: T[];
   /**
    * Optional ReactNode to be used in the table toolbar. Strings and numbers will be rendered as Typography variant h6.
    */

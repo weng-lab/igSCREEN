@@ -123,6 +123,7 @@ const GeneExpressionTable = ({
           <i>{name}</i> Expression
         </Typography>
       }
+      density="standard"
       rows={data}
       columns={columns}
       loading={loading}
