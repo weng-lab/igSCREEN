@@ -83,7 +83,7 @@ const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<
     density = "compact",
     rows = [],
     initialState,
-    apiRef,
+    apiRef: externalApiRef,
     onPaginationModelChange,
     onResize,
     ...restDataGridProps
@@ -130,7 +130,7 @@ const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<
   );
 
   // prioritize using the provided apiRef if available, otherwise create a new one
-  const internalApiRef = apiRef ?? useGridApiRef()
+  const internalApiRef = externalApiRef ?? useGridApiRef()
 
   const handleResizeCols = useCallback(() => {
     if (!internalApiRef.current) return;
