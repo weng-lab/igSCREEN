@@ -81,6 +81,7 @@ const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<
     rows = [],
     initialState,
     onPaginationModelChange,
+    onResize,
     ...restDataGridProps
   } = props;
   const { paper: paperProps, ...restSlotProps } = slotProps;
@@ -132,20 +133,13 @@ const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<
   }, [apiRef, autosizeOptions]);
 
   useEffect(() => {
-    if (!apiRef.current) return;
+    console.log("effect running");
+    handleResizeCols();
+  }, [rows, columns, handleResizeCols]);
 
-    const observer = new ResizeObserver(
-      debounce(() => {
-        handleResizeCols();
-      }, 200)
-    );
-
-    observer.observe(apiRef.current.rootElementRef.current);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [apiRef, autosizeOptions]);
+  /**
+   * @todo ensure that passed in ref is merged with the apiRef declared here
+   */
 
   return (
     <Paper sx={{display: "flex"}} elevation={elevation} {...paperProps} >
@@ -158,6 +152,12 @@ const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<
             onPaginationModelChange(model, details);
           }
           handleResizeCols();
+        }}
+        onResize={(params, event, details) => {
+          if (onResize) {
+            onResize(params, event, details);
+          }
+          handleResizeCols()
         }}
         autosizeOptions={autosizeOptions}
         rows={rowsWithIds}
