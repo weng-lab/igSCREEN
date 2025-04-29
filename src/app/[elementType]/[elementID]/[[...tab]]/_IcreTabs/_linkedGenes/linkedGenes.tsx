@@ -9,6 +9,7 @@ import { DataGridPro, GridColDef } from "@mui/x-data-grid-pro";
 import DataGridToolbar from "common/components/dataGridToolbar";
 import { LinkComponent, calcDistRegionToRegion } from "common/utility";
 import { GenomicRange } from "types/globalTypes";
+import CustomDataGrid from "common/components/CustomDataGrid";
 
 export default function LinkedGenes({ accession, coordinates }: { accession: string, coordinates: GenomicRange }) {
   const { data: linkedGenes, loading, error } = useLinkedGenes(accession);
@@ -89,16 +90,7 @@ export default function LinkedGenes({ accession, coordinates }: { accession: str
   return (
     <Stack spacing={2}>
       {closestGenes.length > 0 ? (
-        <DataGridPro
-          rows={closestGenes}
-          getRowId={(row: any) => row.name + row.type}
-          columns={closestGenesCols}
-          pageSizeOptions={[2]}
-          paginationModel={{ page: 0, pageSize: 2 }}
-          hideFooter
-          slots={{ toolbar: DataGridToolbar }}
-          slotProps={{ toolbar: { title: "Closest Genes" } }}
-        />
+        <CustomDataGrid rows={closestGenes} columns={closestGenesCols} hideFooter tableTitle="Closest Genes" />
       ) : (
         <Typography
           variant="h6"
@@ -133,9 +125,9 @@ const closestGenesCols: GridColDef[] = [
         </LinkComponent>
       ),
   },
-  { field: "type", headerName: "Type", flex: 1 },
-  { field: "chromosome", headerName: "Chromosome", flex: 1 },
-  { field: "start", headerName: "Start", flex: 1 },
-  { field: "stop", headerName: "End", flex: 1 },
-  { field: "distance", headerName: "Distance", flex: 1 },
+  { field: "type", headerName: "Type" },
+  { field: "chromosome", headerName: "Chromosome" },
+  { field: "start", headerName: "Start", type: "number" },
+  { field: "stop", headerName: "End", type: "number" },
+  { field: "distance", headerName: "Distance", type: "number" },
 ];

@@ -1,9 +1,7 @@
 import { useQuery } from "@apollo/client";
-import { Grid2, Link, Skeleton, Stack, Box } from "@mui/material";
-import { DataGridPro, GridColDef } from "@mui/x-data-grid-pro";
+import { Grid2, Link, Skeleton, Stack } from "@mui/material";
 import { LinkComponent, toScientificNotationElement } from "common/utility";
 import { gql } from "types/generated";
-import DataGridToolbar from "common/components/dataGridToolbar";
 import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid";
 import { GetimmuneeQtLsQuery } from "types/generated/graphql";
 

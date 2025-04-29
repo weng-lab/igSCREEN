@@ -1,5 +1,5 @@
 import { Box, Button, Paper, PaperProps, Tooltip, Typography } from "@mui/material";
-import { DataGridPro, DataGridProProps, gridClasses, GridColDef, useGridApiRef } from "@mui/x-data-grid-pro";
+import { DataGridPro, DataGridProProps, GridAutosizeOptions, gridClasses, GridColDef, useGridApiRef } from "@mui/x-data-grid-pro";
 import DataGridToolbar from "./dataGridToolbar";
 import { useMemo, useEffect, useRef } from "react";
 import { InfoOutlined } from "@mui/icons-material";
@@ -40,6 +40,10 @@ export interface CustomDataGridProps<T extends CustomDataGridRow> extends DataGr
   pageSizeOptions?: DataGridProProps["pageSizeOptions"]
   /**
    * @default true
+   */
+  pagination?: DataGridProProps["pagination"]
+  /**
+   * @default true
    * @note Overrides MUI default
    */
   disableRowSelectionOnClick?: DataGridProProps["disableRowSelectionOnClick"]
@@ -67,6 +71,7 @@ const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<
     tableTitle,
     slotProps = {},
     pageSizeOptions = [5, 10, 25, 100],
+    pagination = true,
     columns,
     rows = [],
     initialState,
@@ -104,11 +109,11 @@ const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<
     [columns]
   );
 
-  const autosizeOptions = useMemo(
+  const autosizeOptions:  GridAutosizeOptions = useMemo(
     () => ({
       expand: true,
       includeHeaders: true,
-      includeOutliers: true,
+      outliersFactor: 1.5
     }),
     []
   );
@@ -131,15 +136,20 @@ const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<
     };
   }, [apiRef, autosizeOptions]);
 
+  const handleResizeOnPageChange = () => {
+    if (!apiRef.current) return;
+    apiRef.current.autosizeColumns(autosizeOptions);
+  };
+
   return (
-    <Paper elevation={elevation} {...paperProps} >
+    <Paper sx={{display: "flex"}} elevation={elevation} {...paperProps} >
       <DataGridPro
         apiRef={apiRef}
         columns={columnsModified}
         autosizeOnMount
+        onPaginationModelChange={handleResizeOnPageChange}
         autosizeOptions={autosizeOptions}
         rows={rowsWithIds}
-        getRowHeight={() => "auto"}
         disableRowSelectionOnClick
         slots={{ toolbar: DataGridToolbar }}
         slotProps={{ toolbar: { title: tableTitle }, ...restSlotProps }}
@@ -153,13 +163,6 @@ const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<
             },
           },
           ...initialState
-        }}
-        sx={{
-          width: "100%",
-          height: "auto",
-          [`& .${gridClasses.cell}`]: {
-            py: 1,
-          },
         }}
         {...restDataGridProps}
       />
