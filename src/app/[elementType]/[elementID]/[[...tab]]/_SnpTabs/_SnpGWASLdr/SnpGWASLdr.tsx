@@ -4,6 +4,7 @@ import DataGridToolbar from "common/components/dataGridToolbar";
 import { DataGridPro, gridClasses, GridColDef } from "@mui/x-data-grid-pro";
 import { LinkComponent } from "common/utility";
 import { useSnpFrequencies } from "common/hooks/useSnpFrequencies";
+import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid";
 
 export default function SnpGWASLdr({ snpid }: { snpid: string }) {
   const { data, loading, error } = useGWASLdr(undefined, [snpid]);
@@ -24,8 +25,14 @@ export default function SnpGWASLdr({ snpid }: { snpid: string }) {
       zscore
     }
   })
-  const cols: GridColDef[] = [
-   
+  const cols: CustomDataGridColDef<(typeof gwasnps)[number]>[] = [
+    {
+      field: "disease",
+      headerName: "Disease",
+      valueGetter: (value, row) => {
+        return value === "" ? row.study_source : value;
+      },
+    },
     {
       field: "zscore",
       headerName: "Z-score",
@@ -38,28 +45,17 @@ export default function SnpGWASLdr({ snpid }: { snpid: string }) {
       },
     },
     {
-      field: "disease",
-      headerName: "Disease",
-      width: 200,
-      valueGetter: (value, row) => {
-        return value === "" ? row.study_source : value;
-      },
-    },
-    {
       field: "study_source",
       headerName: "Source",
-    },   
+    },
     {
       field: "study_link",
-      flex: 1,
-      display: "flex",
       headerName: "Study",
       renderCell: (params) => {
-       
         return (
           <LinkComponent
             underline="hover"
-            href={params.value}        
+            href={params.value}
             showExternalIcon={!params.row.isiCRE}
             openInNewTab={!params.row.isiCRE}
           >
@@ -72,9 +68,9 @@ export default function SnpGWASLdr({ snpid }: { snpid: string }) {
       field: "author",
       headerName: "Author",
       renderCell: (params) => {
-        return params.value ? `${params.value.replace(/(\d+)$/, " $1")}` : <></>
+        return params.value ? `${params.value.replace(/(\d+)$/, " $1")}` : <></>;
       },
-    }
+    },
   ];
 
   return (
@@ -83,34 +79,15 @@ export default function SnpGWASLdr({ snpid }: { snpid: string }) {
         <Skeleton variant="rounded" width={"100%"} height={100} />
       ) : data.length > 0 ? (
         <Box sx={{ flex: "1 1 auto" }}>
-          <DataGridPro
-            rows={gwasnps || []}
-            columns={cols.map((col) => {
-              return { ...col, display: "flex" };
-            })}
-            getRowId={(row) => row.zscore + row.study}
-            pagination
+          <CustomDataGrid
+            rows={gwasnps}
+            columns={cols}
             initialState={{
               sorting: {
                 sortModel: [{ field: "zscore", sort: "desc" }],
               },
-              pagination: {
-                paginationModel: {
-                  pageSize: 5,
-                  page: 0,
-                },
-              },
             }}
-            pageSizeOptions={[5, 10]}
-            slots={{ toolbar: DataGridToolbar }}
-            slotProps={{ toolbar: { title: "GWAS Variants" } }}
-            getRowHeight={() => "auto"}
-            sx={{
-              [`& .${gridClasses.cell}`]: {
-                py: 1,
-              },
-            }}
-            disableRowSelectionOnClick
+            tableTitle="GWAS Variants"
           />
         </Box>
       ) : (

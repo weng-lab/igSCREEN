@@ -5,6 +5,8 @@ import { DataGridPro, GridColDef } from "@mui/x-data-grid-pro";
 import { useSnpData, UseSnpDataReturn } from "common/hooks/useSnpData";
 import Link from "next/link";
 import DataGridToolbar from "common/components/dataGridToolbar";
+import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid";
+import { LinkComponent } from "common/utility";
 
 const IntersectingSNPs = ({ region }: { region: GenomicRange }) => {
   const {
@@ -13,26 +15,21 @@ const IntersectingSNPs = ({ region }: { region: GenomicRange }) => {
     error: errorSnps,
   } = useSnpData({ coordinates: { chromosome: region.chromosome, start: region.start, end: region.end } });
 
-  // ensure that "field" is accessing a true property of the row
-  type TypeSafeColDef<T> = GridColDef & { field: keyof T };
+  type RowObj = (typeof dataSnps)[number];
 
-  type RowObj = UseSnpDataReturn<{ coordinates: GenomicRange }>["data"][number]
-
-  const columns: TypeSafeColDef<RowObj>[] = [
+  const columns: CustomDataGridColDef<RowObj>[] = [
     {
       field: "id",
       headerName: "rsID",
-      width: 130,
       renderCell: (params) => (
-        <MuiLink href={`/variant/${params.value}`} component={Link}>
+        <LinkComponent href={`/variant/${params.value}`} underline="hover">
           {params.value}
-        </MuiLink>
+        </LinkComponent>
       ),
     },
     {
       field: "coordinates",
       headerName: "Coordinates",
-      width: 250,
       valueGetter: (_, row: RowObj) =>
         `${
           row.coordinates.chromosome
@@ -43,26 +40,17 @@ const IntersectingSNPs = ({ region }: { region: GenomicRange }) => {
   return errorSnps ? (
     <Typography>Error Fetching SNPs</Typography>
   ) : (
-    <DataGridPro
-      rows={dataSnps || []}
+    <CustomDataGrid
+      rows={dataSnps}
       columns={columns}
       loading={loadingSnps}
-      pagination
       initialState={{
-        pagination: {
-          paginationModel: {
-            pageSize: 10,
-          },
-        },
         sorting: {
           sortModel: [{ field: "coordinates", sort: "asc" }],
         },
       }}
-      slots={{ toolbar: DataGridToolbar }}
-      slotProps={{ toolbar: { showQuickFilter: true, title: "Intersecting SNPs", sx: { p: 1 } } }}
-      pageSizeOptions={[10, 25, 50]}
-      disableRowSelectionOnClick
-      getRowId={(row) => row.id}
+      tableTitle="Intersecting Variants"
+      pageSizeOptions={[10, 25, 50, 100]}
     />
   );
 };

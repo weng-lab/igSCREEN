@@ -1,33 +1,35 @@
 import { Box, Skeleton, Typography } from "@mui/material";
 import useGWASLdr from "common/hooks/useGWASLdr";
-import DataGridToolbar from "common/components/dataGridToolbar";
-import { DataGridPro, gridClasses, GridColDef } from "@mui/x-data-grid-pro";
 import { LinkComponent } from "common/utility";
 import { useSnpFrequencies } from "common/hooks/useSnpFrequencies";
+import { useMemo } from "react";
+import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid";
 
 export default function GWASLdr({ accession }: { accession: string }) {
   const { data, loading, error } = useGWASLdr([accession]);
+  const snpids = [...new Set(data?.map((l) => l.snpid))];
+  const { data: snpAlleles, loading: loadingSnpAlleles } = useSnpFrequencies(snpids);
 
-  let snpids= [...new Set(data?.map((l) => l.snpid))]
-  const snpAlleles= useSnpFrequencies(snpids)
-  
-  const gwasnps =  data?.map(d=>{
-    let zscore = d.zscore
-    
-    //reverse zscore 
-    if(d.effect_allele === snpAlleles.data[d.snpid]?.alt && d.ref_allele ===  snpAlleles.data[d.snpid]?.ref )
-    {
-      zscore = d.zscore < 0 ? d.zscore :  -d.zscore
-    }
-    return {
-      ...d,
-      zscore
-    }
-  })
-  const cols: GridColDef[] = [
+  const gwasSnps = useMemo(() => {
+    if (!data || !snpAlleles) return undefined;
+    return data.map((d) => {
+      let zscore = d.zscore;
+
+      //reverse zscore
+      if (d.effect_allele === snpAlleles[d.snpid]?.alt && d.ref_allele === snpAlleles[d.snpid]?.ref) {
+        zscore = d.zscore < 0 ? d.zscore : -d.zscore;
+      }
+      return {
+        ...d,
+        zscore,
+      };
+    });
+  }, [data, snpAlleles]);
+
+  const cols: CustomDataGridColDef<(typeof gwasSnps)[number]>[] = [
     {
       field: "snpid",
-      headerName: "rs ID",
+      headerName: "rsID",
       renderCell: (params) => (
         <LinkComponent href={"/variant/" + params.value} underline="hover">
           {params.value}
@@ -46,7 +48,6 @@ export default function GWASLdr({ accession }: { accession: string }) {
         return params.value.toLocaleString();
       },
     },
-  
     {
       field: "zscore",
       headerName: "Z-score",
@@ -61,7 +62,6 @@ export default function GWASLdr({ accession }: { accession: string }) {
     {
       field: "disease",
       headerName: "Disease",
-      width: 200,
       valueGetter: (value, row) => {
         return value === "" ? row.study_source : value;
       },
@@ -71,33 +71,28 @@ export default function GWASLdr({ accession }: { accession: string }) {
       headerName: "Source",
     },
     {
-          field: "study_link",
-          flex: 1,
-          display: "flex",
-          headerName: "Study",
-          width: 100,
-          renderCell: (params) => {
-           
-            return (
-              <LinkComponent
-                underline="hover"
-                href={params.value}        
-                showExternalIcon={!params.row.isiCRE}
-                openInNewTab={!params.row.isiCRE}
-              >
-                {params.value}
-              </LinkComponent>
-            );
-          },
-        },
+      field: "study_link",
+      headerName: "Study",
+      renderCell: (params) => {
+        return (
+          <LinkComponent
+            underline="hover"
+            href={params.value}
+            showExternalIcon={!params.row.isiCRE}
+            openInNewTab={!params.row.isiCRE}
+          >
+            {params.value}
+          </LinkComponent>
+        );
+      },
+    },
     {
       field: "author",
       headerName: "Author",
       renderCell: (params) => {
-        return params.value ? `${params.value.replace(/(\d+)$/, " $1")}` : <></>
+        return params.value ? `${params.value.replace(/(\d+)$/, " $1")}` : <></>;
       },
     },
-    
   ];
 
   return (
@@ -106,35 +101,16 @@ export default function GWASLdr({ accession }: { accession: string }) {
         <Skeleton variant="rounded" width={"100%"} height={100} />
       ) : data.length > 0 ? (
         <Box sx={{ flex: "1 1 auto" }}>
-          <DataGridPro
-            rows={gwasnps || []}
-            columns={cols.map((col) => {
-              return { ...col, display: "flex" };
-            })}            
-            getRowId={(row) => row.zscore + row.study}
-            pagination
+          <CustomDataGrid
+            rows={gwasSnps}
+            columns={cols}
+            loading={loading || loadingSnpAlleles}
             initialState={{
               sorting: {
                 sortModel: [{ field: "zscore", sort: "desc" }],
               },
-              pagination: {
-                paginationModel: {
-                  pageSize: 5,
-                  page: 0,
-                },
-              },
             }}
-            density="compact"
-            pageSizeOptions={[5, 10]}
-            slots={{ toolbar: DataGridToolbar }}
-            slotProps={{ toolbar: { title: "GWAS Variants" } }}
-            getRowHeight={() => "auto"}
-            sx={{
-              [`& .${gridClasses.cell}`]: {
-                py: 1,
-              },
-            }}
-            disableRowSelectionOnClick
+            tableTitle={`GWAS Variants for ${accession}`}
           />
         </Box>
       ) : (
