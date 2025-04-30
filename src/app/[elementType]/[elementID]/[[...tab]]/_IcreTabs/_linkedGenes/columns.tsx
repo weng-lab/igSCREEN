@@ -12,8 +12,8 @@ import {
   variantIDCol,
   slopeCol,
   assayCol,
-  colDef,
 } from "common/components/linkedElements/columns";
+import { colDef } from "common/components/linkedElements/linkedElements";
 
 /**
  * Table definitions for the linked genes tab.
