@@ -6,6 +6,7 @@ import { gql } from "types/generated";
 import DataGridToolbar from "common/components/dataGridToolbar";
 import { useElementMetadataReturn } from "common/hooks/useElementMetadata";
 import { GenomicElementType } from "types/globalTypes";
+import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid";
 
 const EQTL_QUERY = gql(`
 query getimmuneeQTLsQuery($genes: [String], $snps: [String],$ccre: [String]) {
@@ -60,54 +61,52 @@ export default function EQTLs<T extends GenomicElementType>({ data, elementType 
     const gtexRows = eqtlData?.immuneeQTLsQuery.filter((i) => i.study === "GTEX");
     const oneK1KRows = eqtlData?.immuneeQTLsQuery.filter((i) => i.study === "OneK1K");
 
-    const gtexColumns: GridColDef[] = [
-        {
-            field: "variant_id",
-            headerName: "Variant Name",
-            flex: 2,
-        },
-        ...(elementType === "gene" || elementType === "icre"
-            ? [
-                {
-                    field: "rsid",
-                    headerName: "rs ID",
-                    flex: 2,
-                    renderCell: (params) =>
-                        params.value === "." ? (
-                            <>{params.value}</>
-                        ) : (
-                            <Link href={`/variant/${params.value}`}>{params.value}</Link>
-                        ),
-                },
-            ]
-            : []),
-        ...(elementType === "variant" || elementType === "icre"
-            ? [
-                {
-                    field: "genename",
-                    headerName: "Gene",
-                    flex: 2,
-                    renderCell: (params) =>
-                        params.value === "." ? (
-                            <>{params.value}</>
-                        ) : (
-                            <Link href={`/gene/${params.value}`}>{params.value}</Link>
-                        ),
-                },
-            ]
-            : []),
-        ...(elementType === "gene" || elementType === "icre"
-            ? [
-                { field: "chromosome", headerName: "Chromosome", flex: 2 },
-                { field: "position", headerName: "Position", flex: 2 },
-                { field: "ref", headerName: "Ref", flex: 2 },
-                { field: "alt", headerName: "Alt", flex: 2 },
-            ]
-            : []),
+    const gtexColumns: CustomDataGridColDef<(typeof gtexRows)[number]>[] = [];
+
+    gtexColumns.push({
+        field: "variant_id",
+        headerName: "Variant Name",
+    });
+
+    if (elementType === "gene" || elementType === "icre") {
+        gtexColumns.push({
+            field: "rsid",
+            headerName: "rs ID",
+            renderCell: (params) =>
+                params.value === "." ? (
+                    <>{params.value}</>
+                ) : (
+                    <Link href={`/variant/${params.value}`}>{params.value}</Link>
+                ),
+        });
+    }
+
+    if (elementType === "variant" || elementType === "icre") {
+        gtexColumns.push({
+            field: "genename",
+            headerName: "Gene",
+            renderCell: (params) =>
+                params.value === "." ? (
+                    <>{params.value}</>
+                ) : (
+                    <Link href={`/gene/${params.value}`}>{params.value}</Link>
+                ),
+        });
+    }
+
+    if (elementType === "gene" || elementType === "icre") {
+        gtexColumns.push(
+            { field: "chromosome", headerName: "Chromosome" },
+            { field: "position", headerName: "Position" },
+            { field: "ref", headerName: "Ref" },
+            { field: "alt", headerName: "Alt" }
+        );
+    }
+
+    gtexColumns.push(
         {
             field: "slope",
             headerName: "Slope",
-            flex: 1,
             display: "flex",
             renderCell: (params) =>
                 toScientificNotationElement(params.value, 2, { variant: "body2" }),
@@ -115,78 +114,76 @@ export default function EQTLs<T extends GenomicElementType>({ data, elementType 
         {
             field: "pval_nominal",
             headerName: "Nominal P",
-            flex: 1.5,
-            display: "flex",
             renderCell: (params) =>
                 toScientificNotationElement(params.value, 2, { variant: "body2" }),
-        },
-        ...(elementType === "gene" || elementType === "variant"
-            ? [
-                {
-                    field: "ccre",
-                    headerName: "iCRE",
-                    flex: 2,
-                    renderCell: (params) =>
-                        params.value === "." ? (
-                            <>{params.value}</>
-                        ) : (
-                            <Link href={`/icre/${params.value}`}>{params.value}</Link>
-                        ),
-                },
-            ]
-            : []),
-    ];
+        }
+    );
 
+    if (elementType === "gene" || elementType === "variant") {
+        gtexColumns.push({
+            field: "ccre",
+            headerName: "iCRE",
+            renderCell: (params) =>
+                params.value === "." ? (
+                    <>{params.value}</>
+                ) : (
+                    <Link href={`/icre/${params.value}`}>{params.value}</Link>
+                ),
+        });
+    }
 
-    const oneK1KColumns: GridColDef[] = [
-        ...(elementType === "gene" || elementType === "icre"
-            ? [
-                {
-                    field: "rsid",
-                    headerName: "rs ID",
-                    flex: 2,
-                    renderCell: (params) => (
-                        <Link href={`/variant/${params.value}`}>{params.value}</Link>
-                    ),
-                },
-                {
-                    field: "chromosome",
-                    headerName: "Chromosome",
-                    flex: 2,
-                },
-                {
-                    field: "position",
-                    headerName: "Position",
-                    flex: 2,
-                },
-            ]
-            : []),
-        ...(elementType === "variant" || elementType === "icre"
-            ? [
-                {
-                    field: "genename",
-                    headerName: "Gene",
-                    flex: 2,
-                    renderCell: (params) => (
-                        <Link href={`/gene/${params.value}`}>{params.value}</Link>
-                    ),
-                },
-            ]
-            : []),
-        ...(elementType === "gene" || elementType === "icre"
-            ? [
-                {
-                    field: "ref",
-                    headerName: "A1",
-                    flex: 2,
-                },
-                {
-                    field: "alt",
-                    headerName: "A2",
-                    flex: 2,
-                },
-            ]
-            : []),
+    const oneK1KColumns: CustomDataGridColDef<(typeof gtexRows)[number]>[] = [];
+
+    if (elementType === "gene" || elementType === "icre") {
+        oneK1KColumns.push(
+            {
+                field: "rsid",
+                headerName: "rs ID",
+                flex: 2,
+                renderCell: (params) => (
+                    <Link href={`/variant/${params.value}`}>{params.value}</Link>
+                ),
+            },
+            {
+                field: "chromosome",
+                headerName: "Chromosome",
+                flex: 2,
+            },
+            {
+                field: "position",
+                headerName: "Position",
+                flex: 2,
+            }
+        );
+    }
+
+    if (elementType === "variant" || elementType === "icre") {
+        oneK1KColumns.push({
+            field: "genename",
+            headerName: "Gene",
+            flex: 2,
+            renderCell: (params) => (
+                <Link href={`/gene/${params.value}`}>{params.value}</Link>
+            ),
+        });
+    }
+
+    if (elementType === "gene" || elementType === "icre") {
+        oneK1KColumns.push(
+            {
+                field: "ref",
+                headerName: "A1",
+                flex: 2,
+            },
+            {
+                field: "alt",
+                headerName: "A2",
+                flex: 2,
+            }
+        );
+    }
+
+    oneK1KColumns.push(
         {
             field: "fdr",
             headerName: "FDR",
@@ -207,23 +204,23 @@ export default function EQTLs<T extends GenomicElementType>({ data, elementType 
             field: "celltype",
             headerName: "Celltype",
             flex: 2,
-        },
-        ...(elementType === "gene" || elementType === "variant"
-            ? [
-                {
-                    field: "ccre",
-                    headerName: "iCRE",
-                    flex: 2,
-                    renderCell: (params) =>
-                        params.value === "." ? (
-                            <>{params.value}</>
-                        ) : (
-                            <Link href={`/icre/${params.value}`}>{params.value}</Link>
-                        ),
-                },
-            ]
-            : []),
-    ];
+        }
+    );
+
+    if (elementType === "gene" || elementType === "variant") {
+        oneK1KColumns.push({
+            field: "ccre",
+            headerName: "iCRE",
+            flex: 2,
+            renderCell: (params) =>
+                params.value === "." ? (
+                    <>{params.value}</>
+                ) : (
+                    <Link href={`/icre/${params.value}`}>{params.value}</Link>
+                ),
+        });
+    }
+
 
     if (loading) {
         return (
@@ -246,7 +243,7 @@ export default function EQTLs<T extends GenomicElementType>({ data, elementType 
         <Stack spacing={2}>
             <Box sx={{ flex: "1 1 auto" }}>
                 {gtexRows.length > 0 ? (
-                    <DataGridPro
+                    <CustomDataGrid
                         columns={gtexColumns}
                         rows={gtexRows}
                         getRowId={(row) => row.variant_id + row.rsid + row.genename + row.pval_nominal}
@@ -265,11 +262,6 @@ export default function EQTLs<T extends GenomicElementType>({ data, elementType 
                             },
                         }}
                         pageSizeOptions={[5, 10]}
-                        density="compact"
-                        sx={{
-                            borderRadius: 1,
-                            boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
-                        }}
                     />
                 ) : (
                     <Typography
@@ -287,7 +279,7 @@ export default function EQTLs<T extends GenomicElementType>({ data, elementType 
             </Box>
             <Box sx={{ flex: "1 1 auto" }}>
                 {oneK1KRows.length > 0 ? (
-                    <DataGridPro
+                    <CustomDataGrid
                         columns={oneK1KColumns}
                         rows={oneK1KRows}
                         getRowId={(row) => row.variant_id + row.genename + row.fdr}
@@ -306,11 +298,6 @@ export default function EQTLs<T extends GenomicElementType>({ data, elementType 
                             },
                         }}
                         pageSizeOptions={[5, 10]}
-                        density="compact"
-                        sx={{
-                            borderRadius: 1,
-                            boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
-                        }}
                     />
                 ) : (
                     <Typography
