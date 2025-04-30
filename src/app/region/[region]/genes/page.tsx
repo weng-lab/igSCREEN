@@ -1,5 +1,5 @@
 import { parseGenomicRangeString } from "common/utility";
-import IntersectingSNPs from "./IntersectingGenes";
+import IntersectingGenes from "./IntersectingGenes";
 
 
 export default function Genes({
@@ -11,6 +11,6 @@ export default function Genes({
   const region = parseGenomicRangeString(params.region)
 
   return (
-    <IntersectingSNPs region={region} />
+    <IntersectingGenes region={region} />
   )
 }

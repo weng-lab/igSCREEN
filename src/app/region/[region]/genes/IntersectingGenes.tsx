@@ -1,44 +1,36 @@
 'use client'
-import { Link as MuiLink, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { GenomicRange } from "types/globalTypes";
-import { DataGridPro, GridColDef, GridToolbar } from "@mui/x-data-grid-pro";
-import Link from "next/link";
-import { useGeneData, UseGeneDataReturn } from "common/hooks/useGeneData";
+import { useGeneData } from "common/hooks/useGeneData";
+import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid";
+import { LinkComponent } from "common/utility";
 
 
 const IntersectionGenes = ({ region }: { region: GenomicRange }) => {
   const { data: dataSnps, loading: loadingSnps, error: errorSnps } = useGeneData({ coordinates: region });
 
-  // ensure that "field" is accessing a true property of the row
-  type TypeSafeColDef<T> = GridColDef & { field: keyof T };
-
-  type RowObj = UseGeneDataReturn<{ coordinates: GenomicRange }>["data"][number];
-
-  const columns: TypeSafeColDef<RowObj>[] = [
+  const columns: CustomDataGridColDef<(typeof dataSnps)[number]>[] = [
     {
       field: "name",
       headerName: "Symbol",
-      width: 130,
       renderCell: (params) => (
-        <MuiLink href={`/variant/${params.value}`} component={Link}>
-          {params.value}
-        </MuiLink>
+        <LinkComponent underline="hover" href={`/gene/${params.value}`}>
+          <i>{params.value}</i>
+        </LinkComponent>
       ),
     },
     {
       field: "id",
       headerName: "ID",
-      width: 170,
     },
     {
       field: "strand",
-      headerName: "Strand"
+      headerName: "Strand",
     },
     {
       field: "coordinates",
       headerName: "Coordinates",
-      width: 250,
-      valueGetter: (_, row: RowObj) =>
+      valueGetter: (_, row) =>
         `${
           row.coordinates.chromosome
         }:${row.coordinates.start.toLocaleString()}-${row.coordinates.end.toLocaleString()}`,
@@ -48,26 +40,17 @@ const IntersectionGenes = ({ region }: { region: GenomicRange }) => {
   return errorSnps ? (
     <Typography>Error Fetching Genes</Typography>
   ) : (
-    <DataGridPro
+    <CustomDataGrid
       rows={dataSnps || []}
       columns={columns}
       loading={loadingSnps}
-      pagination
       initialState={{
-        pagination: {
-          paginationModel: {
-            pageSize: 10,
-          },
-        },
         sorting: {
           sortModel: [{ field: "coordinates", sort: "asc" }],
         },
       }}
-      slots={{ toolbar: GridToolbar }}
-      slotProps={{ toolbar: { showQuickFilter: true, sx: { p: 1 } } }}
-      pageSizeOptions={[10, 25, 50]}
-      disableRowSelectionOnClick
-      getRowId={(row) => row.id}
+      tableTitle="Intersecting Genes"
+      pageSizeOptions={[10, 25, 50, 100]}
     />
   );
 };

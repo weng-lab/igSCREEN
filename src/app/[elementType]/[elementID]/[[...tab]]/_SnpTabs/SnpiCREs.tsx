@@ -35,18 +35,13 @@ export default function SnpiCREs({ coordinates }: { coordinates: GenomicRange })
     );
   }
   return (
-    <Stack spacing={2}>
-      <Typography variant="h6">Intersecting iCRE</Typography>
-      <Box height="auto">
-        <IntersectingiCREs
-          region={{
-            chromosome: coordinates.chromosome,
-            start: coordinates.start,
-            end: coordinates.end,
-          }}
-          showRowOnly
-        />
-      </Box>
-    </Stack>
+    <IntersectingiCREs
+      region={{
+        chromosome: coordinates.chromosome,
+        start: coordinates.start,
+        end: coordinates.end,
+      }}
+      showRowOnly
+    />
   );
 }
