@@ -1,9 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { Grid2, Link, Skeleton, Stack, Box, Typography } from "@mui/material";
-import { DataGridPro, GridColDef } from "@mui/x-data-grid-pro";
-import { toScientificNotationElement } from "common/utility";
+import { toScientificNotationElement, LinkComponent } from "common/utility";
 import { gql } from "types/generated";
-import DataGridToolbar from "common/components/dataGridToolbar";
 import { useElementMetadataReturn } from "common/hooks/useElementMetadata";
 import { GenomicElementType } from "types/globalTypes";
 import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid";
@@ -71,12 +69,12 @@ export default function EQTLs<T extends GenomicElementType>({ data, elementType 
     if (elementType === "gene" || elementType === "icre") {
         gtexColumns.push({
             field: "rsid",
-            headerName: "rs ID",
+            headerName: "rsID",
             renderCell: (params) =>
                 params.value === "." ? (
                     <>{params.value}</>
                 ) : (
-                    <Link href={`/variant/${params.value}`}>{params.value}</Link>
+                    <LinkComponent href={`/variant/${params.value}`}>{params.value}</LinkComponent>
                 ),
         });
     }
@@ -89,7 +87,7 @@ export default function EQTLs<T extends GenomicElementType>({ data, elementType 
                 params.value === "." ? (
                     <>{params.value}</>
                 ) : (
-                    <Link href={`/gene/${params.value}`}>{params.value}</Link>
+                    <LinkComponent href={`/gene/${params.value}`}>{params.value}</LinkComponent>
                 ),
         });
     }
@@ -114,6 +112,7 @@ export default function EQTLs<T extends GenomicElementType>({ data, elementType 
         {
             field: "pval_nominal",
             headerName: "Nominal P",
+            display: "flex",
             renderCell: (params) =>
                 toScientificNotationElement(params.value, 2, { variant: "body2" }),
         }
@@ -127,7 +126,7 @@ export default function EQTLs<T extends GenomicElementType>({ data, elementType 
                 params.value === "." ? (
                     <>{params.value}</>
                 ) : (
-                    <Link href={`/icre/${params.value}`}>{params.value}</Link>
+                    <LinkComponent href={`/icre/${params.value}`}>{params.value}</LinkComponent>
                 ),
         });
     }
@@ -138,21 +137,18 @@ export default function EQTLs<T extends GenomicElementType>({ data, elementType 
         oneK1KColumns.push(
             {
                 field: "rsid",
-                headerName: "rs ID",
-                flex: 2,
+                headerName: "rsID",
                 renderCell: (params) => (
-                    <Link href={`/variant/${params.value}`}>{params.value}</Link>
+                    <LinkComponent href={`/variant/${params.value}`}>{params.value}</LinkComponent>
                 ),
             },
             {
                 field: "chromosome",
                 headerName: "Chromosome",
-                flex: 2,
             },
             {
                 field: "position",
                 headerName: "Position",
-                flex: 2,
             }
         );
     }
@@ -161,9 +157,8 @@ export default function EQTLs<T extends GenomicElementType>({ data, elementType 
         oneK1KColumns.push({
             field: "genename",
             headerName: "Gene",
-            flex: 2,
             renderCell: (params) => (
-                <Link href={`/gene/${params.value}`}>{params.value}</Link>
+                <LinkComponent href={`/gene/${params.value}`}>{params.value}</LinkComponent>
             ),
         });
     }
@@ -173,12 +168,10 @@ export default function EQTLs<T extends GenomicElementType>({ data, elementType 
             {
                 field: "ref",
                 headerName: "A1",
-                flex: 2,
             },
             {
                 field: "alt",
                 headerName: "A2",
-                flex: 2,
             }
         );
     }
@@ -187,7 +180,6 @@ export default function EQTLs<T extends GenomicElementType>({ data, elementType 
         {
             field: "fdr",
             headerName: "FDR",
-            flex: 1.5,
             display: "flex",
             renderCell: (params) =>
                 toScientificNotationElement(params.value, 2, { variant: "body2" }),
@@ -195,7 +187,6 @@ export default function EQTLs<T extends GenomicElementType>({ data, elementType 
         {
             field: "spearmans_rho",
             headerName: "Spearman's rho",
-            flex: 1,
             display: "flex",
             renderCell: (params) =>
                 toScientificNotationElement(params.value, 2, { variant: "body2" }),
@@ -203,7 +194,6 @@ export default function EQTLs<T extends GenomicElementType>({ data, elementType 
         {
             field: "celltype",
             headerName: "Celltype",
-            flex: 2,
         }
     );
 
@@ -211,12 +201,11 @@ export default function EQTLs<T extends GenomicElementType>({ data, elementType 
         oneK1KColumns.push({
             field: "ccre",
             headerName: "iCRE",
-            flex: 2,
             renderCell: (params) =>
                 params.value === "." ? (
                     <>{params.value}</>
                 ) : (
-                    <Link href={`/icre/${params.value}`}>{params.value}</Link>
+                    <LinkComponent href={`/icre/${params.value}`}>{params.value}</LinkComponent>
                 ),
         });
     }
@@ -246,15 +235,12 @@ export default function EQTLs<T extends GenomicElementType>({ data, elementType 
                     <CustomDataGrid
                         columns={gtexColumns}
                         rows={gtexRows}
-                        getRowId={(row) => row.variant_id + row.rsid + row.genename + row.pval_nominal}
-                        slots={{ toolbar: DataGridToolbar }}
-                        slotProps={{ toolbar: { title: gtexTitle } }}
+                        tableTitle={gtexTitle}
                         initialState={{
                             sorting: {
                                 sortModel: [{ field: "pval_nominal", sort: "asc" }],
                             },
                         }}
-                        pageSizeOptions={[5, 10]}
                     />
                 ) : (
                     <Typography
@@ -275,15 +261,12 @@ export default function EQTLs<T extends GenomicElementType>({ data, elementType 
                     <CustomDataGrid
                         columns={oneK1KColumns}
                         rows={oneK1KRows}
-                        getRowId={(row) => row.variant_id + row.genename + row.fdr}
-                        slots={{ toolbar: DataGridToolbar }}
-                        slotProps={{ toolbar: { title: onekTitle } }}
+                        tableTitle={onekTitle}
                         initialState={{
                             sorting: {
                                 sortModel: [{ field: "fdr", sort: "asc" }],
                             },
                         }}
-                        pageSizeOptions={[5, 10]}
                     />
                 ) : (
                     <Typography
