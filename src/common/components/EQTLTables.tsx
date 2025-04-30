@@ -249,16 +249,9 @@ export default function EQTLs<T extends GenomicElementType>({ data, elementType 
                         getRowId={(row) => row.variant_id + row.rsid + row.genename + row.pval_nominal}
                         slots={{ toolbar: DataGridToolbar }}
                         slotProps={{ toolbar: { title: gtexTitle } }}
-                        pagination
                         initialState={{
                             sorting: {
                                 sortModel: [{ field: "pval_nominal", sort: "asc" }],
-                            },
-                            pagination: {
-                                paginationModel: {
-                                    pageSize: 5,
-                                    page: 0,
-                                },
                             },
                         }}
                         pageSizeOptions={[5, 10]}
@@ -285,16 +278,9 @@ export default function EQTLs<T extends GenomicElementType>({ data, elementType 
                         getRowId={(row) => row.variant_id + row.genename + row.fdr}
                         slots={{ toolbar: DataGridToolbar }}
                         slotProps={{ toolbar: { title: onekTitle } }}
-                        pagination
                         initialState={{
                             sorting: {
                                 sortModel: [{ field: "fdr", sort: "asc" }],
-                            },
-                            pagination: {
-                                paginationModel: {
-                                    pageSize: 5,
-                                    page: 0,
-                                },
                             },
                         }}
                         pageSizeOptions={[5, 10]}
