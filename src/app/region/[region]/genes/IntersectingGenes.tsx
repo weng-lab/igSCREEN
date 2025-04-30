@@ -13,9 +13,8 @@ const IntersectionGenes = ({ region }: { region: GenomicRange }) => {
     {
       field: "name",
       headerName: "Symbol",
-      width: 130,
       renderCell: (params) => (
-        <LinkComponent underline="hover" href={`/variant/${params.value}`}>
+        <LinkComponent underline="hover" href={`/gene/${params.value}`}>
           <i>{params.value}</i>
         </LinkComponent>
       ),
@@ -23,7 +22,6 @@ const IntersectionGenes = ({ region }: { region: GenomicRange }) => {
     {
       field: "id",
       headerName: "ID",
-      width: 170,
     },
     {
       field: "strand",
@@ -32,7 +30,6 @@ const IntersectionGenes = ({ region }: { region: GenomicRange }) => {
     {
       field: "coordinates",
       headerName: "Coordinates",
-      width: 250,
       valueGetter: (_, row) =>
         `${
           row.coordinates.chromosome
