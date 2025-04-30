@@ -1,9 +1,10 @@
 import { IconButton, Link } from "@mui/material"
 import { getCellCategoryDisplayname, getStudyLink } from "common/utility"
-import { DataGridPro, GridColDef, gridFilteredSortedRowEntriesSelector, GridRowSelectionModel, GridToolbar, useGridApiRef, GRID_CHECKBOX_SELECTION_COL_DEF } from "@mui/x-data-grid-pro"
+import { gridFilteredSortedRowEntriesSelector, GridRowSelectionModel, useGridApiRef, GRID_CHECKBOX_SELECTION_COL_DEF } from "@mui/x-data-grid-pro"
 import { IcreActivityProps, PointMetadata, SharedIcreActivityPlotProps } from "./IcreActivity"
 import { OpenInNew } from "@mui/icons-material"
 import { Dispatch, SetStateAction} from "react"
+import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid"
 
 export type IcreActivityTableProps =
   IcreActivityProps &
@@ -23,46 +24,42 @@ const IcreActivityTable = ({ accession, selected, onSelectionChange, iCREActivit
       <GRID_CHECKBOX_SELECTION_COL_DEF.renderHeader {...params} />
     </div>
 
-  // ensure that "field" is accessing a true property of the row
-  type TypeSafeColDef<T> = GridColDef & { field: keyof T };
-
-  const columns: TypeSafeColDef<PointMetadata>[] = [
+  const columns: CustomDataGridColDef<PointMetadata>[] = [
     {
-      ...GRID_CHECKBOX_SELECTION_COL_DEF as TypeSafeColDef<PointMetadata>, //Override checkbox column https://mui.com/x/react-data-grid/row-selection/#custom-checkbox-column
-      width: 60,
+      ...(GRID_CHECKBOX_SELECTION_COL_DEF as CustomDataGridColDef<PointMetadata>), //Override checkbox column https://mui.com/x/react-data-grid/row-selection/#custom-checkbox-column
       sortable: true,
       hideable: false,
-      renderHeader: StopPropagationWrapper
+      renderHeader: StopPropagationWrapper,
     },
     {
-      field: 'biosample',
-      headerName: 'Biosample',
+      field: "biosample",
+      headerName: "Biosample",
       width: 200,
     },
     {
-      field: 'assay',
-      headerName: 'Assay'
+      field: "assay",
+      headerName: "Assay",
     },
     {
-      field: 'value',
-      headerName: 'Z-score',
-      type: 'number',
-      valueFormatter: (value?: number) => value ? value.toFixed(2) : 'null'
+      field: "value",
+      headerName: "Z-score",
+      type: "number",
+      valueFormatter: (value?: number) => (value ? value.toFixed(2) : "null"),
     },
     {
-      field: 'stimulation',
-      headerName: 'Stimulation',
-      valueGetter: (_, row) => row.stimulation.charAt(0) === "u" ? "Unstim" : "Stim"
+      field: "stimulation",
+      headerName: "Stimulation",
+      valueGetter: (_, row) => (row.stimulation.charAt(0) === "u" ? "Unstim" : "Stim"),
     },
     {
-      field: 'lineage',
-      headerName: 'Lineage',
+      field: "lineage",
+      headerName: "Lineage",
       width: 150,
-      valueGetter: (_, row) => getCellCategoryDisplayname(row.lineage)
+      valueGetter: (_, row) => getCellCategoryDisplayname(row.lineage),
     },
     {
-      field: 'link',
-      headerName: 'Experiment',
+      field: "link",
+      headerName: "Experiment",
       width: 80,
       sortable: false,
       disableColumnMenu: true,
@@ -71,20 +68,20 @@ const IcreActivityTable = ({ accession, selected, onSelectionChange, iCREActivit
           <IconButton href={params.value} target="_blank" size="small">
             <OpenInNew fontSize="small" />
           </IconButton>
-        )
-      }
+        );
+      },
     },
     {
-      field: 'study',
-      headerName: 'Study',
+      field: "study",
+      headerName: "Study",
       width: 140,
       renderCell: (params) => {
         return (
           <Link href={getStudyLink(params.value)} target="_blank">
             {params.value}
           </Link>
-        )
-      }
+        );
+      },
     },
   ];
 
@@ -116,41 +113,27 @@ const IcreActivityTable = ({ accession, selected, onSelectionChange, iCREActivit
   }
 
   return (
-    <DataGridPro
+    <CustomDataGrid
       apiRef={apiRef}
-      rows={data || []}
-      columns={columns.map(col => { return { ...col, display: 'flex' } })}
+      tableTitle={`${accession} Activity`}
+      density="standard"
+      rows={data}
+      columns={columns}
       loading={loading}
-      pagination
-      initialState={{
-        pagination: {
-          paginationModel: {
-            pageSize: 10,
-          },
-        },
-        sorting: {
-          sortModel: [{ field: 'value', sort: 'desc' }],
-        },
-        columns: {
-          columnVisibilityModel: {
-            study: false,
-          }
-        }
-      }}
-      sortingOrder={['desc', 'asc', null]}
-      slots={{ toolbar: GridToolbar }}
-      slotProps={{ toolbar: { showQuickFilter: true, sx: {p: 1} } }}
       pageSizeOptions={[10, 25, 50]}
+      initialState={{
+        sorting: {
+          sortModel: [{ field: "value", sort: "desc" }],
+        },
+      }}
       checkboxSelection
-      onRowSelectionModelChange={handleRowSelectionModelChange}
-      rowSelectionModel={selected.map(x => x.name)}
       getRowId={(row) => row.name}
-      getRowHeight={() => 'auto'}
-      keepNonExistentRowsSelected //needed to prevent clearing selections on changing filters
-      //Not really supposed to be using this, is not documented by MUI
-      onStateChange={handleSync}
+      onRowSelectionModelChange={handleRowSelectionModelChange}
+      rowSelectionModel={selected.map((x) => x.name)}
+      keepNonExistentRowsSelected // Needed to prevent clearing selections on changing filters
+      onStateChange={handleSync} // Not really supposed to be using this, is not documented by MUI. Not using its structure, just the callback trigger
     />
-  )
+  );
 }
 
 export default IcreActivityTable

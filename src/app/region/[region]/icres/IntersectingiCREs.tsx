@@ -10,6 +10,7 @@ import { ExpandMore } from "@mui/icons-material";
 import { DataGridPro, GridColDef, GridToolbar } from "@mui/x-data-grid-pro";
 import Link from "next/link";
 import ActiveCellTypesAccordion from "common/components/ActiveCellTypesAccordion";
+import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid";
 
 const IntersectingiCREs = ({ region, showRowOnly }: { region: GenomicRange, showRowOnly?: boolean }) => {
 
@@ -53,40 +54,36 @@ const IntersectingiCREs = ({ region, showRowOnly }: { region: GenomicRange, show
     return { ...row, activeExps: activeExps };
   });
 
-  // ensure that "field" is accessing a true property of the row
-  type TypeSafeColDef<T> = GridColDef & { field: keyof T };
+  type Row = (typeof rowsWithExps)[number]
 
-  type RowObj = UseIcreDataReturn<{ coordinates: GenomicRange }>["data"][number] & {activeExps: {[lineage: string]: ExpInfo[]}};
-
-  const columns: TypeSafeColDef<RowObj>[] = [
+  const columns: CustomDataGridColDef<Row>[] = [
     {
       field: "accession",
       headerName: "Accession",
-      width: 130,
       renderCell: (params) => (
-        <LinkComponent href={`/icre/${params.value}`}>{params.value}</LinkComponent>
+        <LinkComponent href={`/icre/${params.value}`} underline="hover">
+          {params.value}
+        </LinkComponent>
       ),
     },
     {
       field: "group",
       headerName: "Class",
       type: "custom",
-      width: 150,
       renderCell: (params) => getClassDisplayname(params.value),
     },
     {
       field: "coordinates",
       headerName: "Coordinates",
-      width: 250,
-      valueGetter: (_, row: RowObj) =>
+      valueGetter: (_, row: Row) =>
         `${
           row.coordinates.chromosome
         }:${row.coordinates.start.toLocaleString()}-${row.coordinates.end.toLocaleString()}`,
     },
     {
       field: "dnasecelltypes",
-      headerName: "Active Celltypes",
-      width: 275,
+      headerName: "DNase Celltypes",
+      maxWidth: 300,
       sortComparator: (v1, v2) => v1.length - v2.length,
       renderCell: (params) => (
         <ActiveCellTypesAccordion
@@ -99,7 +96,7 @@ const IntersectingiCREs = ({ region, showRowOnly }: { region: GenomicRange, show
     {
       field: "ataccelltypes",
       headerName: "ATAC Celltypes",
-      width: 275,
+      maxWidth: 300,
       sortComparator: (v1, v2) => v1.length - v2.length,
       renderCell: (params) => (
         <ActiveCellTypesAccordion
@@ -112,10 +109,10 @@ const IntersectingiCREs = ({ region, showRowOnly }: { region: GenomicRange, show
     {
       field: "activeExps",
       headerName: "Active Experiments",
-      width: 300,
+      maxWidth: 300,
       sortComparator: (v1, v2) => Object.values(v1).flat().length - Object.values(v2).flat().length,
       renderCell: (params) => {
-        const activeExps = params.value as RowObj["activeExps"];
+        const activeExps = params.value as Row["activeExps"];
         if (loadingActivity) return <Skeleton width={300} height={40} />;
         return (
           <Accordion
@@ -161,32 +158,25 @@ const IntersectingiCREs = ({ region, showRowOnly }: { region: GenomicRange, show
   return errorIcres ? (
     <Typography>Error Fetching iCRES</Typography>
   ) : (
-    <DataGridPro
+    <CustomDataGrid
       rows={rowsWithExps}
-      columns={columns.map((col) => {
-        return { ...col, display: "flex" };
-      })}
+      columns={columns.map((col) => ({
+        ...col,
+        display: "flex",
+      }))}
       loading={loadingIcres}
       pagination
       initialState={{
-        pagination: {
-          paginationModel: {
-            pageSize: 10,
-          },
-        },
         sorting: {
           sortModel: [{ field: "coordinates", sort: "asc" }],
         },
       }}
       hideFooter={showRowOnly}
-      slots={{ toolbar: showRowOnly ? undefined : GridToolbar }}
-      slotProps={{ toolbar: { showQuickFilter: true, sx: { p: 1 } } }}
-      pageSizeOptions={[10, 25, 50]}
-      disableRowSelectionOnClick
-      getRowId={(row) => row.accession}
+      tableTitle="Intersecting iCREs"
+      pageSizeOptions={[10, 25, 50, 100]}
       getRowHeight={() => "auto"}
     />
-  )
+  );
 };
 
 export default IntersectingiCREs;

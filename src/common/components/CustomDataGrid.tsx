@@ -1,7 +1,7 @@
 import { Box, Paper, PaperProps, Tooltip, TooltipProps, Typography } from "@mui/material";
-import { DataGridPro, DataGridProProps, GridAutosizeOptions, gridClasses, GridColDef, useGridApiRef } from "@mui/x-data-grid-pro";
-import DataGridToolbar from "./dataGridToolbar";
-import { useMemo, useEffect, useRef, useCallback } from "react";
+import { DataGridPro, DataGridProProps, GridAutosizeOptions, GridColDef, useGridApiRef } from "@mui/x-data-grid-pro";
+import CustomDataGridToolbar, { CustomDataGridToolbarProps } from "./dataGridToolbar";
+import { useMemo, useEffect, useCallback } from "react";
 import { InfoOutlined } from "@mui/icons-material";
 
 export type CustomDataGridRow = Record<string, any>
@@ -20,11 +20,15 @@ export interface CustomDataGridProps<T extends CustomDataGridRow> extends DataGr
    * A set of columns of type `CustomDataGridColDef<Row>`, where `Row` is of type `CustomDataGridRow`
    */
   columns: CustomDataGridColDef<T>[];
-  rows: Array<T>;
   /**
-   * Optional title to be used in the table toolbar
+   * Rows to be consumed in the table.
+   * ```undefined``` will be given default value of ```[]```
    */
-  tableTitle?: string;
+  rows: T[];
+  /**
+   * Optional ReactNode to be used in the table toolbar. Strings and numbers will be rendered as Typography variant h6.
+   */
+  tableTitle?: CustomDataGridToolbarProps["title"];
   /**
    * Elevation for wrapper `Paper` element
    * @default 1
@@ -36,28 +40,42 @@ export interface CustomDataGridProps<T extends CustomDataGridRow> extends DataGr
   slotProps?: CustomDataGridSlotProps;
   /**
    * @default [5, 10, 25, 100]
-   * @note Overrides MUI default
+   * @note Overrides MUI default, first option automatically selected as initial page size (below), so setting in initialState is not necessary
+   * ```jsx
+   * initialState={{
+   *   pagination: {
+   *     paginationModel: {
+   *       pageSize: typeof pageSizeOptions[0] === "object" ? pageSizeOptions[0].value : pageSizeOptions[0],
+   *     },
+   *   },
+   *   ...initialState
+   * }}
+   * ```
    */
-  pageSizeOptions?: DataGridProProps["pageSizeOptions"]
+  pageSizeOptions?: DataGridProProps["pageSizeOptions"];
   /**
    * @default true
    */
-  pagination?: DataGridProProps["pagination"]
+  pagination?: DataGridProProps["pagination"];
   /**
    * @default true
    * @note Overrides MUI default
    */
-  disableRowSelectionOnClick?: DataGridProProps["disableRowSelectionOnClick"]
+  disableRowSelectionOnClick?: DataGridProProps["disableRowSelectionOnClick"];
   /**
    * @default "compact"
    * @note Overrides MUI default
    */
-  density?: DataGridProProps["density"]
+  density?: DataGridProProps["density"];
   /**
    * @default true
    * @note Overrides MUI default
    */
   autosizeOnMount?: boolean;
+  /**
+   * @note CustomDataGrid assigns a default internal ID to each row if no ID is provided in the row data.
+   */
+  getRowId?: DataGridProProps["getRowId"];
 }
 
 export type CustomDataGridColDef<T extends CustomDataGridRow> = GridColDef & {
@@ -95,11 +113,8 @@ const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<
   } = props;
   const { paper: paperProps, ...restSlotProps } = slotProps;
 
+  //Assign deefault ID if no ID is provided in the row data
   const rowsWithIds = useMemo(() => rows.map((row, index) => ({ ...row, id: row?.id || index })), [rows]);
-
-  /**
-   * @todo figure out which built in features I am removing when building in row spacing defaults. Maybe provide some prop to optionally use the default column spacing styles
-   */
 
   const columnsModified: CustomDataGridColDef<T>[] = useMemo(
     () =>
@@ -170,9 +185,9 @@ const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<
         autosizeOptions={autosizeOptions}
         rows={rowsWithIds}
         disableRowSelectionOnClick
-        slots={{ toolbar: DataGridToolbar, ...slots }}
+        slots={{ toolbar: () => CustomDataGridToolbar({title: tableTitle}), ...slots }}
         density={density}
-        slotProps={{ toolbar: { title: tableTitle }, ...restSlotProps }}
+        slotProps={{ ...restSlotProps }}
         pagination
         pageSizeOptions={pageSizeOptions}
         // set initial rows per page to first page size option. Page sizes can be array of numbers or objects with value/label
