@@ -19,6 +19,10 @@ export default function useLinkedICREs(geneid: string) {
     variables: { geneid: [geneid.split(".")[0]], assembly: "grch38" },
   });
 
+  /**
+   * @todo why is this necessary, can this use the other data fetching hook, or can that useCcreDetails or useIcreData call this, and this can call those
+   * This is only used to specify is a linked cCRE is an iCRE. It feels like there shoud be a "useCcreData" which returns this information.
+   */
   const {
     data: ccredata,
     loading: ccreloading,

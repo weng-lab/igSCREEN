@@ -4,8 +4,6 @@ import { GenomicRange } from "types/globalTypes";
 import useNearbycCREs from "common/hooks/useNearBycCREs";
 import useCcreDetails from "common/hooks/useCcreDetails";
 import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid";
-import { useMemo } from "react";
-import { DataGridPro } from "@mui/x-data-grid-pro";
 
 export default function NearbycCREs({
   geneid,

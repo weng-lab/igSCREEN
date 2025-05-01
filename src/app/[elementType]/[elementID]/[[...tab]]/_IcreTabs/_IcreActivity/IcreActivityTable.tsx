@@ -34,7 +34,6 @@ const IcreActivityTable = ({ accession, selected, onSelectionChange, iCREActivit
     {
       field: "biosample",
       headerName: "Biosample",
-      width: 200,
     },
     {
       field: "assay",
@@ -54,13 +53,11 @@ const IcreActivityTable = ({ accession, selected, onSelectionChange, iCREActivit
     {
       field: "lineage",
       headerName: "Lineage",
-      width: 150,
       valueGetter: (_, row) => getCellCategoryDisplayname(row.lineage),
     },
     {
       field: "link",
       headerName: "Experiment",
-      width: 80,
       sortable: false,
       disableColumnMenu: true,
       renderCell: (params) => {
@@ -74,7 +71,6 @@ const IcreActivityTable = ({ accession, selected, onSelectionChange, iCREActivit
     {
       field: "study",
       headerName: "Study",
-      width: 140,
       renderCell: (params) => {
         return (
           <Link href={getStudyLink(params.value)} target="_blank">
