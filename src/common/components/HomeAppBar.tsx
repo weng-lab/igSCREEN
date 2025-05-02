@@ -7,7 +7,6 @@ import {
   Menu,
   Container,
   MenuItem,
-  Link as MuiLink,
   IconButton,
   Stack,
   Typography,
@@ -274,20 +273,3 @@ function ResponsiveAppBar({ maintenance }: ResponsiveAppBarProps) {
   );
 };
 export default ResponsiveAppBar;
-
-
-// variant: "contained",
-// children: <Search />,
-// color: "primary",
-// sx: {
-//   color: "white",
-//   borderColor: "white",
-//   "&:hover": {
-//     color: "gray",
-//     borderColor: "gray",
-//   },
-//   "&:focus": {
-//     color: "gray",
-//     borderColor: "gray",
-//   },
-// },
