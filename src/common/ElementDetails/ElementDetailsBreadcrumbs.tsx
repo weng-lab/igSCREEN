@@ -3,7 +3,6 @@
 import { NavigateNext } from "@mui/icons-material"
 import { Breadcrumbs, Typography } from "@mui/material"
 import { LinkComponent } from "common/components/LinkComponent"
-import MuiLink from "common/components/MuiLink"
 import { formatPortal } from "common/utility"
 import { usePathname } from "next/navigation"
 
