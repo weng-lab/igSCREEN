@@ -35,9 +35,6 @@ export default function DetailsPage({
    * Configure valid tabs in globalTypes.ts
    */
   if (!isValidTab(tab)) {
-    console.log(tab);
-    console.log(isValidTab(tab));
-    console.log(isValidIcreTab(tab));
     throw new Error("Unknown tab: " + tab);
   }
 

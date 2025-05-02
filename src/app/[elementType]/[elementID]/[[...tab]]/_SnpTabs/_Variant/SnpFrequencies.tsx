@@ -12,8 +12,6 @@ export default function SnpFrequencies({ snpid }: { snpid: string }) {
     const loading = SnpAlleleFrequencies.loading
     const frequencies = (SnpAlleleFrequencies.data && SnpAlleleFrequencies.data[snpid]) ? SnpAlleleFrequencies.data[snpid].frequencies : []
 
-    console.log(SnpAlleleFrequencies.data)
-
     //map populations to
     const populations: Record<string, string> = {
         "SAS": "South Asian",

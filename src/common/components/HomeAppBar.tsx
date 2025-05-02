@@ -65,7 +65,6 @@ function ResponsiveAppBar({ maintenance }: ResponsiveAppBarProps) {
   const [anchorDropdown1, setAnchorDropdown1] = useState<null | HTMLElement>(null)
 
   const toggleDrawer = (open: boolean) => {
-    console.log("called with: ", open)
     setDrawerOpen(open);
   };
 
@@ -252,7 +251,6 @@ function ResponsiveAppBar({ maintenance }: ResponsiveAppBarProps) {
               <IconButton
                 size="large"
                 onClick={() => {
-                  console.log("icon setting drawer open")
                   toggleDrawer(true)
                 }}
                 color="inherit"
