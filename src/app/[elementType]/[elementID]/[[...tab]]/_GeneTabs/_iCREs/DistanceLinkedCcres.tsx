@@ -1,33 +1,31 @@
 import { Box, Skeleton, Typography } from "@mui/material";
-import { LinkComponent } from "common/utility";
-import { GenomicRange } from "types/globalTypes";
 import useNearbycCREs from "common/hooks/useNearBycCREs";
 import useCcreDetails from "common/hooks/useCcreDetails";
 import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid";
+import { UseGeneDataReturn } from "common/hooks/useGeneData";
+import { LinkComponent } from "common/components/LinkComponent";
 
-export default function NearbycCREs({
-  geneid,
-  coordinates,
+export default function DistanceLinkedCcres({
+  geneData,
   allcCREs,
 }: {
-  geneid: string;
-  coordinates: GenomicRange;
+  geneData: UseGeneDataReturn<{ name: string }>;
   allcCREs: boolean;
 }) {
-  const { data, loading, error } = useNearbycCREs(geneid);
+  const { data: dataNearby, loading: loadingNearby, error: errorNearby } = useNearbycCREs(geneData?.data.id);
 
-  const { data: ccreData, loading: ccreLoading, error: ccreError } = useCcreDetails(data?.map((d) => d.ccre));
+  const { data: dataCcreDetails, loading: loadingCcreDetails, error: errorCcreDetails } = useCcreDetails(dataNearby?.map((d) => d.ccre));
 
-  const nearbyccres = data
+  const nearbyccres = dataNearby
     ?.map((d) => {
-      let f = ccreData?.find((c) => c.accession === d.ccre);
+      let f = dataCcreDetails?.find((c) => c.accession === d.ccre);
       return {
         ...d,
         chromosome: f?.coordinates.chromosome,
         start: f?.coordinates.start,
         end: f?.coordinates.end,
         group: f?.group,
-        distance: Math.abs(f?.coordinates.start - coordinates.start) || 0,
+        distance: Math.abs(f?.coordinates.start - geneData?.data.coordinates.start) || 0,
       };
     })
     ?.filter((d) => allcCREs || d.isiCRE);
@@ -42,7 +40,6 @@ export default function NearbycCREs({
           : `/icre/${params.value}`;
         return (
           <LinkComponent
-            underline="hover"
             href={href}
             showExternalIcon={!params.row.isiCRE}
             openInNewTab={!params.row.isiCRE}
@@ -107,11 +104,11 @@ export default function NearbycCREs({
         return value.toLocaleString();
       },
     },
-  ]
+  ];
 
   return (
     <Box width={"100%"}>
-      {loading ? (
+      {(geneData.loading || loadingNearby || loadingCcreDetails) ? (
         <Skeleton variant="rounded" width={"100%"} height={100} />
       ) : nearbyccres.length > 0 ? (
         <Box sx={{ flex: "1 1 auto" }}>

@@ -1,5 +1,5 @@
 "use client";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import ChangeHistoryTwoToneIcon from "@mui/icons-material/ChangeHistoryTwoTone";
 import CircleTwoToneIcon from "@mui/icons-material/CircleTwoTone";
 import {

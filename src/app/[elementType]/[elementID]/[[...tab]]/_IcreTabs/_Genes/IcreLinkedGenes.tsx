@@ -3,15 +3,33 @@ import useLinkedGenes, { LinkedGeneInfo } from "common/hooks/useLinkedGenes";
 import { ChIAPETCols, CrisprFlowFISHCols, eQTLCols, IntactHiCLoopsCols } from "./columns";
 import LinkedElements, { TableDef } from "common/components/linkedElements/linkedElements";
 import { useQuery } from "@apollo/client";
-import { CLOSEST_GENE_QUERY } from "./query";
-import { DataGridPro, GridColDef } from "@mui/x-data-grid-pro";
-import DataGridToolbar from "common/components/dataGridToolbar";
-import { LinkComponent, calcDistRegionToRegion } from "common/utility";
+import { calcDistRegionToRegion } from "common/utility";
 import { GenomicRange } from "types/globalTypes";
-import CustomDataGrid from "common/components/CustomDataGrid";
+import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid";
+import { gql } from "types/generated";
+import { LinkComponent } from "common/components/LinkComponent";
 
-export default function LinkedGenes({ accession, coordinates }: { accession: string, coordinates: GenomicRange }) {
+export const CLOSEST_GENE_QUERY = gql(`
+  query getclosestGenetocCRE($geneid: [String],$ccre: [String]) {
+    closestGenetocCRE(geneid: $geneid,ccre: $ccre) {
+      gene {
+        chromosome
+        stop
+        start
+        name
+        type
+      }
+      ccre
+      chromosome
+      stop
+      start
+    }
+  }
+`);
+
+export default function IcreLinkedGenes({ accession, coordinates }: { accession: string, coordinates: GenomicRange }) {
   const { data: linkedGenes, loading, error } = useLinkedGenes(accession);
+  
   const {
     data: closestGeneData,
     loading: closestGeneLoading,
@@ -90,6 +108,28 @@ export default function LinkedGenes({ accession, coordinates }: { accession: str
   const pcDistance = calcDistRegionToRegion({start: closestPC.start, end: closestPC.stop}, {start: coordinates.start, end: coordinates.end});
   const allDistance = calcDistRegionToRegion({start: closestALL.start, end: closestALL.stop}, {start: coordinates.start, end: coordinates.end});
   const closestGenes = [{...closestPC, distance: Math.abs(pcDistance)}, {...closestALL, distance: Math.abs(allDistance)}];
+
+  const closestGenesCols: CustomDataGridColDef<(typeof closestGenes)[number]>[] = [
+    {
+      field: "name",
+      headerName: "Name",
+      flex: 1,
+      renderCell: (params: any) =>
+        params.value.startsWith("ENSG") ? (
+          <i>{params.value}</i>
+        ) : (
+          <LinkComponent href={`/gene/${params.value}`}>
+            <i>{params.value}</i>
+          </LinkComponent>
+        ),
+    },
+    { field: "type", headerName: "Type" },
+    { field: "chromosome", headerName: "Chromosome" },
+    { field: "start", headerName: "Start", type: "number" },
+    { field: "stop", headerName: "End", type: "number" },
+    { field: "distance", headerName: "Distance", type: "number" },
+  ];
+
   return (
     <Stack spacing={2}>
       {closestGenes.length > 0 ? (
@@ -102,8 +142,6 @@ export default function LinkedGenes({ accession, coordinates }: { accession: str
             border: "1px solid #e0e0e0",
             borderRadius: 1,
             p: 2,
-            boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
-            marginBottom: 2,
           }}
         >
           No closest genes found
@@ -114,23 +152,4 @@ export default function LinkedGenes({ accession, coordinates }: { accession: str
   );
 }
 
-const closestGenesCols: GridColDef[] = [
-  {
-    field: "name",
-    headerName: "Name",
-    flex: 1,
-    renderCell: (params: any) =>
-      params.value.startsWith("ENSG") ? (
-        <i>{params.value}</i>
-      ) : (
-        <LinkComponent href={`/gene/${params.value}`} underline="hover">
-          <i>{params.value}</i>
-        </LinkComponent>
-      ),
-  },
-  { field: "type", headerName: "Type" },
-  { field: "chromosome", headerName: "Chromosome" },
-  { field: "start", headerName: "Start", type: "number" },
-  { field: "stop", headerName: "End", type: "number" },
-  { field: "distance", headerName: "Distance", type: "number" },
-];
+

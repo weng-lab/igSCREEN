@@ -18,8 +18,7 @@ export type GeneExpressionTableProps = GeneExpressionProps &
   };
 
 const GeneExpressionTable = ({
-  name,
-  id,
+  geneData,
   selected,
   onSelectionChange,
   geneExpressionData,
@@ -120,7 +119,7 @@ const GeneExpressionTable = ({
       apiRef={apiRef}
       tableTitle={
         <Typography variant="h6">
-          <i>{name}</i> Expression
+          <i>{geneData?.data.name}</i> Expression
         </Typography>
       }
       density="standard"

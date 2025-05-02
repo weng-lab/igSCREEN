@@ -1,12 +1,9 @@
 'use client'
-import { Link as MuiLink, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { GenomicRange } from "types/globalTypes";
-import { DataGridPro, GridColDef } from "@mui/x-data-grid-pro";
-import { useSnpData, UseSnpDataReturn } from "common/hooks/useSnpData";
-import Link from "next/link";
-import DataGridToolbar from "common/components/dataGridToolbar";
+import { useSnpData } from "common/hooks/useSnpData";
 import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid";
-import { LinkComponent } from "common/utility";
+import { LinkComponent } from "./LinkComponent";
 
 const IntersectingSNPs = ({ region }: { region: GenomicRange }) => {
   const {
@@ -22,7 +19,7 @@ const IntersectingSNPs = ({ region }: { region: GenomicRange }) => {
       field: "id",
       headerName: "rsID",
       renderCell: (params) => (
-        <LinkComponent href={`/variant/${params.value}`} underline="hover">
+        <LinkComponent href={`/variant/${params.value}`}>
           {params.value}
         </LinkComponent>
       ),

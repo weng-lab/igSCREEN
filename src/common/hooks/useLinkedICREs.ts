@@ -17,6 +17,7 @@ const CCRE_ICRE_QUERY = gql(`query cCREAutocompleteQuery(
 export default function useLinkedICREs(geneid: string) {
   const { data, loading, error } = useQuery(LINKED_ICRE_QUERY, {
     variables: { geneid: [geneid.split(".")[0]], assembly: "grch38" },
+    skip: !geneid
   });
 
   /**
@@ -46,6 +47,9 @@ export default function useLinkedICREs(geneid: string) {
   }) as LinkedICREInfo[], loading, error };
 }
 
+/**
+ * @todo this type should extend the type exposed by auto generated type instead of being entire redefined.
+ */
 export type LinkedICREInfo = {
   accession?: string;
   p_val?: number;

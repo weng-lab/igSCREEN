@@ -1,15 +1,15 @@
-import { GeneExpressionProps, PointMetadata, SharedGeneExpressionPlotProps } from "./GeneExpression"
-import VerticalBarPlot, { BarData, BarPlotProps } from "../../VerticalBarPlot"
+import { IcreActivityProps, PointMetadata, SharedIcreActivityPlotProps } from "./IcreActivity"
+import VerticalBarPlot, { BarData, BarPlotProps } from "common/components/VerticalBarPlot"
 import { useMemo } from "react"
 import { getCellCategoryColor, getCellCategoryDisplayname } from "common/utility"
 import { Box } from "@mui/material"
 
-export type GeneExpressionBarPlotProps = 
-  GeneExpressionProps & 
-  SharedGeneExpressionPlotProps &
+export type IcreActivityBarPlotProps = 
+  IcreActivityProps & 
+  SharedIcreActivityPlotProps &
   Partial<BarPlotProps<PointMetadata>>
 
-const GeneExpressionBarPlot = ({name, id, selected, sortedFilteredData, ...rest}: GeneExpressionBarPlotProps) => {
+const IcreActivityBarPlot = ({accession, selected, sortedFilteredData, ...rest}: IcreActivityBarPlotProps) => {
 
   const plotData: BarData<PointMetadata>[] = useMemo(() => {
     if (!sortedFilteredData) return []
@@ -20,7 +20,7 @@ const GeneExpressionBarPlot = ({name, id, selected, sortedFilteredData, ...rest}
         return (
           {
             category: getCellCategoryDisplayname(x.lineage),
-            label: `${x.value.toFixed(1)}, ${x.biosample.slice(0, 23) + (x.biosample.length > 23 ? "..." : "")}`,
+            label: `${x.value.toFixed(2)}, ${x.biosample.slice(0, 23) + (x.biosample.length > 23 ? "..." : "")}`,
             value: x.value,
             id: i.toString(),
             color: (anySelected && isSelected || !anySelected) ? getCellCategoryColor(x.lineage) : '#CCCCCC',
@@ -29,17 +29,19 @@ const GeneExpressionBarPlot = ({name, id, selected, sortedFilteredData, ...rest}
         )
       })
     )
-  }, [sortedFilteredData, selected])
+  }, [selected, sortedFilteredData])
 
   return(
-    <Box width={"100%"} height={"100%"} overflow={"auto"} padding={1} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, position: "relative"}}>
+    <Box width={"100%"} height={"100%"} overflow={"auto"} padding={1} sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, position: "relative" }}>
       <VerticalBarPlot
         {...rest}
         data={plotData}
-        topAxisLabel={`${name} Expression - TPM`}
+        topAxisLabel={`${accession} Z-scores`}
+        show95thPercentileLine
+        cutoffNegativeValues
       />
     </Box>
   )
 }
 
-export default GeneExpressionBarPlot
+export default IcreActivityBarPlot

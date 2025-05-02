@@ -1,69 +1,16 @@
 "use client";
-import { CircularProgress, Stack, styled, Typography } from "@mui/material";
+import { CircularProgress, Typography } from "@mui/material";
 import GenomeBrowserView from "common/gbview/genomebrowserview";
 import { useElementMetadata, useElementMetadataReturn } from "common/hooks/useElementMetadata";
 import { GenomicElementType, isValidGeneTab, isValidIcreTab, isValidVariantTab, isValidTab } from "types/globalTypes";
-import GeneExpression from "./_GeneTabs/_GeneExpression/GeneExpression";
-import IcreActivity from "./_IcreTabs/_IcreActivity/IcreActivity";
-import LinkedGenes from "./_IcreTabs/_linkedGenes/linkedGenes";
-import LinkedICREs from "./_GeneTabs/_linkedICREs/linkedICREs";
-import SnpGWASLdr from "./_SnpTabs/_SnpGWASLdr/SnpGWASLdr";
-import IcreVariantsTab from "./_IcreTabs/_variants/IcreVariantsTab";
-import SnpFrequencies from "./_SnpTabs/SnpFrequencies";
-import NearbycCREs from "./_GeneTabs/_nearbycCREs/nearbycCREs";
-import { useState } from "react";
-import Switch from '@mui/material/Switch';
-import SnpiCREs from "./_SnpTabs/SnpiCREs";
+import GeneExpression from "./_GeneTabs/_Gene/GeneExpression";
+import IcreActivity from "./_IcreTabs/_iCREs/IcreActivity";
+import IcreLinkedGenes from "./_IcreTabs/_Genes/IcreLinkedGenes";
+import IcreVariantsTab from "./_IcreTabs/_Variants/IcreVariantsTab";
+import VariantIntersectingIcre from "./_SnpTabs/_iCREs/VariantIntersectingIcre";
 import EQTLs from "common/components/EQTLTables";
-
-/**
- * @todo move this
- */
-//Styled switch componet from mui docs with our logos and colors
-const CcreSwitch = styled(Switch)(({ theme }) => ({
-  width: 75,
-  height: 34,
-  padding: 7,
-  '& .MuiSwitch-switchBase': {
-    margin: 1,
-    padding: 0,
-    transform: 'translateX(6px)',
-    '&.Mui-checked': {
-      color: '#fff',
-      transform: 'translateX(35px)',
-      '& .MuiSwitch-thumb:before': {
-        backgroundPosition: 'center',
-        backgroundSize: '50%',
-        backgroundImage: `url("/SCREEN_icon.png")`,
-      },
-      '& + .MuiSwitch-track': {
-        opacity: 1,
-        backgroundColor: '#aab4be',
-      },
-    },
-  },
-  '& .MuiSwitch-thumb': {
-    backgroundColor: theme.palette.primary.main,
-    width: 32,
-    height: 32,
-    '&::before': {
-      content: "''",
-      position: 'absolute',
-      width: '100%',
-      height: '100%',
-      left: 0,
-      top: 0,
-      backgroundRepeat: 'no-repeat',
-      backgroundSize: 'contain',
-      backgroundImage: `url("/Logo.png")`,
-    },
-  },
-  '& .MuiSwitch-track': {
-    opacity: 1,
-    backgroundColor: '#a75a5f',
-    borderRadius: 20 / 2,
-  },
-}));
+import GeneLinkedIcres from "./_GeneTabs/_iCREs/GeneLinkedIcres";
+import VariantInfo from "./_SnpTabs/_Variant/Variant";
 
 export default function DetailsPage({
   params: { elementType, elementID, tab },
@@ -74,12 +21,11 @@ export default function DetailsPage({
    */
   params: { elementType: GenomicElementType; elementID: string; tab: string };
 }) {
-  const [allcCREs, setAllcCREs] = useState<boolean>(false)
-
-  const toggleOnlyICREs = () => {
-    setAllcCREs(!allcCREs)
-  }
-  
+  /**
+   * Since [[...tab]] is an optional catch-all route, tabs is an array.
+   * tab is undefined when hitting /elementType/elementID (default tab's route).
+   * "" is defined as valid shared route in the type SharedRoute, so change undefined to ""
+   */
   if (tab === undefined) {
     tab = "";
   } else {
@@ -95,13 +41,13 @@ export default function DetailsPage({
     throw new Error("Unknown tab: " + tab);
   }
 
-  const { data: elementMetadata, loading, error } = useElementMetadata({ elementType, elementID });
+  const { data, loading, error } = useElementMetadata({ elementType, elementID });
 
   if (loading) {
     return <CircularProgress />;
   }
 
-  if (!elementMetadata?.coordinates) {
+  if (!data?.coordinates) {
     return <Typography>Issue fetching data on {elementID}</Typography>;
   }
 
@@ -113,14 +59,8 @@ export default function DetailsPage({
   if (tab === "browser") {
     return (
       <GenomeBrowserView
-        coordinates={elementMetadata.coordinates}
-        name={
-          elementMetadata.__typename === "Gene"
-            ? elementMetadata.name
-            : elementMetadata.__typename === "ICRE"
-            ? elementMetadata.accession
-            : elementMetadata.id
-        }
+        coordinates={data.coordinates}
+        name={data.__typename === "Gene" ? data.name : data.__typename === "ICRE" ? data.accession : data.id}
         type={elementType}
       />
     );
@@ -132,13 +72,13 @@ export default function DetailsPage({
         throw new Error("Unknown variant details tab: " + tab);
       }
 
-      const variantData = elementMetadata as useElementMetadataReturn<"variant">["data"];
+      const variantData = data as useElementMetadataReturn<"variant">["data"];
 
       switch (tab) {
         case "":
-          return <> <SnpFrequencies snpid={variantData.id}/> <SnpGWASLdr snpid={variantData.id}/> </>;
+          return <VariantInfo snpid={variantData.id} />;
         case "icres":
-          return <SnpiCREs coordinates={variantData.coordinates} />;
+          return <VariantIntersectingIcre coordinates={variantData.coordinates} />;
         case "genes":
           return <EQTLs data={variantData} elementType="variant" />;
       }
@@ -149,28 +89,15 @@ export default function DetailsPage({
         throw new Error("Unknown gene details tab: " + tab);
       }
 
-      const geneData = elementMetadata as useElementMetadataReturn<"gene">["data"];
+      const geneData = { data: data as useElementMetadataReturn<"gene">["data"], loading, error };
 
       switch (tab) {
-        case (""): return <GeneExpression name={geneData.name} id={geneData.id} />
-        /**
-         * @todo move this to a different component
-         */
-        case ("icres"):  return (
-          <Stack spacing={2} alignItems={"center"}>
-            <Stack direction={"row"} alignItems={"center"} spacing={2}>
-              <Typography>iCREs Only</Typography>
-              <CcreSwitch
-                checked={allcCREs}
-                onChange={toggleOnlyICREs}
-              />
-              <Typography>All cCREs</Typography>
-            </Stack>
-            <NearbycCREs geneid={geneData.id} coordinates={geneData.coordinates} allcCREs={allcCREs} />
-            <LinkedICREs geneid={geneData.id} allcCREs={allcCREs} />
-          </Stack>
-        )
-        case ("variants"): return <EQTLs data={geneData} elementType="gene" />
+        case "":
+          return <GeneExpression geneData={geneData} />;
+        case "icres":
+          return <GeneLinkedIcres geneData={geneData} />;
+        case "variants":
+          return <EQTLs data={geneData.data} elementType="gene" />;
       }
     }
 
@@ -179,15 +106,15 @@ export default function DetailsPage({
         throw new Error("Unknown iCRE details tab: " + tab);
       }
 
-      const icreData = elementMetadata as useElementMetadataReturn<"icre">["data"];
+      const icreData = data as useElementMetadataReturn<"icre">["data"];
 
       switch (tab) {
         case "":
           return <IcreActivity accession={icreData.accession} />;
         case "genes":
-          return <LinkedGenes accession={icreData.accession} coordinates={icreData.coordinates} />;
+          return <IcreLinkedGenes accession={icreData.accession} coordinates={icreData.coordinates} />;
         case "variants":
-          return <IcreVariantsTab icreData={icreData} />
+          return <IcreVariantsTab icreData={icreData} />;
       }
     }
   }

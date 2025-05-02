@@ -1,10 +1,8 @@
 import { Box, Skeleton, Typography } from "@mui/material";
 import useGWASLdr from "common/hooks/useGWASLdr";
-import DataGridToolbar from "common/components/dataGridToolbar";
-import { DataGridPro, gridClasses, GridColDef } from "@mui/x-data-grid-pro";
-import { LinkComponent } from "common/utility";
 import { useSnpFrequencies } from "common/hooks/useSnpFrequencies";
 import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid";
+import { LinkComponent } from "common/components/LinkComponent";
 
 export default function SnpGWASLdr({ snpid }: { snpid: string }) {
   const { data, loading, error } = useGWASLdr(undefined, [snpid]);
@@ -54,7 +52,6 @@ export default function SnpGWASLdr({ snpid }: { snpid: string }) {
       renderCell: (params) => {
         return (
           <LinkComponent
-            underline="hover"
             href={params.value}
             showExternalIcon={!params.row.isiCRE}
             openInNewTab={!params.row.isiCRE}

@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { Grid2, Link, Skeleton, Stack, Box, Typography } from "@mui/material";
+import { Grid2, Skeleton, Stack, Box, Typography } from "@mui/material";
 import { toScientificNotationElement, LinkComponent } from "common/utility";
 import { gql } from "types/generated";
 import { useElementMetadataReturn } from "common/hooks/useElementMetadata";

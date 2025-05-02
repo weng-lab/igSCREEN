@@ -3,8 +3,7 @@ import { Typography } from "@mui/material";
 import { GenomicRange } from "types/globalTypes";
 import { useGeneData } from "common/hooks/useGeneData";
 import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid";
-import { LinkComponent } from "common/utility";
-
+import { LinkComponent } from "common/components/LinkComponent";
 
 const IntersectionGenes = ({ region }: { region: GenomicRange }) => {
   const { data: dataSnps, loading: loadingSnps, error: errorSnps } = useGeneData({ coordinates: region });
@@ -14,7 +13,7 @@ const IntersectionGenes = ({ region }: { region: GenomicRange }) => {
       field: "name",
       headerName: "Symbol",
       renderCell: (params) => (
-        <LinkComponent underline="hover" href={`/gene/${params.value}`}>
+        <LinkComponent href={`/gene/${params.value}`}>
           <i>{params.value}</i>
         </LinkComponent>
       ),

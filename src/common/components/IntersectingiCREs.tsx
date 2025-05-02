@@ -1,16 +1,15 @@
 "use client";
 
-import { Accordion, AccordionDetails, AccordionSummary, List, ListItem, Link as MuiLink, Skeleton, Typography } from "@mui/material";
-import { LinkComponent, getCellCategoryDisplayname, getClassDisplayname } from "common/utility";
+import { Accordion, AccordionDetails, AccordionSummary, List, Skeleton, Typography } from "@mui/material";
+import { getCellCategoryDisplayname, getClassDisplayname } from "common/utility";
 import { GenomicRange } from "types/globalTypes";
-import { useIcreData, UseIcreDataReturn } from "common/hooks/useIcreData";
+import { useIcreData } from "common/hooks/useIcreData";
 import { useIcreActivity, UseIcreActivityReturn } from "common/hooks/useIcreActivity";
 import { useMemo } from "react";
 import { ExpandMore } from "@mui/icons-material";
-import { DataGridPro, GridColDef, GridToolbar } from "@mui/x-data-grid-pro";
-import Link from "next/link";
 import ActiveCellTypesAccordion from "common/components/ActiveCellTypesAccordion";
 import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid";
+import { LinkComponent } from "./LinkComponent";
 
 const IntersectingiCREs = ({ region, showRowOnly }: { region: GenomicRange, showRowOnly?: boolean }) => {
 
@@ -61,7 +60,7 @@ const IntersectingiCREs = ({ region, showRowOnly }: { region: GenomicRange, show
       field: "accession",
       headerName: "Accession",
       renderCell: (params) => (
-        <LinkComponent href={`/icre/${params.value}`} underline="hover">
+        <LinkComponent href={`/icre/${params.value}`}>
           {params.value}
         </LinkComponent>
       ),
@@ -137,7 +136,6 @@ const IntersectingiCREs = ({ region, showRowOnly }: { region: GenomicRange, show
                           href={exp.link}
                           showExternalIcon
                           openInNewTab
-                          underline="hover"
                           display={"list-item"}
                           key={i}
                         >

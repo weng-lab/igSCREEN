@@ -1,10 +1,10 @@
 import { GridRenderCellParams } from "@mui/x-data-grid-pro";
-import { Box, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { LinkedICREInfo } from "common/hooks/useLinkedICREs";
 import { LinkedGeneInfo } from "common/hooks/useLinkedGenes";
-import { LinkComponent, toScientificNotationElement } from "common/utility";
-import { CustomDataGridColDef } from "../CustomDataGrid";
+import { toScientificNotationElement } from "common/utility";
 import { colDef } from "./linkedElements";
+import { LinkComponent } from "../LinkComponent";
 
 
 type renderCellParams = GridRenderCellParams<LinkedGeneInfo> | GridRenderCellParams<LinkedICREInfo>;
@@ -17,7 +17,7 @@ export const geneNameCol: colDef = {
   field: "gene",
   headerName: "Common Gene Name",
   renderCell: (params: renderCellParams) => (
-    <LinkComponent href={`/gene/${params.value}`} underline="hover">
+    <LinkComponent href={`/gene/${params.value}`}>
       <i>{params.value}</i>
     </LinkComponent>
   ),
@@ -48,7 +48,6 @@ export const experimentCol: colDef = {
       href={`https://www.encodeproject.org/experiments/${params.value}`}
       openInNewTab
       showExternalIcon
-      underline="hover"
     >
       {params.value}
     </LinkComponent>
@@ -125,7 +124,6 @@ export const accessionCol: colDef = {
       : `/icre/${params.value}`;
     return (
       <LinkComponent
-        underline="hover"
         href={href}        
         showExternalIcon={!params.row.isiCRE}
         openInNewTab={!params.row.isiCRE}

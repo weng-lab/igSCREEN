@@ -1,9 +1,9 @@
 import { Box, Skeleton, Typography } from "@mui/material";
 import useGWASLdr from "common/hooks/useGWASLdr";
-import { LinkComponent } from "common/utility";
 import { useSnpFrequencies } from "common/hooks/useSnpFrequencies";
 import { useMemo } from "react";
 import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid";
+import { LinkComponent } from "common/components/LinkComponent";
 
 export default function GWASLdr({ accession }: { accession: string }) {
   const { data, loading, error } = useGWASLdr([accession]);
@@ -31,7 +31,7 @@ export default function GWASLdr({ accession }: { accession: string }) {
       field: "snpid",
       headerName: "rsID",
       renderCell: (params) => (
-        <LinkComponent href={"/variant/" + params.value} underline="hover">
+        <LinkComponent href={"/variant/" + params.value}>
           {params.value}
         </LinkComponent>
       ),
@@ -76,7 +76,6 @@ export default function GWASLdr({ accession }: { accession: string }) {
       renderCell: (params) => {
         return (
           <LinkComponent
-            underline="hover"
             href={params.value}
             showExternalIcon={!params.row.isiCRE}
             openInNewTab={!params.row.isiCRE}

@@ -2,6 +2,7 @@
 
 import { NavigateNext } from "@mui/icons-material"
 import { Breadcrumbs, Typography } from "@mui/material"
+import { LinkComponent } from "common/components/LinkComponent"
 import MuiLink from "common/components/MuiLink"
 import { formatPortal } from "common/utility"
 import { usePathname } from "next/navigation"
@@ -15,15 +16,15 @@ const ElementDetailsBreadcrumbs = () => {
       separator={<NavigateNext fontSize="small" />}
       aria-label="breadcrumbs"
     >
-      <MuiLink underline="hover" key="1" color="inherit" href="/">
+      <LinkComponent color="inherit" href="/">
         Home
-      </MuiLink>
+      </LinkComponent>
       {links.map((subpath, i) => {
         if (i === 0) {
           return (
-            <MuiLink underline="hover" color="inherit" href={"/" + subpath} key={subpath}>
+            <LinkComponent color="inherit" href={"/" + subpath} key={subpath}>
               {formatPortal(subpath)}
-            </MuiLink>
+            </LinkComponent>
           )
         } else return (
           <Typography key={subpath}>

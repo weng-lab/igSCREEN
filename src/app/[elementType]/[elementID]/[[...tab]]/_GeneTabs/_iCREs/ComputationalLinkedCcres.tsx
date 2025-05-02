@@ -1,14 +1,21 @@
 import { Box, Grid2, Skeleton } from "@mui/material";
 import useLinkedICREs, { LinkedICREInfo } from "common/hooks/useLinkedICREs";
-import { ChIAPETCols, CrisprFlowFISHCols, eQTLCols, IntactHiCLoopsCols } from "../../_IcreTabs/_linkedGenes/columns";
+import { ChIAPETCols, CrisprFlowFISHCols, eQTLCols, IntactHiCLoopsCols } from "../../_IcreTabs/_Genes/columns";
 import LinkedElements, { TableDef } from "common/components/linkedElements/linkedElements";
 import { accessionCol } from "common/components/linkedElements/columns";
+import { UseGeneDataReturn } from "common/hooks/useGeneData";
 
 
-export default function LinkedICREs({ geneid, allcCREs }: { geneid: string, allcCREs: boolean }) {
-  const { data, loading, error } = useLinkedICREs(geneid);
-  
-  if (loading) {
+export default function ComputationalLinkedCcres({
+  geneData,
+  allcCREs,
+}: {
+  geneData: UseGeneDataReturn<{ name: string }>;
+  allcCREs: boolean;
+}) {
+  const { data, loading, error } = useLinkedICREs(geneData?.data.id);
+
+  if (geneData.loading || loading) {
     return (
       <Grid2 container spacing={2} width={"100%"}>
         <Grid2 size={12}>
@@ -38,7 +45,9 @@ export default function LinkedICREs({ geneid, allcCREs }: { geneid: string, allc
       id: index.toString(),
     }));
   const ChIAPETLinked = data
-    .filter((x: LinkedICREInfo) => (x.assay === "RNAPII-ChIAPET" || x.assay === "CTCF-ChIAPET") && (allcCREs || x.isiCRE))
+    .filter(
+      (x: LinkedICREInfo) => (x.assay === "RNAPII-ChIAPET" || x.assay === "CTCF-ChIAPET") && (allcCREs || x.isiCRE)
+    )
     .map((x: LinkedICREInfo, index: number) => ({
       ...x,
       id: index.toString(),

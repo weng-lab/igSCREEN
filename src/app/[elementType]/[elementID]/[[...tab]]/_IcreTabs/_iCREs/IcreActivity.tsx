@@ -1,6 +1,6 @@
-import TwoPaneLayout from "../../TwoPaneLayout"
+import TwoPaneLayout from "../../../../../../common/components/TwoPaneLayout"
 import { useState } from "react"
-import { BarData } from "../../VerticalBarPlot"
+import { BarData } from "../../../../../../common/components/VerticalBarPlot"
 import IcreActivityTable from "./IcreActivityTable"
 import { useIcreActivity, UseIcreActivityReturn } from "common/hooks/useIcreActivity"
 import IcreActivityBarPlot from "./IcreActivityBarPlot"

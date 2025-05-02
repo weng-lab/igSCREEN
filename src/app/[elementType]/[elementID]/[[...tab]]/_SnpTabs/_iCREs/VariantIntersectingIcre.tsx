@@ -1,9 +1,9 @@
-import { Link, Typography, Box, Paper, CircularProgress, Stack } from "@mui/material";
-import IntersectingiCREs from "app/region/[region]/icres/IntersectingiCREs";
+import { Typography, Paper, CircularProgress } from "@mui/material";
+import IntersectingiCREs from "common/components/IntersectingiCREs";
 import { useIcreData } from "common/hooks/useIcreData";
 import { GenomicRange } from "types/globalTypes";
 
-export default function SnpiCREs({ coordinates }: { coordinates: GenomicRange }) {
+export default function VariantIntersectingIcre({ coordinates }: { coordinates: GenomicRange }) {
   const { data, loading, error } = useIcreData({
     coordinates: {
       start: coordinates.start,

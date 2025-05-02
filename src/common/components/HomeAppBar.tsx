@@ -21,6 +21,7 @@ import MenuIcon from "@mui/icons-material/Menu"
 import { useState } from "react";
 import MobileMenu from "./MobileMenu";
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import { LinkComponent } from "./LinkComponent";
 
 export type PageInfo = {
   pageName: string,
@@ -166,18 +167,15 @@ function ResponsiveAppBar({ maintenance }: ResponsiveAppBarProps) {
                     id="LinkBox"
                     sx={{ mr: 2 }}
                   >
-                    <MuiLink
+                    <LinkComponent
                       id="Link"
                       display={"flex"}
-                      fontFamily={(theme) => theme.typography.fontFamily}
-                      underline="hover"
                       color="primary.contrastText"
-                      component={Link}
                       href={page.link}
                     >
                       {page.pageName}
                       {page.subPages && <ArrowDropDownIcon />}
-                    </MuiLink>
+                    </LinkComponent>
                     {/* Create popup menu if page has subpages */}
                     {page.subPages && (
                       <Menu
@@ -195,17 +193,15 @@ function ResponsiveAppBar({ maintenance }: ResponsiveAppBarProps) {
                       >
                         {page.subPages &&
                           page.subPages.map((subPage) => (
-                            <MuiLink
+                            <LinkComponent
                               key={subPage.pageName}
-                              underline="hover"
                               color="black"
-                              component={Link}
                               href={subPage.link}
                             >
                               <MenuItem>
                                 {subPage.pageName}
                               </MenuItem>
-                            </MuiLink>
+                            </LinkComponent>
                           ))}
                       </Menu>
                     )}

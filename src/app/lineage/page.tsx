@@ -31,6 +31,7 @@ import NewUpSetPlot, { UpSetPlotDatum } from "app/lineage/UpSetPlot";
 import { v4 as uuidv4 } from "uuid";
 import { downloadSVG } from "common/utility";
 import MuiLink from "common/components/MuiLink";
+import { LinkComponent } from "common/components/LinkComponent";
 
 type Assay = "DNase" | "ATAC";
 
@@ -407,9 +408,9 @@ export default function CellLineagePage() {
   const Header = () => (
     <div id="Page-Header">
       <Breadcrumbs separator={<NavigateNext fontSize="small" />} aria-label="breadcrumbs" sx={{mb: 1}}>
-        <MuiLink underline="hover" key="1" color="inherit" href="/">
+        <LinkComponent key="1" color="inherit" href="/">
           Home
-        </MuiLink>
+        </LinkComponent>
         <Typography>Cell Lineage</Typography>
       </Breadcrumbs>
       <Typography variant="h4">Immune cCRE Activity by Cell Type</Typography>
