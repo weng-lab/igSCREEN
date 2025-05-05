@@ -1,4 +1,4 @@
-import { Box, Button, Skeleton, Stack, Typography } from "@mui/material"
+import { Button, Skeleton, Stack, Typography } from "@mui/material"
 import { useElementMetadata } from "common/hooks/useElementMetadata"
 import { formatPortal } from "common/utility"
 import { GenomicElementType } from "types/globalTypes"
@@ -48,7 +48,7 @@ const ElementDetailsHeader = ({ elementType, elementID }: ElementDetailsHeaderPr
          {icreClass} {icreClassDescriptions[icreClass] ?? ""}
       </>
     ) : elementType === "variant" ? (
-      ref === undefined ? (
+      !ref ? (
         <>
           <Skeleton width={215} />
         </>
@@ -107,7 +107,7 @@ const ElementDetailsHeader = ({ elementType, elementID }: ElementDetailsHeaderPr
                 rel="noopener noreferrer"
                 sx={{ width: "100%", height: "100%", backgroundColor: "white" }}
               >
-                <Image style={{ objectFit: "contain", padding: 4 }} src="/SCREEN_logo_light_large.png" fill alt="screen-card-button" />
+                <Image style={{ objectFit: "contain", padding: 4 }} src="/SCREEN_logo_light_large.svg" fill alt="screen-card-button" />
               </Button>
             </Grid2>
             <Grid2 size={6} display={elementType === "icre" ? "none" : "flex"} height={{xs: 65, sm: "auto"}}>

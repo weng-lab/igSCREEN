@@ -1,5 +1,5 @@
 import { parseGenomicRangeString } from "common/utility";
-import IntersectingiCREs from "./IntersectingiCREs";
+import IntersectingiCREs from "common/components/IntersectingiCREs";
 
 
 export default function iCREs({

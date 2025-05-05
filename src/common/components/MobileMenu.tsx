@@ -16,7 +16,6 @@ export type MobileMenuProps = {
 export default function MobileMenu({pageLinks, drawerOpen, toggleDrawer}: MobileMenuProps) {
     
     const closeDrawer = () => {
-        console.log("closeDrawer called in MobileMenu")
         toggleDrawer(false)
     }
     

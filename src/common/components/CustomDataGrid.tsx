@@ -1,10 +1,11 @@
 import { Box, Paper, PaperProps, Tooltip, TooltipProps, Typography } from "@mui/material";
 import { DataGridPro, DataGridProProps, GridAutosizeOptions, GridColDef, useGridApiRef } from "@mui/x-data-grid-pro";
 import CustomDataGridToolbar, { CustomDataGridToolbarProps } from "./dataGridToolbar";
-import { useMemo, useEffect, useCallback } from "react";
+import { useMemo, useEffect, useCallback, ReactNode, ReactElement } from "react";
 import { InfoOutlined } from "@mui/icons-material";
+import EmptyTableFallback from "./EmptyTableFallback";
 
-export type CustomDataGridRow = Record<string, any>
+export type CustomDataGridRow = Record<string, any>;
 
 export type CustomDataGridSlotProps = DataGridProProps["slotProps"] & {
   /**
@@ -76,6 +77,11 @@ export interface CustomDataGridProps<T extends CustomDataGridRow> extends DataGr
    * @note CustomDataGrid assigns a default internal ID to each row if no ID is provided in the row data.
    */
   getRowId?: DataGridProProps["getRowId"];
+  /**
+   * Element to be rendered instead of `DataGridPro` when `rows` has a length of `0`.
+   * If a string is passed will use `EmptyTableFallback` component
+   */
+  emptyTableFallback?: string | ReactElement;
 }
 
 export type CustomDataGridColDef<T extends CustomDataGridRow> = GridColDef & {
@@ -92,11 +98,11 @@ export type CustomDataGridColDef<T extends CustomDataGridRow> = GridColDef & {
 const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<T>) => {
   /**
    * Provide defaults
-   * @todo obey the defaults specified in the theme. 
+   * @todo obey the defaults specified in the theme.
    * Ex: Overriding pageSizeOptions like this overrides the defaults specified in the theme
    */
   const {
-    elevation, // don't provide elevation default so that it's default obeys the MUI theme 
+    elevation, // don't provide elevation default so that it's default obeys the MUI theme
     tableTitle,
     slots,
     slotProps = {},
@@ -109,11 +115,12 @@ const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<
     apiRef: externalApiRef,
     onPaginationModelChange,
     onResize,
+    emptyTableFallback,
     ...restDataGridProps
   } = props;
   const { paper: paperProps, ...restSlotProps } = slotProps;
 
-  //Assign deefault ID if no ID is provided in the row data
+  //Assign default ID if no ID is provided in the row data
   const rowsWithIds = useMemo(() => rows.map((row, index) => ({ ...row, id: row?.id || index })), [rows]);
 
   const columnsModified: CustomDataGridColDef<T>[] = useMemo(
@@ -140,21 +147,22 @@ const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<
     [columns]
   );
 
-  const autosizeOptions:  GridAutosizeOptions = useMemo(
+  const autosizeOptions: GridAutosizeOptions = useMemo(
     () => ({
       expand: true,
       includeHeaders: true,
-      outliersFactor: 1.5
+      outliersFactor: 1.5,
     }),
     []
   );
 
-  const internalApiRef = useGridApiRef()
+  const internalApiRef = useGridApiRef();
   // prioritize using the provided apiRef if available, otherwise create a new one
-  const apiRef = externalApiRef ?? internalApiRef
+  const apiRef = externalApiRef ?? internalApiRef;
 
   const handleResizeCols = useCallback(() => {
-    if (!apiRef.current) return;
+    // need to check .autosizeCoumns since the current was being set with an empty object
+    if (!apiRef.current?.autosizeColumns) return;
     apiRef.current.autosizeColumns(autosizeOptions);
   }, [apiRef, autosizeOptions]);
 
@@ -164,8 +172,14 @@ const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<
     handleResizeCols();
   }, [rows, columns, handleResizeCols]);
 
-  return (
-    <Paper sx={{display: "flex"}} elevation={elevation} {...paperProps} >
+  return emptyTableFallback && rowsWithIds.length === 0 ? (
+    typeof emptyTableFallback === "string" ? (
+      <EmptyTableFallback message={emptyTableFallback} />
+    ) : (
+      emptyTableFallback
+    )
+  ) : (
+    <Paper sx={{ display: "flex" }} elevation={elevation} {...paperProps}>
       <DataGridPro
         apiRef={apiRef}
         columns={columnsModified}
@@ -180,12 +194,12 @@ const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<
           if (onResize) {
             onResize(params, event, details);
           }
-          handleResizeCols()
+          handleResizeCols();
         }}
         autosizeOptions={autosizeOptions}
         rows={rowsWithIds}
         disableRowSelectionOnClick
-        slots={{ toolbar: () => CustomDataGridToolbar({title: tableTitle}), ...slots }}
+        slots={{ toolbar: () => <CustomDataGridToolbar title={tableTitle} />, ...slots }}
         density={density}
         slotProps={{ ...restSlotProps }}
         pagination
@@ -197,7 +211,7 @@ const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<
               pageSize: typeof pageSizeOptions[0] === "object" ? pageSizeOptions[0].value : pageSizeOptions[0],
             },
           },
-          ...initialState
+          ...initialState,
         }}
         {...restDataGridProps}
       />

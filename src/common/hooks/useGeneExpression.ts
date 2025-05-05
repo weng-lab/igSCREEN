@@ -41,7 +41,8 @@ export const useGeneExpression = ({ id }: UseGeneDataParams): UseGeneExpressionR
       variables: {
         gene_id: id.split('.')[0]
       },
-    }
+      skip: !id
+    },
   );
 
   /**

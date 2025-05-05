@@ -17,8 +17,13 @@ const CCRE_ICRE_QUERY = gql(`query cCREAutocompleteQuery(
 export default function useLinkedICREs(geneid: string) {
   const { data, loading, error } = useQuery(LINKED_ICRE_QUERY, {
     variables: { geneid: [geneid.split(".")[0]], assembly: "grch38" },
+    skip: !geneid
   });
 
+  /**
+   * @todo why is this necessary, can this use the other data fetching hook, or can that useCcreDetails or useIcreData call this, and this can call those
+   * This is only used to specify is a linked cCRE is an iCRE. It feels like there shoud be a "useCcreData" which returns this information.
+   */
   const {
     data: ccredata,
     loading: ccreloading,
@@ -42,6 +47,9 @@ export default function useLinkedICREs(geneid: string) {
   }) as LinkedICREInfo[], loading, error };
 }
 
+/**
+ * @todo this type should extend the type exposed by auto generated type instead of being entire redefined.
+ */
 export type LinkedICREInfo = {
   accession?: string;
   p_val?: number;

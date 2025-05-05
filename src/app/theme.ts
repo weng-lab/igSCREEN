@@ -28,6 +28,11 @@ export const theme = createTheme({
       defaultProps: {
         elevation: 0
       }
+    },
+    MuiLink: {
+      defaultProps: {
+        underline: "hover"
+      }
     }
   }
 })

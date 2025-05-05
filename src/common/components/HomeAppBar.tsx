@@ -7,7 +7,6 @@ import {
   Menu,
   Container,
   MenuItem,
-  Link as MuiLink,
   IconButton,
   Stack,
   Typography,
@@ -21,6 +20,7 @@ import MenuIcon from "@mui/icons-material/Menu"
 import { useState } from "react";
 import MobileMenu from "./MobileMenu";
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import { LinkComponent } from "./LinkComponent";
 
 export type PageInfo = {
   pageName: string,
@@ -64,7 +64,6 @@ function ResponsiveAppBar({ maintenance }: ResponsiveAppBarProps) {
   const [anchorDropdown1, setAnchorDropdown1] = useState<null | HTMLElement>(null)
 
   const toggleDrawer = (open: boolean) => {
-    console.log("called with: ", open)
     setDrawerOpen(open);
   };
 
@@ -146,7 +145,7 @@ function ResponsiveAppBar({ maintenance }: ResponsiveAppBarProps) {
             >
               <Image
                 priority
-                src="/igSCREEN_red.png"
+                src="/igSCREEN_red.svg"
                 fill
                 sizes="110px"
                 alt="igSCREEN logo"
@@ -166,18 +165,15 @@ function ResponsiveAppBar({ maintenance }: ResponsiveAppBarProps) {
                     id="LinkBox"
                     sx={{ mr: 2 }}
                   >
-                    <MuiLink
+                    <LinkComponent
                       id="Link"
                       display={"flex"}
-                      fontFamily={(theme) => theme.typography.fontFamily}
-                      underline="hover"
                       color="primary.contrastText"
-                      component={Link}
                       href={page.link}
                     >
                       {page.pageName}
                       {page.subPages && <ArrowDropDownIcon />}
-                    </MuiLink>
+                    </LinkComponent>
                     {/* Create popup menu if page has subpages */}
                     {page.subPages && (
                       <Menu
@@ -195,17 +191,15 @@ function ResponsiveAppBar({ maintenance }: ResponsiveAppBarProps) {
                       >
                         {page.subPages &&
                           page.subPages.map((subPage) => (
-                            <MuiLink
+                            <LinkComponent
                               key={subPage.pageName}
-                              underline="hover"
                               color="black"
-                              component={Link}
                               href={subPage.link}
                             >
                               <MenuItem>
                                 {subPage.pageName}
                               </MenuItem>
-                            </MuiLink>
+                            </LinkComponent>
                           ))}
                       </Menu>
                     )}
@@ -256,7 +250,6 @@ function ResponsiveAppBar({ maintenance }: ResponsiveAppBarProps) {
               <IconButton
                 size="large"
                 onClick={() => {
-                  console.log("icon setting drawer open")
                   toggleDrawer(true)
                 }}
                 color="inherit"
@@ -280,20 +273,3 @@ function ResponsiveAppBar({ maintenance }: ResponsiveAppBarProps) {
   );
 };
 export default ResponsiveAppBar;
-
-
-// variant: "contained",
-// children: <Search />,
-// color: "primary",
-// sx: {
-//   color: "white",
-//   borderColor: "white",
-//   "&:hover": {
-//     color: "gray",
-//     borderColor: "gray",
-//   },
-//   "&:focus": {
-//     color: "gray",
-//     borderColor: "gray",
-//   },
-// },

@@ -1,5 +1,5 @@
 import { parseGenomicRangeString } from "common/utility";
-import IntersectingGenes from "./IntersectingGenes";
+import IntersectingGenes from "../../../../common/components/IntersectingGenes";
 
 
 export default function Genes({
