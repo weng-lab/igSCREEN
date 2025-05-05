@@ -50,6 +50,7 @@ const IntersectionGenes = ({ region }: { region: GenomicRange }) => {
       }}
       tableTitle="Intersecting Genes"
       pageSizeOptions={[10, 25, 50, 100]}
+      emptyTableFallback={"No intersecting genes found in this region"}
     />
   );
 };

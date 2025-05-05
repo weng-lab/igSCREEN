@@ -7,10 +7,10 @@ import GeneExpression from "./_GeneTabs/_Gene/GeneExpression";
 import IcreActivity from "./_IcreTabs/_iCREs/IcreActivity";
 import IcreLinkedGenes from "./_IcreTabs/_Genes/IcreLinkedGenes";
 import IcreVariantsTab from "./_IcreTabs/_Variants/IcreVariantsTab";
-import VariantIntersectingIcre from "./_SnpTabs/_iCREs/VariantIntersectingIcre";
 import EQTLs from "common/components/EQTLTables";
 import GeneLinkedIcres from "./_GeneTabs/_iCREs/GeneLinkedIcres";
 import VariantInfo from "./_SnpTabs/_Variant/Variant";
+import IntersectingiCREs from "common/components/IntersectingiCREs";
 
 export default function DetailsPage({
   params: { elementType, elementID, tab },
@@ -75,7 +75,18 @@ export default function DetailsPage({
         case "":
           return <VariantInfo snpid={variantData.id} />;
         case "icres":
-          return <VariantIntersectingIcre coordinates={variantData.coordinates} />;
+          return (
+            <IntersectingiCREs
+              region={{
+                chromosome: variantData.coordinates.chromosome,
+                start: variantData.coordinates.start,
+                end: variantData.coordinates.end,
+              }}
+              customDataGridProps={{
+                hideFooter: true,
+              }}
+            />
+          );
         case "genes":
           return <EQTLs data={variantData} elementType="variant" />;
       }

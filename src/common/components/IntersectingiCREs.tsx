@@ -3,16 +3,21 @@
 import { Accordion, AccordionDetails, AccordionSummary, List, Skeleton, Typography } from "@mui/material";
 import { getCellCategoryDisplayname, getClassDisplayname } from "common/utility";
 import { GenomicRange } from "types/globalTypes";
-import { useIcreData } from "common/hooks/useIcreData";
+import { useIcreData, UseIcreDataReturn } from "common/hooks/useIcreData";
 import { useIcreActivity, UseIcreActivityReturn } from "common/hooks/useIcreActivity";
 import { useMemo } from "react";
 import { ExpandMore } from "@mui/icons-material";
 import ActiveCellTypesAccordion from "common/components/ActiveCellTypesAccordion";
-import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid";
+import CustomDataGrid, { CustomDataGridColDef, CustomDataGridProps } from "common/components/CustomDataGrid";
 import { LinkComponent } from "./LinkComponent";
 
-const IntersectingiCREs = ({ region, showRowOnly }: { region: GenomicRange, showRowOnly?: boolean }) => {
-
+const IntersectingiCREs = ({
+  region,
+  customDataGridProps,
+}: {
+  region: GenomicRange;
+  customDataGridProps?: Partial<Omit<CustomDataGridProps<any>, "rows" | "columns">>;
+}) => {
   const { data: dataIcres, loading: loadingIcres, error: errorIcres } = useIcreData({ coordinates: region });
 
   const intersectingAccessions = useMemo(() => {
@@ -28,7 +33,7 @@ const IntersectingiCREs = ({ region, showRowOnly }: { region: GenomicRange, show
 
   const rowsNoExps = dataIcres || [];
 
-  type ExpInfo = UseIcreActivityReturn["data"][number]
+  type ExpInfo = UseIcreActivityReturn["data"][number];
 
   /**
    * This could probably be made more efficient than O(n^2)
@@ -53,17 +58,13 @@ const IntersectingiCREs = ({ region, showRowOnly }: { region: GenomicRange, show
     return { ...row, activeExps: activeExps };
   });
 
-  type Row = (typeof rowsWithExps)[number]
+  type Row = (typeof rowsWithExps)[number];
 
   const columns: CustomDataGridColDef<Row>[] = [
     {
       field: "accession",
       headerName: "Accession",
-      renderCell: (params) => (
-        <LinkComponent href={`/icre/${params.value}`}>
-          {params.value}
-        </LinkComponent>
-      ),
+      renderCell: (params) => <LinkComponent href={`/icre/${params.value}`}>{params.value}</LinkComponent>,
     },
     {
       field: "group",
@@ -132,13 +133,7 @@ const IntersectingiCREs = ({ region, showRowOnly }: { region: GenomicRange, show
                   <AccordionDetails>
                     <List disablePadding sx={{ listStyleType: "disc" }}>
                       {exps.map((exp, i) => (
-                        <LinkComponent
-                          href={exp.link}
-                          showExternalIcon
-                          openInNewTab
-                          display={"list-item"}
-                          key={i}
-                        >
+                        <LinkComponent href={exp.link} showExternalIcon openInNewTab display={"list-item"} key={i}>
                           {exp.biosampleid} - {exp.source}
                         </LinkComponent>
                       ))}
@@ -169,10 +164,11 @@ const IntersectingiCREs = ({ region, showRowOnly }: { region: GenomicRange, show
           sortModel: [{ field: "coordinates", sort: "asc" }],
         },
       }}
-      hideFooter={showRowOnly}
       tableTitle="Intersecting iCREs"
       pageSizeOptions={[10, 25, 50, 100]}
       getRowHeight={() => "auto"}
+      emptyTableFallback={"No intersecting iCREs found in this region"}
+      {...customDataGridProps}
     />
   );
 };

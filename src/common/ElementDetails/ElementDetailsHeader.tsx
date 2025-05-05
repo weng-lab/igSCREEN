@@ -48,7 +48,7 @@ const ElementDetailsHeader = ({ elementType, elementID }: ElementDetailsHeaderPr
          {icreClass} {icreClassDescriptions[icreClass] ?? ""}
       </>
     ) : elementType === "variant" ? (
-      ref === undefined ? (
+      !ref ? (
         <>
           <Skeleton width={215} />
         </>
