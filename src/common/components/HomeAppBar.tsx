@@ -145,7 +145,7 @@ function ResponsiveAppBar({ maintenance }: ResponsiveAppBarProps) {
             >
               <Image
                 priority
-                src="/igSCREEN_red.png"
+                src="/igSCREEN_red.svg"
                 fill
                 sizes="110px"
                 alt="igSCREEN logo"

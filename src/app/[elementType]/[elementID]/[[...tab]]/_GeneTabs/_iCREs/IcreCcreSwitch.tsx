@@ -13,7 +13,7 @@ const StyledSwitch = styled(Switch)(({ theme }) => ({
       transform: "translateX(35px)",
       "& .MuiSwitch-thumb:before": {
         backgroundPosition: "center",
-        backgroundSize: "50%",
+        backgroundSize: "90%",
         backgroundImage: `url("/SCREEN_icon.png")`,
       },
       "& + .MuiSwitch-track": {
@@ -31,11 +31,9 @@ const StyledSwitch = styled(Switch)(({ theme }) => ({
       position: "absolute",
       width: "100%",
       height: "100%",
-      left: 0,
-      top: 0,
-      backgroundRepeat: "no-repeat",
-      backgroundSize: "contain",
-      backgroundImage: `url("/Logo.png")`,
+      backgroundPosition: "center",
+      backgroundSize: "90%",
+      backgroundImage: `url("/igSCREEN_icon.png")`,
     },
   },
   "& .MuiSwitch-track": {
