@@ -1,14 +1,13 @@
 import { Circle, Line, Polygon } from "@visx/shape";
 import { LDSCDataPoint } from "./page";
 import { AxisLeft } from "@visx/axis";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { scaleLinear } from "@visx/scale";
 import { Group } from "@visx/group";
 import { defaultStyles as defaultTooltipStyles, useTooltip, TooltipWithBounds } from "@visx/tooltip";
 import { Text } from "@visx/text";
 import { MouseEvent } from "react";
 import { toScientificNotationElement } from "../../common/utility";
-import { Box, Typography } from "@mui/material";
 import { getCellCategoryDisplayname, getCellCategoryColor } from "common/utility";
 
 type Props = {

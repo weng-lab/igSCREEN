@@ -31,6 +31,7 @@ import NewUpSetPlot, { UpSetPlotDatum } from "app/lineage/UpSetPlot";
 import { v4 as uuidv4 } from "uuid";
 import { downloadSVG } from "common/utility";
 import MuiLink from "common/components/MuiLink";
+import { LinkComponent } from "common/components/LinkComponent";
 
 type Assay = "DNase" | "ATAC";
 
@@ -407,9 +408,9 @@ export default function CellLineagePage() {
   const Header = () => (
     <div id="Page-Header">
       <Breadcrumbs separator={<NavigateNext fontSize="small" />} aria-label="breadcrumbs" sx={{mb: 1}}>
-        <MuiLink underline="hover" key="1" color="inherit" href="/">
+        <LinkComponent key="1" color="inherit" href="/">
           Home
-        </MuiLink>
+        </LinkComponent>
         <Typography>Cell Lineage</Typography>
       </Breadcrumbs>
       <Typography variant="h4">Immune cCRE Activity by Cell Type</Typography>
@@ -421,7 +422,7 @@ export default function CellLineagePage() {
     <Stack m={2} spacing={2}>
       <Header />
       <Stack direction={{ xs: "column", lg: "row" }} spacing={2}>
-        <Stack component={Paper} p={2} flexGrow={1} spacing={1}>
+        <Stack border={"1px solid #e0e0e0"} borderRadius={1} p={2} flexGrow={1} spacing={1}>
           <Typography variant="h5">Select Cells</Typography>
           <Divider />
           <AssayRadio />
@@ -433,7 +434,7 @@ export default function CellLineagePage() {
             getCellDisabled={(cellNode) => !cellTypeConfig[cellNode.data.celltype][selectedAssay].Stim && !cellTypeConfig[cellNode.data.celltype][selectedAssay].Unstim}
           />
         </Stack>
-        <Stack component={Paper} p={2} flexGrow={1} spacing={2}>
+        <Stack border={"1px solid #e0e0e0"} borderRadius={1} p={2} flexGrow={1} spacing={2}>
           <SelectedCellsList />
           <MultiSelect
             options={ccreClasses}

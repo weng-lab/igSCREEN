@@ -21,7 +21,7 @@ export default function cCREPage({ searchParams }: { searchParams: { accession?:
           >
             <Box sx={{ mb: 4 }}>
               <Image
-                src="/SCREEN_logo_light_large.png"
+                src="/SCREEN_logo_light_large.svg"
                 alt="SCREEN Logo"
                 width={200}
                 height={100}
@@ -103,7 +103,7 @@ export default function cCREPage({ searchParams }: { searchParams: { accession?:
         >
           <Box sx={{ mb: 4 }}>
             <Image
-              src="/SCREEN_logo_light_large.png"
+              src="/SCREEN_logo_light_large.svg"
               alt="SCREEN Logo"
               width={200}
               height={100}

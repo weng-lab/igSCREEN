@@ -40,7 +40,7 @@ export default function About() {
         setContactMessage('')
         setSuccess(true)
       } catch (error) {
-        console.log(error)
+        console.error(error)
         window.alert("Something went wrong, please try again soon" + '\n' + JSON.stringify(error))
       }
     }
@@ -52,7 +52,6 @@ export default function About() {
       //These IDs come from the emailjs website (using screenumass gmail account)
       emailjs.sendForm('service_k7xidgk', 'igSCREEN', form.current, 'VU9U1vX9cAro8XtUK')
         .then((result) => {
-          // console.log(result.text);
           resolve(result);
         })
         .catch((error) => {
