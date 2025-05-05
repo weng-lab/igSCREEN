@@ -422,7 +422,7 @@ export default function CellLineagePage() {
     <Stack m={2} spacing={2}>
       <Header />
       <Stack direction={{ xs: "column", lg: "row" }} spacing={2}>
-        <Stack component={Paper} p={2} flexGrow={1} spacing={1}>
+        <Stack border={"1px solid #e0e0e0"} borderRadius={1} p={2} flexGrow={1} spacing={1}>
           <Typography variant="h5">Select Cells</Typography>
           <Divider />
           <AssayRadio />
@@ -434,7 +434,7 @@ export default function CellLineagePage() {
             getCellDisabled={(cellNode) => !cellTypeConfig[cellNode.data.celltype][selectedAssay].Stim && !cellTypeConfig[cellNode.data.celltype][selectedAssay].Unstim}
           />
         </Stack>
-        <Stack component={Paper} p={2} flexGrow={1} spacing={2}>
+        <Stack border={"1px solid #e0e0e0"} borderRadius={1} p={2} flexGrow={1} spacing={2}>
           <SelectedCellsList />
           <MultiSelect
             options={ccreClasses}

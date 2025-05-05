@@ -231,10 +231,8 @@ export default function Phenotype() {
           data && (
             <Box
               p={2}
-              style={{
-                boxShadow: "0px 0px 10px 0px rgba(0, 0, 0, 0.2)",
-                borderRadius: 4,
-              }}
+              border={"1px solid #e0e0e0"}
+              borderRadius={1}
               height={"auto"}
               width={"auto"}
               display={"flex"}

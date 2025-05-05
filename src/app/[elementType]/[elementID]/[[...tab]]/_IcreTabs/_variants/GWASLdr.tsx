@@ -1,4 +1,4 @@
-import { Box, Skeleton, Typography } from "@mui/material";
+import { Box, Skeleton } from "@mui/material";
 import useGWASLdr from "common/hooks/useGWASLdr";
 import { useSnpFrequencies } from "common/hooks/useSnpFrequencies";
 import { useMemo } from "react";
@@ -30,11 +30,7 @@ export default function GWASLdr({ accession }: { accession: string }) {
     {
       field: "snpid",
       headerName: "rsID",
-      renderCell: (params) => (
-        <LinkComponent href={"/variant/" + params.value}>
-          {params.value}
-        </LinkComponent>
-      ),
+      renderCell: (params) => <LinkComponent href={"/variant/" + params.value}>{params.value}</LinkComponent>,
     },
     {
       field: "snp_chr",
@@ -75,11 +71,7 @@ export default function GWASLdr({ accession }: { accession: string }) {
       headerName: "Study",
       renderCell: (params) => {
         return (
-          <LinkComponent
-            href={params.value}
-            showExternalIcon={!params.row.isiCRE}
-            openInNewTab={!params.row.isiCRE}
-          >
+          <LinkComponent href={params.value} showExternalIcon={!params.row.isiCRE} openInNewTab={!params.row.isiCRE}>
             {params.value}
           </LinkComponent>
         );
@@ -98,32 +90,21 @@ export default function GWASLdr({ accession }: { accession: string }) {
     <Box width={"100%"}>
       {loading ? (
         <Skeleton variant="rounded" width={"100%"} height={100} />
-      ) : data.length > 0 ? (
-        <Box sx={{ flex: "1 1 auto" }}>
-          <CustomDataGrid
-            rows={gwasSnps}
-            columns={cols}
-            loading={loading || loadingSnpAlleles}
-            initialState={{
-              sorting: {
-                sortModel: [{ field: "zscore", sort: "desc" }],
-              },
-            }}
-            tableTitle={`GWAS Variants for ${accession}`}
-          />
-        </Box>
       ) : (
-        <Typography
-          variant="h6"
-          pl={1}
-          sx={{
-            border: "1px solid #e0e0e0",
-            borderRadius: 1,
-            p: 2,
+        <CustomDataGrid
+          rows={gwasSnps}
+          columns={cols}
+          loading={loading || loadingSnpAlleles}
+          initialState={{
+            sorting: {
+              sortModel: [{ field: "zscore", sort: "desc" }],
+            },
           }}
-        >
-          No GWAS Variants data found
-        </Typography>
+          tableTitle={`GWAS Variants for ${accession}`}
+          emptyTableFallback={
+            "This iCRE does not overlap a variant associated with significant changes in gene expression"
+          }
+        />
       )}
     </Box>
   );

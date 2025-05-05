@@ -1,4 +1,4 @@
-import { Box, Skeleton, Typography } from "@mui/material";
+import { Box, Skeleton } from "@mui/material";
 import useGWASLdr from "common/hooks/useGWASLdr";
 import { useSnpFrequencies } from "common/hooks/useSnpFrequencies";
 import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid";
@@ -6,23 +6,21 @@ import { LinkComponent } from "common/components/LinkComponent";
 
 export default function SnpGWASLdr({ snpid }: { snpid: string }) {
   const { data, loading, error } = useGWASLdr(undefined, [snpid]);
-  const snpAlleles= useSnpFrequencies([snpid])
-  const ref = snpAlleles.data && (snpAlleles.data[snpid])?.ref
-  const alt = snpAlleles.data && (snpAlleles.data[snpid])?.alt
-  
+  const snpAlleles = useSnpFrequencies([snpid]);
+  const ref = snpAlleles.data && snpAlleles.data[snpid]?.ref;
+  const alt = snpAlleles.data && snpAlleles.data[snpid]?.alt;
 
-  let gwasnps =  data?.map(d=>{
-    let zscore = d.zscore    
-    //reverse zscore 
-    if(d.effect_allele === alt && d.ref_allele === ref )
-    {
-      zscore = d.zscore < 0 ? d.zscore :  -d.zscore
+  let gwasnps = data?.map((d) => {
+    let zscore = d.zscore;
+    //reverse zscore
+    if (d.effect_allele === alt && d.ref_allele === ref) {
+      zscore = d.zscore < 0 ? d.zscore : -d.zscore;
     }
     return {
       ...d,
-      zscore
-    }
-  })
+      zscore,
+    };
+  });
   const cols: CustomDataGridColDef<(typeof gwasnps)[number]>[] = [
     {
       field: "disease",
@@ -51,11 +49,7 @@ export default function SnpGWASLdr({ snpid }: { snpid: string }) {
       headerName: "Study",
       renderCell: (params) => {
         return (
-          <LinkComponent
-            href={params.value}
-            showExternalIcon={!params.row.isiCRE}
-            openInNewTab={!params.row.isiCRE}
-          >
+          <LinkComponent href={params.value} showExternalIcon={!params.row.isiCRE} openInNewTab={!params.row.isiCRE}>
             {params.value}
           </LinkComponent>
         );
@@ -74,32 +68,18 @@ export default function SnpGWASLdr({ snpid }: { snpid: string }) {
     <Box width={"100%"}>
       {loading ? (
         <Skeleton variant="rounded" width={"100%"} height={100} />
-      ) : data.length > 0 ? (
-        <Box sx={{ flex: "1 1 auto" }}>
-          <CustomDataGrid
-            rows={gwasnps}
-            columns={cols}
-            initialState={{
-              sorting: {
-                sortModel: [{ field: "zscore", sort: "desc" }],
-              },
-            }}
-            tableTitle="GWAS Variants"
-          />
-        </Box>
       ) : (
-        <Typography
-          variant="h6"
-          pl={1}
-          sx={{
-            border: "1px solid #e0e0e0",
-            borderRadius: 1,
-            p: 2,
-            marginBottom: 2,
+        <CustomDataGrid
+          rows={gwasnps}
+          columns={cols}
+          initialState={{
+            sorting: {
+              sortModel: [{ field: "zscore", sort: "desc" }],
+            },
           }}
-        >
-          No GWAS Variants data found
-        </Typography>
+          tableTitle="GWAS Variants"
+          emptyTableFallback={"This variant is not identified in any genome wide association studies (GWAS)"}
+        />
       )}
     </Box>
   );

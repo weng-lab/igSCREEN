@@ -27,9 +27,9 @@ export const CLOSEST_GENE_QUERY = gql(`
   }
 `);
 
-export default function IcreLinkedGenes({ accession, coordinates }: { accession: string, coordinates: GenomicRange }) {
+export default function IcreLinkedGenes({ accession, coordinates }: { accession: string; coordinates: GenomicRange }) {
   const { data: linkedGenes, loading, error } = useLinkedGenes(accession);
-  
+
   const {
     data: closestGeneData,
     loading: closestGeneLoading,
@@ -84,13 +84,21 @@ export default function IcreLinkedGenes({ accession, coordinates }: { accession:
     }));
 
   const tables: TableDef<LinkedGeneInfo>[] = [
-    { tableTitle: "Intact Hi-C Loops", rows: HiCLinked, columns: IntactHiCLoopsCols, sortColumn: "p_val", sortDirection: 'asc' },
     {
-      tableTitle: "ChIA-PET",
+      tableTitle: "Intact Hi-C Loops",
+      rows: HiCLinked,
+      columns: IntactHiCLoopsCols,
+      sortColumn: "p_val",
+      sortDirection: "asc",
+      emptyTableFallback: "No intact Hi-C loops overlap this iCRE and the promoter of a gene",
+    },
+    {
+      tableTitle: "ChIA-PET Interactions",
       rows: ChIAPETLinked,
       columns: ChIAPETCols,
       sortColumn: "score",
       sortDirection: "desc",
+      emptyTableFallback: "No ChIA-PET interactions overlap this iCRE and the promoter of a gene",
     },
     {
       tableTitle: "CRISPRi-FlowFISH",
@@ -98,16 +106,33 @@ export default function IcreLinkedGenes({ accession, coordinates }: { accession:
       columns: CrisprFlowFISHCols,
       sortColumn: "p_val",
       sortDirection: "asc",
+      emptyTableFallback: "This iCRE was not targeted in a CRISPRi-FlowFISH experiment",
     },
-    { tableTitle: "eQTLs", rows: eqtlLinked, columns: eQTLCols, sortColumn: "p_val", sortDirection: "asc"},
+    {
+      tableTitle: "eQTLs",
+      rows: eqtlLinked,
+      columns: eQTLCols,
+      sortColumn: "p_val",
+      sortDirection: "asc",
+      emptyTableFallback: "This iCRE does not overlap a variant associated with significant changes in gene expression",
+    },
   ];
 
   const genes: any[] = closestGeneData.closestGenetocCRE.map((item: any) => item.gene);
   const closestPC = genes.find((gene: any) => gene.type === "PC");
   const closestALL = genes.find((gene: any) => gene.type === "ALL");
-  const pcDistance = calcDistRegionToRegion({start: closestPC.start, end: closestPC.stop}, {start: coordinates.start, end: coordinates.end});
-  const allDistance = calcDistRegionToRegion({start: closestALL.start, end: closestALL.stop}, {start: coordinates.start, end: coordinates.end});
-  const closestGenes = [{...closestPC, distance: Math.abs(pcDistance)}, {...closestALL, distance: Math.abs(allDistance)}];
+  const pcDistance = calcDistRegionToRegion(
+    { start: closestPC.start, end: closestPC.stop },
+    { start: coordinates.start, end: coordinates.end }
+  );
+  const allDistance = calcDistRegionToRegion(
+    { start: closestALL.start, end: closestALL.stop },
+    { start: coordinates.start, end: coordinates.end }
+  );
+  const closestGenes = [
+    { ...closestPC, distance: Math.abs(pcDistance) },
+    { ...closestALL, distance: Math.abs(allDistance) },
+  ];
 
   const closestGenesCols: CustomDataGridColDef<(typeof closestGenes)[number]>[] = [
     {
@@ -132,24 +157,14 @@ export default function IcreLinkedGenes({ accession, coordinates }: { accession:
 
   return (
     <Stack spacing={2}>
-      {closestGenes.length > 0 ? (
-        <CustomDataGrid rows={closestGenes} columns={closestGenesCols} hideFooter tableTitle="Closest Genes" />
-      ) : (
-        <Typography
-          variant="h6"
-          pl={1}
-          sx={{
-            border: "1px solid #e0e0e0",
-            borderRadius: 1,
-            p: 2,
-          }}
-        >
-          No closest genes found
-        </Typography>
-      )}
+      <CustomDataGrid
+        rows={closestGenes}
+        columns={closestGenesCols}
+        hideFooter
+        tableTitle="Closest Genes"
+        emptyTableFallback={"No closest genes found"}
+      />
       <LinkedElements tables={tables} />
     </Stack>
   );
 }
-
-

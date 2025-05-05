@@ -72,6 +72,7 @@ export default function ComputationalLinkedCcres({
       columns: [accessionCol, ...IntactHiCLoopsCols.slice(2)],
       sortColumn: "p_val",
       sortDirection: "asc",
+      emptyTableFallback: `No intact Hi-C loops overlap ${allcCREs ? "a cCRE": "an iCRE"} and the promoter of this gene`
     },
     {
       tableTitle: "ChIA-PET",
@@ -79,6 +80,7 @@ export default function ComputationalLinkedCcres({
       columns: [accessionCol, ...ChIAPETCols.slice(2)],
       sortColumn: "score",
       sortDirection: "desc",
+      emptyTableFallback: `No ChIA-PET interactions overlap ${allcCREs ? "a cCRE": "an iCRE"} and the promoter of this gene`,
     },
     {
       tableTitle: "CRISPRi-FlowFISH",
@@ -86,6 +88,7 @@ export default function ComputationalLinkedCcres({
       columns: [accessionCol, ...CrisprFlowFISHCols.slice(2)],
       sortColumn: "p_val",
       sortDirection: "asc",
+      emptyTableFallback: `No ${allcCREs ? "cCREs" : "iCREs"} targeted in a CRISPRi-FlowFISH experiment were linked to this gene`,
     },
     {
       tableTitle: "eQTLs",
@@ -93,6 +96,7 @@ export default function ComputationalLinkedCcres({
       columns: [accessionCol, ...eQTLCols.slice(2)],
       sortColumn: "p_val",
       sortDirection: "asc",
+      emptyTableFallback: `No ${allcCREs ? "cCREs" : "iCREs"} overlap variants associated with significant changes in expression of this gene`,
     },
   ];
 

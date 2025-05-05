@@ -14,7 +14,11 @@ export default function DistanceLinkedCcres({
 }) {
   const { data: dataNearby, loading: loadingNearby, error: errorNearby } = useNearbycCREs(geneData?.data.id);
 
-  const { data: dataCcreDetails, loading: loadingCcreDetails, error: errorCcreDetails } = useCcreDetails(dataNearby?.map((d) => d.ccre));
+  const {
+    data: dataCcreDetails,
+    loading: loadingCcreDetails,
+    error: errorCcreDetails,
+  } = useCcreDetails(dataNearby?.map((d) => d.ccre));
 
   const nearbyccres = dataNearby
     ?.map((d) => {
@@ -39,11 +43,7 @@ export default function DistanceLinkedCcres({
           ? `https://screen.wenglab.org/search/?q=${params.value}&uuid=0&assembly=GRCh38`
           : `/icre/${params.value}`;
         return (
-          <LinkComponent
-            href={href}
-            showExternalIcon={!params.row.isiCRE}
-            openInNewTab={!params.row.isiCRE}
-          >
+          <LinkComponent href={href} showExternalIcon={!params.row.isiCRE} openInNewTab={!params.row.isiCRE}>
             {params.value}
           </LinkComponent>
         );
@@ -108,34 +108,20 @@ export default function DistanceLinkedCcres({
 
   return (
     <Box width={"100%"}>
-      {(geneData.loading || loadingNearby || loadingCcreDetails) ? (
+      {geneData.loading || loadingNearby || loadingCcreDetails ? (
         <Skeleton variant="rounded" width={"100%"} height={100} />
-      ) : nearbyccres.length > 0 ? (
-        <Box sx={{ flex: "1 1 auto" }}>
-          <CustomDataGrid
-            rows={nearbyccres}
-            columns={cols}
-            tableTitle={allcCREs ? "Nearby cCREs" : "Nearby iCREs"}
-            initialState={{
-              sorting: {
-                sortModel: [{ field: "distance", sort: "asc" }],
-              },
-            }}
-          />
-        </Box>
       ) : (
-        <Typography
-          variant="h6"
-          pl={1}
-          sx={{
-            border: "1px solid #e0e0e0",
-            borderRadius: 1,
-            p: 2,
-            marginBottom: 2,
+        <CustomDataGrid
+          rows={nearbyccres}
+          columns={cols}
+          tableTitle={allcCREs ? "Nearby cCREs" : "Nearby iCREs"}
+          initialState={{
+            sorting: {
+              sortModel: [{ field: "distance", sort: "asc" }],
+            },
           }}
-        >
-          No Nearby cCREs found
-        </Typography>
+          emptyTableFallback={allcCREs ? "No Nearby cCREs found" : "No Nearby iCREs found"}
+        />
       )}
     </Box>
   );

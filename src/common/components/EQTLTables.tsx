@@ -232,56 +232,30 @@ export default function EQTLs<T extends GenomicElementType>({
   return (
     <Stack spacing={2}>
       <Box sx={{ flex: "1 1 auto" }}>
-        {gtexRows.length > 0 ? (
-          <CustomDataGrid
-            columns={gtexColumns}
-            rows={gtexRows}
-            tableTitle={gtexTitle}
-            initialState={{
-              sorting: {
-                sortModel: [{ field: "pval_nominal", sort: "asc" }],
-              },
-            }}
-          />
-        ) : (
-          <Typography
-            variant="h6"
-            pl={1}
-            sx={{
-              border: "1px solid #e0e0e0",
-              borderRadius: 1,
-              p: 2,
-            }}
-          >
-            No GTEX whole-blood eQTLs found
-          </Typography>
-        )}
+        <CustomDataGrid
+          columns={gtexColumns}
+          rows={gtexRows}
+          tableTitle={gtexTitle}
+          initialState={{
+            sorting: {
+              sortModel: [{ field: "pval_nominal", sort: "asc" }],
+            },
+          }}
+          emptyTableFallback={"No GTEX whole-blood eQTLs found"}
+        />
       </Box>
       <Box sx={{ flex: "1 1 auto" }}>
-        {oneK1KRows.length > 0 ? (
-          <CustomDataGrid
-            columns={oneK1KColumns}
-            rows={oneK1KRows}
-            tableTitle={onekTitle}
-            initialState={{
-              sorting: {
-                sortModel: [{ field: "fdr", sort: "asc" }],
-              },
-            }}
-          />
-        ) : (
-          <Typography
-            variant="h6"
-            pl={1}
-            sx={{
-              border: "1px solid #e0e0e0",
-              borderRadius: 1,
-              p: 2,
-            }}
-          >
-            No OneK1K eQTLs found
-          </Typography>
-        )}
+        <CustomDataGrid
+          columns={oneK1KColumns}
+          rows={oneK1KRows}
+          tableTitle={onekTitle}
+          initialState={{
+            sorting: {
+              sortModel: [{ field: "fdr", sort: "asc" }],
+            },
+          }}
+          emptyTableFallback={"No OneK1K eQTLs found"}
+        />
       </Box>
     </Stack>
   );
