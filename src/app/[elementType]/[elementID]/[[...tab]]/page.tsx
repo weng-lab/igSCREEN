@@ -6,7 +6,7 @@ import { GenomicElementType, isValidGeneTab, isValidIcreTab, isValidVariantTab, 
 import GeneExpression from "./_GeneTabs/_Gene/GeneExpression";
 import IcreActivity from "./_IcreTabs/_iCREs/IcreActivity";
 import IcreLinkedGenes from "./_IcreTabs/_Genes/IcreLinkedGenes";
-import IcreVariantsTab from "./_IcreTabs/_Variants/IcreVariantsTab";
+import IcreVariantsTab from "./_IcreTabs/_Variants1/IcreVariantsTab";
 import VariantIntersectingIcre from "./_SnpTabs/_iCREs/VariantIntersectingIcre";
 import EQTLs from "common/components/EQTLTables";
 import GeneLinkedIcres from "./_GeneTabs/_iCREs/GeneLinkedIcres";
