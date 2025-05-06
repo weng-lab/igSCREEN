@@ -18,7 +18,12 @@ const nextConfig = {
       {
         source: '/region/:region',
         destination: '/region/:region/icres',
-        permanent: true
+        permanent: false
+      },
+      {
+        source: '/region',
+        destination: '/',
+        permanent: false
       }
     ]
   }

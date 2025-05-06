@@ -10,6 +10,15 @@ const ElementDetailsBreadcrumbs = () => {
   const pathname = usePathname()
   const links = pathname.split('/').slice(1,3)
 
+  const formatSubPath = (path: string) => {
+    // handle encoded colons in region path
+    if (path.includes('%3A')){
+      return path.replace('%3A', ':')
+    } else {
+      return path
+    }
+  }
+
   return (
     <Breadcrumbs
       separator={<NavigateNext fontSize="small" />}
@@ -27,7 +36,7 @@ const ElementDetailsBreadcrumbs = () => {
           )
         } else return (
           <Typography key={subpath}>
-            {subpath}
+            {formatSubPath(subpath)}
           </Typography>
         )
       })}

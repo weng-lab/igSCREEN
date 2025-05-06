@@ -1,4 +1,4 @@
-import { GenePortalTab, IcrePortalTab, SharedTab, VariantPortalTab } from "types/globalTypes";
+import { GeneDetailsTab, IcreDetailsTab, VariantDetailsTab, RegionDetailsTab, SharedTab } from "types/globalTypes";
 
 const GbIconPath = '/assets/GbIcon.svg'
 const IcreIconPath = '/assets/IcreIcon.svg'
@@ -13,7 +13,7 @@ export const sharedTabs: SharedTab[] = [
   },
 ];
 
-export const variantPortalTabs: VariantPortalTab[] = [
+export const variantDetailsTabs: VariantDetailsTab[] = [
   {
     label: "Variant",
     href: "",
@@ -31,7 +31,7 @@ export const variantPortalTabs: VariantPortalTab[] = [
   },
 ];
 
-export const genePortalTabs: GenePortalTab[] = [
+export const geneDetailsTabs: GeneDetailsTab[] = [
   {
     label: "Gene",
     href: "",
@@ -49,7 +49,7 @@ export const genePortalTabs: GenePortalTab[] = [
   },
 ];
 
-export const icrePortalTabs: IcrePortalTab[] = [
+export const icreDetailsTabs: IcreDetailsTab[] = [
   {
     label: "iCRE",
     href: "",
@@ -66,3 +66,21 @@ export const icrePortalTabs: IcrePortalTab[] = [
     iconPath: VariantIconPath
   },
 ];
+
+export const regionDetailsTabs: RegionDetailsTab[] = [
+  {
+    label: "iCREs",
+    href: "icres",
+    iconPath: IcreIconPath
+  },
+  {
+    label: "Genes",
+    href: "genes",
+    iconPath: GeneIconPath
+  },
+  {
+    label: "Variants",
+    href: "variants",
+    iconPath: VariantIconPath
+  },
+]
