@@ -1,18 +1,25 @@
-import { GenomicElementType } from "types/globalTypes";
+import { GenomicElementType, GenomicRange } from "types/globalTypes";
 import { useGeneData, UseGeneDataReturn } from "./useGeneData";
 import { useIcreData, UseIcreDataReturn } from "./useIcreData";
 import { useSnpData, UseSnpDataReturn } from "./useSnpData";
-import { useSnpFrequencies } from "./useSnpFrequencies";
+import { ApolloError } from "@apollo/client";
+import { parseGenomicRangeString } from "common/utility";
 
 type useElementMetadataParams<T extends GenomicElementType> = {
   elementType: T,
   elementID: string
 }
 
-export type useElementMetadataReturn<T extends GenomicElementType> =
-  T extends "gene" ? UseGeneDataReturn<{ name: string }>
-  : T extends "icre" ? UseIcreDataReturn<{ accession: string }>
-  : UseSnpDataReturn<{ rsID: string }>
+//faking a return type of the same form as the others to make it easy
+type UseGenomicRangeReturn = { data: {__typename?: "Region", coordinates: GenomicRange}; loading: boolean; error: ApolloError }
+
+export type useElementMetadataReturn<T extends GenomicElementType> = T extends "gene"
+  ? UseGeneDataReturn<{ name: string }>
+  : T extends "icre"
+  ? UseIcreDataReturn<{ accession: string }>
+  : T extends "variant"
+  ? UseSnpDataReturn<{ rsID: string }>
+  : UseGenomicRangeReturn;
 
 export const useElementMetadata = <T extends GenomicElementType>({ elementType, elementID }: useElementMetadataParams<T>): useElementMetadataReturn<T> => {
   /**
@@ -33,5 +40,12 @@ export const useElementMetadata = <T extends GenomicElementType>({ elementType, 
       return icreMetadata as useElementMetadataReturn<T>;
     case "variant":
       return snpMetadata as useElementMetadataReturn<T>;
+    case "region":
+      try {
+        const region = parseGenomicRangeString(elementID)
+        return {data: {coordinates: region}, loading: false, error: undefined} as useElementMetadataReturn<T>
+      } catch (error) {
+        return {data: undefined, loading: false, error} as useElementMetadataReturn<T>
+      }
   }
 }
