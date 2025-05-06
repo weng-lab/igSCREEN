@@ -47,6 +47,7 @@ export function formatPortal(subpath: string): string {
     case ("variant"): return "Variant"
     case ("gene"): return "Gene"
     case ("icre"): return "iCRE"
+    case ("region"): return "Region"
     default: return null
   }
 }

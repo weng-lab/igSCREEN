@@ -37,7 +37,9 @@ export const portalDescriptions: {[key in (GenomicElementType | "phenotype" | "l
   gene: "Explore gene expression across immune cell types at bulk and single-cell resolution for 43 cell types across 312 experiments.",
   variant: "Search variants of interest and explore their impact on gene expression, chromatin accessibility, and other molecular traits in immune cells.",
   phenotype: "Select between 400 phenotypes to explore heritability enrichment (calculated by LD score regression) within 736 immune cell experiments.",
-  lineage: "Compare immune cCRE activity between immune cell types."
+  lineage: "Compare immune cCRE activity between immune cell types.",
+  // don't have a region search portal page
+  region: ""
 }
 
 export const portalImagePaths: {[key in (GenomicElementType | "phenotype" | "lineage")]: string} = {
@@ -45,5 +47,7 @@ export const portalImagePaths: {[key in (GenomicElementType | "phenotype" | "lin
   gene: "/assets/GenePortal.png",
   variant: "/assets/SNPPortal.png",
   phenotype: "/assets/PhenotypePage.png",
-  lineage: "/assets/LineagePage.png"
+  lineage: "/assets/LineagePage.png",
+  // don't have a region search portal page
+  region: ""
 }

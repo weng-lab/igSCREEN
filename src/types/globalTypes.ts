@@ -8,39 +8,52 @@ export interface GenomicRange {
   end: number;
 }
 
-export type GenomicElementType = "variant" | "gene" | "icre"
+export type GenomicElementType = "variant" | "gene" | "icre" | "region"
 
 export function isValidGenomicElement(value: string): value is GenomicElementType {
-  return value === "variant" || value === "gene" || value === "icre";
+  return value === "variant" || value === "gene" || value === "icre" || value === "region";
 }
 
-export type SharedRoute = "browser" | ""
+export type SharedRoute = "browser"
 
 //empty route is for the elements default tab. For example /gene/SP1 will be the gene expression. Otherwise would need to assign /gene/SP1/gene
-export type VariantRoute = SharedRoute | "icres" | "genes"
+export type ElementDefaultTab = ""
 
-export type GeneRoute = SharedRoute | "icres" | "variants"
+export type VariantRoute = SharedRoute | ElementDefaultTab | "icres" | "genes"
 
-export type IcreRoute = SharedRoute | "genes" | "variants"
+export type GeneRoute = SharedRoute | ElementDefaultTab | "icres" | "variants"
+
+export type IcreRoute = SharedRoute | ElementDefaultTab | "genes" | "variants"
+
+//region search does not have "base" tab like gene/snp/icre. Always region/[region]/[elementType]
+export type RegionRoute = SharedRoute | "icres" | "genes" | "variants"
 
 export function isValidSharedTab(tab: string): tab is SharedRoute {
-  return tab === "browser" || tab === ""
+  return tab === "browser"
+}
+
+export function isValidElementDefaultTab(tab: string): tab is ElementDefaultTab {
+  return tab === ""
 }
 
 export function isValidVariantTab(tab: string): tab is VariantRoute {
-  return isValidSharedTab(tab) || tab === "icres" || tab === "genes"
+  return isValidSharedTab(tab) || isValidElementDefaultTab(tab) || tab === "icres" || tab === "genes"
 }
 
 export function isValidGeneTab(tab: string): tab is GeneRoute {
-  return isValidSharedTab(tab) || tab === "icres" || tab === "variants"
+  return isValidSharedTab(tab) || isValidElementDefaultTab(tab) || tab === "icres" || tab === "variants"
 }
 
 export function isValidIcreTab(tab: string): tab is IcreRoute {
-  return isValidSharedTab(tab) || tab === "genes" || tab === "variants"
+  return isValidSharedTab(tab) || isValidElementDefaultTab(tab) || tab === "genes" || tab === "variants"
+}
+
+export function isValidRegionTab(tab: string): tab is RegionRoute {
+  return  isValidSharedTab(tab) || tab === "icres" || tab === "genes" || tab === "variants"
 }
 
 export function isValidTab(tab: string): tab is SharedRoute | VariantRoute | GeneRoute | IcreRoute {
-  return isValidSharedTab(tab) || isValidVariantTab(tab) || isValidGeneTab(tab) || isValidIcreTab(tab)
+  return isValidSharedTab(tab) || isValidElementDefaultTab(tab) || isValidVariantTab(tab) || isValidGeneTab(tab) || isValidIcreTab(tab)
 }
 
 /**
@@ -49,7 +62,7 @@ export function isValidTab(tab: string): tab is SharedRoute | VariantRoute | Gen
  */
 export type ElementDetailsTab = {
   label: string,
-  href: VariantRoute | GeneRoute | IcreRoute
+  href: VariantRoute | GeneRoute | IcreRoute | RegionRoute
   iconPath: string
 }
 
@@ -57,14 +70,18 @@ export interface SharedTab extends ElementDetailsTab {
   href: SharedRoute
 }
 
-export interface VariantPortalTab extends ElementDetailsTab {
+export interface VariantDetailsTab extends ElementDetailsTab {
   href: VariantRoute
 }
 
-export interface GenePortalTab extends ElementDetailsTab {
+export interface GeneDetailsTab extends ElementDetailsTab {
   href: GeneRoute
 }
 
-export interface IcrePortalTab extends ElementDetailsTab {
+export interface IcreDetailsTab extends ElementDetailsTab {
   href: IcreRoute
+}
+
+export interface RegionDetailsTab extends ElementDetailsTab {
+  href: RegionRoute
 }

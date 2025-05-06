@@ -172,7 +172,7 @@ const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<
     handleResizeCols();
   }, [rows, columns, handleResizeCols]);
 
-  return emptyTableFallback && rowsWithIds.length === 0 ? (
+  return emptyTableFallback && rowsWithIds.length === 0 && !restDataGridProps.loading  ? (
     typeof emptyTableFallback === "string" ? (
       <EmptyTableFallback message={emptyTableFallback} />
     ) : (

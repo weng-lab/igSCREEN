@@ -4,8 +4,8 @@ import { Box, Tabs, Tab, Typography, Divider, Stack, IconButton, Drawer, Theme, 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useMemo } from "react";
-import { ElementDetailsTab, GenePortalTab, GenomicElementType, IcrePortalTab, VariantPortalTab } from "types/globalTypes";
-import { genePortalTabs, icrePortalTabs, sharedTabs, variantPortalTabs } from "./tabsConfig";
+import { ElementDetailsTab, GeneDetailsTab, GenomicElementType, IcreDetailsTab, RegionDetailsTab, VariantDetailsTab } from "types/globalTypes";
+import { geneDetailsTabs, icreDetailsTabs, regionDetailsTabs, sharedTabs, variantDetailsTabs } from "./tabsConfig";
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import Image from "next/image";
@@ -103,17 +103,19 @@ const ElementDetailsTabs = ({ elementType, elementID, orientation }: ElementDeta
   ), [orientation]);
 
   const tabs: ElementDetailsTab[] = useMemo(() => {
-    let elementSpecificTabs: VariantPortalTab[] | GenePortalTab[] | IcrePortalTab[];
+    let elementSpecificTabs: VariantDetailsTab[] | GeneDetailsTab[] | IcreDetailsTab[] | RegionDetailsTab[];
     switch (elementType) {
       case ("gene"):
-        elementSpecificTabs = genePortalTabs
+        elementSpecificTabs = geneDetailsTabs
         break
       case ("variant"):
-        elementSpecificTabs = variantPortalTabs
+        elementSpecificTabs = variantDetailsTabs
         break
       case ("icre"):
-        elementSpecificTabs = icrePortalTabs
+        elementSpecificTabs = icreDetailsTabs
         break
+      case ("region"):
+        elementSpecificTabs = regionDetailsTabs
     }
     return [
       ...elementSpecificTabs,
