@@ -13,7 +13,9 @@ import {
   DefaultTranscript,
   DisplayMode,
   GenomeBrowser,
+  getSessionStorage,
   GQLCytobands,
+  setSessionStorage,
   TranscriptHumanVersion,
   TranscriptTrackProps,
   useBrowserState,
@@ -60,12 +62,21 @@ export default function GenomeBrowserView({
   name: string;
   type: GenomicElementType;
 }) {
-  const [browserState, browserDispatch] = useBrowserState({
-    domain: expandCoordinates(coordinates),
-    width: 1500,
-    tracks: [],
-    highlights: [],
-  });
+  const state = getSessionStorage();
+  const setState = setSessionStorage;
+
+  const [browserState, browserDispatch] = useBrowserState(
+    state || {
+      domain: expandCoordinates(coordinates),
+      width: 1500,
+      tracks: [],
+      highlights: [],
+    }
+  );
+
+  useEffect(() => {
+    setState(browserState);
+  }, [browserState, setState]);
 
   // Bed track mouse over, out, and click handlers
   const icreMouseOver = useCallback(
@@ -92,14 +103,21 @@ export default function GenomeBrowserView({
   const onGeneClick = useCallback((gene: Transcript) => {
     const name = gene.name;
     if (name.includes("ENSG")) {
-      return
-    } 
+      return;
+    }
     window.open(`/gene/${name}`, "_blank");
-  }, [])
+  }, []);
 
   // Initialize tracks and highlights
   useEffect(() => {
-    const tracks = defaultTracks(type === "gene" ? name : "", icreMouseOver, icreMouseOut, onIcreClick, BedTooltip, onGeneClick);
+    const tracks = defaultTracks(
+      type === "gene" ? name : "",
+      icreMouseOver,
+      icreMouseOut,
+      onIcreClick,
+      BedTooltip,
+      onGeneClick
+    );
     tracks.forEach((track) => {
       browserDispatch({ type: BrowserActionType.ADD_TRACK, track });
     });
@@ -115,7 +133,7 @@ export default function GenomeBrowserView({
         id: name,
       },
     });
-  }, [coordinates, name, type, icreMouseOver, icreMouseOut, onIcreClick, browserDispatch]);
+  }, [state, coordinates, name, type, icreMouseOver, icreMouseOut, onIcreClick, browserDispatch]);
 
   // Bulk ATAC Modal
   const [showAddTracksModal, setShowAddTracksModal] = useState(false);
