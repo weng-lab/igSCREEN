@@ -1,7 +1,7 @@
-import { Box, Skeleton, Typography } from "@mui/material";
+import { Box, Skeleton } from "@mui/material";
 import useNearbycCREs from "common/hooks/useNearBycCREs";
 import useCcreDetails from "common/hooks/useCcreDetails";
-import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid";
+import { CustomDataGrid, CustomDataGridColDef } from "common/components/CustomDataGrid";
 import { UseGeneDataReturn } from "common/hooks/useGeneData";
 import { LinkComponent } from "common/components/LinkComponent";
 

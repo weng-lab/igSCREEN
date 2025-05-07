@@ -2,7 +2,7 @@
 import { Typography } from "@mui/material";
 import { GenomicRange } from "types/globalTypes";
 import { useGeneData } from "common/hooks/useGeneData";
-import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid";
+import { CustomDataGrid, CustomDataGridColDef } from "common/components/CustomDataGrid";
 import { LinkComponent } from "common/components/LinkComponent";
 
 const IntersectionGenes = ({ region }: { region: GenomicRange }) => {

@@ -1,5 +1,5 @@
 import { Stack } from "@mui/material"
-import IntersectingSNPs from "common/components/IntersectingSNPs"
+import IntersectingSNPs from "common/components/IntersectingElements/IntersectingSNPs"
 import { useElementMetadataReturn } from "common/hooks/useElementMetadata"
 import GWASLdr from "./GWASLdr"
 import EQTLs from "common/components/EQTLTables"

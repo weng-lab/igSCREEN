@@ -3,13 +3,13 @@
 import { Accordion, AccordionDetails, AccordionSummary, List, Skeleton, Typography } from "@mui/material";
 import { getCellCategoryDisplayname, getClassDisplayname } from "common/utility";
 import { GenomicRange } from "types/globalTypes";
-import { useIcreData, UseIcreDataReturn } from "common/hooks/useIcreData";
+import { useIcreData } from "common/hooks/useIcreData";
 import { useIcreActivity, UseIcreActivityReturn } from "common/hooks/useIcreActivity";
 import { useMemo } from "react";
 import { ExpandMore } from "@mui/icons-material";
 import ActiveCellTypesAccordion from "common/components/ActiveCellTypesAccordion";
-import CustomDataGrid, { CustomDataGridColDef, CustomDataGridProps } from "common/components/CustomDataGrid";
-import { LinkComponent } from "./LinkComponent";
+import { CustomDataGrid, CustomDataGridColDef, CustomDataGridProps } from "common/components/CustomDataGrid";
+import { LinkComponent } from "common/components/LinkComponent";
 
 const IntersectingiCREs = ({
   region,

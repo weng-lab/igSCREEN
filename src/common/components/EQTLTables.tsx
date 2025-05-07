@@ -4,7 +4,7 @@ import { toScientificNotationElement } from "common/utility";
 import { gql } from "types/generated";
 import { useElementMetadataReturn } from "common/hooks/useElementMetadata";
 import { GenomicElementType } from "types/globalTypes";
-import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid";
+import { CustomDataGridColDef, CustomDataGrid } from "common/components/CustomDataGrid";
 import { LinkComponent } from "./LinkComponent";
 
 const EQTL_QUERY = gql(`

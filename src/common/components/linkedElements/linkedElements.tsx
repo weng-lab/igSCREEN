@@ -1,7 +1,7 @@
 import { Stack } from "@mui/material";
 import { LinkedGeneInfo } from "common/hooks/useLinkedGenes";
 import { LinkedICREInfo } from "common/hooks/useLinkedICREs";
-import CustomDataGrid, { CustomDataGridColDef, CustomDataGridProps } from "../CustomDataGrid";
+import { CustomDataGridColDef, CustomDataGridProps, CustomDataGrid } from "common/components/CustomDataGrid";
 
 export interface TableDef<T extends LinkedGeneInfo | LinkedICREInfo> extends CustomDataGridProps<T> {
   sortColumn: keyof T & string; // Constrain to string keys

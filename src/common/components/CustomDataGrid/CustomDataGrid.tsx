@@ -1,7 +1,7 @@
 import { Box, Paper, PaperProps, Tooltip, TooltipProps, Typography } from "@mui/material";
 import { DataGridPro, DataGridProProps, GridAutosizeOptions, GridColDef, useGridApiRef } from "@mui/x-data-grid-pro";
 import CustomDataGridToolbar, { CustomDataGridToolbarProps } from "./dataGridToolbar";
-import { useMemo, useEffect, useCallback, ReactNode, ReactElement } from "react";
+import { useMemo, useEffect, useCallback, ReactElement } from "react";
 import { InfoOutlined } from "@mui/icons-material";
 import EmptyTableFallback from "./EmptyTableFallback";
 
@@ -95,7 +95,7 @@ export type CustomDataGridColDef<T extends CustomDataGridRow> = GridColDef & {
   tooltip?: TooltipProps["title"];
 };
 
-const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<T>) => {
+export const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<T>) => {
   /**
    * Provide defaults
    * @todo obey the defaults specified in the theme.
@@ -218,5 +218,3 @@ const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<
     </Paper>
   );
 };
-
-export default CustomDataGrid;

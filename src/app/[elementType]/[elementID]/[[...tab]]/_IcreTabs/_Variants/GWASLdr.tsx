@@ -2,7 +2,7 @@ import { Box, Skeleton } from "@mui/material";
 import useGWASLdr from "common/hooks/useGWASLdr";
 import { useSnpFrequencies } from "common/hooks/useSnpFrequencies";
 import { useMemo } from "react";
-import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid";
+import { CustomDataGrid, CustomDataGridColDef } from "common/components/CustomDataGrid";
 import { LinkComponent } from "common/components/LinkComponent";
 
 export default function GWASLdr({ accession }: { accession: string }) {

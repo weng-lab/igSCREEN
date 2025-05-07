@@ -5,7 +5,7 @@ import LinkedElements, { TableDef } from "common/components/linkedElements/linke
 import { useQuery } from "@apollo/client";
 import { calcDistRegionToRegion } from "common/utility";
 import { GenomicRange } from "types/globalTypes";
-import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid";
+import { CustomDataGrid, CustomDataGridColDef } from "common/components/CustomDataGrid";
 import { gql } from "types/generated";
 import { LinkComponent } from "common/components/LinkComponent";
 

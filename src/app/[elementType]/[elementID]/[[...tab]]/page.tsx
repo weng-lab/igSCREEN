@@ -17,9 +17,9 @@ import IcreVariantsTab from "./_IcreTabs/_Variants/IcreVariantsTab";
 import EQTLs from "common/components/EQTLTables";
 import GeneLinkedIcres from "./_GeneTabs/_iCREs/GeneLinkedIcres";
 import VariantInfo from "./_SnpTabs/_Variant/Variant";
-import IntersectingiCREs from "common/components/IntersectingiCREs";
-import IntersectingGenes from "common/components/IntersectingGenes";
-import IntersectingSNPs from "common/components/IntersectingSNPs";
+import IntersectingiCREs from "common/components/IntersectingElements/IntersectingiCREs";
+import IntersectingGenes from "common/components/IntersectingElements/IntersectingGenes";
+import IntersectingSNPs from "common/components/IntersectingElements/IntersectingSNPs";
 import { parseGenomicRangeString } from "common/utility";
 
 export default function DetailsPage({

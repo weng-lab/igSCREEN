@@ -2,8 +2,8 @@
 import { Typography } from "@mui/material";
 import { GenomicRange } from "types/globalTypes";
 import { useSnpData } from "common/hooks/useSnpData";
-import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid";
-import { LinkComponent } from "./LinkComponent";
+import { CustomDataGrid, CustomDataGridColDef } from "common/components/CustomDataGrid";
+import { LinkComponent } from "common/components/LinkComponent";
 
 const IntersectingSNPs = ({ region }: { region: GenomicRange }) => {
   const {

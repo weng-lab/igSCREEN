@@ -30,7 +30,6 @@ import { AssayEnum } from "types/generated/graphql";
 import NewUpSetPlot, { UpSetPlotDatum } from "app/lineage/UpSetPlot";
 import { v4 as uuidv4 } from "uuid";
 import { downloadSVG } from "common/utility";
-import MuiLink from "common/components/MuiLink";
 import { LinkComponent } from "common/components/LinkComponent";
 
 type Assay = "DNase" | "ATAC";

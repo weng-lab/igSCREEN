@@ -9,7 +9,7 @@ import {
 } from "@mui/x-data-grid-pro";
 import { OpenInNew } from "@mui/icons-material";
 import { Dispatch, SetStateAction } from "react";
-import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid";
+import { CustomDataGrid, CustomDataGridColDef } from "common/components/CustomDataGrid";
 
 export type GeneExpressionTableProps = GeneExpressionProps &
   SharedGeneExpressionPlotProps & {

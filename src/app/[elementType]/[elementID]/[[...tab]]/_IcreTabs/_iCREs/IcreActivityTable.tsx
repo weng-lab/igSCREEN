@@ -4,7 +4,7 @@ import { gridFilteredSortedRowEntriesSelector, GridRowSelectionModel, useGridApi
 import { IcreActivityProps, PointMetadata, SharedIcreActivityPlotProps } from "./IcreActivity"
 import { OpenInNew } from "@mui/icons-material"
 import { Dispatch, SetStateAction} from "react"
-import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid"
+import  { CustomDataGrid, CustomDataGridColDef } from "common/components/CustomDataGrid"
 
 export type IcreActivityTableProps =
   IcreActivityProps &
