@@ -1,11 +1,11 @@
 "use client";
 
 import { createContext, Dispatch, useReducer } from "react";
-import { GenomicElementType } from "types/globalTypes";
+import { GenomicElementType, TabRoute } from "types/globalTypes";
 
-export type OpenElement = { elementType: GenomicElementType; elementID: string };
+export type OpenElement = { elementType: GenomicElementType; elementID: string, tab: TabRoute };
 
-export type OpenElementsActionType = "add" | "remove";
+export type OpenElementsActionType = "add" | "remove" | "update";
 
 export type OpenElementsAction = { type: OpenElementsActionType; element: OpenElement };
 
@@ -30,6 +30,11 @@ const openElementsReducer = (openElements: OpenElementsState, action: OpenElemen
           (el) => el.elementID !== action.element.elementID || el.elementType !== action.element.elementType
         );
       } else return openElements;
+    }
+    case "update": {
+      console.log("update")
+      console.log(action.element.elementID);
+      return openElements.map((el) => (el.elementID === action.element.elementID ? action.element : el));
     }
   }
 };

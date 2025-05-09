@@ -231,7 +231,3 @@ export function calcDistRegionToRegion(
     return 0;
   }
 }
-
-
-
-export const constructElementURL = (element: OpenElement) => `/${element.elementType}/${element.elementID}`;

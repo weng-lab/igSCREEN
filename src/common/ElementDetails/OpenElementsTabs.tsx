@@ -1,10 +1,9 @@
 import { Close } from "@mui/icons-material";
 import { styled, Tab, Tabs } from "@mui/material";
 import { OpenElement, OpenElementsContext } from "common/OpenElementsContext";
-import { constructElementURL } from "common/utility";
 import { usePathname, useRouter } from "next/navigation";
 import { MouseEvent as ReactMouseEvent, useContext, useEffect, useRef } from "react";
-import { GenomicElementType } from "types/globalTypes";
+import { GenomicElementType, TabRoute } from "types/globalTypes";
 
 // Create a styled close button that looks like an IconButton
 // Needed to prevent IconButton from being child of button in tab (hydration error)
@@ -24,39 +23,62 @@ const CloseIconButton = styled("div")(({ theme }) => ({
   },
 }));
 
+
+export const constructElementURL = (element: OpenElement) => `/${element.elementType}/${element.elementID}/${element.tab}`;
+
 export type ElementDetailsHeaderProps = {
   elementType: GenomicElementType;
   elementID: string;
 };
 
 export const OpenElementsTabs = ({ elementID, elementType }: ElementDetailsHeaderProps) => {
-  const [openElements , dispatch] = useContext(OpenElementsContext);
+  const [openElements, dispatch] = useContext(OpenElementsContext);
 
   const router = useRouter();
   const isRouting = useRef(false);
+  const pathname = usePathname()
 
+  const currentTab = (pathname.split("/")[3] ?? "") as TabRoute;
+  const currentElement = openElements.find(el => el.elementID === elementID)
+
+  // Need to have flag to mark that navigation is underway, or else deleted tab would be added right back since the state update beats the routing update
   const navigateAndMark = (url: string) => {
     isRouting.current = true;
     router.push(url);
   };
 
+  // Resets the routing flag when routing is complete
   useEffect(() => {
-    // Reset routing flag when pathname changes
     isRouting.current = false;
-  }, [elementID]); //can I use elementID here instead
+  }, [elementID]);
 
   useEffect(() => {
-    // if current route is not in open elements
+    // if current route is not in open elements, and routing is not currently underway
     if (!isRouting.current && !openElements.some((el) => el.elementID === elementID)) {
       dispatch({
         type: "add",
         element: {
           elementID,
           elementType,
+          tab: currentTab
         },
       });
     }
   }, [dispatch, elementID, elementType, openElements]);
+
+  //sync the current tab to the state so that it is preserved on tab switch
+  useEffect(() => {
+    if (currentElement && !isRouting.current && currentTab !== currentElement.tab){
+      dispatch({
+        type: "update",
+        element: {
+          elementID,
+          elementType,
+          tab: currentTab
+        }
+      })
+    }
+  }, [currentTab, currentElement])
 
   const handleTabClick = (event: ReactMouseEvent<HTMLDivElement>, elToOpen: OpenElement) => {
     navigateAndMark(constructElementURL(elToOpen));
