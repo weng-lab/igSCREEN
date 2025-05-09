@@ -1,6 +1,7 @@
 import { GenomicRange } from "types/globalTypes"
 import { cellCategoryColors, cellCategoryDisplaynames, studyLinks } from "./consts"
 import { Typography, TypographyOwnProps } from "@mui/material";
+import { OpenElement } from "./OpenElementsContext";
 
 export function getClassDisplayname(input: string) {
   switch (input) {
@@ -230,3 +231,7 @@ export function calcDistRegionToRegion(
     return 0;
   }
 }
+
+
+
+export const constructElementURL = (element: OpenElement) => `/${element.elementType}/${element.elementID}`;

@@ -5,6 +5,7 @@ import ElementDetailsTabs from "./ElementDetailsTabs";
 import ElementDetailsHeader, { ElementDetailsHeaderProps } from "./ElementDetailsHeader";
 import RegionSearchHeader from "./RegionSearchHeader";
 import { parseGenomicRangeString } from "common/utility";
+import { OpenElementsTabs } from "./OpenElementsTabs";
 
 export type ElementDetailsLayoutProps = ElementDetailsHeaderProps & { children: React.ReactNode };
 
@@ -22,6 +23,7 @@ export default function ElementDetailsLayout({ elementID, elementType, children 
         spacing={spaceBetween}
         id={"main_content_container"}
       >
+        <OpenElementsTabs elementID={elementID} elementType={elementType} />
         <ElementDetailsBreadcrumbs />
         {elementType === "region" ? (
           <RegionSearchHeader region={parseGenomicRangeString(elementID)} />
