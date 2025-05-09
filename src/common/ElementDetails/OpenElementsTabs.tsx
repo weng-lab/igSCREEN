@@ -30,7 +30,7 @@ export type ElementDetailsHeaderProps = {
 };
 
 export const OpenElementsTabs = ({ elementID, elementType }: ElementDetailsHeaderProps) => {
-  const [{ openElements, currentElement }, dispatch] = useContext(OpenElementsContext);
+  const [openElements , dispatch] = useContext(OpenElementsContext);
 
   const router = useRouter();
   const isRouting = useRef(false);
