@@ -1,5 +1,5 @@
 import { Close } from "@mui/icons-material";
-import { Divider, styled, Tab, Tabs } from "@mui/material";
+import { Divider, styled, Tab, TabProps, Tabs } from "@mui/material";
 import { OpenElement, OpenElementsContext } from "common/OpenElementsContext";
 import { parseGenomicRangeString } from "common/utility";
 import { usePathname, useRouter } from "next/navigation";
@@ -142,6 +142,33 @@ export const OpenElementsTabs = ({ elementID, elementType }: ElementDetailsHeade
     }
   }
 
+  type WrappedTabProps = TabProps & {
+    element: OpenElement,
+    index: number
+  }
+
+  const WrappedTab = ({ element, index, ...props}: WrappedTabProps) => {
+    return (
+      <Draggable key={element.elementID} draggableId={element.elementID} index={index} disableInteractiveElementBlocking>
+        {(provided, snapshot) => (
+          <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+            <Tab
+              value={element.elementID}
+              label={formatElementID(element.elementID)}
+              onClick={(e) => handleTabClick(e, element)}
+              iconPosition="end"
+              icon={openElements.length > 1 && <CloseTabButton {...element} />}
+              sx={{ minHeight: "48px" }}
+              {...props}
+            />
+          </div>
+        )}
+      </Draggable>
+    );
+  };
+
+  WrappedTab.muiName = "Tab"
+
   return (
     <div>
       <DragDropContext onDragEnd={onDragEnd}>
@@ -161,20 +188,7 @@ export const OpenElementsTabs = ({ elementID, elementType }: ElementDetailsHeade
               {...provided.droppableProps} //contains attributes for styling and element lookups
             >
               {openElements.map((element, i) => (
-                <Draggable key={element.elementID} draggableId={element.elementID} index={i} disableInteractiveElementBlocking>
-                  {(provided, snapshot) => (
-                    <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                      <Tab
-                        value={element.elementID}
-                        label={formatElementID(element.elementID)}
-                        onClick={(e) => handleTabClick(e, element)}
-                        iconPosition="end"
-                        icon={openElements.length > 1 && <CloseTabButton {...element} />}
-                        sx={{ minHeight: "48px" }}
-                      />
-                    </div>
-                  )}
-                </Draggable>
+                <WrappedTab element={element} index={i} />
               ))}
               {provided.placeholder} {/* Provide placeholder to create space in <Droppable /> during a drag */}
             </Tabs>
