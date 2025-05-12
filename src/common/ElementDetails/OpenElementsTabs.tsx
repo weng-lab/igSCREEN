@@ -1,9 +1,11 @@
 import { Close } from "@mui/icons-material";
-import { styled, Tab, Tabs } from "@mui/material";
+import { Divider, styled, Tab, Tabs } from "@mui/material";
 import { OpenElement, OpenElementsContext } from "common/OpenElementsContext";
+import { parseGenomicRangeString } from "common/utility";
 import { usePathname, useRouter } from "next/navigation";
 import { MouseEvent as ReactMouseEvent, useContext, useEffect, useRef } from "react";
 import { GenomicElementType, TabRoute } from "types/globalTypes";
+import { DragDropContext, Draggable, Droppable, OnDragEndResponder } from '@hello-pangea/dnd';
 
 // Create a styled close button that looks like an IconButton
 // Needed to prevent IconButton from being child of button in tab (hydration error)
@@ -118,29 +120,68 @@ export const OpenElementsTabs = ({ elementID, elementType }: ElementDetailsHeade
     );
   };
 
+  const formatElementID = (id: string) => {
+    if (id.includes('%3A')) {
+      const region = parseGenomicRangeString(id)
+      return `${region.chromosome}:${region.start.toLocaleString()}-${region.end.toLocaleString()}`
+    } else {
+      return id
+    }
+  }
+
+  const onDragEnd: OnDragEndResponder<string> = (result, provided) => {
+    console.log(result)
+    console.log(provided)
+    if (result.destination.index !== result.source.index){
+      dispatch({
+        type: "reorder",
+        element: openElements.find(el => el.elementID === result.draggableId),
+        startIndex: result.source.index,
+        endIndex: result.destination.index
+      })
+    }
+  }
+
   return (
-    <Tabs
-      value={elementID}
-      id="open-elements-tabs"
-      variant="scrollable"
-      allowScrollButtonsMobile
-      sx={{
-        "& .MuiTabs-scrollButtons.Mui-disabled": {
-          opacity: 0.3,
-        },
-      }}
-    >
-      {openElements.map((element, i) => (
-        <Tab
-          value={element.elementID}
-          label={element.elementID}
-          key={i}
-          onClick={(e) => handleTabClick(e, element)}
-          iconPosition="end"
-          icon={<CloseTabButton {...element} />}
-          sx={{ minHeight: "48px" }}
-        />
-      ))}
-    </Tabs>
+    <div>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId="droppable" direction="horizontal">
+          {(provided, snapshot) => (
+            <Tabs
+              ref={provided.innerRef} //need to expose highest DOM node to the Droppable component
+              value={elementID}
+              id="open-elements-tabs"
+              variant="scrollable"
+              allowScrollButtonsMobile
+              sx={{
+                "& .MuiTabs-scrollButtons.Mui-disabled": {
+                  opacity: 0.3,
+                },
+              }}
+              {...provided.droppableProps} //contains attributes for styling and element lookups
+            >
+              {openElements.map((element, i) => (
+                <Draggable key={element.elementID} draggableId={element.elementID} index={i} disableInteractiveElementBlocking>
+                  {(provided, snapshot) => (
+                    <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                      <Tab
+                        value={element.elementID}
+                        label={formatElementID(element.elementID)}
+                        onClick={(e) => handleTabClick(e, element)}
+                        iconPosition="end"
+                        icon={openElements.length > 1 && <CloseTabButton {...element} />}
+                        sx={{ minHeight: "48px" }}
+                      />
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+              {provided.placeholder} {/* Provide placeholder to create space in <Droppable /> during a drag */}
+            </Tabs>
+          )}
+        </Droppable>
+      </DragDropContext>
+      <Divider />
+    </div>
   );
 };

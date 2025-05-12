@@ -8,6 +8,7 @@ import { ApolloWrapper } from "common/apollo/apollo-wrapper"
 import { Suspense } from "react"
 import MuiXLicense from "common/MuiXLicense";
 import { OpenElementsContextProvider } from "common/OpenElementsContext";
+import { Analytics } from "@vercel/analytics/next"
 
 export const metadata = {
   title: "igSCREEN: Search Immune Candidate cis-Regulatory Elements by ENCODE",
@@ -37,6 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </ApolloWrapper>
         </Suspense>
         <MuiXLicense />
+        <Analytics />
       </body>
     </html>
   )

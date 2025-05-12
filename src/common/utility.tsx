@@ -19,7 +19,8 @@ export function getClassDisplayname(input: string) {
 }
 
 /**
- * Very dumb parser for genomic range. No input checking. Assumes proper formatting and no commas in values
+ * Very dumb parser for genomic range. No input checking. Assumes proper formatting and no commas in values.
+ * Will handle URL encoding of ':' as '%3A'
  * @param input `String` with format chr:start-end
  * @returns `GenomicRange`
  */

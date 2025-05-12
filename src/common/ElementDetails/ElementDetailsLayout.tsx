@@ -1,5 +1,5 @@
 "use client";
-import { Box, Stack } from "@mui/material";
+import { Box, Divider, Stack } from "@mui/material";
 import ElementDetailsBreadcrumbs from "./ElementDetailsBreadcrumbs";
 import ElementDetailsTabs from "./ElementDetailsTabs";
 import ElementDetailsHeader, { ElementDetailsHeaderProps } from "./ElementDetailsHeader";
@@ -24,7 +24,7 @@ export default function ElementDetailsLayout({ elementID, elementType, children 
         id={"main_content_container"}
       >
         <OpenElementsTabs elementID={elementID} elementType={elementType} />
-        <ElementDetailsBreadcrumbs />
+        {/* <ElementDetailsBreadcrumbs /> */}
         {elementType === "region" ? (
           <RegionSearchHeader region={parseGenomicRangeString(elementID)} />
         ) : (

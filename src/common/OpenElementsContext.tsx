@@ -5,9 +5,13 @@ import { GenomicElementType, TabRoute } from "types/globalTypes";
 
 export type OpenElement = { elementType: GenomicElementType; elementID: string, tab: TabRoute };
 
-export type OpenElementsActionType = "add" | "remove" | "update";
+export type OpenElementsActionType = "add" | "remove" | "update" | "reorder";
 
-export type OpenElementsAction = { type: OpenElementsActionType; element: OpenElement };
+export type OpenElementsAction =
+  | { type: "add"; element: OpenElement }
+  | { type: "remove"; element: OpenElement }
+  | { type: "update"; element: OpenElement }
+  | { type: "reorder"; element: OpenElement; startIndex: number; endIndex: number };
 
 export type OpenElementsState = OpenElement[];
 
@@ -35,6 +39,15 @@ const openElementsReducer = (openElements: OpenElementsState, action: OpenElemen
       console.log("update")
       console.log(action.element.elementID);
       return openElements.map((el) => (el.elementID === action.element.elementID ? action.element : el));
+    }
+    case "reorder": {
+      console.log("reordering");
+      console.log(action.element.elementID);
+      const result = Array.from(openElements);
+      const [removed] = result.splice(action.startIndex, 1);
+      result.splice(action.endIndex, 0, removed);
+
+      return result;
     }
   }
 };
