@@ -11,6 +11,7 @@
     "gen-types -w": "graphql-codegen -w"
   },
   "dependencies": {
+    "6": "^0.0.1",
     "@apollo/client": "^3",
     "@apollo/experimental-nextjs-app-support": "^0.11",
     "@emailjs/browser": "^4.4.1",
@@ -19,6 +20,7 @@
     "@emotion/styled": "^11",
     "@hello-pangea/dnd": "^18.0.1",
     "@mui/icons-material": "^6",
+    "@mui/lab": "^6.0.1-beta.34",
     "@mui/material": "^6",
     "@mui/material-nextjs": "^6",
     "@mui/x-data-grid": "^7.27.3",

@@ -218,7 +218,7 @@ export const OpenElementsTabs = () => {
 
   return (
     <div>
-      <Stack direction="row" justifyContent="space-between">
+      <Stack direction="row" justifyContent={"space-between"}>
         <DragDropContext onDragEnd={onDragEnd}>
           <Droppable droppableId="droppable" direction="horizontal">
             {(provided, snapshot) => {
@@ -229,37 +229,44 @@ export const OpenElementsTabs = () => {
                   id="open-elements-tabs"
                   variant="scrollable"
                   allowScrollButtonsMobile
+                  scrollButtons={'auto'}
                   sx={{
                     "& .MuiTabs-scrollButtons.Mui-disabled": {
                       opacity: 0.3,
                     },
+                    "& .MuiTabs-flexContainer": {
+                      width: "100%",
+                    },
+                    // flexGrow: 1
+                    width: '100%'
                   }}
                   {...provided.droppableProps} //contains attributes for styling and element lookups
                 >
                   {openElements.map((element, i) => (
                     <WrappedTab
-                      key={i}
-                      closable={openElements.length > 1}
-                      element={element}
-                      index={i}
-                      handleCloseTab={handleCloseTab}
-                      handleTabClick={handleTabClick}
+                    key={i}
+                    closable={openElements.length > 1}
+                    element={element}
+                    index={i}
+                    handleCloseTab={handleCloseTab}
+                    handleTabClick={handleTabClick}
                     />
                   ))}
-                  {provided.placeholder} {/* Provide placeholder to create space in <Droppable /> during a drag */}
+                  {/* {provided.placeholder} */}
+                  {/* Provide placeholder to create space in <Droppable /> during a drag */}
                 </Tabs>
               );
             }}
           </Droppable>
         </DragDropContext>
-        <Stack spacing={2} direction={"row"}>
+        {/* <Stack spacing={2} direction={"row"}>
           <Button onClick={handleSort} endIcon={<Category />}>
             Sort Tabs
           </Button>
           <Button onClick={handleCloseAll} endIcon={<Close />} disabled={!(openElements.length > 1)}>
             Close All but Current
           </Button>
-        </Stack>
+        </Stack> */}
       </Stack>
       <Divider />
     </div>
