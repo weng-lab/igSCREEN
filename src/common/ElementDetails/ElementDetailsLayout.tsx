@@ -19,7 +19,7 @@ export default function ElementDetailsLayout({ elementID, elementType, children 
         <ElementDetailsTabs elementType={elementType} elementID={elementID} orientation="vertical" />
       </Box>
       <Stack
-        sx={{ flexGrow: 1, p: spaceBetween, overflow: "auto" }}
+        sx={{ flexGrow: 1, p: 2, overflow: "auto" }}
         spacing={spaceBetween}
         id={"main_content_container"}
       >

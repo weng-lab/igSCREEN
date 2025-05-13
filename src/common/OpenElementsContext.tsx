@@ -5,19 +5,18 @@ import { GenomicElementType, TabRoute } from "types/globalTypes";
 
 export type OpenElement = { elementType: GenomicElementType; elementID: string, tab: TabRoute };
 
-export type OpenElementsActionType = "add" | "remove" | "update" | "reorder";
-
 export type OpenElementsAction =
-  | { type: "add"; element: OpenElement }
-  | { type: "remove"; element: OpenElement }
-  | { type: "update"; element: OpenElement }
-  | { type: "reorder"; element: OpenElement; startIndex: number; endIndex: number };
+  | { type: "addElement"; element: OpenElement }
+  | { type: "removeElement"; element: OpenElement }
+  | { type: "updateElement"; element: OpenElement }
+  | { type: "reorder"; element: OpenElement; startIndex: number; endIndex: number }
+  | { type: "setState"; state: OpenElementsState }
 
 export type OpenElementsState = OpenElement[];
 
 const openElementsReducer = (openElements: OpenElementsState, action: OpenElementsAction) => {
   switch (action.type) {
-    case "add": {
+    case "addElement": {
       console.log("add:");
       console.log(action.element.elementID);
       if (openElements.some((el) => el.elementID === action.element.elementID)) {
@@ -26,7 +25,7 @@ const openElementsReducer = (openElements: OpenElementsState, action: OpenElemen
         return [...openElements, action.element];
       }
     }
-    case "remove": {
+    case "removeElement": {
       console.log("remove:");
       console.log(action.element.elementID);
       if (openElements.length > 1) {
@@ -35,7 +34,7 @@ const openElementsReducer = (openElements: OpenElementsState, action: OpenElemen
         );
       } else return openElements;
     }
-    case "update": {
+    case "updateElement": {
       console.log("update")
       console.log(action.element.elementID);
       return openElements.map((el) => (el.elementID === action.element.elementID ? action.element : el));
@@ -48,6 +47,11 @@ const openElementsReducer = (openElements: OpenElementsState, action: OpenElemen
       result.splice(action.endIndex, 0, removed);
 
       return result;
+    }
+    case "setState": {
+      console.log("reset")
+      console.log(action.state)
+      return action.state
     }
   }
 };
