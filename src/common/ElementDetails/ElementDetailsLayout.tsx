@@ -18,12 +18,7 @@ export default function ElementDetailsLayout({ elementID, elementType, children 
       <Box sx={{ display: { xs: "none", md: "initial" } }}>
         <ElementDetailsTabs elementType={elementType} elementID={elementID} orientation="vertical" />
       </Box>
-      <Stack
-        sx={{ flexGrow: 1, p: 2, overflow: "auto" }}
-        spacing={spaceBetween}
-        id={"main_content_container"}
-      >
-        <OpenElementsTabs />
+      <OpenElementsTabs>
         {/* <ElementDetailsBreadcrumbs /> */}
         {elementType === "region" ? (
           <RegionSearchHeader region={parseGenomicRangeString(elementID)} />
@@ -35,7 +30,7 @@ export default function ElementDetailsLayout({ elementID, elementType, children 
           <ElementDetailsTabs elementType={elementType} elementID={elementID} orientation="horizontal" />
         </Box>
         {children}
-      </Stack>
+      </OpenElementsTabs>
     </Stack>
   );
 }

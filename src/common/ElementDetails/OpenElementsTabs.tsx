@@ -1,12 +1,14 @@
-import { Category, Close } from "@mui/icons-material";
-import { Divider, styled, Tab, TabProps, Tabs, Stack, Button } from "@mui/material";
+import { Category, Close, DragIndicator } from "@mui/icons-material";
+import { Divider, styled, Tab, TabProps, Tabs, Stack, Button, Box, Typography } from "@mui/material";
 import { OpenElement, OpenElementsContext } from "common/OpenElementsContext";
 import { parseGenomicRangeString } from "common/utility";
 import { usePathname, useRouter } from "next/navigation";
 import { MouseEvent as ReactMouseEvent, useCallback, useContext, useEffect, useMemo, useRef } from "react";
 import { GenomicElementType, TabRoute } from "types/globalTypes";
 import { DragDropContext, Draggable, Droppable, OnDragEndResponder } from "@hello-pangea/dnd";
-import { url } from "inspector";
+import TabContext from "@mui/lab/TabContext";
+import TabList from "@mui/lab/TabList";
+import TabPanel from "@mui/lab/TabPanel";
 
 // Create a styled close button that looks like an IconButton
 // Needed to prevent IconButton from being child of button in tab (hydration error)
@@ -29,7 +31,7 @@ const CloseIconButton = styled("div")(({ theme }) => ({
 type WrappedTabProps = TabProps & {
   element: OpenElement;
   index: number;
-  closable: boolean
+  closable: boolean;
   handleTabClick: (el: OpenElement) => void;
   handleCloseTab: (el: OpenElement) => void;
 };
@@ -38,17 +40,19 @@ const WrappedTab = ({ element, index, closable, handleTabClick, handleCloseTab, 
   return (
     <Draggable key={element.elementID} draggableId={element.elementID} index={index} disableInteractiveElementBlocking>
       {(provided, snapshot) => (
-        <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-          <Tab
-            value={index}
-            label={formatElementID(element.elementID)}
-            onClick={() => handleTabClick(element)}
-            iconPosition="end"
-            icon={closable && <CloseTabButton element={element} handleCloseTab={handleCloseTab} />}
-            sx={{ minHeight: "48px" }}
-            {...props}
-          />
-        </div>
+        <Tab
+          value={index}
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          role="tab" //dragHandleProps sets role to "button" which breaks keyboard navigation. Revert back
+          label={formatElementID(element.elementID)}
+          onClick={() => handleTabClick(element)}
+          iconPosition="end"
+          icon={closable && <CloseTabButton element={element} handleCloseTab={handleCloseTab} />}
+          sx={{ minHeight: "48px" }}
+          {...props}
+        />
       )}
     </Draggable>
   );
@@ -90,7 +94,7 @@ export type ElementDetailsHeaderProps = {
   elementID: string;
 };
 
-export const OpenElementsTabs = () => {
+export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) => {
   const [openElements, dispatch] = useContext(OpenElementsContext);
 
   const router = useRouter();
@@ -200,10 +204,10 @@ export const OpenElementsTabs = () => {
       type: "setState",
       state: [currentElementState],
     });
-  }, [currentElementState, dispatch])
+  }, [currentElementState, dispatch]);
 
-    const handleSort = useCallback(() => {
-    const sortOrder: GenomicElementType[] = ["region", "gene","icre", "variant"];
+  const handleSort = useCallback(() => {
+    const sortOrder: GenomicElementType[] = ["region", "gene", "icre", "variant"];
     dispatch({
       type: "setState",
       state: [...openElements].sort((a, b) => {
@@ -214,61 +218,49 @@ export const OpenElementsTabs = () => {
         return typeComparison;
       }),
     });
-  }, [dispatch, openElements])
+  }, [dispatch, openElements]);
 
   return (
-    <div>
-      <Stack direction="row" justifyContent={"space-between"}>
-        <DragDropContext onDragEnd={onDragEnd}>
-          <Droppable droppableId="droppable" direction="horizontal">
-            {(provided, snapshot) => {
-              return (
-                <Tabs
-                  ref={provided.innerRef} //need to expose highest DOM node to the Droppable component
-                  value={tabIndex} // using tab index as value since
-                  id="open-elements-tabs"
-                  variant="scrollable"
-                  allowScrollButtonsMobile
-                  scrollButtons={'auto'}
-                  sx={{
-                    "& .MuiTabs-scrollButtons.Mui-disabled": {
-                      opacity: 0.3,
-                    },
-                    "& .MuiTabs-flexContainer": {
-                      width: "100%",
-                    },
-                    // flexGrow: 1
-                    width: '100%'
-                  }}
-                  {...provided.droppableProps} //contains attributes for styling and element lookups
-                >
-                  {openElements.map((element, i) => (
-                    <WrappedTab
-                    key={i}
-                    closable={openElements.length > 1}
-                    element={element}
-                    index={i}
-                    handleCloseTab={handleCloseTab}
-                    handleTabClick={handleTabClick}
-                    />
-                  ))}
-                  {/* {provided.placeholder} */}
-                  {/* Provide placeholder to create space in <Droppable /> during a drag */}
-                </Tabs>
-              );
-            }}
-          </Droppable>
-        </DragDropContext>
-        {/* <Stack spacing={2} direction={"row"}>
-          <Button onClick={handleSort} endIcon={<Category />}>
-            Sort Tabs
-          </Button>
-          <Button onClick={handleCloseAll} endIcon={<Close />} disabled={!(openElements.length > 1)}>
-            Close All but Current
-          </Button>
-        </Stack> */}
-      </Stack>
-      <Divider />
-    </div>
+    <Stack sx={{ flexGrow: 1, p: 2, overflow: "auto" }} spacing={2} id={"main_content_container"}>
+      <TabContext value={tabIndex}>
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="droppable" direction="horizontal">
+              {(provided, snapshot) => {
+                return (
+                  <TabList
+                    ref={provided.innerRef} //need to expose highest DOM node to the Droppable component
+                    id="open-elements-tabs"
+                    variant="scrollable"
+                    allowScrollButtonsMobile
+                    scrollButtons={snapshot.isDraggingOver ? false : "auto"} //prevent scroll buttons from appearing when dragging first or last item
+                    sx={{
+                      "& .MuiTabs-scrollButtons.Mui-disabled": {
+                        opacity: 0.3,
+                      },
+                      borderBottom: 1,
+                      borderColor: "divider",
+                    }}
+                    {...provided.droppableProps} //contains attributes for styling and element lookups
+                  >
+                    {openElements.map((element, i) => (
+                      <WrappedTab
+                      key={i}
+                      closable={openElements.length > 1}
+                      element={element}
+                      index={i}
+                      handleCloseTab={handleCloseTab}
+                      handleTabClick={handleTabClick}
+                      />
+                    ))}
+                    {/* Currently not using placeholder element, but could do so with the below */}
+                    {/* {provided.placeholder} */}
+                  </TabList>
+                );
+              }}
+            </Droppable>
+          </DragDropContext>
+        <TabPanel value={tabIndex} sx={{p: 0}}>{children}</TabPanel>
+      </TabContext>
+    </Stack>
   );
 };
