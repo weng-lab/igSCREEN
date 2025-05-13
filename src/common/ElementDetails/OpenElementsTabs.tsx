@@ -3,9 +3,10 @@ import { Divider, styled, Tab, TabProps, Tabs } from "@mui/material";
 import { OpenElement, OpenElementsContext } from "common/OpenElementsContext";
 import { parseGenomicRangeString } from "common/utility";
 import { usePathname, useRouter } from "next/navigation";
-import { MouseEvent as ReactMouseEvent, useContext, useEffect, useRef } from "react";
+import { MouseEvent as ReactMouseEvent, useCallback, useContext, useEffect, useMemo, useRef } from "react";
 import { GenomicElementType, TabRoute } from "types/globalTypes";
 import { DragDropContext, Draggable, Droppable, OnDragEndResponder } from '@hello-pangea/dnd';
+import { url } from "inspector";
 
 // Create a styled close button that looks like an IconButton
 // Needed to prevent IconButton from being child of button in tab (hydration error)
@@ -25,6 +26,55 @@ const CloseIconButton = styled("div")(({ theme }) => ({
   },
 }));
 
+type WrappedTabProps = TabProps & {
+  element: OpenElement,
+  index: number,
+  handleTabClick: (el: OpenElement) => void,
+  handleCloseTab: (el: OpenElement) => void
+}
+
+const WrappedTab = ({ element, index, handleTabClick, handleCloseTab, ...props }: WrappedTabProps) => {
+  return (
+    <Draggable key={element.elementID} draggableId={element.elementID} index={index} disableInteractiveElementBlocking>
+      {(provided, snapshot) => (
+        <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+          <Tab
+            value={index}
+            label={formatElementID(element.elementID)}
+            onClick={() => handleTabClick(element)}
+            iconPosition="end"
+            icon={<CloseTabButton element={element} handleCloseTab={handleCloseTab} />}
+            sx={{ minHeight: "48px" }}
+            {...props}
+          />
+        </div>
+      )}
+    </Draggable>
+  );
+};
+
+const CloseTabButton = ({element, handleCloseTab}: {element: OpenElement, handleCloseTab: (el: OpenElement) => void}) => {
+  return (
+    <CloseIconButton
+      onClick={(event) => {
+        event.stopPropagation();
+        handleCloseTab(element);
+      }}
+    >
+      <Close fontSize="inherit" />
+    </CloseIconButton>
+  );
+};
+
+const formatElementID = (id: string) => {
+  if (id.includes('%3A')) {
+    const region = parseGenomicRangeString(id)
+    return `${region.chromosome}:${region.start.toLocaleString()}-${region.end.toLocaleString()}`
+  } else {
+    return id
+  }
+}
+
 
 export const constructElementURL = (element: OpenElement) => `/${element.elementType}/${element.elementID}/${element.tab}`;
 
@@ -33,15 +83,22 @@ export type ElementDetailsHeaderProps = {
   elementID: string;
 };
 
-export const OpenElementsTabs = ({ elementID, elementType }: ElementDetailsHeaderProps) => {
+export const OpenElementsTabs = () => {
   const [openElements, dispatch] = useContext(OpenElementsContext);
 
   const router = useRouter();
   const isRouting = useRef(false);
   const pathname = usePathname()
 
-  const currentTab = (pathname.split("/")[3] ?? "") as TabRoute;
-  const currentElement = openElements.find(el => el.elementID === elementID)
+  const urlElementType = pathname.split("/")[1] as GenomicElementType;
+  const urlElementID = pathname.split("/")[2];
+  const urlTab = (pathname.split("/")[3] ?? "") as TabRoute;
+
+  const currentElementState = openElements.find(el => el.elementID === urlElementID)
+
+  /**
+   * @todo check here to make sure that the url is correct. Unless I don't need to because of the other checks in the layout and tab files?
+   */
 
   // Need to have flag to mark that navigation is underway, or else deleted tab would be added right back since the state update beats the routing update
   const navigateAndMark = (url: string) => {
@@ -52,44 +109,43 @@ export const OpenElementsTabs = ({ elementID, elementType }: ElementDetailsHeade
   // Resets the routing flag when routing is complete
   useEffect(() => {
     isRouting.current = false;
-  }, [elementID]);
+  }, [urlElementID]);
 
   useEffect(() => {
     // if current route is not in open elements, and routing is not currently underway
-    if (!isRouting.current && !openElements.some((el) => el.elementID === elementID)) {
+    if (!isRouting.current && !currentElementState) {
       dispatch({
         type: "add",
         element: {
-          elementID,
-          elementType,
-          tab: currentTab
+          elementID: urlElementID,
+          elementType: urlElementType,
+          tab: urlTab
         },
       });
     }
-  }, [dispatch, elementID, elementType, openElements]);
+  }, [currentElementState, urlElementID, urlElementType, urlTab]);
 
   //sync the current tab to the state so that it is preserved on tab switch
   useEffect(() => {
-    if (currentElement && !isRouting.current && currentTab !== currentElement.tab){
+    if (!isRouting.current && currentElementState && urlTab !== currentElementState.tab){
       dispatch({
         type: "update",
         element: {
-          elementID,
-          elementType,
-          tab: currentTab
+          ...currentElementState,
+          tab: urlTab
         }
       })
     }
-  }, [currentTab, currentElement])
+  }, [urlTab, currentElementState])
 
-  const handleTabClick = (event: ReactMouseEvent<HTMLDivElement>, elToOpen: OpenElement) => {
+  const handleTabClick = useCallback((elToOpen: OpenElement) => {
     navigateAndMark(constructElementURL(elToOpen));
-  };
+  }, [navigateAndMark])
 
-  const handleCloseTab = (elToClose: OpenElement) => {
+  const handleCloseTab = useCallback((elToClose: OpenElement) => {
     if (openElements.length > 1) {
       // only need to navigate if you're closing the tab that you're on
-      const needToNavigate = elToClose.elementID === elementID;
+      const needToNavigate = elToClose.elementID === urlElementID;
       if (needToNavigate) {
         const toCloseIndex = openElements.findIndex((openEl) => openEl.elementID === elToClose.elementID);
 
@@ -105,33 +161,9 @@ export const OpenElementsTabs = ({ elementID, elementType }: ElementDetailsHeade
         element: elToClose,
       });
     }
-  };
-
-  const CloseTabButton = (element: OpenElement) => {
-    return (
-      <CloseIconButton
-        onClick={(event) => {
-          event.stopPropagation();
-          handleCloseTab(element);
-        }}
-      >
-        <Close fontSize="inherit" />
-      </CloseIconButton>
-    );
-  };
-
-  const formatElementID = (id: string) => {
-    if (id.includes('%3A')) {
-      const region = parseGenomicRangeString(id)
-      return `${region.chromosome}:${region.start.toLocaleString()}-${region.end.toLocaleString()}`
-    } else {
-      return id
-    }
-  }
+  }, [openElements, navigateAndMark]) ;
 
   const onDragEnd: OnDragEndResponder<string> = (result, provided) => {
-    console.log(result)
-    console.log(provided)
     if (result.destination.index !== result.source.index){
       dispatch({
         type: "reorder",
@@ -142,41 +174,17 @@ export const OpenElementsTabs = ({ elementID, elementType }: ElementDetailsHeade
     }
   }
 
-  type WrappedTabProps = TabProps & {
-    element: OpenElement,
-    index: number
-  }
-
-  const WrappedTab = ({ element, index, ...props}: WrappedTabProps) => {
-    return (
-      <Draggable key={element.elementID} draggableId={element.elementID} index={index} disableInteractiveElementBlocking>
-        {(provided, snapshot) => (
-          <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-            <Tab
-              value={element.elementID}
-              label={formatElementID(element.elementID)}
-              onClick={(e) => handleTabClick(e, element)}
-              iconPosition="end"
-              icon={openElements.length > 1 && <CloseTabButton {...element} />}
-              sx={{ minHeight: "48px" }}
-              {...props}
-            />
-          </div>
-        )}
-      </Draggable>
-    );
-  };
-
-  WrappedTab.muiName = "Tab"
+  const tabIndex = useMemo(() => openElements.findIndex(el => el.elementID === urlElementID), [openElements, urlElementID])
 
   return (
     <div>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="droppable" direction="horizontal">
-          {(provided, snapshot) => (
+          {(provided, snapshot) => { return (
             <Tabs
               ref={provided.innerRef} //need to expose highest DOM node to the Droppable component
-              value={elementID}
+              value={tabIndex}
+              // value={openElements.findIndex(el => el.elementID === urlElementID)}
               id="open-elements-tabs"
               variant="scrollable"
               allowScrollButtonsMobile
@@ -188,11 +196,11 @@ export const OpenElementsTabs = ({ elementID, elementType }: ElementDetailsHeade
               {...provided.droppableProps} //contains attributes for styling and element lookups
             >
               {openElements.map((element, i) => (
-                <WrappedTab element={element} index={i} />
+                <WrappedTab element={element} index={i} handleCloseTab={handleCloseTab} handleTabClick={handleTabClick} />
               ))}
               {provided.placeholder} {/* Provide placeholder to create space in <Droppable /> during a drag */}
             </Tabs>
-          )}
+          )}}
         </Droppable>
       </DragDropContext>
       <Divider />
