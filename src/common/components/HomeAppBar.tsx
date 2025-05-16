@@ -132,7 +132,7 @@ function ResponsiveAppBar({ maintenance }: ResponsiveAppBarProps) {
         <Typography sx={{ fontWeight: 'bold' }}>Scheduled maintenance is in progress... Some features may be unavailable</Typography>
         <WarningAmberIcon />
       </Stack>
-      <AppBar position="fixed" sx={{ top: maintenance ? '40px' : '0px' }}>
+      <AppBar position="sticky" sx={{ top: maintenance ? '40px' : '0px' }}>
         <Container maxWidth={false}>
           <Toolbar sx={{ justifyContent: "space-between" }}>
             {/* Display Icon on left when >=900px */}
@@ -268,7 +268,7 @@ function ResponsiveAppBar({ maintenance }: ResponsiveAppBarProps) {
       {/* Bumps content down since header is position="fixed" */}
       {/* Bumps content down even more if banner is open */}
       {maintenance && <Box sx={{ height: '40px' }} />}
-      <Toolbar />
+      {/* <Toolbar /> */}
     </>
   );
 };

@@ -1,5 +1,5 @@
 import { Category, Close, DragIndicator } from "@mui/icons-material";
-import { Divider, styled, Tab, TabProps, Tabs, Stack, Button, Box, Typography } from "@mui/material";
+import { Divider, styled, Tab, TabProps, Tabs, Stack, Button, Box, Typography, Paper } from "@mui/material";
 import { OpenElement, OpenElementsContext } from "common/OpenElementsContext";
 import { parseGenomicRangeString } from "common/utility";
 import { usePathname, useRouter } from "next/navigation";
@@ -221,46 +221,52 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
   }, [dispatch, openElements]);
 
   return (
-    <Stack sx={{ flexGrow: 1, p: 2, overflow: "auto" }} spacing={2} id={"main_content_container"}>
-      <TabContext value={tabIndex}>
-          <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="droppable" direction="horizontal">
-              {(provided, snapshot) => {
-                return (
-                  <TabList
-                    ref={provided.innerRef} //need to expose highest DOM node to the Droppable component
-                    id="open-elements-tabs"
-                    variant="scrollable"
-                    allowScrollButtonsMobile
-                    scrollButtons={snapshot.isDraggingOver ? false : "auto"} //prevent scroll buttons from appearing when dragging first or last item
-                    sx={{
-                      "& .MuiTabs-scrollButtons.Mui-disabled": {
-                        opacity: 0.3,
-                      },
-                      borderBottom: 1,
-                      borderColor: "divider",
-                    }}
-                    {...provided.droppableProps} //contains attributes for styling and element lookups
-                  >
-                    {openElements.map((element, i) => (
-                      <WrappedTab
-                      key={i}
-                      closable={openElements.length > 1}
-                      element={element}
-                      index={i}
-                      handleCloseTab={handleCloseTab}
-                      handleTabClick={handleTabClick}
-                      />
-                    ))}
-                    {/* Currently not using placeholder element, but could do so with the below */}
-                    {/* {provided.placeholder} */}
-                  </TabList>
-                );
-              }}
-            </Droppable>
-          </DragDropContext>
-        <TabPanel value={tabIndex} sx={{p: 0}}>{children}</TabPanel>
-      </TabContext>
-    </Stack>
+    <TabContext value={tabIndex}>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId="droppable" direction="horizontal">
+          {(provided, snapshot) => {
+            // if (openElements.length === 1) return
+            return (
+              <TabList
+                ref={provided.innerRef} //need to expose highest DOM node to the Droppable component
+                id="open-elements-tabs"
+                variant="scrollable"
+                allowScrollButtonsMobile
+                scrollButtons={snapshot.draggingFromThisWith ? false : "auto"} //prevent scroll buttons from appearing when dragging first or last item
+                component={Paper}
+                elevation={1}
+                square
+                sx={{
+                  "& .MuiTabs-scrollButtons.Mui-disabled": {
+                    opacity: 0.3,
+                  },
+                  position: "sticky",
+                  top: 0,
+                  // zIndex: 1
+                }}
+                {...provided.droppableProps} //contains attributes for styling and element lookups
+              >
+                {openElements.map((element, i) => (
+                  <WrappedTab
+                    key={i}
+                    closable={openElements.length > 1}
+                    element={element}
+                    index={i}
+                    handleCloseTab={handleCloseTab}
+                    handleTabClick={handleTabClick}
+                  />
+                ))}
+                {/* Currently not using placeholder element, but could do so with the below */}
+                {/* {provided.placeholder} */}
+              </TabList>
+            );
+          }}
+        </Droppable>
+      </DragDropContext>
+      {/* Content is child of OpenElementTabs due to ARIA accessibility guidelines: https://www.w3.org/WAI/ARIA/apg/patterns/tabs/ */}
+      <TabPanel value={tabIndex} sx={{ p: 0 }}>
+        <Box sx={{ overflow: "auto" }} id="element-details-wrapper">{children}</Box>
+      </TabPanel>
+    </TabContext>
   );
 };
