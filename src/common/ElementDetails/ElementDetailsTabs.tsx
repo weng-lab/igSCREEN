@@ -70,9 +70,6 @@ const ElementDetailsTabs = ({ elementType, elementID, orientation }: ElementDeta
       scrollButtons={horizontalTabs ? true : false}
       sx={{
         "& .MuiTab-root": {
-          // alignItems: verticalTabs ? "flex-start" : "initial",
-          // paddingLeft: verticalTabs ? 2 : 'initial',
-          padding: verticalTabs ? 1 : "initial",
           "&.Mui-selected": {
             backgroundColor: "rgba(73, 77, 107, .15)",
           },
@@ -82,7 +79,7 @@ const ElementDetailsTabs = ({ elementType, elementID, orientation }: ElementDeta
         },
         width: verticalTabs ? verticalTabsWidth : "initial",
         height: '100%',
-        backgroundColor: '#F2F2F2'
+        backgroundColor: verticalTabs && '#F2F2F2'
       }}
     >
       {tabs.map((tab, index) => (
@@ -92,13 +89,9 @@ const ElementDetailsTabs = ({ elementType, elementID, orientation }: ElementDeta
           LinkComponent={Link}
           href={`/${elementType}/${elementID}/${tab.href}`}
           key={tab.href}
-          icon={<Image width={50} height={50} src={tab.iconPath} alt={tab.label + " icon"} />}
+          icon={<Image width={verticalTabs ? 50 : 40} height={verticalTabs ? 50 : 40} src={tab.iconPath} alt={tab.label + " icon"} />}
         />
       ))}
-      {/* <Tab label="Conservation" />
-      <Tab label="Functional Characterization" />
-      <Tab label="TF Motifs and Sequence Features" />
-      <Tab label="ChromHMM States" /> */}
     </Tabs>
   );
 }

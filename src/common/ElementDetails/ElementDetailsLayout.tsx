@@ -1,6 +1,5 @@
 "use client";
 import { Box, Stack } from "@mui/material";
-import ElementDetailsBreadcrumbs from "./ElementDetailsBreadcrumbs";
 import ElementDetailsTabs from "./ElementDetailsTabs";
 import ElementDetailsHeader, { ElementDetailsHeaderProps } from "./ElementDetailsHeader";
 import RegionSearchHeader from "./RegionSearchHeader";
@@ -10,12 +9,10 @@ import { OpenElementsTabs } from "./OpenElementsTabs";
 export type ElementDetailsLayoutProps = ElementDetailsHeaderProps & { children: React.ReactNode };
 
 export default function ElementDetailsLayout({ elementID, elementType, children }: ElementDetailsLayoutProps) {
-  const spaceBetween = 2;
-
   return (
     <OpenElementsTabs>
       {/* Everything below the open elements tabs */}
-      <Stack height={"100%"} width={"100%"} direction={"row"}>
+      <Stack height={"100%"} width={"100%"} direction={"row"} id="element-details-main-content">
         {/* View tabs, shown only on desktop */}
         <Box sx={{ display: { xs: "none", md: "initial" }}}>
           <ElementDetailsTabs elementType={elementType} elementID={elementID} orientation="vertical" />

@@ -111,15 +111,13 @@ function ResponsiveAppBar({ maintenance }: ResponsiveAppBarProps) {
   }
 
   return (
-    <>
+    <Box position={"sticky"} top={0} zIndex={1}>
       <Stack
         direction={"row"}
         style={{
-          position: 'fixed',
           width: '100%',
           height: "40px",
           backgroundColor: '#ff9800',
-          zIndex: 1301,
           color: '#fff',
           textAlign: 'center',
           display: !maintenance && "none"
@@ -132,8 +130,7 @@ function ResponsiveAppBar({ maintenance }: ResponsiveAppBarProps) {
         <Typography sx={{ fontWeight: 'bold' }}>Scheduled maintenance is in progress... Some features may be unavailable</Typography>
         <WarningAmberIcon />
       </Stack>
-      <AppBar position="sticky" sx={{ top: maintenance ? '40px' : '0px' }}>
-        <Container maxWidth={false}>
+      <AppBar position="static">
           <Toolbar sx={{ justifyContent: "space-between" }}>
             {/* Display Icon on left when >=900px */}
             <Box
@@ -263,13 +260,8 @@ function ResponsiveAppBar({ maintenance }: ResponsiveAppBarProps) {
               toggleDrawer={toggleDrawer}
             />
           </Toolbar>
-        </Container>
       </AppBar>
-      {/* Bumps content down since header is position="fixed" */}
-      {/* Bumps content down even more if banner is open */}
-      {maintenance && <Box sx={{ height: '40px' }} />}
-      {/* <Toolbar /> */}
-    </>
+    </Box>
   );
 };
 export default ResponsiveAppBar;

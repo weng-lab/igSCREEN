@@ -17,29 +17,34 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" style={{height: '100%'}}>
-      <body style={{height: '100%'}}>
+    <html lang="en">
+      <body>
         <Suspense>
           <ApolloWrapper>
             <AppRouterCacheProvider>
               <ThemeProvider theme={theme}>
                 <OpenElementsContextProvider>
-                <CssBaseline />
-                <AppBar maintenance={false}/>
-                <Stack justifyContent={"space-between"} minHeight={"100vh"} height={'100%'}>
-                  <Box flexGrow={1}>
-                    {children}
-                  </Box>
-                  <Footer />
-                </Stack>
+                  {/* Overall wrapper set to be screen height */}
+                  <Stack height={"100vh"} id="app-wrapper">
+                    <AppBar maintenance={false} />
+                    {/* Content and footer combined grow to fill rest of the height */}
+                    <Stack flexGrow={1} overflow={"auto"} id="content-footer-wrapper">
+                      {/* Content wrapper grows to fill all available space */}
+                      <Stack flexGrow={1} id="content-wrapper">
+                        {children}
+                      </Stack>
+                      <Footer />
+                    </Stack>
+                  </Stack>
                 </OpenElementsContextProvider>
               </ThemeProvider>
             </AppRouterCacheProvider>
           </ApolloWrapper>
         </Suspense>
+        <CssBaseline />
         <MuiXLicense />
         <Analytics />
       </body>
     </html>
-  )
+  );
 }

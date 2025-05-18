@@ -1,5 +1,5 @@
-import { Category, Close, DragIndicator } from "@mui/icons-material";
-import { Divider, styled, Tab, TabProps, Tabs, Stack, Button, Box, Typography, Paper } from "@mui/material";
+import { Add, Category, Close, DragIndicator, MoreVert } from "@mui/icons-material";
+import { Divider, styled, Tab, TabProps, Tabs, Stack, Button, Box, Typography, Paper, IconButton, Tooltip } from "@mui/material";
 import { OpenElement, OpenElementsContext } from "common/OpenElementsContext";
 import { parseGenomicRangeString } from "common/utility";
 import { usePathname, useRouter } from "next/navigation";
@@ -9,6 +9,7 @@ import { DragDropContext, Draggable, Droppable, OnDragEndResponder } from "@hell
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
+import OpenElementsTabsMenu from "./OpenElementsTabsMenu";
 
 // Create a styled close button that looks like an IconButton
 // Needed to prevent IconButton from being child of button in tab (hydration error)
@@ -194,11 +195,6 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
     }
   };
 
-  const tabIndex = useMemo(
-    () => openElements.findIndex((el) => el.elementID === urlElementID),
-    [openElements, urlElementID]
-  );
-
   const handleCloseAll = useCallback(() => {
     dispatch({
       type: "setState",
@@ -218,54 +214,73 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
         return typeComparison;
       }),
     });
-  }, [dispatch, openElements]);
+    }, [dispatch, openElements]);
+
+  const tabIndex = useMemo(
+    () => openElements.findIndex((el) => el.elementID === urlElementID),
+    [openElements, urlElementID]
+  );
+
+  const handleSwitchFocus = () => {
+    document.getElementById('search-component').click()
+  }
 
   return (
     <TabContext value={tabIndex}>
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="droppable" direction="horizontal">
-          {(provided, snapshot) => {
-            // if (openElements.length === 1) return
-            return (
-              <TabList
-                ref={provided.innerRef} //need to expose highest DOM node to the Droppable component
-                id="open-elements-tabs"
-                variant="scrollable"
-                allowScrollButtonsMobile
-                scrollButtons={snapshot.draggingFromThisWith ? false : "auto"} //prevent scroll buttons from appearing when dragging first or last item
-                component={Paper}
-                elevation={1}
-                square
-                sx={{
-                  "& .MuiTabs-scrollButtons.Mui-disabled": {
-                    opacity: 0.3,
-                  },
-                  position: "sticky",
-                  top: 0,
-                  // zIndex: 1
-                }}
-                {...provided.droppableProps} //contains attributes for styling and element lookups
-              >
-                {openElements.map((element, i) => (
-                  <WrappedTab
-                    key={i}
-                    closable={openElements.length > 1}
-                    element={element}
-                    index={i}
-                    handleCloseTab={handleCloseTab}
-                    handleTabClick={handleTabClick}
-                  />
-                ))}
-                {/* Currently not using placeholder element, but could do so with the below */}
-                {/* {provided.placeholder} */}
-              </TabList>
-            );
-          }}
-        </Droppable>
-      </DragDropContext>
+      <Paper elevation={1} square sx={{position: "sticky", top: 0, zIndex: 1}}>
+        <Stack direction={"row"}>
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="droppable" direction="horizontal">
+              {(provided, snapshot) => {
+                // if (openElements.length === 1) return
+                return (
+                  <TabList
+                    ref={provided.innerRef} //need to expose highest DOM node to the Droppable component
+                    id="open-elements-tabs"
+                    variant="scrollable"
+                    allowScrollButtonsMobile
+                    scrollButtons={snapshot.draggingFromThisWith ? false : "auto"} //prevent scroll buttons from appearing when dragging first or last item
+                    sx={{
+                      "& .MuiTabs-scrollButtons.Mui-disabled": {
+                        opacity: 0.3,
+                      },
+                      flexGrow: 1,
+                    }}
+                    {...provided.droppableProps} //contains attributes for styling and element lookups
+                  >
+                    {openElements.map((element, i) => (
+                      <WrappedTab
+                        key={i}
+                        closable={openElements.length > 1}
+                        element={element}
+                        index={i}
+                        handleCloseTab={handleCloseTab}
+                        handleTabClick={handleTabClick}
+                      />
+                    ))}
+                    {!snapshot.draggingFromThisWith &&
+                      <Tooltip title="New Search" placement="right">
+                        <IconButton onClick={handleSwitchFocus}>
+                          <Add />
+                        </IconButton>
+                      </Tooltip>
+                    }
+                    {/* Currently not using placeholder element, but could do so with the below */}
+                    {/* {provided.placeholder} */}
+                  </TabList>
+                );
+              }}
+            </Droppable>
+          </DragDropContext>
+          
+          <OpenElementsTabsMenu handleCloseAll={handleCloseAll} handleSort={handleSort} />
+        </Stack>
+      </Paper>
       {/* Content is child of OpenElementTabs due to ARIA accessibility guidelines: https://www.w3.org/WAI/ARIA/apg/patterns/tabs/ */}
-      <TabPanel value={tabIndex} sx={{ p: 0 }}>
-        <Box sx={{ overflow: "auto" }} id="element-details-wrapper">{children}</Box>
+      <TabPanel value={tabIndex} sx={{ p: 0, flexGrow: 1 }}>
+        <Box sx={{ overflow: "auto", height: "100%" }} id="element-details-wrapper">
+          {children}
+        </Box>
       </TabPanel>
     </TabContext>
   );
