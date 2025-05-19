@@ -79,7 +79,7 @@ const ElementDetailsTabs = ({ elementType, elementID, orientation }: ElementDeta
         },
         width: verticalTabs ? verticalTabsWidth : "initial",
         height: '100%',
-        backgroundColor: verticalTabs && '#F2F2F2'
+        backgroundColor: verticalTabs && '#F2F2F2',
       }}
     >
       {tabs.map((tab, index) => (

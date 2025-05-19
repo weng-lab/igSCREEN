@@ -104,7 +104,7 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
 
 
   /**
-   * This is still f
+   * Used to give focus to the MobileMenu search bar
    */
   useEffect(() => {
   if (isMenuMounted && shouldFocusSearch) {
@@ -252,7 +252,7 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
 
   return (
     <TabContext value={tabIndex}>
-      <Paper elevation={1} square sx={{position: "sticky", top: 0, zIndex: 1}}>
+      <Paper elevation={1} square sx={{ position: "sticky", top: 0, zIndex: 1 }} id="open-elements-tabs">
         <Stack direction={"row"}>
           <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="droppable" direction="horizontal">
@@ -261,7 +261,6 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
                 return (
                   <TabList
                     ref={provided.innerRef} //need to expose highest DOM node to the Droppable component
-                    id="open-elements-tabs"
                     variant="scrollable"
                     allowScrollButtonsMobile
                     scrollButtons={snapshot.draggingFromThisWith ? false : "auto"} //prevent scroll buttons from appearing when dragging first or last item
@@ -283,13 +282,13 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
                         handleTabClick={handleTabClick}
                       />
                     ))}
-                    {!snapshot.draggingFromThisWith &&
+                    {!snapshot.draggingFromThisWith && (
                       <Tooltip title="New Search" placement="right">
                         <IconButton onClick={handleSwitchFocus}>
                           <Add />
                         </IconButton>
                       </Tooltip>
-                    }
+                    )}
                     {/* Currently not using placeholder element, but could do so with the below */}
                     {/* {provided.placeholder} */}
                   </TabList>
@@ -297,15 +296,13 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
               }}
             </Droppable>
           </DragDropContext>
-          
+
           <OpenElementsTabsMenu handleCloseAll={handleCloseAll} handleSort={handleSort} />
         </Stack>
       </Paper>
       {/* Content is child of OpenElementTabs due to ARIA accessibility guidelines: https://www.w3.org/WAI/ARIA/apg/patterns/tabs/ */}
-      <TabPanel value={tabIndex} sx={{ p: 0, flexGrow: 1 }}>
-        <Box sx={{ overflow: "auto", height: "100%" }} id="element-details-wrapper">
-          {children}
-        </Box>
+      <TabPanel value={tabIndex} sx={{ p: 0, flexGrow: 1, height: '100%' }} id="element-details-TabPanel">
+        {children}
       </TabPanel>
     </TabContext>
   );

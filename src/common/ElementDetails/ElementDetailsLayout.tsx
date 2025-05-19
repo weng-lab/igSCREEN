@@ -12,20 +12,21 @@ export default function ElementDetailsLayout({ elementID, elementType, children 
   return (
     <OpenElementsTabs>
       {/* Everything below the open elements tabs */}
-      <Stack height={"100%"} width={"100%"} direction={"row"} id="element-details-main-content">
+      <Stack height={"100%"} width={"100%"} direction={"row"} id="element-details-wrapper">
         {/* View tabs, shown only on desktop */}
-        <Box sx={{ display: { xs: "none", md: "initial" }}}>
+        <Box sx={{ display: { xs: "none", md: "initial" }}} id="element-details-desktop-tabs">
           <ElementDetailsTabs elementType={elementType} elementID={elementID} orientation="vertical" />
         </Box>
         {/* Content is child of OpenElementTabs due to ARIA accessibility guidelines: https://www.w3.org/WAI/ARIA/apg/patterns/tabs/. Children wrapped in <TabPanel> */}
-        <Stack width={'100%'} overflow={"auto"} spacing={2} m={2}>
+        {/* I want this to be the scrolling container, which means that it needs to have height of 100% and overflow auto with all ancestors setting height 100% */}
+        <Stack width={'100%'} height={'100%'} overflow={"auto"} spacing={2} m={2} id="element-details-main-content">
           {elementType === "region" ? (
             <RegionSearchHeader region={parseGenomicRangeString(elementID)} />
           ) : (
             <ElementDetailsHeader elementType={elementType} elementID={elementID} />
           )}
           {/* View tabs, shown only on mobile */}
-          <Box sx={{ display: { xs: "initial", md: "none" }, borderBottom: 1, borderColor: "divider" }}>
+          <Box sx={{ display: { xs: "initial", md: "none" }, borderBottom: 1, borderColor: "divider" }} id="element-details-desktop-tabs">
             <ElementDetailsTabs elementType={elementType} elementID={elementID} orientation="horizontal" />
           </Box>
           {children}
