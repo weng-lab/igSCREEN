@@ -53,8 +53,6 @@ export default function AutoComplete({closeDrawer, ...props}: AutoCompleteProps)
   return (
     <GenomeSearch
       {...props}
-      //Needed to find element to focus it from tabs component
-      id="search-component"
       assembly="GRCh38"
       queries={["Gene", "cCRE", "SNP", "Coordinate"]}
       showiCREFlag

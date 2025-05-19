@@ -9,6 +9,7 @@ import { Suspense } from "react"
 import MuiXLicense from "common/MuiXLicense";
 import { OpenElementsContextProvider } from "common/OpenElementsContext";
 import { Analytics } from "@vercel/analytics/next"
+import { MenuControlProvider } from "common/MenuContext";
 
 export const metadata = {
   title: "igSCREEN: Search Immune Candidate cis-Regulatory Elements by ENCODE",
@@ -23,20 +24,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <ApolloWrapper>
             <AppRouterCacheProvider>
               <ThemeProvider theme={theme}>
-                <OpenElementsContextProvider>
-                  {/* Overall wrapper set to be screen height */}
-                  <Stack height={"100vh"} id="app-wrapper">
-                    <AppBar maintenance={false} />
-                    {/* Content and footer combined grow to fill rest of the height */}
-                    <Stack flexGrow={1} overflow={"auto"} id="content-footer-wrapper">
-                      {/* Content wrapper grows to fill all available space */}
-                      <Stack flexGrow={1} id="content-wrapper">
-                        {children}
+                <MenuControlProvider>
+                  <OpenElementsContextProvider>
+                    {/* Overall wrapper set to be screen height */}
+                    <Stack height={"100vh"} id="app-wrapper">
+                      <AppBar maintenance={false} />
+                      {/* Content and footer combined grow to fill rest of the height */}
+                      <Stack flexGrow={1} overflow={"auto"} id="content-footer-wrapper">
+                        {/* Content wrapper grows to fill all available space */}
+                        <Stack flexGrow={1} id="content-wrapper">
+                          {children}
+                        </Stack>
+                        <Footer />
                       </Stack>
-                      <Footer />
                     </Stack>
-                  </Stack>
-                </OpenElementsContextProvider>
+                  </OpenElementsContextProvider>
+                </MenuControlProvider>
               </ThemeProvider>
             </AppRouterCacheProvider>
           </ApolloWrapper>

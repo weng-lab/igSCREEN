@@ -3,13 +3,14 @@ import { Divider, styled, Tab, TabProps, Tabs, Stack, Button, Box, Typography, P
 import { OpenElement, OpenElementsContext } from "common/OpenElementsContext";
 import { parseGenomicRangeString } from "common/utility";
 import { usePathname, useRouter } from "next/navigation";
-import { MouseEvent as ReactMouseEvent, useCallback, useContext, useEffect, useMemo, useRef } from "react";
+import { MouseEvent as ReactMouseEvent, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { GenomicElementType, TabRoute } from "types/globalTypes";
 import { DragDropContext, Draggable, Droppable, OnDragEndResponder } from "@hello-pangea/dnd";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import OpenElementsTabsMenu from "./OpenElementsTabsMenu";
+import { useMenuControl } from "common/MenuContext";
 
 // Create a styled close button that looks like an IconButton
 // Needed to prevent IconButton from being child of button in tab (hydration error)
@@ -97,6 +98,25 @@ export type ElementDetailsHeaderProps = {
 
 export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) => {
   const [openElements, dispatch] = useContext(OpenElementsContext);
+
+  const { menuCanBeOpened,isMenuMounted, openMenu } = useMenuControl();
+  const [shouldFocusSearch, setShouldFocusSearch] = useState(false);
+
+
+  /**
+   * This is still f
+   */
+  useEffect(() => {
+  if (isMenuMounted && shouldFocusSearch) {
+    console.log("running")
+    const el = document.getElementById('mobile-search-component')
+    if (el) {
+      console.log("found");
+      el.focus();
+      setShouldFocusSearch(false); // reset the flag
+    }
+  }
+}, [isMenuMounted, shouldFocusSearch]);
 
   const router = useRouter();
   const isRouting = useRef(false);
@@ -222,8 +242,13 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
   );
 
   const handleSwitchFocus = () => {
-    document.getElementById('search-component').click()
-  }
+    if (menuCanBeOpened) {
+      openMenu();
+      setShouldFocusSearch(true); // defer focusing until menu is open
+    } else {
+      document.getElementById('desktop-search-component')?.focus();
+    }
+  };
 
   return (
     <TabContext value={tabIndex}>
