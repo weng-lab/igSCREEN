@@ -31,7 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                       <AppBar maintenance={false} />
                       {/* Overflow=auto provides scrolling ancestor for OpenElementsTab. This allows it to be position=sticky with top=0, and right under AppBar*/}
                       <Stack flexGrow={1} overflow={"auto"} minHeight={0} id="content-wrapper">
-                        <Box flexGrow={1}>{children}</Box>
+                        <Stack flexGrow={1}>{children}</Stack>
                         <Footer />
                       </Stack>
                     </Stack>
