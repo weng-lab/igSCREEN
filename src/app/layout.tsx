@@ -27,15 +27,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <MenuControlProvider>
                   <OpenElementsContextProvider>
                     {/* Overall wrapper set to be screen height */}
-                    <Stack height={"100vh"} id="app-wrapper">
+                    <Stack height={"100vh"} minHeight={0} id="app-wrapper">
                       <AppBar maintenance={false} />
-                      {/* Content and footer combined grow to fill rest of the height */}
                       {/* Overflow=auto provides scrolling ancestor for OpenElementsTab. This allows it to be position=sticky with top=0, and right under AppBar*/}
-                      <Stack flexGrow={1} overflow={"auto"} id="content-footer-wrapper">
-                        {/* Content wrapper grows to fill all available space so footer is on bottom */}
-                        <Stack flexGrow={1} id="content-wrapper">
-                          {children}
-                        </Stack>
+                      <Stack flexGrow={1} overflow={"auto"} minHeight={0} id="content-wrapper">
+                        <Box flexGrow={1}>{children}</Box>
                         <Footer />
                       </Stack>
                     </Stack>
