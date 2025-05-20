@@ -223,6 +223,12 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
     }
   };
 
+  const moreThanOneElementOpen = useMemo(() => {
+    if (openElements.length > 1) {
+      return true
+    } else return false
+  }, [openElements])
+
   const handleCloseAll = useCallback(() => {
     dispatch({
       type: "setState",
@@ -277,7 +283,7 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
                         opacity: 0.3,
                       },
                       "& .MuiTabs-indicator": {
-                        display: 'none' // hide selected indicator since we're adding one back in to fix drag behavior
+                        display: "none", // hide selected indicator since we're adding one back in to fix drag behavior
                       },
                       flexGrow: 1,
                     }}
@@ -307,7 +313,10 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
             </Droppable>
           </DragDropContext>
 
-          <OpenElementsTabsMenu handleCloseAll={handleCloseAll} handleSort={handleSort} />
+          <OpenElementsTabsMenu
+            handleCloseAll={moreThanOneElementOpen ? handleCloseAll : undefined}
+            handleSort={moreThanOneElementOpen ? handleSort : undefined}
+          />
         </Stack>
       </Paper>
       {/* Content is child of OpenElementTabs due to ARIA accessibility guidelines: https://www.w3.org/WAI/ARIA/apg/patterns/tabs/ */}

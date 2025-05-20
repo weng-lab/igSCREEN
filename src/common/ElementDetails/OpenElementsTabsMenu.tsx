@@ -7,8 +7,8 @@ import { MenuList, ListItemIcon, ListItemText } from "@mui/material";
 import { Category, Close } from "@mui/icons-material";
 
 type OpenElementsTabsMenuProps = {
-  handleCloseAll: () => void;
-  handleSort: () => void;
+  handleCloseAll?: () => void;
+  handleSort?: () => void;
 };
 
 const OpenElementsTabsMenu = (props: OpenElementsTabsMenuProps) => {
@@ -24,12 +24,12 @@ const OpenElementsTabsMenu = (props: OpenElementsTabsMenuProps) => {
     setAnchorEl(null);
   };
 
-  const handleCloseAll = () => {
+  const handleCloseAllClick = () => {
     props.handleCloseAll();
     handleCloseMenu();
   };
 
-  const handleSort = () => {
+  const handleSortClick = () => {
     props.handleSort();
     handleCloseMenu();
   };
@@ -53,17 +53,17 @@ const OpenElementsTabsMenu = (props: OpenElementsTabsMenuProps) => {
           horizontal: "right",
         }}
       >
-        <MenuItem onClick={handleSort}>
+        <MenuItem onClick={handleSortClick} disabled={!props.handleSort}>
           <ListItemIcon>
             <Category fontSize="small"/>
           </ListItemIcon>
           <ListItemText>Sort Tabs</ListItemText>
         </MenuItem>
-        <MenuItem onClick={handleCloseAll}>
+        <MenuItem onClick={handleCloseAllClick} disabled={!props.handleCloseAll}>
           <ListItemIcon>
             <Close fontSize="small"/>
           </ListItemIcon>
-          <ListItemText>Close Rest</ListItemText>
+          <ListItemText>Close Other Tabs</ListItemText>
         </MenuItem>
       </Menu>
     </>
