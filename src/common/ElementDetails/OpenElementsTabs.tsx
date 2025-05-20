@@ -1,5 +1,5 @@
 import { Add, Category, Close, DragIndicator, MoreVert } from "@mui/icons-material";
-import { Divider, styled, Tab, TabProps, Tabs, Stack, Button, Box, Typography, Paper, IconButton, Tooltip } from "@mui/material";
+import { Divider, styled, Tab, TabProps, Tabs, Stack, Button, Box, Typography, Paper, IconButton, Tooltip, SxProps, Theme } from "@mui/material";
 import { OpenElement, OpenElementsContext } from "common/OpenElementsContext";
 import { parseGenomicRangeString } from "common/utility";
 import { usePathname, useRouter } from "next/navigation";
@@ -41,21 +41,30 @@ type WrappedTabProps = TabProps & {
 const WrappedTab = ({ element, index, closable, handleTabClick, handleCloseTab, ...props }: WrappedTabProps) => {
   return (
     <Draggable key={element.elementID} draggableId={element.elementID} index={index} disableInteractiveElementBlocking>
-      {(provided, snapshot) => (
-        <Tab
-          value={index}
-          ref={provided.innerRef}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-          role="tab" //dragHandleProps sets role to "button" which breaks keyboard navigation. Revert back
-          label={formatElementID(element.elementID)}
-          onClick={() => handleTabClick(element)}
-          iconPosition="end"
-          icon={closable && <CloseTabButton element={element} handleCloseTab={handleCloseTab} />}
-          sx={{ minHeight: "48px" }}
-          {...props}
-        />
-      )}
+      {(provided, snapshot) => {
+        const dragStyles: SxProps<Theme> = snapshot.isDragging
+          ? {
+              backgroundColor: "white",
+              border: (theme) => `1px solid ${theme.palette.primary.main}`,
+              borderRadius: 1
+            }
+          : {};
+        return (
+          <Tab
+            value={index}
+            ref={provided.innerRef}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            role="tab" //dragHandleProps sets role to "button" which breaks keyboard navigation. Revert back
+            label={formatElementID(element.elementID)}
+            onClick={() => handleTabClick(element)}
+            iconPosition="end"
+            icon={closable && <CloseTabButton element={element} handleCloseTab={handleCloseTab} />}
+            sx={{ minHeight: "48px", ...dragStyles }}
+            {...props}
+          />
+        )   
+      }}
     </Draggable>
   );
 };
