@@ -34,21 +34,26 @@ type WrappedTabProps = TabProps & {
   element: OpenElement;
   index: number;
   closable: boolean;
+  isSelected: boolean;
   handleTabClick: (el: OpenElement) => void;
   handleCloseTab: (el: OpenElement) => void;
 };
 
-const WrappedTab = ({ element, index, closable, handleTabClick, handleCloseTab, ...props }: WrappedTabProps) => {
+const WrappedTab = ({ element, index, closable, isSelected, handleTabClick, handleCloseTab, ...props }: WrappedTabProps) => {
   return (
     <Draggable key={element.elementID} draggableId={element.elementID} index={index} disableInteractiveElementBlocking>
       {(provided, snapshot) => {
-        const dragStyles: SxProps<Theme> = snapshot.isDragging
+        const draggingStyles: SxProps<Theme> = snapshot.isDragging
           ? {
               backgroundColor: "white",
               border: (theme) => `1px solid ${theme.palette.primary.main}`,
               borderRadius: 1
             }
           : {};
+        const selectedStyles: SxProps<Theme> = isSelected ? {
+          borderBottom: (theme) => `2px solid ${theme.palette.primary.main}`,
+          borderTop: (theme) => `2px solid transparent`
+        } : {}
         return (
           <Tab
             value={index}
@@ -60,7 +65,7 @@ const WrappedTab = ({ element, index, closable, handleTabClick, handleCloseTab, 
             onClick={() => handleTabClick(element)}
             iconPosition="end"
             icon={closable && <CloseTabButton element={element} handleCloseTab={handleCloseTab} />}
-            sx={{ minHeight: "48px", ...dragStyles }}
+            sx={{ minHeight: "48px", ...selectedStyles, ...draggingStyles }}
             {...props}
           />
         )   
@@ -117,10 +122,8 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
    */
   useEffect(() => {
   if (isMenuMounted && shouldFocusSearch) {
-    console.log("running")
     const el = document.getElementById('mobile-search-component')
     if (el) {
-      console.log("found");
       el.focus();
       setShouldFocusSearch(false); // reset the flag
     }
@@ -136,10 +139,6 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
   const urlTab = (pathname.split("/")[3] ?? "") as TabRoute;
 
   const currentElementState = openElements.find((el) => el.elementID === urlElementID);
-
-  /**
-   * @todo check here to make sure that the url is correct. Unless I don't need to because of the other checks in the layout and tab files?
-   */
 
   // Need to have flag to mark that navigation is underway, or else deleted tab would be added right back since the state update beats the routing update
   const navigateAndMark = useCallback(
@@ -251,7 +250,7 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
   );
 
   const handleSwitchFocus = () => {
-    if (menuCanBeOpened) {
+    if (menuCanBeOpened) { // aka isMobile
       openMenu();
       setShouldFocusSearch(true); // defer focusing until menu is open
     } else {
@@ -267,7 +266,6 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
           <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="droppable" direction="horizontal">
               {(provided, snapshot) => {
-                // if (openElements.length === 1) return
                 return (
                   <TabList
                     ref={provided.innerRef} //need to expose highest DOM node to the Droppable component
@@ -278,6 +276,9 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
                       "& .MuiTabs-scrollButtons.Mui-disabled": {
                         opacity: 0.3,
                       },
+                      "& .MuiTabs-indicator": {
+                        display: 'none' // hide selected indicator since we're adding one back in to fix drag behavior
+                      },
                       flexGrow: 1,
                     }}
                     {...provided.droppableProps} //contains attributes for styling and element lookups
@@ -285,16 +286,17 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
                     {openElements.map((element, i) => (
                       <WrappedTab
                         key={i}
+                        index={i}
                         closable={openElements.length > 1}
                         element={element}
-                        index={i}
+                        isSelected={urlElementID === element.elementID}
                         handleCloseTab={handleCloseTab}
                         handleTabClick={handleTabClick}
                       />
                     ))}
                     {!snapshot.draggingFromThisWith && (
                       <Tooltip title="New Search" placement="right">
-                        <Tab onClick={handleSwitchFocus} icon={<Add fontSize="small" />} sx={{minWidth: 0}}/>
+                        <Tab onClick={handleSwitchFocus} icon={<Add fontSize="small" />} sx={{ minWidth: 0 }} />
                       </Tooltip>
                     )}
                     {/* Currently not using placeholder element, but could do so with the below */}
