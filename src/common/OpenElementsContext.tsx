@@ -51,10 +51,10 @@ const openElementsReducer = (openElements: OpenElementsState, action: OpenElemen
       break;
     }
   }
-  console.log("Dispatch called: ")
-  console.log({action, openElements})
-  console.log("New State:")
-  console.log(newState)
+  // console.log("Dispatch called: ")
+  // console.log({action, openElements})
+  // console.log("New State:")
+  // console.log(newState)
   return newState
 };
 

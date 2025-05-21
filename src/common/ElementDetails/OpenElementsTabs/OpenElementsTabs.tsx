@@ -62,7 +62,6 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
    */
   const navigateAndMark = useCallback(
     (url: string) => {
-      console.log("routing to " + url);
       isRoutingRef.current = true;
       router.push(url);
     },
