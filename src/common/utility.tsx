@@ -1,20 +1,30 @@
-import { GenomicRange } from "types/globalTypes"
-import { cellCategoryColors, cellCategoryDisplaynames, studyLinks } from "./consts"
+import { GenomicElementType, GenomicRange, TabRoute } from "types/globalTypes";
+import { cellCategoryColors, cellCategoryDisplaynames, studyLinks } from "./consts";
 import { Typography, TypographyOwnProps } from "@mui/material";
 import { OpenElement } from "./OpenElementsContext";
 
 export function getClassDisplayname(input: string) {
   switch (input) {
-    case ("PLS"): return "Promoter"
-    case ("pELS"): return "Proximal Enhancer"
-    case ("dELS"): return "Distal Enhancer"
-    case ("CA-H3K4me3"): return "Chromatin Accessible with H3K4me3"
-    case ("CA-TF"): return "Chromatin Accessible with TF"
-    case ("CA-CTCF"): return "Chromatin Accessible with CTCF"
-    case ("CA"): return "Chromatin Accessible"
-    case ("TF"): return "Transcription Factor"
-    case ("InActive"): return "Inactive"
-    default: return "No Class Found"
+    case "PLS":
+      return "Promoter";
+    case "pELS":
+      return "Proximal Enhancer";
+    case "dELS":
+      return "Distal Enhancer";
+    case "CA-H3K4me3":
+      return "Chromatin Accessible with H3K4me3";
+    case "CA-TF":
+      return "Chromatin Accessible with TF";
+    case "CA-CTCF":
+      return "Chromatin Accessible with CTCF";
+    case "CA":
+      return "Chromatin Accessible";
+    case "TF":
+      return "Transcription Factor";
+    case "InActive":
+      return "Inactive";
+    default:
+      return "No Class Found";
   }
 }
 
@@ -31,54 +41,60 @@ export function parseGenomicRangeString(input: string): GenomicRange {
       chromosome: input.split("%3A")[0],
       start: +input.split("%3A")[1].split("-")[0],
       end: +input.split("%3A")[1].split("-")[1],
-    }
-  } else return {
-    chromosome: input.split(":")[0],
-    start: +input.split(":")[1].split("-")[0],
-    end: +input.split(":")[1].split("-")[1],
-  }
+    };
+  } else
+    return {
+      chromosome: input.split(":")[0],
+      start: +input.split(":")[1].split("-")[0],
+      end: +input.split(":")[1].split("-")[1],
+    };
 }
 
 /**
- * 
- * @param subpath 
+ *
+ * @param subpath
  * @returns A formatted portal name for the passed string. If no matching portal returns null
  */
 export function formatPortal(subpath: string): string {
   switch (subpath) {
-    case ("variant"): return "Variant"
-    case ("gene"): return "Gene"
-    case ("icre"): return "iCRE"
-    case ("region"): return "Region"
-    default: return null
+    case "variant":
+      return "Variant";
+    case "gene":
+      return "Gene";
+    case "icre":
+      return "iCRE";
+    case "region":
+      return "Region";
+    default:
+      return null;
   }
 }
 
 /**
- * 
+ *
  * @param cell use ```lineage``` field of return data
  * @returns the corresponding color for that cell category, or black if not found
  */
 export function getCellCategoryColor(cell: string): string {
-  return cellCategoryColors[cell] || "#000000"
+  return cellCategoryColors[cell] || "#000000";
 }
 
 /**
- * 
+ *
  * @param cell use ```lineage``` field of return data
  * @returns the corresponding celltype display name for the category, or "Unknown Celltype if not found"
  */
 export function getCellCategoryDisplayname(cell: string) {
-  return cellCategoryDisplaynames[cell] || "Unknown Celltype"
+  return cellCategoryDisplaynames[cell] || "Unknown Celltype";
 }
 
 /**
- * 
+ *
  * @param study use ```study``` field of return data
  * @returns The corresponding DOI link for the study, or "Unknown Study" if not found
  */
 export function getStudyLink(study: string) {
-  return studyLinks[study] || "Unknown Study"
+  return studyLinks[study] || "Unknown Study";
 }
 
 /**
@@ -87,25 +103,25 @@ export function getStudyLink(study: string) {
 export function toScientificNotation(num: number, sigFigs?: number) {
   // Convert the number to scientific notation using toExponential
   let scientific = num.toExponential(sigFigs ?? undefined);
-  
+
   // Split the scientific notation into the coefficient and exponent parts
-  let [coefficient, exponent] = scientific.split('e');
-  
+  let [coefficient, exponent] = scientific.split("e");
+
   // Format the exponent part
   let expSign = exponent[0];
   exponent = exponent.slice(1);
-  
+
   // Convert the exponent to a superscript string
   let superscriptExponent = exponent
-    .split('')
-    .map(char => '⁰¹²³⁴⁵⁶⁷⁸⁹'[char] || char)
-    .join('');
-  
+    .split("")
+    .map((char) => "⁰¹²³⁴⁵⁶⁷⁸⁹"[char] || char)
+    .join("");
+
   // Add the sign back to the exponent
-  superscriptExponent = (expSign === '-' ? '⁻' : '') + superscriptExponent;
-  
+  superscriptExponent = (expSign === "-" ? "⁻" : "") + superscriptExponent;
+
   // Combine the coefficient with the superscript exponent
-  return coefficient + '×10' + superscriptExponent;
+  return coefficient + "×10" + superscriptExponent;
 }
 
 /**
@@ -114,11 +130,7 @@ export function toScientificNotation(num: number, sigFigs?: number) {
  * @param sigFigs Number of desired significant figures
  * @returns
  */
-export function toScientificNotationElement(
-  num: number,
-  sigFigs: number,
-  typographyProps?: TypographyOwnProps
-) {
+export function toScientificNotationElement(num: number, sigFigs: number, typographyProps?: TypographyOwnProps) {
   if (num > 0.01) {
     return <Typography {...typographyProps}>{num.toFixed(2)}</Typography>;
   }
@@ -136,15 +148,15 @@ export function toScientificNotationElement(
 
 const svgData = (_svg): string => {
   let svg = _svg.cloneNode(true);
-  svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
   let preface = '<?xml version="1.0" standalone="no"?>';
-  return preface + svg.outerHTML.replace(/\n/g, '').replace(/[ ]{8}/g, '');
+  return preface + svg.outerHTML.replace(/\n/g, "").replace(/[ ]{8}/g, "");
 };
 
-const downloadData = (text: string, filename: string, type: string = 'text/plain') => {
-  const a = document.createElement('a');
+const downloadData = (text: string, filename: string, type: string = "text/plain") => {
+  const a = document.createElement("a");
   document.body.appendChild(a);
-  a.setAttribute('style', 'display: none');
+  a.setAttribute("style", "display: none");
   const blob = new Blob([text], { type });
   const url = window.URL.createObjectURL(blob);
   a.href = url;
@@ -155,8 +167,8 @@ const downloadData = (text: string, filename: string, type: string = 'text/plain
 };
 
 export const downloadSVG = (ref: React.MutableRefObject<SVGSVGElement>, filename: string) => {
-  ref.current && downloadData(svgData(ref.current!), filename, 'image/svg;charset=utf-8');
-}
+  ref.current && downloadData(svgData(ref.current!), filename, "image/svg;charset=utf-8");
+};
 
 /**
  *
@@ -230,5 +242,94 @@ export function calcDistRegionToRegion(
     return coord1.start - coord2.end;
   } else {
     return 0;
+  }
+}
+
+/**
+ *
+ * @param urlOpen properly formatted URI Encoded query parameter representing ```OpenElement[]``` state
+ * @returns ```OpenElement[]```
+ * @todo make this validate that elementType and elementTab are valid instead of casting, and catch malformed urls
+ */
+export function getOpenElementFromURL(urlOpen: string | null): OpenElement[] {
+  return decodeURIComponent(urlOpen)
+    .split(",")
+    .map((entry) => {
+      const [elementType, elementID, tab = ""] = entry.split("/");
+      return {
+        elementType: decodeElementType(elementType),
+        elementID,
+        tab: decodeTabRoute(tab),
+      };
+    })
+    .filter((x) => x.elementType && x.elementID); // filter out any invalid
+}
+
+/**
+ *
+ * @param openElements
+ * @returns URI encoded query parameter representing the ```OpenElement[]``` state
+ */
+export function encodeOpenElementsToURL(openElements: OpenElement[]): string {
+  return encodeURIComponent(openElements.map((x) => [encodeElementType(x.elementType), x.elementID, encodeTabRoute(x.tab)].join("/")).join(","));
+}
+
+function encodeElementType(e: GenomicElementType): string {
+  switch (e) {
+    case "gene":
+      return "g";
+    case "icre":
+      return "i";
+    case "variant":
+      return "v";
+    case "region":
+      return "r";
+  }
+}
+
+function decodeElementType(code: string): GenomicElementType | undefined {
+  switch (code) {
+    case "g":
+      return "gene";
+    case "i":
+      return "icre";
+    case "v":
+      return "variant";
+    case "r":
+      return "region";
+    default:
+      return undefined;
+  }
+}
+
+function encodeTabRoute(t: TabRoute): string {
+  switch (t) {
+    case "genes":
+      return "g";
+    case "icres":
+      return "i";
+    case "variants":
+      return "v";
+    case "browser":
+      return "b";
+    case "":
+      return "";
+  }
+}
+
+function decodeTabRoute(code: string): TabRoute | undefined {
+  switch (code) {
+    case "g":
+      return "genes";
+    case "i":
+      return "icres";
+    case "v":
+      return "variants";
+    case "b":
+      return "browser";
+    case "":
+      return ""
+    default:
+      return undefined;
   }
 }

@@ -1,8 +1,8 @@
 import { Add, Category, Close, DragIndicator, MoreVert } from "@mui/icons-material";
 import { Divider, styled, Tab, TabProps, Tabs, Stack, Button, Box, Typography, Paper, IconButton, Tooltip, SxProps, Theme } from "@mui/material";
 import { OpenElement, OpenElementsContext } from "common/OpenElementsContext";
-import { parseGenomicRangeString } from "common/utility";
-import { usePathname, useRouter } from "next/navigation";
+import { encodeOpenElementsToURL, getOpenElementFromURL, parseGenomicRangeString } from "common/utility";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { MouseEvent as ReactMouseEvent, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { GenomicElementType, TabRoute } from "types/globalTypes";
 import { DragDropContext, Draggable, Droppable, OnDragEndResponder } from "@hello-pangea/dnd";
@@ -54,6 +54,8 @@ const WrappedTab = ({ element, index, closable, isSelected, handleTabClick, hand
           borderBottom: (theme) => `2px solid ${theme.palette.primary.main}`,
           borderTop: (theme) => `2px solid transparent`
         } : {}
+        
+
         return (
           <Tab
             value={index}
@@ -133,12 +135,28 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
   const router = useRouter();
   const isRouting = useRef(false);
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const urlElementType = pathname.split("/")[1] as GenomicElementType;
   const urlElementID = pathname.split("/")[2];
   const urlTab = (pathname.split("/")[3] ?? "") as TabRoute;
 
   const currentElementState = openElements.find((el) => el.elementID === urlElementID);
+
+  // On initial load, take the state from the URL
+  const initializedRef = useRef(false);
+  useEffect(() => {
+    if (!initializedRef.current) {
+      const openParam = searchParams.get("open");
+      if (openParam) {
+        const openElementsFromUrl: OpenElement[] = getOpenElementFromURL(openParam)
+        if (openElementsFromUrl.length > 0) {
+          dispatch({ type: "setState", state: openElementsFromUrl });
+        }
+      }
+      initializedRef.current = true;
+    }
+  }, [dispatch, searchParams]);
 
   // Need to have flag to mark that navigation is underway, or else deleted tab would be added right back since the state update beats the routing update
   const navigateAndMark = useCallback(
@@ -164,9 +182,15 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
           elementType: urlElementType,
           tab: urlTab,
         },
-      });
+      })
     }
   }, [currentElementState, dispatch, urlElementID, urlElementType, urlTab]);
+
+  //sync URL with current state (skip if not initialized yet)
+  useEffect(() => {
+    if (!initializedRef.current) return;
+    router.push(pathname + "?open=" + encodeOpenElementsToURL(openElements));
+  }, [openElements, pathname, router, searchParams, urlElementID, urlElementType, urlTab]);
 
   //sync the current tab to the state so that it is preserved on tab switch
   useEffect(() => {
@@ -183,9 +207,9 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
 
   const handleTabClick = useCallback(
     (elToOpen: OpenElement) => {
-      navigateAndMark(constructElementURL(elToOpen));
+      navigateAndMark(constructElementURL(elToOpen) + '?' + searchParams.toString());
     },
-    [navigateAndMark]
+    [navigateAndMark, searchParams]
   );
 
   const handleCloseTab = useCallback(
@@ -312,7 +336,6 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
               }}
             </Droppable>
           </DragDropContext>
-
           <OpenElementsTabsMenu
             handleCloseAll={moreThanOneElementOpen ? handleCloseAll : undefined}
             handleSort={moreThanOneElementOpen ? handleSort : undefined}

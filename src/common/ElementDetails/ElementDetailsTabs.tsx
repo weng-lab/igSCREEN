@@ -2,13 +2,14 @@
 
 import { Box, Tabs, Tab, Typography, Divider, Stack, IconButton, Drawer, Theme, CSSObject, styled } from "@mui/material";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import React, { useEffect, useMemo } from "react";
 import { ElementDetailsTab, GeneDetailsTab, GenomicElementType, IcreDetailsTab, RegionDetailsTab, VariantDetailsTab } from "types/globalTypes";
 import { geneDetailsTabs, icreDetailsTabs, regionDetailsTabs, sharedTabs, variantDetailsTabs } from "./tabsConfig";
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import Image from "next/image";
+import { getOpenElementFromURL } from "common/utility";
 
 export type ElementDetailsTabsProps = {
   elementType: GenomicElementType
@@ -18,8 +19,9 @@ export type ElementDetailsTabsProps = {
 
 const ElementDetailsTabs = ({ elementType, elementID, orientation }: ElementDetailsTabsProps) => {
   const pathname = usePathname();
+  const searchParams = useSearchParams()
   const currentTab = pathname.substring(pathname.lastIndexOf('/') + 1) === elementID ? "" : pathname.substring(pathname.lastIndexOf('/') + 1)
-
+  
   const [value, setValue] = React.useState(currentTab);
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -87,7 +89,7 @@ const ElementDetailsTabs = ({ elementType, elementID, orientation }: ElementDeta
           label={tab.label}
           value={tab.href}
           LinkComponent={Link}
-          href={`/${elementType}/${elementID}/${tab.href}`}
+          href={`/${elementType}/${elementID}/${tab.href}` + '?' + searchParams.toString()}
           key={tab.href}
           icon={<Image width={verticalTabs ? 50 : 40} height={verticalTabs ? 50 : 40} src={tab.iconPath} alt={tab.label + " icon"} />}
         />
