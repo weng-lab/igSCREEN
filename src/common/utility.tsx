@@ -2,6 +2,7 @@ import { GenomicElementType, GenomicRange, TabRoute } from "types/globalTypes";
 import { cellCategoryColors, cellCategoryDisplaynames, studyLinks } from "./consts";
 import { Typography, TypographyOwnProps } from "@mui/material";
 import { OpenElement } from "./OpenElementsContext";
+import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from "lz-string";
 
 export function getClassDisplayname(input: string) {
   switch (input) {
@@ -245,21 +246,23 @@ export function calcDistRegionToRegion(
   }
 }
 
+const openElementListDelimiter = ','
+const openElementDelimiter = '/'
+
 /**
  *
  * @param urlOpen properly formatted URI Encoded query parameter representing ```OpenElement[]``` state
  * @returns ```OpenElement[]```
- * @todo make this validate that elementType and elementTab are valid instead of casting, and catch malformed urls
  */
-export function getOpenElementFromURL(urlOpen: string | null): OpenElement[] {
-  return decodeURIComponent(urlOpen)
-    .split(",")
+export function getOpenElementFromURL(urlOpenElements: string | null): OpenElement[] {
+  return decompressFromEncodedURIComponent(urlOpenElements)
+    .split(openElementListDelimiter)
     .map((entry) => {
-      const [elementType, elementID, tab = ""] = entry.split("/");
+      const [encodedElementType, elementID, encodedTab = ""] = entry.split(openElementDelimiter);
       return {
-        elementType: decodeElementType(elementType),
+        elementType: elementTypeDecoding[encodedElementType],
         elementID,
-        tab: decodeTabRoute(tab),
+        tab: tabRouteDecoding[encodedTab],
       };
     })
     .filter((x) => x.elementType && x.elementID); // filter out any invalid
@@ -271,65 +274,32 @@ export function getOpenElementFromURL(urlOpen: string | null): OpenElement[] {
  * @returns URI encoded query parameter representing the ```OpenElement[]``` state
  */
 export function encodeOpenElementsToURL(openElements: OpenElement[]): string {
-  return encodeURIComponent(openElements.map((x) => [encodeElementType(x.elementType), x.elementID, encodeTabRoute(x.tab)].join("/")).join(","));
+  return compressToEncodedURIComponent(
+    openElements
+      .map((x) => [elementTypeEncoding[x.elementType], x.elementID, tabRouteEncoding[x.tab]].join(openElementDelimiter))
+      .join(openElementListDelimiter)
+  );
 }
 
-function encodeElementType(e: GenomicElementType): string {
-  switch (e) {
-    case "gene":
-      return "g";
-    case "icre":
-      return "i";
-    case "variant":
-      return "v";
-    case "region":
-      return "r";
-  }
+const elementTypeEncoding: {[key in GenomicElementType]: string} = {
+  'gene': 'g',
+  'icre': 'i',
+  'variant': 'v',
+  'region': 'r'
 }
 
-function decodeElementType(code: string): GenomicElementType | undefined {
-  switch (code) {
-    case "g":
-      return "gene";
-    case "i":
-      return "icre";
-    case "v":
-      return "variant";
-    case "r":
-      return "region";
-    default:
-      return undefined;
-  }
-}
+const elementTypeDecoding: {[key: string]: GenomicElementType} = Object.fromEntries(
+  Object.entries(elementTypeEncoding).map(([element, encoding]: [GenomicElementType, string]) => [encoding, element])
+);
 
-function encodeTabRoute(t: TabRoute): string {
-  switch (t) {
-    case "genes":
-      return "g";
-    case "icres":
-      return "i";
-    case "variants":
-      return "v";
-    case "browser":
-      return "b";
-    case "":
-      return "";
-  }
-}
+const tabRouteEncoding: { [key in TabRoute]: string } = {
+  browser: "b",
+  genes: "g",
+  icres: "i",
+  variants: "v",
+  "": "",
+};
 
-function decodeTabRoute(code: string): TabRoute | undefined {
-  switch (code) {
-    case "g":
-      return "genes";
-    case "i":
-      return "icres";
-    case "v":
-      return "variants";
-    case "b":
-      return "browser";
-    case "":
-      return ""
-    default:
-      return undefined;
-  }
-}
+const tabRouteDecoding: { [key: string]: TabRoute } = Object.fromEntries(
+  Object.entries(tabRouteEncoding).map(([element, encoding]: [TabRoute, string]) => [encoding, element])
+);

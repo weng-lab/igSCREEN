@@ -48,6 +48,7 @@
     "eslint": "^8",
     "eslint-config-next": "^14",
     "logojs-react": "^2.1.1",
+    "lz-string": "^1.5.0",
     "next": "^14",
     "queryz": "^0.0.3",
     "react": "^18",

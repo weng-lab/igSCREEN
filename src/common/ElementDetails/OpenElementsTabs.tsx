@@ -1,5 +1,20 @@
 import { Add, Category, Close, DragIndicator, MoreVert } from "@mui/icons-material";
-import { Divider, styled, Tab, TabProps, Tabs, Stack, Button, Box, Typography, Paper, IconButton, Tooltip, SxProps, Theme } from "@mui/material";
+import {
+  Divider,
+  styled,
+  Tab,
+  TabProps,
+  Tabs,
+  Stack,
+  Button,
+  Box,
+  Typography,
+  Paper,
+  IconButton,
+  Tooltip,
+  SxProps,
+  Theme,
+} from "@mui/material";
 import { OpenElement, OpenElementsContext } from "common/OpenElementsContext";
 import { encodeOpenElementsToURL, getOpenElementFromURL, parseGenomicRangeString } from "common/utility";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -39,7 +54,15 @@ type WrappedTabProps = TabProps & {
   handleCloseTab: (el: OpenElement) => void;
 };
 
-const WrappedTab = ({ element, index, closable, isSelected, handleTabClick, handleCloseTab, ...props }: WrappedTabProps) => {
+const WrappedTab = ({
+  element,
+  index,
+  closable,
+  isSelected,
+  handleTabClick,
+  handleCloseTab,
+  ...props
+}: WrappedTabProps) => {
   return (
     <Draggable key={element.elementID} draggableId={element.elementID} index={index} disableInteractiveElementBlocking>
       {(provided, snapshot) => {
@@ -47,14 +70,15 @@ const WrappedTab = ({ element, index, closable, isSelected, handleTabClick, hand
           ? {
               backgroundColor: "white",
               border: (theme) => `1px solid ${theme.palette.primary.main}`,
-              borderRadius: 1
+              borderRadius: 1,
             }
           : {};
-        const selectedStyles: SxProps<Theme> = isSelected ? {
-          borderBottom: (theme) => `2px solid ${theme.palette.primary.main}`,
-          borderTop: (theme) => `2px solid transparent`
-        } : {}
-        
+        const selectedStyles: SxProps<Theme> = isSelected
+          ? {
+              borderBottom: (theme) => `2px solid ${theme.palette.primary.main}`,
+              borderTop: (theme) => `2px solid transparent`,
+            }
+          : {};
 
         return (
           <Tab
@@ -70,7 +94,7 @@ const WrappedTab = ({ element, index, closable, isSelected, handleTabClick, hand
             sx={{ minHeight: "48px", ...selectedStyles, ...draggingStyles }}
             {...props}
           />
-        )   
+        );
       }}
     </Draggable>
   );
@@ -115,22 +139,21 @@ export type ElementDetailsHeaderProps = {
 export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) => {
   const [openElements, dispatch] = useContext(OpenElementsContext);
 
-  const { menuCanBeOpened,isMenuMounted, openMenu } = useMenuControl();
+  const { menuCanBeOpened, isMenuMounted, openMenu } = useMenuControl();
   const [shouldFocusSearch, setShouldFocusSearch] = useState(false);
-
 
   /**
    * Used to give focus to the MobileMenu search bar
    */
   useEffect(() => {
-  if (isMenuMounted && shouldFocusSearch) {
-    const el = document.getElementById('mobile-search-component')
-    if (el) {
-      el.focus();
-      setShouldFocusSearch(false); // reset the flag
+    if (isMenuMounted && shouldFocusSearch) {
+      const el = document.getElementById("mobile-search-component");
+      if (el) {
+        el.focus();
+        setShouldFocusSearch(false); // reset the flag
+      }
     }
-  }
-}, [isMenuMounted, shouldFocusSearch]);
+  }, [isMenuMounted, shouldFocusSearch]);
 
   const router = useRouter();
   const isRouting = useRef(false);
@@ -149,7 +172,7 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
     if (!initializedRef.current) {
       const openParam = searchParams.get("open");
       if (openParam) {
-        const openElementsFromUrl: OpenElement[] = getOpenElementFromURL(openParam)
+        const openElementsFromUrl: OpenElement[] = getOpenElementFromURL(openParam);
         if (openElementsFromUrl.length > 0) {
           dispatch({ type: "setState", state: openElementsFromUrl });
         }
@@ -161,6 +184,7 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
   // Need to have flag to mark that navigation is underway, or else deleted tab would be added right back since the state update beats the routing update
   const navigateAndMark = useCallback(
     (url: string) => {
+      console.log("routing to " + url);
       isRouting.current = true;
       router.push(url);
     },
@@ -182,13 +206,16 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
           elementType: urlElementType,
           tab: urlTab,
         },
-      })
+      });
     }
   }, [currentElementState, dispatch, urlElementID, urlElementType, urlTab]);
 
   //sync URL with current state (skip if not initialized yet)
+  /**
+   * @todo why is this breaking if I try to use navigateAndMark? I feel like it should not
+   */
   useEffect(() => {
-    if (!initializedRef.current) return;
+    if (!initializedRef.current || isRouting.current) return;
     router.push(pathname + "?open=" + encodeOpenElementsToURL(openElements));
   }, [openElements, pathname, router, searchParams, urlElementID, urlElementType, urlTab]);
 
@@ -207,7 +234,7 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
 
   const handleTabClick = useCallback(
     (elToOpen: OpenElement) => {
-      navigateAndMark(constructElementURL(elToOpen) + '?' + searchParams.toString());
+      navigateAndMark(constructElementURL(elToOpen) + "?" + searchParams.toString());
     },
     [navigateAndMark, searchParams]
   );
@@ -247,12 +274,6 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
     }
   };
 
-  const moreThanOneElementOpen = useMemo(() => {
-    if (openElements.length > 1) {
-      return true
-    } else return false
-  }, [openElements])
-
   const handleCloseAll = useCallback(() => {
     dispatch({
       type: "setState",
@@ -272,7 +293,13 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
         return typeComparison;
       }),
     });
-    }, [dispatch, openElements]);
+  }, [dispatch, openElements]);
+
+  const moreThanOneElementOpen = useMemo(() => {
+    if (openElements.length > 1) {
+      return true;
+    } else return false;
+  }, [openElements]);
 
   const tabIndex = useMemo(
     () => openElements.findIndex((el) => el.elementID === urlElementID),
@@ -280,11 +307,12 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
   );
 
   const handleSwitchFocus = () => {
-    if (menuCanBeOpened) { // aka isMobile
+    if (menuCanBeOpened) {
+      // aka isMobile
       openMenu();
       setShouldFocusSearch(true); // defer focusing until menu is open
     } else {
-      document.getElementById('desktop-search-component')?.focus();
+      document.getElementById("desktop-search-component")?.focus();
     }
   };
 

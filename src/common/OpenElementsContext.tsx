@@ -15,35 +15,47 @@ export type OpenElementsAction =
 export type OpenElementsState = OpenElement[];
 
 const openElementsReducer = (openElements: OpenElementsState, action: OpenElementsAction) => {
+
+  let newState: OpenElementsState
   switch (action.type) {
     case "addElement": {
       if (openElements.some((el) => el.elementID === action.element.elementID)) {
-        return openElements;
+        newState = openElements;
       } else {
-        return [...openElements, action.element];
+        newState = [...openElements, action.element];
       }
+      break;
     }
     case "removeElement": {
       if (openElements.length > 1) {
-        return openElements.filter(
+        newState = openElements.filter(
           (el) => el.elementID !== action.element.elementID || el.elementType !== action.element.elementType
         );
-      } else return openElements;
+      } else newState = openElements;
+      break;
     }
     case "updateElement": {
-      return openElements.map((el) => (el.elementID === action.element.elementID ? action.element : el));
+      newState = openElements.map((el) => (el.elementID === action.element.elementID ? action.element : el));
+      break;
     }
     case "reorder": {
       const result = Array.from(openElements);
       const [removed] = result.splice(action.startIndex, 1);
       result.splice(action.endIndex, 0, removed);
 
-      return result;
+      newState = result;
+      break;
     }
     case "setState": {
-      return action.state
+      newState = action.state
+      break;
     }
   }
+  console.log("Dispatch called: ")
+  console.log({action, openElements})
+  console.log("New State:")
+  console.log(newState)
+  return newState
 };
 
 export const OpenElementsContext = createContext<[OpenElementsState, Dispatch<OpenElementsAction>]>(null);
