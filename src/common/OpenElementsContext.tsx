@@ -61,6 +61,8 @@ const openElementsReducer = (openElements: OpenElementsState, action: OpenElemen
 export const OpenElementsContext = createContext<[OpenElementsState, Dispatch<OpenElementsAction>]>(null);
 
 export const OpenElementsContextProvider = ({ children }) => {
+  // The effect to sync state to url in OpenElementsTabs relies on this being an empty array on initial load.
+  // It checks openElements.length before allowing pushes to the url.
   const [openElements, dispatch] = useReducer(openElementsReducer, []);
 
   return <OpenElementsContext.Provider value={[openElements, dispatch]}>{children}</OpenElementsContext.Provider>;

@@ -4,7 +4,7 @@ import ElementDetailsTabs from "./ElementDetailsTabs";
 import ElementDetailsHeader, { ElementDetailsHeaderProps } from "./ElementDetailsHeader";
 import RegionSearchHeader from "./RegionSearchHeader";
 import { parseGenomicRangeString } from "common/utility";
-import { OpenElementsTabs } from "./OpenElementsTabs";
+import { OpenElementsTabs } from "./OpenElementsTabs/OpenElementsTabs";
 
 export type ElementDetailsLayoutProps = ElementDetailsHeaderProps & { children: React.ReactNode };
 
