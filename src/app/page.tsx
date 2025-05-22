@@ -92,6 +92,7 @@ export default function Home() {
             box: { gap: 2 },
             input: {
               label: "Enter a gene, iCRE, variant, or locus",
+              placeholder: "Enter a gene, iCRE, variant, or locus",
               sx: {
                 backgroundColor: "white",
                 "& label.Mui-focused": {

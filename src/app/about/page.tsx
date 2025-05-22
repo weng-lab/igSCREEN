@@ -61,7 +61,6 @@ export default function About() {
   };
 
   return (
-    (<main>
       <Grid2 container spacing={4} sx={{ maxWidth: "70%", mr: "auto", ml: "auto", mt: '3rem', mb: '3rem' }}>
         <Grid2 size={12}>
           <Typography paragraph variant="h3">About igSCREEN</Typography>
@@ -149,6 +148,5 @@ export default function About() {
           {success && <Typography>Submitted successfully, thank you!</Typography>}
         </Grid2>
       </Grid2>
-    </main>)
   );
 }

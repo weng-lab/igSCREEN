@@ -56,13 +56,15 @@ export function isValidTab(tab: string): tab is SharedRoute | VariantRoute | Gen
   return isValidSharedTab(tab) || isValidElementDefaultTab(tab) || isValidVariantTab(tab) || isValidGeneTab(tab) || isValidIcreTab(tab)
 }
 
+export type TabRoute = VariantRoute | GeneRoute | IcreRoute | RegionRoute
+
 /**
  * label is for the display name of the tab.
  * href should match the final dynamic route for the tab.
  */
 export type ElementDetailsTab = {
   label: string,
-  href: VariantRoute | GeneRoute | IcreRoute | RegionRoute
+  href: TabRoute
   iconPath: string
 }
 
