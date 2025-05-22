@@ -1,7 +1,7 @@
 import { Add } from "@mui/icons-material";
 import { Tab, Stack, Paper, Tooltip } from "@mui/material";
 import { OpenElement, OpenElementsContext } from "common/OpenElementsContext";
-import { encodeOpenElementsToURL, getOpenElementFromURL } from "common/utility";
+import { compressOpenElementsToURL, decompressOpenElementsFromURL } from "common/utility";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { GenomicElementType, TabRoute } from "types/globalTypes";
@@ -43,7 +43,7 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
     if (!isInitializedRef.current) {
       const openParam = searchParams.get("open");
       if (openParam) {
-        const openElementsFromUrl: OpenElement[] = getOpenElementFromURL(openParam);
+        const openElementsFromUrl: OpenElement[] = decompressOpenElementsFromURL(openParam);
         if (openElementsFromUrl.length > 0) {
           dispatch({ type: "setState", state: openElementsFromUrl });
         }
@@ -82,7 +82,7 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
    */
   useEffect(() => {
     if (!openElements.length) return;
-    const newUrl = pathname + "?open=" + encodeOpenElementsToURL(openElements);
+    const newUrl = pathname + "?open=" + compressOpenElementsToURL(openElements);
     router.push(newUrl);
   }, [openElements, pathname, navigateAndMark]);
 

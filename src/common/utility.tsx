@@ -254,7 +254,7 @@ const openElementDelimiter = '/'
  * @param urlOpen properly formatted URI Encoded query parameter representing ```OpenElement[]``` state
  * @returns ```OpenElement[]```
  */
-export function getOpenElementFromURL(urlOpenElements: string | null): OpenElement[] {
+export function decompressOpenElementsFromURL(urlOpenElements: string | null): OpenElement[] {
   return decompressFromEncodedURIComponent(urlOpenElements)
     .split(openElementListDelimiter)
     .map((entry) => {
@@ -273,7 +273,7 @@ export function getOpenElementFromURL(urlOpenElements: string | null): OpenEleme
  * @param openElements
  * @returns URI encoded query parameter representing the ```OpenElement[]``` state
  */
-export function encodeOpenElementsToURL(openElements: OpenElement[]): string {
+export function compressOpenElementsToURL(openElements: OpenElement[]): string {
   return compressToEncodedURIComponent(
     openElements
       .map((x) => [elementTypeEncoding[x.elementType], x.elementID, tabRouteEncoding[x.tab]].join(openElementDelimiter))

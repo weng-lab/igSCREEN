@@ -11,7 +11,6 @@
     "gen-types -w": "graphql-codegen -w"
   },
   "dependencies": {
-    "6": "^0.0.1",
     "@apollo/client": "^3",
     "@apollo/experimental-nextjs-app-support": "^0.11",
     "@emailjs/browser": "^4.4.1",
