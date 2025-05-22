@@ -6,6 +6,9 @@ import { LinkComponent } from "common/components/LinkComponent"
 import { formatPortal } from "common/utility"
 import { usePathname } from "next/navigation"
 
+/**
+ * Currently not used, but saving for now
+ */
 const ElementDetailsBreadcrumbs = () => {
   const pathname = usePathname()
   const links = pathname.split('/').slice(1,3)

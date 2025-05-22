@@ -29,6 +29,16 @@ export const theme = createTheme({
         elevation: 0
       }
     },
+    //Since we are providing a default elevation of 0 to Paper, need to add elevation back to the Popper's Paper
+    MuiAutocomplete: {
+      defaultProps: {
+        slotProps: {
+          paper: {
+            elevation: 3
+          }
+        }
+      }
+    },
     MuiLink: {
       defaultProps: {
         underline: "hover"

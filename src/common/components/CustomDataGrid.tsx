@@ -201,7 +201,7 @@ const CustomDataGrid = <T extends CustomDataGridRow>(props: CustomDataGridProps<
         disableRowSelectionOnClick
         slots={{ toolbar: () => <CustomDataGridToolbar title={tableTitle} />, ...slots }}
         density={density}
-        slotProps={{ ...restSlotProps }}
+        slotProps={{ ...restSlotProps }} //https://v6.mui.com/material-ui/guides/composition/#forwarding-slot-props
         pagination
         pageSizeOptions={pageSizeOptions}
         // set initial rows per page to first page size option. Page sizes can be array of numbers or objects with value/label

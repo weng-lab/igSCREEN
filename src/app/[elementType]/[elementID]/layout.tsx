@@ -1,10 +1,9 @@
+'use client'
 import ElementDetailsLayout from "common/ElementDetails/ElementDetailsLayout"
 import { isValidGenomicElement } from "types/globalTypes"
+import { useContext, useEffect } from "react";
+import { OpenElementsContext } from "common/OpenElementsContext";
 
-/**
- * Note: /[elementType]/[elementID] has no page.tsx since this route
- * is redirected to a defined tab based on configuration in next.config.mjs
- */
 export default function IcreDetailsLayout({
   children,
   params: { elementType, elementID },

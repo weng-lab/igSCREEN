@@ -28,6 +28,7 @@ import HighlightDialog, { GBHighlight } from "./highlightDialog";
 import { randomColor, trackColor } from "./utils";
 import BedTooltip from "./bedTooltip";
 import { Exon } from "types/generated/graphql";
+import { useRouter } from "next/navigation";
 
 interface Transcript {
   id: string;
@@ -67,6 +68,8 @@ export default function GenomeBrowserView({
     highlights: [],
   });
 
+  const router = useRouter()
+
   // Bed track mouse over, out, and click handlers
   const icreMouseOver = useCallback(
     (item: Rect) => {
@@ -87,14 +90,14 @@ export default function GenomeBrowserView({
   }, [browserDispatch]);
   const onIcreClick = useCallback((item: Rect) => {
     const accession = item.name;
-    window.open(`/icre/${accession}`, "_blank");
+    router.push(`/icre/${accession}`)
   }, []);
   const onGeneClick = useCallback((gene: Transcript) => {
     const name = gene.name;
     if (name.includes("ENSG")) {
       return
     } 
-    window.open(`/gene/${name}`, "_blank");
+    router.push(`/gene/${name}`)
   }, [])
 
   // Initialize tracks and highlights

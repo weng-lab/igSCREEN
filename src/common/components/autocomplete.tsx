@@ -1,4 +1,5 @@
 "use client";
+import { Paper } from "@mui/material";
 import {
   GenomeSearch,
   GenomeSearchProps,
@@ -52,7 +53,6 @@ export default function AutoComplete({closeDrawer, ...props}: AutoCompleteProps)
 
   return (
     <GenomeSearch
-      {...props}
       assembly="GRCh38"
       queries={["Gene", "cCRE", "SNP", "Coordinate"]}
       showiCREFlag
@@ -63,6 +63,13 @@ export default function AutoComplete({closeDrawer, ...props}: AutoCompleteProps)
           e.preventDefault();
         }
       }}
+      slotProps={{
+        paper: {
+          elevation: 1
+        },
+      }}
+      openOnFocus
+      {...props}
     />
   );
 }

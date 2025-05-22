@@ -10,6 +10,8 @@ import {
   IconButton,
   Stack,
   Typography,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import Link from "next/link";
@@ -17,10 +19,11 @@ import Image from "next/image";
 import AutoComplete from "./autocomplete";
 import { Search } from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MobileMenu from "./MobileMenu";
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import { LinkComponent } from "./LinkComponent";
+import { useMenuControl } from "common/MenuContext";
 
 export type PageInfo = {
   pageName: string,
@@ -58,14 +61,11 @@ type ResponsiveAppBarProps = {
 };
 
 function ResponsiveAppBar({ maintenance }: ResponsiveAppBarProps) {
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const { openMenu } = useMenuControl();
+
   // Hover dropdowns, deals with setting its position
   const [anchorDropdown0, setAnchorDropdown0] = useState<null | HTMLElement>(null)
   const [anchorDropdown1, setAnchorDropdown1] = useState<null | HTMLElement>(null)
-
-  const toggleDrawer = (open: boolean) => {
-    setDrawerOpen(open);
-  };
 
   // Open Dropdown
   const handleOpenDropdown = (event: React.MouseEvent<HTMLElement>, dropdownID: number) => {
@@ -111,165 +111,146 @@ function ResponsiveAppBar({ maintenance }: ResponsiveAppBarProps) {
   }
 
   return (
-    <>
+    <Box position={"sticky"} top={0} zIndex={1}>
       <Stack
         direction={"row"}
         style={{
-          position: 'fixed',
-          width: '100%',
+          width: "100%",
           height: "40px",
-          backgroundColor: '#ff9800',
-          zIndex: 1301,
-          color: '#fff',
-          textAlign: 'center',
-          display: !maintenance && "none"
+          backgroundColor: "#ff9800",
+          color: "#fff",
+          textAlign: "center",
+          display: !maintenance && "none",
         }}
         justifyContent={"center"}
         alignItems={"center"}
         spacing={2}
       >
         <WarningAmberIcon />
-        <Typography sx={{ fontWeight: 'bold' }}>Scheduled maintenance is in progress... Some features may be unavailable</Typography>
+        <Typography sx={{ fontWeight: "bold" }}>
+          Scheduled maintenance is in progress... Some features may be unavailable
+        </Typography>
         <WarningAmberIcon />
       </Stack>
-      <AppBar position="fixed" sx={{ top: maintenance ? '40px' : '0px' }}>
-        <Container maxWidth={false}>
-          <Toolbar sx={{ justifyContent: "space-between" }}>
-            {/* Display Icon on left when >=900px */}
-            <Box
-              component={Link}
-              href={"/"}
-              height={45}
-              width={110}
-              position={"relative"}
-            >
-              <Image
-                priority
-                src="/igSCREEN_red.svg"
-                fill
-                sizes="110px"
-                alt="igSCREEN logo"
-                style={{ objectFit: "contain", objectPosition: "left center" }}
-              />
-            </Box>
-            {/* Main navigation items for desktop */}
-            <Box display={{ xs: "none", md: "flex" }} alignItems={"center"}>
-              <Box sx={{ display: { xs: "flex" } }}>
-                {pageLinks.map((page) => (
-                  <Box
-                    key={page.pageName}
-                    display={"flex"}
-                    alignItems={"center"}
-                    onMouseMove={(event) => handleMouseMoveLink(event, page)}
-                    onMouseLeave={(event) => handleMouseLeaveLink(event, page)}
-                    id="LinkBox"
-                    sx={{ mr: 2 }}
-                  >
-                    <LinkComponent
-                      id="Link"
-                      display={"flex"}
-                      color="primary.contrastText"
-                      href={page.link}
+      <AppBar position="static">
+        <Toolbar sx={{ justifyContent: "space-between" }}>
+          {/* Display Icon on left when >=900px */}
+          <Box component={Link} href={"/"} height={45} width={110} position={"relative"}>
+            <Image
+              priority
+              src="/igSCREEN_red.svg"
+              fill
+              sizes="110px"
+              alt="igSCREEN logo"
+              style={{ objectFit: "contain", objectPosition: "left center" }}
+            />
+          </Box>
+          {/* Main navigation items for desktop */}
+          <Box display={{ xs: "none", md: "flex" }} alignItems={"center"}>
+            <Box sx={{ display: { xs: "flex" } }}>
+              {pageLinks.map((page) => (
+                <Box
+                  key={page.pageName}
+                  display={"flex"}
+                  alignItems={"center"}
+                  onMouseMove={(event) => handleMouseMoveLink(event, page)}
+                  onMouseLeave={(event) => handleMouseLeaveLink(event, page)}
+                  id="LinkBox"
+                  sx={{ mr: 2 }}
+                >
+                  <LinkComponent id="Link" display={"flex"} color="primary.contrastText" href={page.link}>
+                    {page.pageName}
+                    {page.subPages && <ArrowDropDownIcon />}
+                  </LinkComponent>
+                  {/* Create popup menu if page has subpages */}
+                  {page.subPages && (
+                    <Menu
+                      id={`${page.pageName}-dropdown-appbar`}
+                      // This logic would need to change when adding another dropdown
+                      anchorEl={page.dropdownID === 0 ? anchorDropdown0 : anchorDropdown1}
+                      anchorOrigin={{
+                        vertical: "bottom",
+                        horizontal: "left",
+                      }}
+                      open={page.dropdownID === 0 ? Boolean(anchorDropdown0) : Boolean(anchorDropdown1)}
+                      onClose={() => handleCloseDropdown(page.dropdownID)}
+                      slotProps={{
+                        paper: {
+                          onMouseLeave: () => handleCloseDropdown(page.dropdownID),
+                          sx: { pointerEvents: "auto" },
+                        },
+                      }}
+                      sx={{ pointerEvents: "none", zIndex: 2000 }} //z index of AppBar is 1100 for whatever reason
                     >
-                      {page.pageName}
-                      {page.subPages && <ArrowDropDownIcon />}
-                    </LinkComponent>
-                    {/* Create popup menu if page has subpages */}
-                    {page.subPages && (
-                      <Menu
-                        id={`${page.pageName}-dropdown-appbar`}
-                        // This logic would need to change when adding another dropdown
-                        anchorEl={page.dropdownID === 0 ? anchorDropdown0 : anchorDropdown1}
-                        anchorOrigin={{
-                          vertical: "bottom",
-                          horizontal: "left",
-                        }}
-                        open={page.dropdownID === 0 ? Boolean(anchorDropdown0) : Boolean(anchorDropdown1)}
-                        onClose={() => handleCloseDropdown(page.dropdownID)}
-                        slotProps={{ paper: { onMouseLeave: () => handleCloseDropdown(page.dropdownID), sx: { pointerEvents: 'auto' } } }}
-                        sx={{ pointerEvents: 'none', zIndex: 2000 }} //z index of AppBar is 1100 for whatever reason
-                      >
-                        {page.subPages &&
-                          page.subPages.map((subPage) => (
-                            <LinkComponent
-                              key={subPage.pageName}
-                              color="black"
-                              href={subPage.link}
-                            >
-                              <MenuItem>
-                                {subPage.pageName}
-                              </MenuItem>
-                            </LinkComponent>
-                          ))}
-                      </Menu>
-                    )}
-                  </Box>
-                ))}
-              </Box>
-              <AutoComplete
-                style={{ width: 400 }}
-                slots={{
-                  button: <IconButton sx={{ color: "white" }}>
+                      {page.subPages &&
+                        page.subPages.map((subPage) => (
+                          <LinkComponent key={subPage.pageName} color="black" href={subPage.link}>
+                            <MenuItem>{subPage.pageName}</MenuItem>
+                          </LinkComponent>
+                        ))}
+                    </Menu>
+                  )}
+                </Box>
+              ))}
+            </Box>
+            <AutoComplete
+              style={{ width: 400 }}
+              slots={{
+                button: (
+                  <IconButton sx={{ color: "white" }}>
                     <Search />
-                  </IconButton>,
-                }}
-                slotProps={{
-                  box: { gap: 1 },
-                  input: {
-                    size: "small",
-                    label: "Enter a gene, iCRE, variant or locus",
-                    sx: {
-                      "& .MuiOutlinedInput-root": {
-                        backgroundColor: "#ffffff",
-                        "& fieldset": {
-                          border: "none",
-                        },
-                        "&:hover fieldset": {
-                          border: "none",
-                        },
-                        "&.Mui-focused fieldset": {
-                          border: "none",
-                        },
+                  </IconButton>
+                ),
+              }}
+              //Needed to find element to focus it from OpenElementsTabs
+              id="desktop-search-component"
+              slotProps={{
+                box: { gap: 1 },
+                input: {
+                  size: "small",
+                  label: "Enter a gene, iCRE, variant or locus",
+                  placeholder: "Enter a gene, iCRE, variant or locus",
+                  sx: {
+                    "& .MuiOutlinedInput-root": {
+                      backgroundColor: "#ffffff",
+                      "& fieldset": {
+                        border: "none",
                       },
-                      "& .MuiInputLabel-root": {
-                        color: "#666666",
-                        "&.Mui-focused": {
-                          color: "#444444",
-                        },
+                      "&:hover fieldset": {
+                        border: "none",
                       },
-                      "& .MuiInputLabel-shrink": {
-                        display: "none",
+                      "&.Mui-focused fieldset": {
+                        border: "none",
                       },
                     },
+                    "& .MuiInputLabel-root": {
+                      color: "#666666",
+                      "&.Mui-focused": {
+                        color: "#444444",
+                      },
+                    },
+                    "& .MuiInputLabel-shrink": {
+                      display: "none",
+                    },
                   },
-                }}
-              />
-            </Box>
-            {/* mobile view */}
-            <Box display={{ xs: "flex", md: "none" }} alignItems={"center"} gap={2}>
-              <IconButton
-                size="large"
-                onClick={() => {
-                  toggleDrawer(true)
-                }}
-                color="inherit"
-              >
-                <MenuIcon />
-              </IconButton>
-            </Box>
-            <MobileMenu
-              pageLinks={pageLinks}
-              drawerOpen={drawerOpen}
-              toggleDrawer={toggleDrawer}
+                },
+              }}
             />
-          </Toolbar>
-        </Container>
+          </Box>
+          {/* mobile view */}
+          <Box display={{ xs: "flex", md: "none" }} alignItems={"center"} gap={2}>
+            <IconButton
+              size="large"
+              onClick={openMenu}
+              color="inherit"
+            >
+              <MenuIcon />
+            </IconButton>
+          </Box>
+          <MobileMenu pageLinks={pageLinks} />
+        </Toolbar>
       </AppBar>
-      {/* Bumps content down since header is position="fixed" */}
-      {/* Bumps content down even more if banner is open */}
-      {maintenance && <Box sx={{ height: '40px' }} />}
-      <Toolbar />
-    </>
+    </Box>
   );
 };
 export default ResponsiveAppBar;

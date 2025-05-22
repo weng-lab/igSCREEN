@@ -4,11 +4,15 @@ import MuiLink from "@mui/material/Link"
 
 export default function Footer() {
   return (
-    <Box id="Footer" sx={{
-      textAlign: "center", width: "100%", height: "3rem",
-      backgroundColor: theme => theme.palette.primary.main,
-      zIndex: theme => theme.zIndex.appBar,
-    }}>
+    <Box
+      id="Footer"
+      sx={{
+        textAlign: "center",
+        width: "100%",
+        backgroundColor: (theme) => theme.palette.primary.main,
+        zIndex: (theme) => theme.zIndex.appBar,
+      }}
+    >
       <Typography variant="body2" color="#ffffff">
         {"Copyright © "}
         <MuiLink color="inherit" href="https://www.umassmed.edu/zlab/">
@@ -21,5 +25,5 @@ export default function Footer() {
         {new Date().getFullYear()}.
       </Typography>
     </Box>
-  )
+  );
 }
