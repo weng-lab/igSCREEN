@@ -65,6 +65,7 @@ export default function MobileMenu({ pageLinks }: MobileMenuProps) {
                 input: {
                   size: "small",
                   label: "Enter a gene, iCRE, variant or locus",
+                  placeholder: "Enter a gene, iCRE, variant or locus",
                   sx: {
                     "& .MuiOutlinedInput-root": {
                       backgroundColor: "#ffffff",
