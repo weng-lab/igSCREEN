@@ -12,9 +12,10 @@ export type ElementDetailsTabsProps = {
   elementType: GenomicElementType
   elementID: string
   orientation: "horizontal" | "vertical"
+  verticalTabsWidth?: number
 }
 
-const ElementDetailsTabs = ({ elementType, elementID, orientation }: ElementDetailsTabsProps) => {
+const ElementDetailsTabs = ({ elementType, elementID, orientation, verticalTabsWidth }: ElementDetailsTabsProps) => {
   const pathname = usePathname();
   const searchParams = useSearchParams()
   const currentTab = pathname.substring(pathname.lastIndexOf('/') + 1) === elementID ? "" : pathname.substring(pathname.lastIndexOf('/') + 1)
@@ -55,8 +56,6 @@ const ElementDetailsTabs = ({ elementType, elementID, orientation }: ElementDeta
 
   const horizontalTabs = orientation === "horizontal"
   const verticalTabs = orientation === "vertical"
-
-  const verticalTabsWidth = 120
 
   return (
     <Tabs

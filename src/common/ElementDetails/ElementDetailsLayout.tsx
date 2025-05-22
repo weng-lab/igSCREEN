@@ -9,6 +9,8 @@ import { OpenElementsTabs } from "./OpenElementsTabs/OpenElementsTabs";
 export type ElementDetailsLayoutProps = ElementDetailsHeaderProps & { children: React.ReactNode };
 
 export default function ElementDetailsLayout({ elementID, elementType, children }: ElementDetailsLayoutProps) {
+  const verticalTabsWidth = 90
+  
   return (
     // Content is child of OpenElementTabs due to ARIA accessibility guidelines: https://www.w3.org/WAI/ARIA/apg/patterns/tabs/. Children wrapped in <TabPanel>
     <OpenElementsTabs>
@@ -17,10 +19,10 @@ export default function ElementDetailsLayout({ elementID, elementType, children 
         {/* View tabs, shown only on desktop */}
         <Box sx={{ display: { xs: "none", md: "initial", height: "100%" } }} id="element-details-desktop-tabs">
           <Box sx={{ position: "fixed", height: "100%" }}>
-            <ElementDetailsTabs elementType={elementType} elementID={elementID} orientation="vertical" />
+            <ElementDetailsTabs elementType={elementType} elementID={elementID} orientation="vertical" verticalTabsWidth={verticalTabsWidth} />
           </Box>
           {/* Needed to bump over the rest of the content since above is using position="fixed" */}
-          <div style={{ width: 120 }} /> 
+          <div style={{ width: verticalTabsWidth }} /> 
         </Box>
         <Stack
           width={"100%"}
