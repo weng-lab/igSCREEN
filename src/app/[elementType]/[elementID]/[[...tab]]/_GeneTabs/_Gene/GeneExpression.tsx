@@ -5,8 +5,10 @@ import GeneExpressionUMAP from "./GeneExpressionUMAP"
 import GeneExpressionBarPlot from "./GeneExpressionBarPlot"
 import { BarData } from "../../../../../../common/components/VerticalBarPlot"
 import { useGeneExpression, UseGeneExpressionReturn } from "common/hooks/useGeneExpression"
-import { BarChart, ScatterPlot } from "@mui/icons-material"
+import { BarChart, ScatterPlot, CandlestickChart } from "@mui/icons-material"
 import { UseGeneDataReturn } from "common/hooks/useGeneData"
+import GeneExpressionViolinPlot from "./GeneExpressionViolinPlot"
+import { Distribution } from "@weng-lab/psychscreen-ui-components"
 
 export type PointMetadata = UseGeneExpressionReturn["data"][number]
 
@@ -38,6 +40,19 @@ const GeneExpression = ({ geneData }: GeneExpressionProps) => {
     if (selected.includes(bar.metadata)) {
       setSelected(selected.filter((x) => x !== bar.metadata));
     } else setSelected([...selected, bar.metadata]);
+  };
+
+  const handleViolinClick = (violin: Distribution<PointMetadata>) => {
+    console.log(violin)
+    const data = violin.data
+    let allSelected: PointMetadata[] = []
+    data.forEach((point) => {
+      if (selected.includes(point.metaData)) {
+        allSelected = (selected.filter((x) => x !== point.metaData));
+      } else allSelected = ([...selected, point.metaData]);
+    }
+    )
+    setSelected(allSelected)
   };
 
   return (
@@ -76,6 +91,19 @@ const GeneExpression = ({ geneData }: GeneExpressionProps) => {
               sortedFilteredData={sortedFilteredData}
               geneExpressionData={geneExpressionData}
               onSelectionChange={(points) => handlePointsSelected(points.map((x) => x.metaData))}
+            />
+          ),
+        },
+        {
+          tabTitle: "Violin Plot",
+          icon: <CandlestickChart />,
+          plotComponent: (
+            <GeneExpressionViolinPlot
+              geneData={geneData}
+              selected={selected}
+              sortedFilteredData={sortedFilteredData}
+              geneExpressionData={geneExpressionData}
+              onViolinClicked={handleViolinClick}
             />
           ),
         },
