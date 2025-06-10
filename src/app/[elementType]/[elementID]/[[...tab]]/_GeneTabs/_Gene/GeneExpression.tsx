@@ -44,7 +44,9 @@ const GeneExpression = ({ geneData }: GeneExpressionProps) => {
 
   const handleViolinClick = (violin: Distribution<PointMetadata>) => {
     const metadataArray = violin.data.map((point) => point.metadata);
-    setSelected(metadataArray);
+    if (selected.length === metadataArray.length && selected[0].lineage === metadataArray[0].lineage) {
+      setSelected([]);
+    } else setSelected(metadataArray);
   };
 
   const handleViolinPointClick = (point: ViolinPoint<PointMetadata>) => {
