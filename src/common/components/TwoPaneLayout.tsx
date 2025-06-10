@@ -103,6 +103,7 @@ const TwoPaneLayout = ({ TableComponent, plots }: TwoPaneLayoutProps) => {
             //use table height unless its not open, then set px height for umap so it doesnt slowly resize
             height={tableOpen ? tableHeight : Figure.title === "UMAP" ? "700px" : "100%"}
             maxHeight={Figure.title !== "Bar Plot" ? "700px" : "none"}
+            minHeight={"698px"}
           >
             {Figure.component}
           </Box>

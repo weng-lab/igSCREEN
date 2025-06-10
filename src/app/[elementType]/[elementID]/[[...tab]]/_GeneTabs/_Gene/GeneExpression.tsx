@@ -8,7 +8,7 @@ import { useGeneExpression, UseGeneExpressionReturn } from "common/hooks/useGene
 import { BarChart, ScatterPlot, CandlestickChart } from "@mui/icons-material"
 import { UseGeneDataReturn } from "common/hooks/useGeneData"
 import GeneExpressionViolinPlot from "./GeneExpressionViolinPlot"
-import { Distribution } from "@weng-lab/psychscreen-ui-components"
+import { Distribution, ViolinPoint } from "@weng-lab/psychscreen-ui-components"
 
 export type PointMetadata = UseGeneExpressionReturn["data"][number]
 
@@ -43,16 +43,14 @@ const GeneExpression = ({ geneData }: GeneExpressionProps) => {
   };
 
   const handleViolinClick = (violin: Distribution<PointMetadata>) => {
-    console.log(violin)
-    const data = violin.data
-    let allSelected: PointMetadata[] = []
-    data.forEach((point) => {
-      if (selected.includes(point.metaData)) {
-        allSelected = (selected.filter((x) => x !== point.metaData));
-      } else allSelected = ([...selected, point.metaData]);
-    }
-    )
-    setSelected(allSelected)
+    const metadataArray = violin.data.map((point) => point.metadata);
+    setSelected(metadataArray);
+  };
+
+  const handleViolinPointClick = (point: ViolinPoint<PointMetadata>) => {
+    if (selected.includes(point.metadata)) {
+      setSelected(selected.filter((x) => x !== point.metadata));
+    } else setSelected([...selected, point.metadata]);
   };
 
   return (
@@ -104,6 +102,7 @@ const GeneExpression = ({ geneData }: GeneExpressionProps) => {
               sortedFilteredData={sortedFilteredData}
               geneExpressionData={geneExpressionData}
               onViolinClicked={handleViolinClick}
+              onPointClicked={handleViolinPointClick}
             />
           ),
         },
