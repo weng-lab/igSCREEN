@@ -42,3 +42,6 @@ next-env.d.ts
 
 # Vritual Environment
 .venv/
+
+# Credentials
+/src/model/.env
