@@ -45,3 +45,4 @@ next-env.d.ts
 
 # Credentials
 /src/model/.env
+/src/model/cloud-sql-auth-proxy.exe
