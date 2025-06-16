@@ -46,3 +46,7 @@ next-env.d.ts
 # Credentials
 /src/model/.env
 /src/model/cloud-sql-auth-proxy.exe
+
+#FAISS Index
+/src/model/gene_desc_ids.pkl
+/src/model/gene_desc_index_faiss
