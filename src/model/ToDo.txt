@@ -1,0 +1,24 @@
+1. Build a pipeline for description look upper
+    1) Exact‐match / NER step
+        • Run `extract_gene_id(...)` regex or a small biomedical-NER (e.g. SciSpacy) on the user’s text.
+        • If we find one or more explicit gene IDs, just return those.
+
+    2) Vector-search step
+        • Offline: 
+            – Pick a bio-domain sentence embedding model (probably `microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract`).
+            – Build a vector index of every gene in the DB.
+        • At query time:
+            – Embed the user’s free-text (e.g. “genes related to breast cancer”) into the same vector space.
+            – Do an ANN lookup (via FAISS, pgvector, Pinecone, etc.) to pull back the top-K closest gene embeddings.
+            – If the top match score ≥ **vector_threshold** (maybe hyperparameter(?)), return those K gene IDs.
+
+    3) LLM fallback
+        • If both steps above yield nothing (no explicit IDs, or the top vector score < threshold), then send a small prompt to the LLM asking:
+            ```text
+            “List up to 5 human gene symbols most closely associated with ‘breast cancer’.”
+            ```
+        • Parse the LLM’s reply into a list of gene IDs and return those.
+
+2. Search for ways to deploy this
+3. Enhance the performance + add any missing points
+4. Speech to text
