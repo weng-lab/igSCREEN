@@ -14,7 +14,7 @@ load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 ID_REGEX = re.compile(r"\b([A-Za-z][A-Za-z0-9\.-]*\d[A-Za-z0-9\.-]*)\b")
-LINK_REGEX  = re.compile(r"\b(Gene Portal|iCRE Portal|Variant Portal|Phenotype|Immune)\b", re.IGNORECASE)
+LINK_REGEX = re.compile(r"\b(Gene Portal|iCRE Portal|Variant Portal|Phenotype|Immune)\b", re.IGNORECASE)
 PREFIX_RE = re.compile(
     r"^(?:i am looking for|looking for|search(?: for)?|what is|show me)\s+",
     re.IGNORECASE
@@ -148,7 +148,7 @@ def main():
         semantic_threshold=0.75, 
         sequence_threshold=0.80
     )
-    all_link      = load_link()
+    all_link = load_link()
     all_genome_ids = load_genome()
 
     print("Assistant: Hi! How can I assist you today?")
@@ -209,14 +209,14 @@ def main():
         cleaned = normalize_query(raw)
 
         # 2) UI/help intents
-        qc_res    = qc.classify_query(re.sub(r"\bgene\b$", "", cleaned, flags=re.IGNORECASE))
-        intent    = qc_res["intent"]
-        confidence= qc_res["confidence"]
-        if intent=="ui_help" and confidence>=0.8:
+        qc_res = qc.classify_query(re.sub(r"\bgene\b$", "", cleaned, flags=re.IGNORECASE))
+        intent = qc_res["intent"]
+        confidence = qc_res["confidence"]
+        if intent =="ui_help" and confidence>=0.8:
             print("Assistant: To browse genomes, click 'Search' → enter the gene ID → hit 'Go'.")
             print("Or say “Show me the Gene Portal” to jump to that page.")
             continue
-        if intent=="genome_help" and confidence>=0.8:
+        if intent =="genome_help" and confidence>=0.8:
             print("Assistant: To look up a gene, type or paste its symbol (e.g. TP53).")
             print("Or describe what you’re looking for (e.g. “breast cancer gene”).")
             continue
