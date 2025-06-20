@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# semantic_biobert.py
-
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch
 

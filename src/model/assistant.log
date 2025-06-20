@@ -1,0 +1,253 @@
+2025-06-18 11:39:08,521 INFO Load pretrained SentenceTransformer: pritamdeka/BioBERT-mnli-snli-scinli-scitail-mednli-stsb
+2025-06-18 11:39:15,315 INFO Use pytorch device_name: cpu
+2025-06-18 11:39:15,316 INFO Load pretrained SentenceTransformer: microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract
+2025-06-18 11:39:15,414 WARNING No sentence-transformers model found with name microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract. Creating a new one with mean pooling.
+2025-06-18 11:41:25,920 INFO Load pretrained SentenceTransformer: pritamdeka/BioBERT-mnli-snli-scinli-scitail-mednli-stsb
+2025-06-18 11:41:29,627 INFO Use pytorch device_name: cpu
+2025-06-18 11:41:29,629 INFO Load pretrained SentenceTransformer: microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract
+2025-06-18 11:41:29,714 WARNING No sentence-transformers model found with name microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract. Creating a new one with mean pooling.
+2025-06-18 11:46:27,329 INFO Load pretrained SentenceTransformer: pritamdeka/BioBERT-mnli-snli-scinli-scitail-mednli-stsb
+2025-06-18 11:46:31,485 INFO Use pytorch device_name: cpu
+2025-06-18 11:46:31,485 INFO Load pretrained SentenceTransformer: microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract
+2025-06-18 11:46:31,665 WARNING No sentence-transformers model found with name microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract. Creating a new one with mean pooling.
+2025-06-18 11:46:45,700 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 11:58:58,594 INFO Load pretrained SentenceTransformer: pritamdeka/BioBERT-mnli-snli-scinli-scitail-mednli-stsb
+2025-06-18 11:59:02,584 INFO Use pytorch device_name: cpu
+2025-06-18 11:59:02,584 INFO Load pretrained SentenceTransformer: microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract
+2025-06-18 11:59:03,139 WARNING No sentence-transformers model found with name microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract. Creating a new one with mean pooling.
+2025-06-18 11:59:14,017 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 12:06:22,944 INFO Load pretrained SentenceTransformer: pritamdeka/BioBERT-mnli-snli-scinli-scitail-mednli-stsb
+2025-06-18 12:06:27,859 INFO Use pytorch device_name: cpu
+2025-06-18 12:06:27,859 INFO Load pretrained SentenceTransformer: microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract
+2025-06-18 12:06:27,973 WARNING No sentence-transformers model found with name microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract. Creating a new one with mean pooling.
+2025-06-18 12:06:45,247 INFO typo_matches: ['ORC1', 'DRC1', 'BRK1', 'MRC1', 'ERC1'] \u2022 'brc1'
+2025-06-18 12:06:52,751 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 12:06:52,765 ERROR JSON parse error: ```json
+{
+  "gene": "ORC1",
+  "portal": ["Gene Portal", "iCRE Portal", "Variant Portal"],
+  "icre_class": null,
+  "variant": false
+}
+```
+2025-06-18 12:07:09,556 INFO semantic cands: ['INMT-MINDY4', 'SAYSD1', 'MINDY4B', 'MYL4', 'QRICH2'] \u2022 'i want the information for brc1'
+2025-06-18 12:07:15,950 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 12:07:16,010 ERROR JSON parse error: ```json
+{
+  "gene": "SAYSD1",
+  "portal": null,
+  "icre_class": null,
+  "variant": false
+}
+```
+2025-06-18 13:56:10,370 INFO Load pretrained SentenceTransformer: pritamdeka/BioBERT-mnli-snli-scinli-scitail-mednli-stsb
+2025-06-18 13:56:13,205 INFO Use pytorch device_name: cpu
+2025-06-18 13:56:13,206 INFO Load pretrained SentenceTransformer: microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract
+2025-06-18 13:56:13,286 WARNING No sentence-transformers model found with name microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract. Creating a new one with mean pooling.
+2025-06-18 13:56:51,609 INFO semantic cands: ['BRD2', 'BRIP1', 'BRD3', 'BRMS1', 'BEND3P2'] \u2022 'looking for brc1'
+2025-06-18 13:57:02,678 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 13:57:02,699 ERROR JSON parse error: ```json
+{
+  "gene": "BRD2",
+  "portal": null,
+  "icre_class": null,
+  "variant": false
+}
+```
+2025-06-18 13:57:12,738 INFO semantic cands: ['TSC22D2', 'TSC22D1', 'NF1P12', 'MSI2', 'FRAS1'] \u2022 'looking for brca12'
+2025-06-18 13:59:16,310 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 13:59:16,315 ERROR JSON parse error: ```json
+{
+  "gene": "BRCA1",
+  "portal": "iCRE Portal",
+  "icre_class": null,
+  "variant": false
+}
+```
+2025-06-18 14:03:59,007 INFO Load pretrained SentenceTransformer: pritamdeka/BioBERT-mnli-snli-scinli-scitail-mednli-stsb
+2025-06-18 14:04:01,377 INFO Use pytorch device_name: cpu
+2025-06-18 14:04:01,377 INFO Load pretrained SentenceTransformer: microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract
+2025-06-18 14:04:01,479 WARNING No sentence-transformers model found with name microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract. Creating a new one with mean pooling.
+2025-06-18 14:04:25,576 INFO semantic cands: ['BRD2', 'BRIP1', 'BRD3', 'BRMS1', 'BEND3P2'] \u2022 'looking for brc1'
+2025-06-18 14:04:29,299 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 14:04:29,314 ERROR JSON parse error: ```json
+{
+  "gene": "BRD2",
+  "portal": null,
+  "icre_class": null,
+  "variant": false
+}
+```
+2025-06-18 14:04:29,314 INFO Rule-based slots for 'looking for brc1': {'gene': 'BRD2', 'portal': 'Gene Portal', 'icre_class': None, 'variant': False}
+2025-06-18 14:05:57,060 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 14:05:57,064 ERROR JSON parse error: ```json
+{
+  "gene": "BRCA1",
+  "portal": "iCRE Portal",
+  "icre_class": null,
+  "variant": false
+}
+```
+2025-06-18 14:05:57,064 INFO Rule-based slots for 'looking for icres for brca1': {'gene': 'BRCA1', 'portal': 'iCRE Portal', 'icre_class': None, 'variant': False}
+2025-06-18 14:06:17,068 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 14:06:17,074 ERROR JSON parse error: ```json
+{
+  "gene": "BRCA1",
+  "portal": "iCRE Portal",
+  "icre_class": ["enhancer_proximal", "enhancer_distal"],
+  "variant": false
+}
+```
+2025-06-18 14:06:17,074 INFO Rule-based slots for 'what are the enhancers in brca1': {'gene': 'BRCA1', 'portal': 'Gene Portal', 'icre_class': 'enhancer', 'variant': False}
+2025-06-18 14:12:00,974 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 14:12:00,978 ERROR JSON parse error: ```json
+{
+  "gene": "BRCA1",
+  "portal": "Variant Portal",
+  "icre_class": null,
+  "variant": true
+}
+```
+2025-06-18 14:12:00,978 INFO Rule-based slots for 'variants for brca1': {'gene': 'BRCA1', 'portal': 'Variant Portal', 'icre_class': None, 'variant': True}
+2025-06-18 14:33:36,213 INFO Load pretrained SentenceTransformer: pritamdeka/BioBERT-mnli-snli-scinli-scitail-mednli-stsb
+2025-06-18 14:33:38,258 INFO Use pytorch device_name: cpu
+2025-06-18 14:33:38,258 INFO Load pretrained SentenceTransformer: microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract
+2025-06-18 14:33:38,346 WARNING No sentence-transformers model found with name microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract. Creating a new one with mean pooling.
+2025-06-18 14:37:46,322 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 14:37:46,326 ERROR JSON parse error: ```json
+{
+  "gene": "TSC22D1",
+  "portal": null,
+  "icre_class": null,
+  "variant": false
+}
+```
+2025-06-18 14:38:01,309 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 14:38:01,314 ERROR JSON parse error: ```json
+{
+  "gene": "BRCA1",
+  "portal": "iCRE Portal",
+  "icre_class": "enhancer_distal",
+  "variant": false
+}
+```
+2025-06-18 14:38:34,980 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 14:38:35,003 ERROR JSON parse error: ```json
+{
+  "gene": "KIF26B-AS1",
+  "portal": null,
+  "icre_class": ["enhancer_proximal", "enhancer_distal"],
+  "variant": false
+}
+```
+2025-06-18 14:42:06,523 INFO Load pretrained SentenceTransformer: pritamdeka/BioBERT-mnli-snli-scinli-scitail-mednli-stsb
+2025-06-18 14:42:10,495 INFO Use pytorch device_name: cpu
+2025-06-18 14:42:10,495 INFO Load pretrained SentenceTransformer: microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract
+2025-06-18 14:42:10,583 WARNING No sentence-transformers model found with name microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract. Creating a new one with mean pooling.
+2025-06-18 14:42:59,714 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 14:42:59,718 ERROR JSON parse error: ```json
+{
+  "gene": "BRCA1",
+  "portal": null,
+  "icre_class": null,
+  "variant": false
+}
+```
+2025-06-18 14:43:17,362 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 14:43:17,366 ERROR JSON parse error: ```json
+{
+  "gene": "INMT-MINDY4",
+  "portal": "iCRE Portal",
+  "icre_class": ["enhancer_proximal", "enhancer_distal"],
+  "variant": false
+}
+```
+2025-06-18 14:43:57,731 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 14:43:57,732 ERROR JSON parse error: ```json
+{
+  "gene": "BRCA1",
+  "portal": "iCRE Portal",
+  "icre_class": "promoter",
+  "variant": false
+}
+```
+2025-06-18 14:45:04,671 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 14:45:04,693 ERROR JSON parse error: ```json
+{
+  "gene": "MACROD2-IT1",
+  "portal": "Gene Portal",
+  "icre_class": null,
+  "variant": false
+}
+```
+2025-06-18 14:45:08,960 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 14:45:08,964 ERROR JSON parse error: ```json
+{
+  "gene": "BRCA1",
+  "portal": null,
+  "icre_class": null,
+  "variant": false
+}
+```
+2025-06-18 14:53:02,628 INFO Load pretrained SentenceTransformer: pritamdeka/BioBERT-mnli-snli-scinli-scitail-mednli-stsb
+2025-06-18 14:53:04,600 INFO Use pytorch device_name: cpu
+2025-06-18 14:53:04,600 INFO Load pretrained SentenceTransformer: microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract
+2025-06-18 14:53:04,689 WARNING No sentence-transformers model found with name microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract. Creating a new one with mean pooling.
+2025-06-18 14:59:08,213 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 14:59:20,854 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 15:00:10,392 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 15:14:48,209 INFO Load pretrained SentenceTransformer: pritamdeka/BioBERT-mnli-snli-scinli-scitail-mednli-stsb
+2025-06-18 15:14:50,400 INFO Use pytorch device_name: cpu
+2025-06-18 15:14:50,401 INFO Load pretrained SentenceTransformer: microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract
+2025-06-18 15:14:50,519 WARNING No sentence-transformers model found with name microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract. Creating a new one with mean pooling.
+2025-06-18 15:14:57,632 INFO intent=gene_specific by gene regex \u2022 'brca1'
+2025-06-18 15:15:06,132 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 15:15:16,109 INFO intent=gene_specific by gene regex \u2022 'looking for enhancers and TF for brca1'
+2025-06-18 15:15:24,995 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-18 15:15:36,137 INFO intent=gene_specific by gene regex \u2022 'what is brca1'
+2025-06-18 15:15:39,990 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-20 10:58:36,779 INFO Load pretrained SentenceTransformer: pritamdeka/BioBERT-mnli-snli-scinli-scitail-mednli-stsb
+2025-06-20 10:58:39,780 INFO Use pytorch device_name: cpu
+2025-06-20 10:58:39,780 INFO Load pretrained SentenceTransformer: microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract
+2025-06-20 10:58:39,872 WARNING No sentence-transformers model found with name microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract. Creating a new one with mean pooling.
+2025-06-20 10:59:37,324 INFO intent=genome_help conf=0.90 by model \u2022 'i want more information about brc1'
+2025-06-20 10:59:46,860 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-20 12:00:07,091 INFO Load pretrained SentenceTransformer: pritamdeka/BioBERT-mnli-snli-scinli-scitail-mednli-stsb
+2025-06-20 12:00:10,257 INFO Use pytorch device_name: cpu
+2025-06-20 12:00:10,257 INFO Load pretrained SentenceTransformer: microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract
+2025-06-20 12:00:10,343 WARNING No sentence-transformers model found with name microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract. Creating a new one with mean pooling.
+2025-06-20 12:00:17,576 INFO intent=gene_specific by gene regex \u2022 'what is brca1'
+2025-06-20 12:00:20,034 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-20 12:00:23,691 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-20 12:00:34,104 INFO intent=gene_specific by gene regex \u2022 'i want to explore enhancers for brca1'
+2025-06-20 12:00:40,892 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-20 12:01:01,797 INFO intent=ui_help by rule \u2022 'where can i locate gene portal'
+2025-06-20 12:01:44,565 INFO intent=unknown conf=0.40 by model \u2022 'bruh'
+2025-06-20 12:01:46,592 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-20 12:02:29,873 INFO intent=general_question by general question regex \u2022 'what is brc1'
+2025-06-20 12:02:31,829 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-20 12:02:53,818 INFO intent=general_question by general question regex \u2022 'what is sop1'
+2025-06-20 12:02:54,913 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-20 12:03:05,436 INFO intent=genome_help conf=0.90 by model \u2022 'sop1'
+2025-06-20 12:03:19,897 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-20 13:37:43,186 INFO Load pretrained SentenceTransformer: pritamdeka/BioBERT-mnli-snli-scinli-scitail-mednli-stsb
+2025-06-20 13:37:45,314 INFO Use pytorch device_name: cpu
+2025-06-20 13:37:45,315 INFO Load pretrained SentenceTransformer: microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract
+2025-06-20 13:37:45,396 WARNING No sentence-transformers model found with name microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract. Creating a new one with mean pooling.
+2025-06-20 13:37:54,454 INFO intent=unknown conf=0.40 by model \u2022 'bruhhhhhhhhhhh'
+2025-06-20 13:37:58,221 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-20 13:38:03,223 INFO intent=general_question by general question regex \u2022 'what is brc1'
+2025-06-20 13:38:04,564 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-20 13:39:49,326 INFO intent=gene_specific by gene regex \u2022 'what is brca1'
+2025-06-20 13:39:50,940 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-20 13:39:55,051 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-20 13:44:12,842 INFO intent=genome_help conf=0.90 by model \u2022 'brc1'
+2025-06-20 13:47:29,523 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-20 14:06:05,772 INFO intent=gene_specific by gene regex \u2022 'looking for tf page for brca1'
+2025-06-20 14:06:12,841 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-20 14:06:41,738 INFO intent=gene_specific by gene regex \u2022 'looking for CA for brca1'
+2025-06-20 14:06:49,281 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-20 14:07:14,598 INFO intent=gene_specific by gene regex \u2022 'where can i find enhancers for brca1'
+2025-06-20 14:07:20,325 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-20 14:07:35,213 INFO intent=gene_specific by gene regex \u2022 'redirect me to enhancers for brca2'
+2025-06-20 14:07:42,518 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
