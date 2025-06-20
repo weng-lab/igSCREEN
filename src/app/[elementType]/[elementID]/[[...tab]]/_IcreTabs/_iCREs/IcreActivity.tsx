@@ -5,9 +5,10 @@ import IcreActivityTable from "./IcreActivityTable"
 import { useIcreActivity, UseIcreActivityReturn } from "common/hooks/useIcreActivity"
 import IcreActivityBarPlot from "./IcreActivityBarPlot"
 import IcreActivityUMAP from "./IcreActivityUMAP"
-import { BarChart, ScatterPlot, SchemaRounded } from "@mui/icons-material"
+import { BarChart, CandlestickChart, ScatterPlot, SchemaRounded } from "@mui/icons-material"
 import IcreActivityTree from "./IcreActivityTree"
-
+import IcreActivityViolinPlot from "./IcreActivityViolinPlot"
+import { Distribution, ViolinPoint } from "@weng-lab/psychscreen-ui-components"
 
 export type IcreActivityProps = {
   accession: string,
@@ -40,6 +41,19 @@ const IcreActivity = ({ accession }: IcreActivityProps) => {
       setSelected(selected.filter(x => x !== bar.metadata))
     } else setSelected([...selected, bar.metadata])
   }
+
+  const handleViolinClick = (violin: Distribution<PointMetadata>) => {
+    const metadataArray = violin.data.map((point) => point.metadata);
+    if (selected.length === metadataArray.length && selected[0].lineage === metadataArray[0].lineage) {
+      setSelected([]);
+    } else setSelected(metadataArray);
+  };
+
+  const handleViolinPointClick = (point: ViolinPoint<PointMetadata>) => {
+    if (selected.includes(point.metadata)) {
+      setSelected(selected.filter((x) => x !== point.metadata));
+    } else setSelected([...selected, point.metadata]);
+  };
 
   return (
     <TwoPaneLayout
@@ -77,6 +91,20 @@ const IcreActivity = ({ accession }: IcreActivityProps) => {
               iCREActivitydata={iCREActivitydata}
               selected={selected}
               onSelectionChange={(points) => handlePointsSelected(points.map((x) => x.metaData))}
+            />
+          ),
+        },
+        {
+          tabTitle: "Violin Plot",
+          icon: <CandlestickChart />,
+          plotComponent: (
+            <IcreActivityViolinPlot
+              accession={accession}
+              selected={selected}
+              sortedFilteredData={sortedFilteredData}
+              iCREActivitydata={iCREActivitydata}
+              onViolinClicked={handleViolinClick}
+              onPointClicked={handleViolinPointClick}
             />
           ),
         },

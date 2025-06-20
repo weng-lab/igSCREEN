@@ -50,7 +50,7 @@ export default function About() {
   const sendEmail = () => {
     return new Promise((resolve, reject) => {
       //These IDs come from the emailjs website (using screenumass gmail account)
-      emailjs.sendForm('service_k7xidgk', 'igSCREEN', form.current, 'VU9U1vX9cAro8XtUK')
+      emailjs.sendForm('service_k7xidgk', 'contactUs', form.current, 'VU9U1vX9cAro8XtUK')
         .then((result) => {
           resolve(result);
         })
@@ -92,6 +92,7 @@ export default function About() {
             noValidate
             autoComplete="off"
           >
+            <input style={{display: "none"}} name="site" value={"igScreen"} readOnly></input>
             <TextField
               required
               value={contactName}
