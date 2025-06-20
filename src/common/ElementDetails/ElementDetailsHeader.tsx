@@ -90,7 +90,7 @@ const ElementDetailsHeader = ({ elementType, elementID }: ElementDetailsHeaderPr
         <Grid2 container direction="column" spacing={1} sx={{ height: "100%" }} textAlign={"right"}>
           <Grid2 container spacing={1} sx={{ flexGrow: 1 }} order={{ xs: 2, sm: 1 }} justifyContent={"flex-end"}>
             <Grid2
-              size={{ xs: elementType === "icre" ? 12 : 6, sm: 6 }}
+              size={{ xs: elementType === "icre" ? 12 : 6 }}
               sx={{ display: "flex" }}
               height={{ xs: 65, sm: "auto" }}
             >
@@ -103,7 +103,7 @@ const ElementDetailsHeader = ({ elementType, elementID }: ElementDetailsHeaderPr
               >
                 <Image
                   style={{ objectFit: "contain", padding: 4 }}
-                  src="/SCREEN_logo_light_large.svg"
+                  src="/SCREEN-on-light@16x.png"
                   fill
                   alt="screen-card-button"
                 />
