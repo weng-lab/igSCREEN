@@ -69,7 +69,7 @@ export default function Home() {
           sx={{ objectPosition: { xs: "bottom", md: "bottom left" } }}
         >
           <Image
-            src="/igSCREEN_red_light.svg"
+            src="/on-light@16x.png"
             fill
             alt="igSCREEN logo"
             quality={100}

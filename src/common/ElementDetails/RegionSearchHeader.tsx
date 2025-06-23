@@ -38,7 +38,7 @@ const RegionSearchHeader = ({ region }: RegionSearchHeaderProps) => {
               >
                 <Image
                   style={{ objectFit: "contain", padding: 4 }}
-                  src="/SCREEN_logo_light_large.svg"
+                  src="/SCREEN-on-light@16x.png"
                   fill
                   alt="screen-card-button"
                 />

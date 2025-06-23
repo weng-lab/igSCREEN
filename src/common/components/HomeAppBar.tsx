@@ -138,7 +138,7 @@ function ResponsiveAppBar({ maintenance }: ResponsiveAppBarProps) {
           <Box component={Link} href={"/"} height={45} width={110} position={"relative"}>
             <Image
               priority
-              src="/igSCREEN_red.svg"
+              src="/on-dark@16x.png"
               fill
               sizes="110px"
               alt="igSCREEN logo"
