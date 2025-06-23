@@ -50,3 +50,6 @@ next-env.d.ts
 #FAISS Index
 /src/model/gene_desc_ids.pkl
 /src/model/gene_desc_index.faiss
+
+#Cache Files
+/src/model/__pycache__
