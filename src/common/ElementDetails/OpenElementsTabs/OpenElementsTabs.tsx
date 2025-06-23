@@ -62,6 +62,7 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
    */
   const navigateAndMark = useCallback(
     (url: string) => {
+      console.log("called with " + url)
       isRoutingRef.current = true;
       router.push(url);
     },
@@ -81,10 +82,10 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
    * Otherwise would need to check isInitializedRef.current
    */
   useEffect(() => {
-    if (!openElements.length) return;
+    if (!openElements.length || isRoutingRef.current) return;
     const newUrl = pathname + "?open=" + compressOpenElementsToURL(openElements);
     router.push(newUrl);
-  }, [openElements, pathname, navigateAndMark]);
+  }, [openElements, pathname, navigateAndMark, router]);
 
   /**
    * 
