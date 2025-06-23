@@ -1,7 +1,4 @@
 2. Divide the functionalities of each file and refactor/organize them. 
 
-3. Double check ICRE classes, some of them are not really working
-
 Ask about detailed situations of typos
-1. User may just missed typed a gene --> fine for chatgpt to catch(since it uses lexical novelty, then redirect it)
-2. If they forget the gene name and made a typo --> (May cause confusion for redirection)
+1. saving history of conversation on that screen

@@ -12,8 +12,10 @@ import faiss
 from sentence_transformers import SentenceTransformer
 from queryclassifier import QueryClassifier
 from model import Fallback_Model
+from set_up import ID_REGEX, UI_HELP_REGEX, GENE_KEYWORD_RE, GENERAL_Q_RE, GENELIST_Q_RE, BRUH_Q_RE, VECTOR_THRESHOLD, TOP_K, fetch_genome, fetch_link, load_all_genes 
 
-# --- Setup ---
+
+# --- Setup for OPENAI and Logger ---
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 logging.basicConfig(
@@ -22,62 +24,6 @@ logging.basicConfig(
     format="%(asctime)s %(levelname)s %(message)s"
 )
 logger = logging.getLogger(__name__)
-
-# --- Regex & Thresholds ---
-ID_REGEX = re.compile(r"\b([A-Za-z][A-Za-z0-9\.-]*\d[A-Za-z0-9\.-]*)\b")
-UI_HELP_REGEX = re.compile(r"\b(redirect|click|navigate|help|how to|show me|go to|portal)\b", re.IGNORECASE)
-GENE_KEYWORD_RE = re.compile(r"\bgene\b", re.IGNORECASE)
-GENERAL_Q_RE = re.compile(r"\b(what is|what are|define|describe|explain)\b", re.IGNORECASE)
-GENELIST_Q_RE = re.compile(r"\b(what can you do | help)\b", re.IGNORECASE)
-BRUH_Q_RE = re.compile(r"\bbruh\b", re.IGNORECASE)
-VECTOR_THRESHOLD = 0.5
-TOP_K = 5
-
-# --- Database Utilities ---
-def get_connection():
-    return psycopg2.connect(
-        host=os.getenv("DB_HOST"),
-        port=int(os.getenv("DB_PORT")),
-        user=os.getenv("DB_USER"),
-        password=os.getenv("DB_PASS"),
-        dbname=os.getenv("DB_NAME")
-    )
-
-def fetch_genome(genome_id):
-    conn = get_connection()
-    try:
-        with conn.cursor() as cur:
-            cur.execute(
-                "SELECT name, gene_type FROM gencode_02_29_2024.gene_grch38_29 WHERE name=%s",
-                (genome_id,)
-            )
-            row = cur.fetchone()
-            return {"name": row[0], "description": row[1]} if row else None
-    finally:
-        conn.close()
-
-# --- Load full gene list ---
-def load_all_genes():
-    conn = get_connection()
-    try:
-        with conn.cursor() as cur:
-            cur.execute("SELECT name FROM gencode_02_29_2024.gene_grch38_29")
-            return [r[0] for r in cur.fetchall()]
-    finally:
-        conn.close()
-
-_all_genes = load_all_genes()
-
-# --- Portal Links ---
-def fetch_link(name):
-    dummy = {
-        "Gene Portal":   {"description":"Explore genes","link":"https://igscreen.wenglab.org/gene"},
-        "iCRE Portal":   {"description":"Explore iCREs","link":"https://igscreen.wenglab.org/icre"},
-        "Variant Portal":{"description":"Explore variants","link":"https://igscreen.wenglab.org/variant"},
-        "Phenotype":     {"description":"Explore phenotypes","link":"https://igscreen.wenglab.org/phenotype"},
-        "Immune":        {"description":"Compare immune lineages","link":"https://igscreen.wenglab.org/lineage"},
-    }
-    return dummy.get(name)
 
 # --- Models & Embeddings ---
 _qc = QueryClassifier()
@@ -114,9 +60,14 @@ def is_edit_distance_le_one(s, t):
 def classify_intent(raw):
     text = raw.lower()
     # 1) gene-specific if a known gene symbol is mentioned
-    if ID_REGEX.search(raw) and fetch_genome(ID_REGEX.search(raw).group(1).upper()):
+    if ID_REGEX.search(raw):
         logger.info(f"intent=gene_specific by gene regex '{raw}'")
         return "gene_specific", 1.0
+    # Special cases like AGA
+    tokens = re.findall("\b\w+\b", raw)
+    for t in tokens:
+        if t.upper() in load_all_genes():
+            return "gene_specific", 1.0
     # 2) UI help (redirect, portal, navigate)
     if UI_HELP_REGEX.search(text):
         logger.info(f"intent=ui_help by rule '{raw}'")
@@ -141,7 +92,8 @@ def classify_intent(raw):
 @lru_cache(maxsize=128)
 def answer_general(raw):
     prompt = (
-        "You are an assistant. Decide if the user wants gene biology info or site navigation help."
+        "Act like a genome expert. Decide if the user wants gene biology info or site navigation help. " \
+        "If they want gene biology information, then provide a general description of the gene."
         f"\nUser: \"{raw}\""
     )
     resp = openai.chat.completions.create(
@@ -161,7 +113,7 @@ def extract_gene_candidates(raw):
     # 2) lexical fallback over full list
     best = _fm.find_best_match(
         query=raw,
-        candidates=_all_genes,
+        candidates=load_all_genes(),
         query_sequence=None,
         db_path="",
         k=TOP_K
@@ -171,7 +123,7 @@ def extract_gene_candidates(raw):
 
     # 3) typo tolerance (Levenshtein ≤1)
     up = raw.strip().upper()
-    typos = [g for g in _all_genes if is_edit_distance_le_one(up, g)]
+    typos = [g for g in load_all_genes() if is_edit_distance_le_one(up, g)]
     if typos:
         return typos[:TOP_K]
 
@@ -210,6 +162,13 @@ def parse_and_redirect(user_query, gene):
             if "distal" in text: slots["icre_class"] = "enhancer_distal"
             elif "proximal" in text: slots["icre_class"] = "enhancer_proximal"
             else: slots["icre_class"] = "enhancer"
+        elif " ca " in text:
+            if "ca-h3k4me3" in text: slots["icre_class"] = "CA-H3K4me3"
+            elif "ca-ctcf" in text: slots["icre_class"] = "CA-CTCF"
+            elif "ca-tf" in text: slots["icre_class"] = "CA-TF"
+            else: slots["icre_class"] = "ca"
+        elif " tf " in text: slots["icre_class"] = "TF"
+
     # set portal based on slots
     if slots.get("icre_class"): slots["portal"] = "iCRE Portal"
     if "variant" in text and not slots.get("variant"): slots["variant"] = True
@@ -232,7 +191,23 @@ def handle_gene_query(raw):
     if not cands:
         print("No matching genes.")
         return
-    gene = cands[0] if len(cands)==1 else cands[int(input(f"Choices {cands}: "))-1]
+    #gene = cands[0] if len(cands)==1 else cands[int(input(f"Choices {cands}: "))-1]
+    if len(cands) > 1:
+            print("-> gene candidates: ")
+            for i,g in enumerate(cands, 1):
+                print(f"{i}.{g}")
+            while True:
+                choice = input("Which one? ").strip()
+                try:
+                    idx = int(choice)
+                    if 1 <= idx <= len(cands):
+                        gene = cands[idx-1]
+                        break
+                    print(f"Please enter a number between 1 and {len(cands)}")
+                except ValueError:
+                    print("Please enter a number of your choice")
+    else:
+        gene = cands[0]
     print(f"Selected gene: {gene}")
     # ambiguous general query? both answer + redirect
     if GENERAL_Q_RE.search(raw):
@@ -254,7 +229,13 @@ if __name__ == "__main__":
             continue
         if intent == "general_question":
             print("-> Answer:", answer_general(q))
+            m = ID_REGEX.search(q)
+            if m and fetch_genome(m.group(1).upper()):
+                redirect = input(f"Redirect to Gene Portal for {m.group(1).upper()}? yes/no").strip().lower()
+                if redirect.startswith("y"):
+                    print(f"-> Redirect to: https://igscreen.wenglab.org/gene/{m.group(1).upper()}")
             continue
+
         if intent == "general_help":
             print("-> I can look up genes, iCRE classes, variants, and provide links. Try “What is BRCA1?” or “Show me the iCRE portal.”")
             continue
@@ -269,7 +250,23 @@ if __name__ == "__main__":
         if not cands:
             print("-> No genes found.")
             continue
-        gene = cands[0] if len(cands)==1 else cands[int(input(f"Choices {cands}: "))-1]
+        #gene = cands[0] if len(cands)==1 else cands[int(input(f"Choices {cands}: "))-1]
+        if len(cands) > 1:
+            print("-> gene candidates: ")
+            for i,g in enumerate(cands, 1):
+                print(f"{i}.{g}")
+            while True:
+                choice = input("Which one? ").strip()
+                try:
+                    idx = int(choice)
+                    if 1 <= idx <= len(cands):
+                        gene = cands[idx-1]
+                        break
+                    print(f"Please enter a number between 1 and {len(cands)}")
+                except ValueError:
+                    print("Please enter a number of your choice")
+        else:
+            gene = cands[0]
         print(f"-> selected: {gene}")
         url = parse_and_redirect(q, gene)
         print(f"-> Redirect to {url}")
