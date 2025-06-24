@@ -5,19 +5,19 @@ import HighlightIcon from "@mui/icons-material/Highlight";
 import { Box, Button, IconButton } from "@mui/material";
 import Grid2 from "@mui/material/Grid2";
 import { useTheme } from "@mui/material/styles";
-import {
-  BigBedTrackProps,
-  BrowserActionType,
-  DefaultBigBed,
-  DefaultBigWig,
-  DefaultTranscript,
-  DisplayMode,
-  GenomeBrowser,
-  GQLCytobands,
-  TranscriptHumanVersion,
-  TranscriptTrackProps,
-  useBrowserState,
-} from "@weng-lab/genomebrowser";
+// import {
+//   BigBedTrackProps,
+//   BrowserActionType,
+//   DefaultBigBed,
+//   DefaultBigWig,
+//   DefaultTranscript,
+//   DisplayMode,
+//   GenomeBrowser,
+//   GQLCytobands,
+//   TranscriptHumanVersion,
+//   TranscriptTrackProps,
+//   useBrowserState,
+// } from "@weng-lab/genomebrowser";
 import { Domain, GenomeSearch, Result } from "@weng-lab/psychscreen-ui-components";
 import { useCallback, useEffect, useState } from "react";
 import { GenomicElementType, GenomicRange } from "types/globalTypes";
@@ -30,14 +30,26 @@ import BedTooltip from "./bedTooltip";
 import { Exon } from "types/generated/graphql";
 import { useRouter } from "next/navigation";
 
-interface Transcript {
-  id: string;
-  name: string;
-  coordinates: Domain;
-  strand: string;
-  exons?: Exon[];
-  color?: string;
-}
+import {
+  Browser,
+  InitialBrowserState,
+  Chromosome,
+  Transcript,
+  TrackType,
+  Vibrant,
+  Track,
+  DisplayMode,
+  useBrowserStore,
+} from "track-logic";
+
+// interface Transcript {
+//   id: string;
+//   name: string;
+//   coordinates: Domain;
+//   strand: string;
+//   exons?: Exon[];
+//   color?: string;
+// }
 
 function expandCoordinates(coordinates: GenomicRange) {
   let length = coordinates.end - coordinates.start;
@@ -61,130 +73,232 @@ export default function GenomeBrowserView({
   name: string;
   type: GenomicElementType;
 }) {
-  const [browserState, browserDispatch] = useBrowserState({
-    domain: expandCoordinates(coordinates),
-    width: 1500,
-    tracks: [],
-    highlights: [],
-  });
+  // const [browserState, browserDispatch] = useBrowserState({
+  //   domain: expandCoordinates(coordinates),
+  //   width: 1500,
+  //   tracks: [],
+  //   highlights: [],
+  // });
 
-  const router = useRouter()
+  const router = useRouter();
 
   // Bed track mouse over, out, and click handlers
-  const icreMouseOver = useCallback(
-    (item: Rect) => {
-      const newHighlight = {
-        domain: { start: item.start + 150, end: item.end + 150 },
-        color: item.color || "red",
-        id: item.name,
-      };
-      browserDispatch({
-        type: BrowserActionType.ADD_HIGHLIGHT,
-        highlight: newHighlight,
-      });
-    },
-    [browserDispatch]
-  );
-  const icreMouseOut = useCallback(() => {
-    browserDispatch({ type: BrowserActionType.REMOVE_LAST_HIGHLIGHT });
-  }, [browserDispatch]);
-  const onIcreClick = useCallback((item: Rect) => {
-    const accession = item.name;
-    router.push(`/icre/${accession}`)
-  }, []);
-  const onGeneClick = useCallback((gene: Transcript) => {
-    const name = gene.name;
-    if (name.includes("ENSG")) {
-      return
-    } 
-    router.push(`/gene/${name}`)
-  }, [])
+  // const icreMouseOver = useCallback(
+  //   (item: Rect) => {
+  //     const newHighlight = {
+  //       domain: { start: item.start + 150, end: item.end + 150 },
+  //       color: item.color || "red",
+  //       id: item.name,
+  //     };
+  //     browserDispatch({
+  //       type: BrowserActionType.ADD_HIGHLIGHT,
+  //       highlight: newHighlight,
+  //     });
+  //   },
+  //   [browserDispatch]
+  // );
+  // const icreMouseOut = useCallback(() => {
+  //   browserDispatch({ type: BrowserActionType.REMOVE_LAST_HIGHLIGHT });
+  // }, [browserDispatch]);
+  // const onIcreClick = useCallback((item: Rect) => {
+  //   const accession = item.name;
+  //   router.push(`/icre/${accession}`);
+  // }, []);
+  // const onGeneClick = useCallback((gene: Transcript) => {
+  //   const name = gene.name;
+  //   if (name.includes("ENSG")) {
+  //     return;
+  //   }
+  //   router.push(`/gene/${name}`);
+  // }, []);
 
   // Initialize tracks and highlights
-  useEffect(() => {
-    const tracks = defaultTracks(type === "gene" ? name : "", icreMouseOver, icreMouseOut, onIcreClick, BedTooltip, onGeneClick);
-    tracks.forEach((track) => {
-      browserDispatch({ type: BrowserActionType.ADD_TRACK, track });
-    });
-    browserDispatch({
-      type: BrowserActionType.ADD_HIGHLIGHT,
-      highlight: {
-        domain: {
-          chromosome: coordinates.chromosome,
-          start: coordinates.start,
-          end: coordinates.end,
-        },
-        color: "blue",
-        id: name,
-      },
-    });
-  }, [coordinates, name, type, icreMouseOver, icreMouseOut, onIcreClick, browserDispatch]);
+  // useEffect(() => {
+  //   const tracks = defaultTracks(
+  //     type === "gene" ? name : "",
+  //     icreMouseOver,
+  //     icreMouseOut,
+  //     onIcreClick,
+  //     BedTooltip,
+  //     onGeneClick
+  //   );
+  //   tracks.forEach((track) => {
+  //     browserDispatch({ type: BrowserActionType.ADD_TRACK, track });
+  //   });
+  //   browserDispatch({
+  //     type: BrowserActionType.ADD_HIGHLIGHT,
+  //     highlight: {
+  //       domain: {
+  //         chromosome: coordinates.chromosome,
+  //         start: coordinates.start,
+  //         end: coordinates.end,
+  //       },
+  //       color: "blue",
+  //       id: name,
+  //     },
+  //   });
+  // }, [coordinates, name, type, icreMouseOver, icreMouseOut, onIcreClick, browserDispatch]);
 
   // Bulk ATAC Modal
   const [showAddTracksModal, setShowAddTracksModal] = useState(false);
   const [selectedTracks, setSelectedTracks] = useState<BigWig[]>([]);
 
-  useEffect(() => {
-    selectedTracks.forEach((track) => {
-      // check if the track is not already in the browser state
-      if (!browserState.tracks.some((t) => t.id === track.name + "_temp")) {
-        const trackToAdd = {
-          ...DefaultBigWig,
-          id: track.name + "_temp",
-          title: track.assay + " " + track.displayName,
-          url: track.url,
-          color: trackColor(track.lineage),
-          height: 100,
-          titleSize: 16,
-          displayMode: DisplayMode.FULL,
-        };
-        browserDispatch({ type: BrowserActionType.ADD_TRACK, track: trackToAdd });
-      }
-    });
+  // useEffect(() => {
+  //   selectedTracks.forEach((track) => {
+  //     // check if the track is not already in the browser state
+  //     if (!browserState.tracks.some((t) => t.id === track.name + "_temp")) {
+  //       const trackToAdd = {
+  //         ...DefaultBigWig,
+  //         id: track.name + "_temp",
+  //         title: track.assay + " " + track.displayName,
+  //         url: track.url,
+  //         color: trackColor(track.lineage),
+  //         height: 100,
+  //         titleSize: 16,
+  //         displayMode: DisplayMode.FULL,
+  //       };
+  //       browserDispatch({ type: BrowserActionType.ADD_TRACK, track: trackToAdd });
+  //     }
+  //   });
 
-    // Remove tracks that are no longer selected
-    browserState.tracks.forEach((track) => {
-      if (track.id.includes("_temp") && !selectedTracks.some((t) => t.name + "_temp" === track.id)) {
-        browserDispatch({ type: BrowserActionType.DELETE_TRACK, id: track.id });
-      }
-    });
-  }, [browserState.tracks, selectedTracks, browserDispatch]);
+  //   // Remove tracks that are no longer selected
+  //   browserState.tracks.forEach((track) => {
+  //     if (track.id.includes("_temp") && !selectedTracks.some((t) => t.name + "_temp" === track.id)) {
+  //       browserDispatch({ type: BrowserActionType.DELETE_TRACK, id: track.id });
+  //     }
+  //   });
+  // }, [browserState.tracks, selectedTracks, browserDispatch]);
 
-  const handeSearchSubmit = (r: Result) => {
-    browserDispatch({
-      type: BrowserActionType.SET_LOADING,
-    });
-    if (r.type === "Gene") {
-      browserDispatch({
-        type: BrowserActionType.UPDATE_PROPS,
-        id: "default-gene",
-        props: {
-          geneName: r.title,
-        },
-      });
-    }
-    // Only remove if there is more than one highlight
-    if (browserState.highlights.length > 1) {
-      browserDispatch({
-        type: BrowserActionType.REMOVE_LAST_HIGHLIGHT,
-      });
-    }
-    browserDispatch({
-      type: BrowserActionType.ADD_HIGHLIGHT,
-      highlight: {
-        domain: r.domain,
-        color: randomColor(),
-        id: r.title,
-      },
-    });
-    browserDispatch({
-      type: BrowserActionType.SET_DOMAIN,
-      domain: expandCoordinates(r.domain),
-    });
-  };
+  // const handeSearchSubmit = (r: Result) => {
+  //   browserDispatch({
+  //     type: BrowserActionType.SET_LOADING,
+  //   });
+  //   if (r.type === "Gene") {
+  //     browserDispatch({
+  //       type: BrowserActionType.UPDATE_PROPS,
+  //       id: "default-gene",
+  //       props: {
+  //         geneName: r.title,
+  //       },
+  //     });
+  //   }
+  //   // Only remove if there is more than one highlight
+  //   if (browserState.highlights.length > 1) {
+  //     browserDispatch({
+  //       type: BrowserActionType.REMOVE_LAST_HIGHLIGHT,
+  //     });
+  //   }
+  //   browserDispatch({
+  //     type: BrowserActionType.ADD_HIGHLIGHT,
+  //     highlight: {
+  //       domain: r.domain,
+  //       color: randomColor(),
+  //       id: r.title,
+  //     },
+  //   });
+  //   browserDispatch({
+  //     type: BrowserActionType.SET_DOMAIN,
+  //     domain: expandCoordinates(r.domain),
+  //   });
+  // };
 
   const theme = useTheme();
   const [highlightDialogOpen, setHighlightDialogOpen] = useState(false);
+
+  const initialState: InitialBrowserState = {
+    domain: {
+      chromosome: coordinates.chromosome as Chromosome,
+      start: coordinates.start,
+      end: coordinates.end,
+    },
+    marginWidth: 150,
+    trackWidth: 1350,
+    multiplier: 3,
+  };
+
+  const addHighlight = useBrowserStore((state) => state.addHighlight);
+  const removeHighlight = useBrowserStore((state) => state.removeHighlight);
+
+  const initialTracks: Track[] = [
+    {
+      id: "1",
+      title: "bigWig",
+      titleSize: 12,
+      height: 100,
+      color: Vibrant[6],
+      trackType: TrackType.BigWig,
+      displayMode: DisplayMode.Full,
+      url: "https://downloads.wenglab.org/DNAse_All_ENCODE_MAR20_2024_merged.bw",
+    },
+    {
+      id: "2",
+      title: "bigBed",
+      titleSize: 12,
+      height: 20,
+      color: Vibrant[7],
+      trackType: TrackType.BigBed,
+      displayMode: DisplayMode.Dense,
+      url: "https://downloads.wenglab.org/GRCh38-cCREs.DCC.bigBed",
+      onClick: (rect) => {
+        const id = (rect.name || "ihqoviun") + "-clicked";
+        addHighlight({
+          id,
+          domain: { start: rect.start, end: rect.end },
+          color: rect.color || "blue",
+        });
+      },
+      onHover: (rect) => {
+        addHighlight({
+          id: rect.name || "ihqoviun",
+          domain: { start: rect.start, end: rect.end },
+          color: rect.color || "blue",
+        });
+      },
+      onLeave: (rect) => {
+        removeHighlight(rect.name || "ihqoviun");
+      },
+    },
+    {
+      id: "3",
+      title: "genes",
+      titleSize: 12,
+      height: 50,
+      color: Vibrant[8],
+      trackType: TrackType.Transcript,
+      assembly: "GRCh38",
+      version: 47,
+      displayMode: DisplayMode.Squish,
+      onHover: (item: Transcript) => {
+        addHighlight({
+          id: item.name || "dsadsfd",
+          domain: { start: item.coordinates.start, end: item.coordinates.end },
+          color: item.color || "blue",
+        });
+      },
+      onLeave: (item: Transcript) => {
+        removeHighlight(item.name || "dsadsfd");
+      },
+    },
+    {
+      id: "4",
+      title: "motif",
+      titleSize: 12,
+      height: 100,
+      color: Vibrant[1],
+      peakColor: Vibrant[3],
+      trackType: TrackType.Motif,
+      displayMode: DisplayMode.Squish,
+      assembly: "GRCh38",
+      consensusRegex: "gcca[cg][ct]ag[ag]gggcgc",
+      peaksAccession: "ENCFF992CTF",
+      onHover: (rect) => {
+        console.log(rect);
+      },
+      onLeave: (rect) => {
+        console.log(rect);
+      },
+    },
+  ];
 
   return (
     <Grid2 container spacing={2} sx={{ mt: "0rem", mb: "1rem" }} justifyContent="center" alignItems="center">
@@ -209,7 +323,7 @@ export default function GenomeBrowserView({
           <GenomeSearch
             size="small"
             assembly="GRCh38"
-            onSearchSubmit={handeSearchSubmit}
+            onSearchSubmit={() => {}} //handeSearchSubmit}
             queries={["Gene", "SNP", "iCRE", "Coordinate"]}
             geneLimit={3}
             sx={{ width: "400px" }}
@@ -274,23 +388,24 @@ export default function GenomeBrowserView({
           alignItems={"center"}
         >
           <h3 style={{ marginBottom: "0px", marginTop: "0px" }}>
-            {browserState.domain.chromosome}:{browserState.domain.start.toLocaleString()}-
-            {browserState.domain.end.toLocaleString()}
+            {/* {browserState.domain.chromosome}:{browserState.domain.start.toLocaleString()}-
+            {browserState.domain.end.toLocaleString()} */}
           </h3>
 
           <svg id="cytobands" width={"700px"} height={20}>
-            <GQLCytobands
+            {/* <GQLCytobands
               assembly="hg38"
               chromosome={browserState.domain.chromosome}
               currentDomain={browserState.domain}
-            />
+            /> */}
           </svg>
           <h3 style={{ marginBottom: "0px", marginTop: "0px" }}>hg38</h3>
         </Box>
-        <ControlButtons browserState={browserState} browserDispatch={browserDispatch} />
+        {/* <ControlButtons browserState={browserState} browserDispatch={browserDispatch} /> */}
       </Grid2>
       <Grid2 size={{ xs: 12, lg: 12 }}>
-        <GenomeBrowser width={"100%"} browserState={browserState} browserDispatch={browserDispatch} />
+        <Browser state={initialState} tracks={initialTracks} />
+        {/* <GenomeBrowser width={"100%"} browserState={browserState} browserDispatch={browserDispatch} /> */}
       </Grid2>
       <Box
         sx={{
@@ -303,71 +418,71 @@ export default function GenomeBrowserView({
       <HighlightDialog
         open={highlightDialogOpen}
         setOpen={setHighlightDialogOpen}
-        highlights={browserState.highlights as GBHighlight[]}
+        highlights={[]} // browserState.highlights as GBHighlight[]
       />
     </Grid2>
   );
 }
 
-function defaultTracks(
-  geneName: string,
-  icreMouseOver: (item: Rect) => void,
-  icreMouseOut: () => void,
-  onIcreClick: (item: Rect) => void,
-  tooltipContent: React.FC<Rect>,
-  onGeneClick: (gene: Transcript) => void
-) {
-  const geneTrack = {
-    ...DefaultTranscript,
-    titleSize: 16,
-    id: "default-gene",
-    title: "GENCODE genes",
-    height: 100,
-    color: "#AAAAAA",
-    version: TranscriptHumanVersion.V40,
-    assembly: "GRCh38",
-    queryType: "gene",
-    displayMode: DisplayMode.SQUISH,
-    geneName: geneName,
-    onTranscriptClick: onGeneClick,
-  } as TranscriptTrackProps;
+// function defaultTracks(
+//   geneName: string,
+//   icreMouseOver: (item: Rect) => void,
+//   icreMouseOut: () => void,
+//   onIcreClick: (item: Rect) => void,
+//   tooltipContent: React.FC<Rect>,
+//   onGeneClick: (gene: Transcript) => void
+// ) {
+//   const geneTrack = {
+//     ...DefaultTranscript,
+//     titleSize: 16,
+//     id: "default-gene",
+//     title: "GENCODE genes",
+//     height: 100,
+//     color: "#AAAAAA",
+//     version: TranscriptHumanVersion.V40,
+//     assembly: "GRCh38",
+//     queryType: "gene",
+//     displayMode: DisplayMode.SQUISH,
+//     geneName: geneName,
+//     onTranscriptClick: onGeneClick,
+//   } as TranscriptTrackProps;
 
-  const icreTrack = {
-    ...DefaultBigBed,
-    titleSize: 16,
-    id: "default-icre",
-    title: "All Immune cCREs",
-    displayMode: DisplayMode.DENSE,
-    color: "#9378bc",
-    rowHeight: 10,
-    height: 50,
-    onMouseOver: icreMouseOver,
-    onMouseOut: icreMouseOut,
-    onClick: onIcreClick,
-    tooltipContent: tooltipContent,
-    url: "http://downloads.wenglab.org/igscreen/iCREs.bigBed",
-  } as BigBedTrackProps;
+//   const icreTrack = {
+//     ...DefaultBigBed,
+//     titleSize: 16,
+//     id: "default-icre",
+//     title: "All Immune cCREs",
+//     displayMode: DisplayMode.DENSE,
+//     color: "#9378bc",
+//     rowHeight: 10,
+//     height: 50,
+//     onMouseOver: icreMouseOver,
+//     onMouseOut: icreMouseOut,
+//     onClick: onIcreClick,
+//     tooltipContent: tooltipContent,
+//     url: "http://downloads.wenglab.org/igscreen/iCREs.bigBed",
+//   } as BigBedTrackProps;
 
-  const atacBigWig = {
-    ...DefaultBigWig,
-    title: "ATAC merged signal",
-    url: "https://downloads.wenglab.org/igscreen/ATAC_merged_signal.bigWig",
-    color: "#02c7b9",
-    height: 100,
-    titleSize: 16,
-    displayMode: DisplayMode.FULL,
-    id: "atac-bigwig",
-  };
+//   const atacBigWig = {
+//     ...DefaultBigWig,
+//     title: "ATAC merged signal",
+//     url: "https://downloads.wenglab.org/igscreen/ATAC_merged_signal.bigWig",
+//     color: "#02c7b9",
+//     height: 100,
+//     titleSize: 16,
+//     displayMode: DisplayMode.FULL,
+//     id: "atac-bigwig",
+//   };
 
-  const dnaseBigWig = {
-    ...DefaultBigWig,
-    title: "DNase merged signal",
-    url: "https://downloads.wenglab.org/igscreen/DNase_merged_signal.bigWig",
-    color: "#06DA93",
-    height: 100,
-    titleSize: 16,
-    displayMode: DisplayMode.FULL,
-    id: "dnase-bigwig",
-  };
-  return [geneTrack, icreTrack, atacBigWig, dnaseBigWig];
-}
+//   const dnaseBigWig = {
+//     ...DefaultBigWig,
+//     title: "DNase merged signal",
+//     url: "https://downloads.wenglab.org/igscreen/DNase_merged_signal.bigWig",
+//     color: "#06DA93",
+//     height: 100,
+//     titleSize: 16,
+//     displayMode: DisplayMode.FULL,
+//     id: "dnase-bigwig",
+//   };
+//   return [geneTrack, icreTrack, atacBigWig, dnaseBigWig];
+// }
