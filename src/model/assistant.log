@@ -380,3 +380,27 @@
 2025-06-23 15:41:16,767 INFO intent=gene_specific by gene regex 'looking for aga1'
 2025-06-23 15:41:42,362 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
 2025-06-23 15:41:56,859 INFO intent=genome_help conf=0.90 by model 'provide me the link for icre for that gene'
+2025-06-24 09:07:36,042 INFO Load pretrained SentenceTransformer: pritamdeka/BioBERT-mnli-snli-scinli-scitail-mednli-stsb
+2025-06-24 09:07:41,866 INFO Use pytorch device_name: cpu
+2025-06-24 09:07:41,866 INFO Load pretrained SentenceTransformer: microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract
+2025-06-24 09:07:42,301 WARNING No sentence-transformers model found with name microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract. Creating a new one with mean pooling.
+2025-06-24 09:13:07,709 INFO intent=gene_specific by gene regex 'Where can i find brca1'
+2025-06-24 09:13:17,903 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-24 09:13:33,436 INFO intent=gene_specific by gene regex 'looking for enhancers for agap10'
+2025-06-24 09:13:51,294 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-24 09:13:57,186 INFO intent=gene_specific by gene regex 'looking for enhancers for agap1'
+2025-06-24 09:14:04,084 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-24 09:14:15,651 INFO intent=gene_specific by gene regex 'brc1'
+2025-06-24 09:15:29,326 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-24 09:15:35,887 INFO intent=gene_specific by gene regex 'what is orc1'
+2025-06-24 09:15:40,333 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-24 09:15:48,126 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-24 09:18:31,213 INFO intent=gene_specific by gene regex 'what is agap1'
+2025-06-24 09:18:34,725 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-24 09:18:42,533 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-24 09:19:10,179 INFO intent=gene_specific by gene regex 'where can i find promoter for orc1'
+2025-06-24 09:19:11,965 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-24 09:20:08,123 INFO intent=gene_specific by gene regex 'brc1'
+2025-06-24 09:20:51,646 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-24 09:23:49,160 INFO intent=unknown conf=0.40 by model '071fd1'
+2025-06-24 09:23:54,300 INFO HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"

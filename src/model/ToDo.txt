@@ -1,4 +1,11 @@
 2. Divide the functionalities of each file and refactor/organize them. 
 
 Ask about detailed situations of typos
-1. saving history of conversation on that screen
+1. saving history of conversation on that screen --> yes
+2. Looking into using LLM to have a more conversation-like assistant
+
+1. Lexical + Semantic Scan for the rag pipeline before combining user's input with enhance context
+2. Keeping page history
+3. Make it work and test it out. 
+
+
