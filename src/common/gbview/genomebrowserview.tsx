@@ -29,6 +29,7 @@ import { randomColor, trackColor } from "./utils";
 import BedTooltip from "./bedTooltip";
 import { Exon } from "types/generated/graphql";
 import { useRouter } from "next/navigation";
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 
 import {
   Browser,
@@ -50,6 +51,12 @@ import {
 //   exons?: Exon[];
 //   color?: string;
 // }
+
+const client = new ApolloClient({
+  uri: "https://ga.staging.wenglab.org/graphql",
+  cache: new InMemoryCache(),
+  connectToDevTools: true,
+});
 
 function expandCoordinates(coordinates: GenomicRange) {
   let length = coordinates.end - coordinates.start;
@@ -279,25 +286,6 @@ export default function GenomeBrowserView({
         removeHighlight(item.name || "dsadsfd");
       },
     },
-    {
-      id: "4",
-      title: "motif",
-      titleSize: 12,
-      height: 100,
-      color: Vibrant[1],
-      peakColor: Vibrant[3],
-      trackType: TrackType.Motif,
-      displayMode: DisplayMode.Squish,
-      assembly: "GRCh38",
-      consensusRegex: "gcca[cg][ct]ag[ag]gggcgc",
-      peaksAccession: "ENCFF992CTF",
-      onHover: (rect) => {
-        console.log(rect);
-      },
-      onLeave: (rect) => {
-        console.log(rect);
-      },
-    },
   ];
 
   return (
@@ -404,7 +392,9 @@ export default function GenomeBrowserView({
         {/* <ControlButtons browserState={browserState} browserDispatch={browserDispatch} /> */}
       </Grid2>
       <Grid2 size={{ xs: 12, lg: 12 }}>
-        <Browser state={initialState} tracks={initialTracks} />
+        <ApolloProvider client={client}>
+          <Browser state={initialState} tracks={initialTracks} />
+        </ApolloProvider>
         {/* <GenomeBrowser width={"100%"} browserState={browserState} browserDispatch={browserDispatch} /> */}
       </Grid2>
       <Box
