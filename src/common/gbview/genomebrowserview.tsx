@@ -18,7 +18,7 @@ import { useTheme } from "@mui/material/styles";
 //   TranscriptTrackProps,
 //   useBrowserState,
 // } from "@weng-lab/genomebrowser";
-import { Domain, GenomeSearch, Result } from "@weng-lab/psychscreen-ui-components";
+import { Domain, GenomeSearch, Result } from "psychscreen-legacy-components";
 import { useCallback, useEffect, useState } from "react";
 import { GenomicElementType, GenomicRange } from "types/globalTypes";
 import { Rect } from "umms-gb/dist/components/tracks/bigbed/types";
@@ -30,6 +30,7 @@ import BedTooltip from "./bedTooltip";
 import { Exon } from "types/generated/graphql";
 import { useRouter } from "next/navigation";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import { GQLCytobands } from "@weng-lab/genomebrowser";
 
 import {
   Browser,
@@ -42,15 +43,6 @@ import {
   DisplayMode,
   useBrowserStore,
 } from "track-logic";
-
-// interface Transcript {
-//   id: string;
-//   name: string;
-//   coordinates: Domain;
-//   strand: string;
-//   exons?: Exon[];
-//   color?: string;
-// }
 
 const client = new ApolloClient({
   uri: "https://ga.staging.wenglab.org/graphql",
@@ -246,14 +238,6 @@ export default function GenomeBrowserView({
       trackType: TrackType.BigBed,
       displayMode: DisplayMode.Dense,
       url: "https://downloads.wenglab.org/GRCh38-cCREs.DCC.bigBed",
-      onClick: (rect) => {
-        const id = (rect.name || "ihqoviun") + "-clicked";
-        addHighlight({
-          id,
-          domain: { start: rect.start, end: rect.end },
-          color: rect.color || "blue",
-        });
-      },
       onHover: (rect) => {
         addHighlight({
           id: rect.name || "ihqoviun",
@@ -375,27 +359,14 @@ export default function GenomeBrowserView({
           display={"flex"}
           alignItems={"center"}
         >
-          <h3 style={{ marginBottom: "0px", marginTop: "0px" }}>
-            {/* {browserState.domain.chromosome}:{browserState.domain.start.toLocaleString()}-
-            {browserState.domain.end.toLocaleString()} */}
-          </h3>
-
-          <svg id="cytobands" width={"700px"} height={20}>
-            {/* <GQLCytobands
-              assembly="hg38"
-              chromosome={browserState.domain.chromosome}
-              currentDomain={browserState.domain}
-            /> */}
-          </svg>
-          <h3 style={{ marginBottom: "0px", marginTop: "0px" }}>hg38</h3>
+          <Info />
         </Box>
-        {/* <ControlButtons browserState={browserState} browserDispatch={browserDispatch} /> */}
+        <ControlButtons />
       </Grid2>
       <Grid2 size={{ xs: 12, lg: 12 }}>
         <ApolloProvider client={client}>
           <Browser state={initialState} tracks={initialTracks} />
         </ApolloProvider>
-        {/* <GenomeBrowser width={"100%"} browserState={browserState} browserDispatch={browserDispatch} /> */}
       </Grid2>
       <Box
         sx={{
@@ -405,12 +376,25 @@ export default function GenomeBrowserView({
           justifyContent: "flex-end",
         }}
       ></Box>
-      <HighlightDialog
-        open={highlightDialogOpen}
-        setOpen={setHighlightDialogOpen}
-        highlights={[]} // browserState.highlights as GBHighlight[]
-      />
+      <HighlightDialog open={highlightDialogOpen} setOpen={setHighlightDialogOpen} />
     </Grid2>
+  );
+}
+
+function Info() {
+  const currentDomain = useBrowserStore((state) => state.domain);
+
+  return (
+    <>
+      <h3 style={{ marginBottom: "0px", marginTop: "0px" }}>
+        {currentDomain.chromosome}:{currentDomain.start.toLocaleString()}-{currentDomain.end.toLocaleString()}
+      </h3>
+
+      <svg id="cytobands" width={"700px"} height={20}>
+        <GQLCytobands assembly="hg38" chromosome={currentDomain.chromosome} currentDomain={currentDomain} />
+      </svg>
+      <h3 style={{ marginBottom: "0px", marginTop: "0px" }}>hg38</h3>
+    </>
   );
 }
 

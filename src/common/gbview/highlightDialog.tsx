@@ -1,7 +1,8 @@
 import { Box, DialogContent, Typography } from "@mui/material";
 import { DialogTitle } from "@mui/material";
 import { Dialog } from "@mui/material";
-import { Domain } from "@weng-lab/psychscreen-ui-components";
+import { Domain } from "psychscreen-legacy-components";
+import { useBrowserStore } from "track-logic";
 
 export type GBHighlight = {
   id: string;
@@ -12,12 +13,11 @@ export type GBHighlight = {
 export default function HighlightDialog({
   open,
   setOpen,
-  highlights,
 }: {
   open: boolean;
   setOpen: (open: boolean) => void;
-  highlights: GBHighlight[];
 }) {
+  const highlights = useBrowserStore((state) => state.highlights);
   return (
     <Dialog
         open={open}

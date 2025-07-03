@@ -1,6 +1,6 @@
 "use client";
 import { Box, Button, Divider, Grid2, IconButton, Stack, Typography } from "@mui/material";
-import { GenomeSearch, Result } from "@weng-lab/psychscreen-ui-components";
+import { GenomeSearch, Result } from "psychscreen-legacy-components";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { isValidGenomicElement } from "types/globalTypes";
