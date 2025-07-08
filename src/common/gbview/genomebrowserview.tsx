@@ -62,7 +62,6 @@ export default function GenomeBrowserView({
   type: GenomicElementType;
 }) {
   const addHighlight = useBrowserStore((state) => state.addHighlight);
-  const removeHighlight = useBrowserStore((state) => state.removeHighlight);
 
   const router = useRouter();
 
@@ -149,6 +148,7 @@ export default function GenomeBrowserView({
             }}
           />
           <Box display="flex" gap={2}>
+            <HighlightButton />
             <AddTracks />
           </Box>
         </Box>
@@ -207,6 +207,13 @@ function GenomeBrowser({
     marginWidth: 150,
     trackWidth: 1350,
     multiplier: 3,
+    highlights: [
+      {
+        id: name,
+        domain: { chromosome: coordinates.chromosome, start: coordinates.start, end: coordinates.end },
+        color: randomColor(),
+      },
+    ],
   };
 
   const initialTracks: Track[] = useMemo(
@@ -224,13 +231,13 @@ function GenomeBrowser({
         geneName: type === "gene" ? name : "",
         onHover: (item: Transcript) => {
           addHighlight({
-            id: item.name || "dsadsfd",
+            id: item.name + "-temp" || "dsadsfd",
             domain: { start: item.coordinates.start, end: item.coordinates.end },
             color: item.color || "blue",
           });
         },
         onLeave: (item: Transcript) => {
-          removeHighlight(item.name || "dsadsfd");
+          removeHighlight(item.name + "-temp" || "dsadsfd");
         },
         onClick: (item: Transcript) => {
           onGeneClick(item);
@@ -247,13 +254,13 @@ function GenomeBrowser({
         url: "http://downloads.wenglab.org/igscreen/iCREs.bigBed",
         onHover: (rect) => {
           addHighlight({
-            id: rect.name || "ihqoviun",
+            id: rect.name + "-temp" || "ihqoviun",
             domain: { start: rect.start, end: rect.end },
             color: rect.color || "blue",
           });
         },
         onLeave: (rect) => {
-          removeHighlight(rect.name || "ihqoviun");
+          removeHighlight(rect.name + "-temp" || "ihqoviun");
         },
         onClick: (item: Rect) => {
           onIcreClick(item);
