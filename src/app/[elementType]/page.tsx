@@ -9,7 +9,12 @@ import Link from "next/link";
 import { formatPortal } from "common/utility";
 import { portalDescriptions, portalImagePaths } from "common/consts";
 
-export default function PortalPage({ params: { elementType } }: { params: { elementType: string } }) {
+export default async function PortalPage({ params }: { params: Promise<{ elementType: string }> }) {
+  const { elementType } = await params;
+  return <ClientPortalPage elementType={elementType} />;
+}
+
+function ClientPortalPage({ elementType }: { elementType: string }) {
   if (!isValidGenomicElement(elementType)) {
     throw new Error("Unknown genomic element type: " + elementType);
   }

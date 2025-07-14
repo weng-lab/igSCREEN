@@ -43,16 +43,16 @@ const IcreActivity = ({ accession }: IcreActivityProps) => {
   };
 
   const handleViolinClick = (violin: Distribution<PointMetadata>) => {
-    const metadataArray = violin.data.map((point) => point.metadata);
+    const metadataArray = violin.data.map((point) => point.metaData);
     if (selected.length === metadataArray.length && selected[0].lineage === metadataArray[0].lineage) {
       setSelected([]);
     } else setSelected(metadataArray);
   };
 
   const handleViolinPointClick = (point: ViolinPoint<PointMetadata>) => {
-    if (selected.includes(point.metadata)) {
-      setSelected(selected.filter((x) => x !== point.metadata));
-    } else setSelected([...selected, point.metadata]);
+    if (selected.includes(point.metaData)) {
+      setSelected(selected.filter((x) => x !== point.metaData));
+    } else setSelected([...selected, point.metaData]);
   };
 
   return (

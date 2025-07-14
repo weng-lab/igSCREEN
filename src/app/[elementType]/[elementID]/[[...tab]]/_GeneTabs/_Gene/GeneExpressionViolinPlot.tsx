@@ -64,25 +64,25 @@ const GeneExpressionBarPlot = ({ geneData, selected, sortedFilteredData, ...rest
         pointTooltipBody={(point) => {
           return (
             <Box>
-              {point.outlier && (
+              {/* {point.outlier && (
                 <div>
                   <strong>Outlier</strong>
                 </div>
-              )}
+              )} */}
               <div>
-                <strong>Biosample:</strong> {point.metadata?.biosample}
+                <strong>Biosample:</strong> {point.metaData?.biosample}
               </div>
               <div>
                 <strong>TPM:</strong> {point.value.toFixed(1)}
               </div>
               <div>
-                <strong>Stimulation:</strong> {point.metadata?.stimulation}
+                <strong>Stimulation:</strong> {point.metaData?.stimulation}
               </div>
               <div>
-                <strong>Lineage:</strong> {point.metadata?.lineage}
+                <strong>Lineage:</strong> {point.metaData?.lineage}
               </div>
               <div>
-                <strong>Study:</strong> {point.metadata?.study}
+                <strong>Study:</strong> {point.metaData?.study}
               </div>
             </Box>
           );
