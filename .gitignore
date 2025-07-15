@@ -50,6 +50,13 @@ next-env.d.ts
 #FAISS Index
 src/model/gene_docs.pkl
 /src/model/gene_meta_index.faiss
+src/model/ccre_docs.pkl
+/src/model/ccre_meta_index.faiss
+
+#Model
+src/model/gpt2-igscreen/
+src/model/assistant.log
+src/model/requirements.zip
 
 #Cache Files
 /src/model/__pycache__
