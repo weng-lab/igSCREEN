@@ -57,6 +57,7 @@ src/model/ccre_docs.pkl
 src/model/gpt2-igscreen/
 src/model/assistant.log
 src/model/requirements.zip
+src\model\model_comparison.xlsx
 
 #Cache Files
 /src/model/__pycache__
