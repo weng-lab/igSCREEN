@@ -20,17 +20,17 @@ import { randomColor, trackColor } from "./utils";
 import {
   BigWigConfig,
   Browser,
+  BrowserStoreInstance,
   Chromosome,
+  createBrowserStore,
+  createTrackStore,
   DisplayMode,
   Domain,
   InitialBrowserState,
   Track,
+  TrackStoreInstance,
   TrackType,
   Transcript,
-  useBrowserStore,
-  useDataStore,
-  useTrackStore,
-  Vibrant,
 } from "track-logic";
 
 const client = new ApolloClient({
@@ -61,147 +61,6 @@ export default function GenomeBrowserView({
   name: string;
   type: GenomicElementType;
 }) {
-  const addHighlight = useBrowserStore((state) => state.addHighlight);
-
-  const router = useRouter();
-
-  // Bed track mouse over, out, and click handlers
-  const onIcreClick = useCallback((item: Rect) => {
-    const accession = item.name;
-    router.push(`/icre/${accession}`);
-  }, []);
-  const onGeneClick = useCallback((gene: Transcript) => {
-    const name = gene.name;
-    if (name.includes("ENSG")) {
-      return;
-    }
-    router.push(`/gene/${name}`);
-  }, []);
-
-  const editTrack = useTrackStore((state) => state.editTrack);
-  const setDomain = useBrowserStore((state) => state.setDomain);
-  const handeSearchSubmit = (r: Result) => {
-    if (r.type === "Gene") {
-      editTrack("gene-track", {
-        geneName: r.title,
-      });
-    }
-    addHighlight({
-      domain: r.domain,
-      color: randomColor(),
-      id: r.title,
-    });
-    setDomain(expandCoordinates(r.domain));
-  };
-
-  const theme = useTheme();
-
-  return (
-    <Grid2 container spacing={2} sx={{ mt: "0rem", mb: "1rem" }} justifyContent="center" alignItems="center">
-      <Grid2
-        size={{ xs: 12, lg: 12 }}
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          marginTop: "0px",
-        }}
-      >
-        <Box
-          sx={{
-            width: "100%",
-            display: "flex",
-            justifyContent: "space-between",
-            mb: 2,
-          }}
-        >
-          <GenomeSearch
-            size="small"
-            assembly="GRCh38"
-            onSearchSubmit={handeSearchSubmit}
-            queries={["Gene", "SNP", "iCRE", "Coordinate"]}
-            geneLimit={3}
-            sx={{ width: "400px" }}
-            slots={{
-              button: (
-                <IconButton sx={{ color: theme.palette.primary.main }}>
-                  <Search />
-                </IconButton>
-              ),
-            }}
-            slotProps={{
-              input: {
-                label: "Change browser region",
-                sx: {
-                  backgroundColor: "white",
-                  "& label.Mui-focused": {
-                    color: theme.palette.primary.main,
-                  },
-                  "& .MuiOutlinedInput-root": {
-                    "&.Mui-focused fieldset": {
-                      borderColor: theme.palette.primary.main,
-                    },
-                  },
-                },
-              },
-            }}
-          />
-          <Box display="flex" gap={2}>
-            <HighlightButton />
-            <AddTracks />
-          </Box>
-        </Box>
-        <Box
-          width={"100%"}
-          justifyContent={"space-between"}
-          flexDirection={"row"}
-          display={"flex"}
-          alignItems={"center"}
-        >
-          <Info />
-        </Box>
-        <ControlButtons />
-      </Grid2>
-      <Grid2 size={{ xs: 12, lg: 12 }}>
-        <ApolloProvider client={client}>
-          <GenomeBrowser
-            coordinates={coordinates}
-            type={type}
-            name={name}
-            onGeneClick={onGeneClick}
-            onIcreClick={onIcreClick}
-          />
-        </ApolloProvider>
-      </Grid2>
-      <Box
-        sx={{
-          width: "100%",
-          height: 40,
-          display: "flex",
-          justifyContent: "flex-end",
-        }}
-      ></Box>
-    </Grid2>
-  );
-}
-
-function GenomeBrowser({
-  coordinates,
-  type,
-  name,
-  onGeneClick,
-  onIcreClick,
-}: {
-  coordinates: GenomicRange;
-  type: GenomicElementType;
-  name: string;
-  onGeneClick: (gene: Transcript) => void;
-  onIcreClick: (item: Rect) => void;
-}) {
-  const addHighlight = useBrowserStore((state) => state.addHighlight);
-  const removeHighlight = useBrowserStore((state) => state.removeHighlight);
-
   const initialState: InitialBrowserState = {
     domain: expandCoordinates(coordinates),
     marginWidth: 150,
@@ -215,7 +74,36 @@ function GenomeBrowser({
       },
     ],
   };
+  const browserStore = createBrowserStore(initialState);
+  const addHighlight = browserStore((state) => state.addHighlight);
+  const removeHighlight = browserStore((state) => state.removeHighlight);
+  const setDomain = browserStore((state) => state.setDomain);
 
+  const onIcreClick = useCallback((item: Rect) => {
+    const accession = item.name;
+    router.push(`/icre/${accession}`);
+  }, []);
+  const onGeneClick = useCallback((gene: Transcript) => {
+    const name = gene.name;
+    if (name.includes("ENSG")) {
+      return;
+    }
+    router.push(`/gene/${name}`);
+  }, []);
+
+  const handeSearchSubmit = (r: Result) => {
+    if (r.type === "Gene") {
+      editTrack("gene-track", {
+        geneName: r.title,
+      });
+    }
+    addHighlight({
+      domain: r.domain,
+      color: randomColor(),
+      id: r.title,
+    });
+    setDomain(expandCoordinates(r.domain));
+  };
   const initialTracks: Track[] = useMemo(
     () => [
       {
@@ -289,17 +177,103 @@ function GenomeBrowser({
     ],
     [addHighlight, removeHighlight, onIcreClick, onGeneClick, type, name]
   );
-  return <Browser state={initialState} tracks={initialTracks} />;
+
+  const trackStore = createTrackStore(initialTracks);
+  const editTrack = trackStore((state) => state.editTrack);
+  const router = useRouter();
+
+  const theme = useTheme();
+
+  return (
+    <Grid2 container spacing={2} sx={{ mt: "0rem", mb: "1rem" }} justifyContent="center" alignItems="center">
+      <Grid2
+        size={{ xs: 12, lg: 12 }}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          marginTop: "0px",
+        }}
+      >
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "space-between",
+            mb: 2,
+          }}
+        >
+          <GenomeSearch
+            size="small"
+            assembly="GRCh38"
+            onSearchSubmit={handeSearchSubmit}
+            queries={["Gene", "SNP", "iCRE", "Coordinate"]}
+            geneLimit={3}
+            sx={{ width: "400px" }}
+            slots={{
+              button: (
+                <IconButton sx={{ color: theme.palette.primary.main }}>
+                  <Search />
+                </IconButton>
+              ),
+            }}
+            slotProps={{
+              input: {
+                label: "Change browser region",
+                sx: {
+                  backgroundColor: "white",
+                  "& label.Mui-focused": {
+                    color: theme.palette.primary.main,
+                  },
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: theme.palette.primary.main,
+                    },
+                  },
+                },
+              },
+            }}
+          />
+          <Box display="flex" gap={2}>
+            <HighlightButton browserStore={browserStore} />
+            <AddTracks trackStore={trackStore} />
+          </Box>
+        </Box>
+        <Box
+          width={"100%"}
+          justifyContent={"space-between"}
+          flexDirection={"row"}
+          display={"flex"}
+          alignItems={"center"}
+        >
+          <Info browserStore={browserStore} />
+        </Box>
+        <ControlButtons browserStore={browserStore} />
+      </Grid2>
+      <Grid2 size={{ xs: 12, lg: 12 }}>
+        <Browser browserStore={browserStore} trackStore={trackStore} />
+      </Grid2>
+      <Box
+        sx={{
+          width: "100%",
+          height: 40,
+          display: "flex",
+          justifyContent: "flex-end",
+        }}
+      ></Box>
+    </Grid2>
+  );
 }
 
-function AddTracks() {
+function AddTracks({ trackStore }: { trackStore: TrackStoreInstance }) {
   const [showAddTracksModal, setShowAddTracksModal] = useState(false);
   const [selectedTracks, setSelectedTracks] = useState<BigWig[]>([]);
   const theme = useTheme();
 
-  const currentTracks = useTrackStore((state) => state.tracks);
-  const insertTrack = useTrackStore((state) => state.insertTrack);
-  const removeTrack = useTrackStore((state) => state.removeTrack);
+  const currentTracks = trackStore((state) => state.tracks);
+  const insertTrack = trackStore((state) => state.insertTrack);
+  const removeTrack = trackStore((state) => state.removeTrack);
 
   useEffect(() => {
     selectedTracks.forEach((track) => {
@@ -351,7 +325,7 @@ function AddTracks() {
   );
 }
 
-function HighlightButton() {
+function HighlightButton({ browserStore }: { browserStore: BrowserStoreInstance }) {
   const [highlightDialogOpen, setHighlightDialogOpen] = useState(false);
 
   return (
@@ -364,13 +338,13 @@ function HighlightButton() {
       >
         View Current Highlights
       </Button>
-      <HighlightDialog open={highlightDialogOpen} setOpen={setHighlightDialogOpen} />
+      <HighlightDialog open={highlightDialogOpen} setOpen={setHighlightDialogOpen} browserStore={browserStore} />
     </>
   );
 }
 
-function Info() {
-  const currentDomain = useBrowserStore((state) => state.domain);
+function Info({ browserStore }: { browserStore: BrowserStoreInstance }) {
+  const currentDomain = browserStore((state) => state.domain);
 
   return (
     <>

@@ -13,7 +13,7 @@ import Grid2 from "@mui/material/Grid2";
 import { DialogTitle } from "@mui/material";
 import { Dialog } from "@mui/material";
 import { Delete, Add, ExpandMore } from "@mui/icons-material";
-import { useBrowserStore, Highlight as GBHighlight, Chromosome } from "track-logic";
+import { BrowserStoreInstance, Highlight as GBHighlight, Chromosome } from "track-logic";
 import { useState } from "react";
 
 // Valid chromosome values for human genome (GRCh38)
@@ -45,8 +45,8 @@ const VALID_CHROMOSOMES: Chromosome[] = [
 ];
 
 // Highlight Creation Form Component
-function HighlightCreationForm() {
-  const addHighlight = useBrowserStore((state) => state.addHighlight);
+function HighlightCreationForm({ browserStore }: { browserStore: BrowserStoreInstance }) {
+  const addHighlight = browserStore((state) => state.addHighlight);
 
   const [newHighlight, setNewHighlight] = useState({
     id: "",
@@ -246,8 +246,8 @@ function HighlightCreationForm() {
 }
 
 // Individual Highlight Item Component
-function HighlightItem({ highlight, index }: { highlight: GBHighlight; index: number }) {
-  const removeHighlight = useBrowserStore((state) => state.removeHighlight);
+function HighlightItem({ highlight, index, browserStore }: { highlight: GBHighlight; index: number, browserStore: BrowserStoreInstance }) {
+  const removeHighlight = browserStore((state) => state.removeHighlight);
 
   const handleRemoveHighlight = (highlightId: string) => {
     removeHighlight(highlightId);
@@ -297,26 +297,26 @@ function HighlightItem({ highlight, index }: { highlight: GBHighlight; index: nu
 }
 
 // Highlights List Component
-function HighlightsList() {
-  const highlights = useBrowserStore((state) => state.highlights);
+function HighlightsList({ browserStore }: { browserStore: BrowserStoreInstance }) {
+  const highlights = browserStore((state) => state.highlights);
 
   return (
     <>
       {highlights.map((highlight, index) => (
-        <HighlightItem key={highlight.id} highlight={{ ...highlight, domain: highlight.domain }} index={index} />
+        <HighlightItem key={highlight.id} highlight={{ ...highlight, domain: highlight.domain }} index={index} browserStore={browserStore} />
       ))}
     </>
   );
 }
 
 // Main Dialog Component
-export default function HighlightDialog({ open, setOpen }: { open: boolean; setOpen: (open: boolean) => void }) {
+export default function HighlightDialog({ open, setOpen, browserStore }: { open: boolean; setOpen: (open: boolean) => void, browserStore: BrowserStoreInstance }) {
   return (
     <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
       <DialogTitle>Current Highlights</DialogTitle>
       <DialogContent>
-        <HighlightCreationForm />
-        <HighlightsList />
+        <HighlightCreationForm browserStore={browserStore} />
+        <HighlightsList browserStore={browserStore} />
       </DialogContent>
     </Dialog>
   );

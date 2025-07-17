@@ -1,11 +1,11 @@
 import { Box, Button, Typography } from "@mui/material";
 
 import { useCallback } from "react";
-import { useBrowserStore } from "track-logic";
+import { BrowserStoreInstance } from "track-logic";
 
-export default function ControlButtons() {
-  const domain = useBrowserStore((state) => state.domain);
-  const setDomain = useBrowserStore((state) => state.setDomain);
+export default function ControlButtons({ browserStore }: { browserStore: BrowserStoreInstance }) {
+  const domain = browserStore((state) => state.domain);
+  const setDomain = browserStore((state) => state.setDomain);
 
   const zoom = useCallback(
     (factor: number) => {
