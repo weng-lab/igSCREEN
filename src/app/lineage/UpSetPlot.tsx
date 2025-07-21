@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { FC, useMemo } from "react";
 import { Bar, Circle } from "@visx/shape";
 import { Group } from "@visx/group";
 import { scaleBand, scaleLinear } from "@visx/scale";
@@ -6,16 +6,21 @@ import { Text } from "@visx/text";
 import { AxisLeft, AxisBottom } from "@visx/axis";
 import { GridRows, GridColumns } from "@visx/grid";
 import { JoinFull } from "@mui/icons-material";
-import { defaultStyles as defaultTooltipStyles, useTooltip, TooltipWithBounds } from "@visx/tooltip";
 import { GetIcreCountsQuery } from "types/generated/graphql";
-
-export type UpSetPlotDatum = GetIcreCountsQuery["upsetploticrecounts"][number]
+import { defaultStyles as defaultTooltipStyles, useTooltip, TooltipWithBounds as TT } from "@visx/tooltip";
+const TooltipWithBounds = TT as unknown as FC<{
+  top: number;
+  left: number;
+  style: React.CSSProperties;
+  children: React.ReactNode;
+}>;
+export type UpSetPlotDatum = GetIcreCountsQuery["upsetploticrecounts"][number];
 
 export type BarsProps = {
   width: number;
   height: number;
   data: UpSetPlotDatum[];
-  onBarClicked?: (grouping: UpSetPlotDatum & {unionCelltypes?: string[]}) => void;
+  onBarClicked?: (grouping: UpSetPlotDatum & { unionCelltypes?: string[] }) => void;
   reference?: React.LegacyRef<SVGSVGElement>;
   loadingDownload?: boolean;
 };
@@ -26,7 +31,7 @@ interface TooltipData {
 }
 
 /**
- * @todo this needs to be cleaned up if being put in component library. 
+ * @todo this needs to be cleaned up if being put in component library.
  * stuff like `index * fontSize * 1.5 + 0.5 * fontSize * 1.5` isn't great
  */
 
@@ -164,7 +169,7 @@ export default function UpSetPlot({
         fontSize={fontSize}
         id="UpSet-Plot"
         width="100%"
-        style={{ height: 'auto', display: 'block' }}
+        style={{ height: "auto", display: "block" }}
         preserveAspectRatio="xMidYMid meet"
         viewBox={`0 0 ${totalWidth} ${totalHeight}`}
         ref={reference}
