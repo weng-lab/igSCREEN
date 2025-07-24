@@ -6,7 +6,7 @@ import HighlightIcon from "@mui/icons-material/Highlight";
 import { Box, Button, IconButton } from "@mui/material";
 import Grid2 from "@mui/material/Grid2";
 import { useTheme } from "@mui/material/styles";
-import { GQLCytobands } from "@weng-lab/genomebrowser";
+// import { GQLCytobands } from "@weng-lab/genomebrowser";
 import { useRouter } from "next/navigation";
 import { GenomeSearch, Result } from "psychscreen-legacy-components";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -31,7 +31,7 @@ import {
   TrackStoreInstance,
   TrackType,
   Transcript,
-} from "track-logic";
+} from "@weng-lab/genomebrowser";
 
 const client = new ApolloClient({
   uri: "https://ga.staging.wenglab.org/graphql",
@@ -353,7 +353,7 @@ function Info({ browserStore }: { browserStore: BrowserStoreInstance }) {
       </h3>
 
       <svg id="cytobands" width={"700px"} height={20}>
-        <GQLCytobands assembly="hg38" chromosome={currentDomain.chromosome} currentDomain={currentDomain} />
+        {/* <GQLCytobands assembly="hg38" chromosome={currentDomain.chromosome} currentDomain={currentDomain} /> */}
       </svg>
       <h3 style={{ marginBottom: "0px", marginTop: "0px" }}>hg38</h3>
     </>

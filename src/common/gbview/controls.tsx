@@ -1,7 +1,7 @@
 import { Box, Button, Typography } from "@mui/material";
 
 import { useCallback } from "react";
-import { BrowserStoreInstance } from "track-logic";
+import { BrowserStoreInstance } from "@weng-lab/genomebrowser";
 
 export default function ControlButtons({ browserStore }: { browserStore: BrowserStoreInstance }) {
   const domain = browserStore((state) => state.domain);

@@ -42,7 +42,7 @@
     "@visx/text": "^3",
     "@visx/tooltip": "^3",
     "@visx/zoom": "^3.12.0",
-    "@weng-lab/genomebrowser": "^0.0.24",
+    "@weng-lab/genomebrowser": "^1.0.0",
     "bpnet-ui": "^0.3.8",
     "d3-scale-chromatic": "^3.1.0",
     "eslint": "^8",
@@ -53,7 +53,6 @@
     "queryz": "^0.0.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "track-logic": "^0.0.4",
     "umms-gb": "^3.9.14",
     "uuid": "^10.0.0"
   },

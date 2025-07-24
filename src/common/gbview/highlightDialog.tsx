@@ -13,7 +13,7 @@ import Grid2 from "@mui/material/Grid2";
 import { DialogTitle } from "@mui/material";
 import { Dialog } from "@mui/material";
 import { Delete, Add, ExpandMore } from "@mui/icons-material";
-import { BrowserStoreInstance, Highlight as GBHighlight, Chromosome } from "track-logic";
+import { BrowserStoreInstance, Highlight as GBHighlight, Chromosome } from "@weng-lab/genomebrowser";
 import { useState } from "react";
 
 // Valid chromosome values for human genome (GRCh38)
@@ -246,7 +246,15 @@ function HighlightCreationForm({ browserStore }: { browserStore: BrowserStoreIns
 }
 
 // Individual Highlight Item Component
-function HighlightItem({ highlight, index, browserStore }: { highlight: GBHighlight; index: number, browserStore: BrowserStoreInstance }) {
+function HighlightItem({
+  highlight,
+  index,
+  browserStore,
+}: {
+  highlight: GBHighlight;
+  index: number;
+  browserStore: BrowserStoreInstance;
+}) {
   const removeHighlight = browserStore((state) => state.removeHighlight);
 
   const handleRemoveHighlight = (highlightId: string) => {
@@ -303,14 +311,27 @@ function HighlightsList({ browserStore }: { browserStore: BrowserStoreInstance }
   return (
     <>
       {highlights.map((highlight, index) => (
-        <HighlightItem key={highlight.id} highlight={{ ...highlight, domain: highlight.domain }} index={index} browserStore={browserStore} />
+        <HighlightItem
+          key={highlight.id}
+          highlight={{ ...highlight, domain: highlight.domain }}
+          index={index}
+          browserStore={browserStore}
+        />
       ))}
     </>
   );
 }
 
 // Main Dialog Component
-export default function HighlightDialog({ open, setOpen, browserStore }: { open: boolean; setOpen: (open: boolean) => void, browserStore: BrowserStoreInstance }) {
+export default function HighlightDialog({
+  open,
+  setOpen,
+  browserStore,
+}: {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  browserStore: BrowserStoreInstance;
+}) {
   return (
     <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
       <DialogTitle>Current Highlights</DialogTitle>
