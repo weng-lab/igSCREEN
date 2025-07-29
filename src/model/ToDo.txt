@@ -1,39 +1,27 @@
-To Do:
-1. Fine Tuning Code Pipeline set up to train
-2. Refine Rag pipeline 
-
-A possible question is "Provide me a link of 51-1000 region for ch17 for brca1" --> Something like this
-
 Sample Questions:
 
 1. What cCREs are annotated in chr15:43796142-43804574?
-2. List cCREs found between 34179005 and 34252523 on chromosome 9. --> Double check
-3. Are any cCREs present in the genomic interval chr8:85220587-85284073?
-4. Could you check for any cCREs within chr3 196867856 196934714? --> Double check
-5. Find all candidate cis-regulatory elements in chrX:134460165-134520513.
-6. What enhancers regulate SPIB in B cells?
-7. Where is SPIB expressed?
-8. Can you redirect me to chr12 for 1234 to 12345?
+2. Are any cCREs present in the genomic interval chr8:85220587-85284073?
+3. Could you check for any cCREs within chr3 196867856 196934714?
+4. Find all candidate cis-regulatory elements in chrX:134460165-134520513.
+5. What enhancers regulate SPIB in B cells?
+6. Where is SPIB expressed?
+7. Can you redirect me to chr12 for 1234 to 12345?
+8. What regulatory elements are near SPB1?
+9. I'm looking into SPIB and its activity in chr7:100000-105000.
 
-Right now you’ve got two deterministic look-ups:
 
-ensure_best_region → single /region/... URL
+Things can do:
 
-ensure_best_gene → single /gene/... URL
+finetuning:
+1. Better Model
 
-But as your site grows you’ll also want to power more conversational, open-ended queries like:
+Things to discuss 7/29/2025
 
-“What enhancers regulate SPIB in B cells?”
-→ FAISS-retrieve the top k cCRE docs for SPIB and ask your LLM to summarize and inject the /gene/SPIB/icres link.
+1. Feedback on the model
+2. Necessity of the navigation to phenotype and lineage pages
+3. Final Goal by 8/12/2025
 
-“Show me the blood‐cell eQTL variants for TP53.”
-→ FAISS-retrieve the top variant docs for TP53 and have LLM answer:
-“Here’s the Variant Portal for TP53: … You can further filter by eQTL significance…”
 
-“What phenotypes are associated with NOD2?”
-→ In the future you’ll add a Phenotype FAISS index; RAG will retrieve the relevant phenotype‐gene links, then LLM will produce a natural-language summary.
-
-“How do I find distal enhancers on the portal?”
-→ You might add a small UI-instructions index or few-shot UI template. FAISS gives you the right doc (“interaction.3”), LLM formats it as “1. Click ‘Filters’… 2. Select ‘Distal’…”
 
 
