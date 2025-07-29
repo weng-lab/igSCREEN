@@ -58,6 +58,10 @@ src/model/gpt2-igscreen/
 src/model/assistant.log
 src/model/requirements.zip
 src/model/model_comparison.xlsx
+src/model/finetune_dataset.csv
+
+#Docker
+src/model/igscreen-api
 
 #Cache Files
 /src/model/__pycache__
