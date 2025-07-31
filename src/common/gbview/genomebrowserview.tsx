@@ -1,5 +1,4 @@
 "use client";
-import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { Search } from "@mui/icons-material";
 import EditIcon from "@mui/icons-material/Edit";
 import HighlightIcon from "@mui/icons-material/Highlight";
@@ -8,7 +7,7 @@ import Grid2 from "@mui/material/Grid2";
 import { useTheme } from "@mui/material/styles";
 // import { GQLCytobands } from "@weng-lab/genomebrowser";
 import { useRouter } from "next/navigation";
-import { GenomeSearch, Result } from "psychscreen-legacy-components";
+import { GenomeSearch, Result } from "@weng-lab/ui-components";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { GenomicElementType, GenomicRange } from "types/globalTypes";
 import { Rect } from "umms-gb/dist/components/tracks/bigbed/types";
@@ -32,12 +31,6 @@ import {
   TrackType,
   Transcript,
 } from "@weng-lab/genomebrowser";
-
-const client = new ApolloClient({
-  uri: "https://ga.staging.wenglab.org/graphql",
-  cache: new InMemoryCache(),
-  connectToDevTools: true,
-});
 
 function expandCoordinates(coordinates: GenomicRange) {
   let length = coordinates.end - coordinates.start;
@@ -68,7 +61,7 @@ export default function GenomeBrowserView({
     multiplier: 3,
     highlights: [
       {
-        id: name,
+        id: name || coordinates.chromosome + ":" + coordinates.start + "-" + coordinates.end,
         domain: { chromosome: coordinates.chromosome, start: coordinates.start, end: coordinates.end },
         color: randomColor(),
       },

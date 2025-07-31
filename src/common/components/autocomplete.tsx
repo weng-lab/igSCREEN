@@ -1,29 +1,21 @@
 "use client";
-import { Paper } from "@mui/material";
-import {
-  GenomeSearch,
-  GenomeSearchProps,
-  Result,
-} from "psychscreen-legacy-components";
+import { GenomeSearch, GenomeSearchProps, Result } from "@weng-lab/ui-components";
 import { useRouter } from "next/navigation";
-
-export type AutoCompleteProps =
-  Partial<GenomeSearchProps> & 
-  {
-    closeDrawer?: () => void
-  }
+export type AutoCompleteProps = Partial<GenomeSearchProps> & {
+  closeDrawer?: () => void;
+};
 
 /**
  * Redirects the user to the a new page based on the search result
  * @param props - The props for the GenomeSearch component
  */
-export default function AutoComplete({closeDrawer, ...props}: AutoCompleteProps) {
+export default function AutoComplete({ closeDrawer, ...props }: AutoCompleteProps) {
   const router = useRouter();
 
   const handleSearchSubmit = (r: Result) => {
     //needed to trigger closing the mobile menu drawer
     if (closeDrawer) {
-      closeDrawer()
+      closeDrawer();
     }
 
     let url = "";
@@ -34,7 +26,7 @@ export default function AutoComplete({closeDrawer, ...props}: AutoCompleteProps)
       case "iCRE":
         url = `/icre/${r.title}`;
         break;
-      case "cCRE": 
+      case "cCRE":
         if (r.description.includes("iCRE")) {
           url = `/icre/${r.title}`;
         } else {
@@ -65,7 +57,7 @@ export default function AutoComplete({closeDrawer, ...props}: AutoCompleteProps)
       }}
       slotProps={{
         paper: {
-          elevation: 1
+          elevation: 1,
         },
       }}
       openOnFocus
