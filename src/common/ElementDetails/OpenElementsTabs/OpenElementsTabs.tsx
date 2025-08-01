@@ -235,9 +235,12 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
 
   /**
    * Index of current route's element within internal state
-   */
+   */ 
   const tabIndex = useMemo(
-    () => openElements.findIndex((el) => el.elementID === urlElementID),
+    () => {
+      const index = openElements.findIndex((el) => el.elementID === urlElementID);
+      return index >= 0 ? index : 0;
+    },
     [openElements, urlElementID]
   );
 

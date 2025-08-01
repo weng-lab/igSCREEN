@@ -21,16 +21,18 @@ import IntersectingiCREs from "common/components/IntersectingiCREs";
 import IntersectingGenes from "common/components/IntersectingGenes";
 import IntersectingSNPs from "common/components/IntersectingSNPs";
 import { parseGenomicRangeString } from "common/utility";
+import { use } from "react";
 
 export default function DetailsPage({
-  params: { elementType, elementID, tab },
+  params,
 }: {
   /**
    * Should be able to safely type this as GenomicElementType instead of string
    * since the layout wrapping this ensures the type is fulfilled
    */
-  params: { elementType: GenomicElementType; elementID: string; tab: string };
+  params: Promise<{ elementType: GenomicElementType; elementID: string; tab: string }>;
 }) {
+  let { elementType, elementID, tab } = use(params);
   /**
    * Since [[...tab]] is an optional catch-all route, tabs is an array.
    * tab is undefined when hitting /elementType/elementID (default tab's route).

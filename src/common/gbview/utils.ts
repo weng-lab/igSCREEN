@@ -1,5 +1,19 @@
 export function randomColor() {
-  return "#" + Math.floor(Math.random() * 16777215).toString(16);
+  const colors = [
+    "#4a90e2", // medium blue
+    "#e84d3d", // dark red
+    "#27ae60", // forest green
+    "#8e44ad", // purple
+    "#d35400", // burnt orange
+    "#16a085", // teal
+    "#c0392b", // brick red
+    "#2980b9", // darker blue
+    "#f39c12", // golden brown
+    "#2c3e50", // navy blue
+    "#7f8c8d", // slate gray
+    "#8b4513", // saddle brown
+  ];
+  return colors[Math.floor(Math.random() * colors.length)];
 }
 
 export function trackColor(lineage: string) {
@@ -26,7 +40,6 @@ export function trackColor(lineage: string) {
       return "#684fda";
   }
 }
-
 
 export function lineageName(lineage: string) {
   switch (lineage) {

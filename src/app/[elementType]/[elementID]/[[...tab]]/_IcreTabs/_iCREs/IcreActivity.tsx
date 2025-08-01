@@ -1,58 +1,58 @@
-import TwoPaneLayout from "../../../../../../common/components/TwoPaneLayout"
-import { useState } from "react"
-import { BarData } from "../../../../../../common/components/VerticalBarPlot"
-import IcreActivityTable from "./IcreActivityTable"
-import { useIcreActivity, UseIcreActivityReturn } from "common/hooks/useIcreActivity"
-import IcreActivityBarPlot from "./IcreActivityBarPlot"
-import IcreActivityUMAP from "./IcreActivityUMAP"
-import { BarChart, CandlestickChart, ScatterPlot, SchemaRounded } from "@mui/icons-material"
-import IcreActivityTree from "./IcreActivityTree"
-import IcreActivityViolinPlot from "./IcreActivityViolinPlot"
-import { Distribution, ViolinPoint } from "@weng-lab/psychscreen-ui-components"
+import TwoPaneLayout from "../../../../../../common/components/TwoPaneLayout";
+import { useState } from "react";
+import { BarData } from "../../../../../../common/components/VerticalBarPlot";
+import IcreActivityTable from "./IcreActivityTable";
+import { useIcreActivity, UseIcreActivityReturn } from "common/hooks/useIcreActivity";
+import IcreActivityBarPlot from "./IcreActivityBarPlot";
+import IcreActivityUMAP from "./IcreActivityUMAP";
+import { BarChart, CandlestickChart, ScatterPlot, SchemaRounded } from "@mui/icons-material";
+import IcreActivityTree from "./IcreActivityTree";
+import IcreActivityViolinPlot from "./IcreActivityViolinPlot";
+import { Distribution, ViolinPoint } from "psychscreen-legacy-components";
 
 export type IcreActivityProps = {
-  accession: string,
-}
+  accession: string;
+};
 
-export type PointMetadata = UseIcreActivityReturn["data"][number]
+export type PointMetadata = UseIcreActivityReturn["data"][number];
 
 export type SharedIcreActivityPlotProps = {
-  selected: PointMetadata[],
-  iCREActivitydata: UseIcreActivityReturn,
-  sortedFilteredData: PointMetadata[]
-}
+  selected: PointMetadata[];
+  iCREActivitydata: UseIcreActivityReturn;
+  sortedFilteredData: PointMetadata[];
+};
 
 const IcreActivity = ({ accession }: IcreActivityProps) => {
-  const [selected, setSelected] = useState<PointMetadata[]>([])
-  const [sortedFilteredData, setSortedFilteredData] = useState<PointMetadata[]>([])
+  const [selected, setSelected] = useState<PointMetadata[]>([]);
+  const [sortedFilteredData, setSortedFilteredData] = useState<PointMetadata[]>([]);
 
-  const iCREActivitydata = useIcreActivity({ accession })
+  const iCREActivitydata = useIcreActivity({ accession });
 
   const handlePointsSelected = (pointsInfo: PointMetadata[]) => {
-    setSelected([...selected, ...pointsInfo])
-  }
+    setSelected([...selected, ...pointsInfo]);
+  };
 
   const handleSelectionChange = (selected: PointMetadata[]) => {
-    setSelected(selected)
-  }
+    setSelected(selected);
+  };
 
   const handleBarClick = (bar: BarData<PointMetadata>) => {
     if (selected.includes(bar.metadata)) {
-      setSelected(selected.filter(x => x !== bar.metadata))
-    } else setSelected([...selected, bar.metadata])
-  }
+      setSelected(selected.filter((x) => x !== bar.metadata));
+    } else setSelected([...selected, bar.metadata]);
+  };
 
   const handleViolinClick = (violin: Distribution<PointMetadata>) => {
-    const metadataArray = violin.data.map((point) => point.metadata);
+    const metadataArray = violin.data.map((point) => point.metaData);
     if (selected.length === metadataArray.length && selected[0].lineage === metadataArray[0].lineage) {
       setSelected([]);
     } else setSelected(metadataArray);
   };
 
   const handleViolinPointClick = (point: ViolinPoint<PointMetadata>) => {
-    if (selected.includes(point.metadata)) {
-      setSelected(selected.filter((x) => x !== point.metadata));
-    } else setSelected([...selected, point.metadata]);
+    if (selected.includes(point.metaData)) {
+      setSelected(selected.filter((x) => x !== point.metaData));
+    } else setSelected([...selected, point.metaData]);
   };
 
   return (
@@ -123,6 +123,6 @@ const IcreActivity = ({ accession }: IcreActivityProps) => {
       ]}
     />
   );
-}
+};
 
-export default IcreActivity
+export default IcreActivity;

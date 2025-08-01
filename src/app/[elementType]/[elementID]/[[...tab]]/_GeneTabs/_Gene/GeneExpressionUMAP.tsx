@@ -4,7 +4,7 @@ import { getCellCategoryColor, getCellCategoryDisplayname } from "common/utility
 import { useMemo, useRef, useState } from "react"
 import { interpolateYlOrRd } from "d3-scale-chromatic";
 import { scaleLinear } from "d3-scale"
-import { Point, ScatterPlot, ChartProps } from "@weng-lab/psychscreen-ui-components"
+import { Point, ScatterPlot, ChartProps } from "psychscreen-legacy-components"
 
 export type GeneExpressionUmapProps<T, S extends boolean | undefined, Z extends boolean | undefined> =
   GeneExpressionProps &

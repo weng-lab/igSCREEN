@@ -1,6 +1,6 @@
 "use client";
 import { Box, Button, Divider, Grid2, IconButton, Stack, Typography } from "@mui/material";
-import { GenomeSearch, Result } from "@weng-lab/psychscreen-ui-components";
+import { GenomeSearch, Result } from "psychscreen-legacy-components";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { isValidGenomicElement } from "types/globalTypes";
@@ -9,7 +9,12 @@ import Link from "next/link";
 import { formatPortal } from "common/utility";
 import { portalDescriptions, portalImagePaths } from "common/consts";
 
-export default function PortalPage({ params: { elementType } }: { params: { elementType: string } }) {
+export default async function PortalPage({ params }: { params: Promise<{ elementType: string }> }) {
+  const { elementType } = await params;
+  return <ClientPortalPage elementType={elementType} />;
+}
+
+function ClientPortalPage({ elementType }: { elementType: string }) {
   if (!isValidGenomicElement(elementType)) {
     throw new Error("Unknown genomic element type: " + elementType);
   }

@@ -4,8 +4,12 @@ import { Box, Button, Container, Paper } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function cCREPage({ searchParams }: { searchParams: { accession?: string } }) {
-  const accession = searchParams.accession;
+export default async function cCREPage({ params }: { params: Promise<{ accession?: string }> }) {
+  const { accession } = await params;
+  return <ClientcCREPage accession={accession} />;
+}
+
+function ClientcCREPage({ accession }: { accession?: string }) {
   const url = `https://screen.wenglab.org/search/?q=${accession}&uuid=0&assembly=GRCh38`;
 
   if (!accession) {
