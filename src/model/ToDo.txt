@@ -1,26 +1,22 @@
-Sample Questions:
+For future whoever will be working on:
 
-1. What cCREs are annotated in chr15:43796142-43804574?
-2. Are any cCREs present in the genomic interval chr8:85220587-85284073?
-3. Could you check for any cCREs within chr3 196867856 196934714?
-4. Find all candidate cis-regulatory elements in chrX:134460165-134520513.
-5. What enhancers regulate SPIB in B cells?
-6. Where is SPIB expressed?
-7. Can you redirect me to chr12 for 1234 to 12345?
-8. What regulatory elements are near SPB1?
-9. I'm looking into SPIB and its activity in chr7:100000-105000.
+1. Create a virtual environment
+2. pip install all the requirements in requirements.text
+3. Run rag_setup.py before running rag_pipeline.py
+4. Have fun. 
 
 
-Things can do:
+What is left:
+1. Choose the Approach to Pursue
+2. Refine the Model
+    (RAG) Create FAISS Index for Variants
+    (Fine Tuning) Gather More Prompts and Enhance the Model
+    (Hybrid) Implement it
+3. Successfully Deploy the Model
+4. Refine the Model Based on User Feedback
+5. Good luck
 
-finetuning:
-1. Better Model
 
-Things to discuss 7/29/2025
-
-1. Feedback on the model
-2. Necessity of the navigation to phenotype and lineage pages
-3. Final Goal by 8/12/2025
 
 
 

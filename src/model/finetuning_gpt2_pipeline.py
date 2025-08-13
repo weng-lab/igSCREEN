@@ -5,9 +5,12 @@ from dotenv import load_dotenv
 
 gene_index = faiss.read_index("gene_meta_index.faiss")
 with open("gene_docs.pkl","rb") as f: gene_docs = pickle.load(f)
+ccre_index = faiss.read_index("ccre_meta_index.faiss")
+with open("ccre_docs.pkl","rb") as f: ccre_docs = pickle.load(f)
 
 load_dotenv()
 ID_REGEX = re.compile(r"\b[A-Za-z][A-Za-z0-9\.-]*\b")
+ACCESSION_REGEX = re.compile(r"\b(EH\d+E\d+)\b", re.I)
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 MODEL_DIR = "gpt2-igscreen"
@@ -18,6 +21,54 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
 
 print("GPT-2 Prompt Generator Ready (type 'exit' to quit)")
+
+LINEAGE_TERMS = ["hematopoetic", "atac", "dnase", "progenitor", "erythroblast", "plasmacytoid", "myeloid",
+                    "monocyte", "macrophage", "natural killer", "double negative", "immature", "mature", "memory",
+                    "effector", "regulatory", "helper", "plasmablast", "b cell", "cd8", "t cell", "double positive", 
+                    "stem cell", "gamma delta t"]
+
+PLOT_TERMS = ["plot", "graph", "upset"]
+
+def ensure_lineage(raw: str) -> bool:
+    text = raw.lower()
+
+    has_plot_term = any(term in text for term in PLOT_TERMS)
+
+    has_lineage_term = any(term in text for term in LINEAGE_TERMS)
+
+    return has_plot_term and has_lineage_term
+
+
+
+def rag_accession(accession: str) -> str:
+    url =f"https://igscreen.wenglab.org/icre/{accession}"
+    return(
+        f" cCRE annotation for {accession}: \n"
+        f"{url}\n"
+        "You can further filter by Biosample, Stimulation, and other columns; "
+        "Explore what genes and variants are associated from the tabs on the left"
+    )
+
+def rag_lineage() -> str:
+    url = "https://igscreen.wenglab.org/lineage"
+    return(
+        "Explore the UpSet plot comparing iCRE activity \n"
+        f"{url}\n"
+        "Use the filters to select between 2 to 6 cells to compare."
+        "You will also be able to see different active iCRE depending on the filters"
+    )
+
+VALID_ACCESSIONS = {doc["id"].upper() for doc in ccre_docs}
+
+def ensure_accession(raw: str) -> str | None:
+    for tok in re.findall(ACCESSION_REGEX, raw):
+        up = tok.upper()
+        if up in VALID_ACCESSIONS:
+            return up
+        # 2) Optional fuzzy:
+        matches = difflib.get_close_matches(up, VALID_ACCESSIONS, n=1, cutoff=0.8)
+        if matches: return matches[0]
+    return None
 
 def call_openai_fallback(prompt):
     fallback_prompt = (
@@ -61,38 +112,46 @@ while True:
     norm = normalize_gene(user_input)
     if norm:
         orig_tok, gene = norm
-        # replace *that exact* orig_tok with its uppercase canonical form
         user_input = re.sub(
             rf"\b{re.escape(orig_tok)}\b",
             gene,
             user_input,
             flags=re.IGNORECASE
         )
+    acc = ensure_accession(user_input)
+    if acc:
+        answer = rag_accession(acc)
+        print("\nAssistant:\n" + answer)
 
-    # Now build your prompt and generate as usual
-    prompt = user_input + " => "
-    tokens = tokenizer(
-        prompt, return_tensors="pt",
-        padding=True, truncation=True, max_length=512
-    )
-    inputs = {k: v.to(device) for k, v in tokens.items()}
-    with torch.no_grad():
-        output_ids = model.generate(
-            **inputs,
-            max_new_tokens=50,
-            pad_token_id=tokenizer.eos_token_id,
-            eos_token_id=tokenizer.eos_token_id,
-            do_sample=False
-        )
-    full_output = tokenizer.decode(output_ids[0], skip_special_tokens=True)
-    if full_output.startswith(prompt):
-        full_output = full_output[len(prompt):].strip()
-
-    # extract the URL
-    m = re.search(r"https?://\S+", full_output)
-    if m:
-        print("\nAssistant:\n" + m.group(0))
+    elif ensure_lineage(user_input):
+        answer = rag_lineage()
+        print("\nAssistant:\n" + answer)
     else:
-        print("\nFine-tuned model could not generate a useful response.")
-        print("\nAssistant (OpenAI fallback):")
-        print(call_openai_fallback(user_input))
+        prompt = user_input + " => "
+        tokens = tokenizer(
+            prompt, return_tensors="pt",
+            padding=True, truncation=True, max_length=512
+        )
+        inputs = {k: v.to(device) for k, v in tokens.items()}
+        with torch.no_grad():
+            output_ids = model.generate(
+                **inputs,
+                max_new_tokens=50,
+                pad_token_id=tokenizer.eos_token_id,
+                eos_token_id=tokenizer.eos_token_id,
+                do_sample=False
+            )
+        full_output = tokenizer.decode(output_ids[0], skip_special_tokens=True)
+        if full_output.startswith(prompt):
+            full_output = full_output[len(prompt):].strip()
+
+        # extract the URL
+        m = re.search(r"https?://\S+", full_output)
+        if m:
+            answer = m.group(0)
+            print("\nAssistant:\n" + answer)
+        else:
+            print("\nFine-tuned model could not generate a useful response.")
+            print("\nAssistant (OpenAI fallback):")
+            answer = call_openai_fallback(user_input)
+            print(answer)
