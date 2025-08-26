@@ -18,7 +18,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import CloseIcon from "@mui/icons-material/Close";
 import { theme } from "app/theme";
 import bigwigsData from "./bigwigs.json";
-import { lineageName, trackColor } from "./utils";
+import { assayColor, lineageName, trackColor } from "./utils";
 
 type ModalProps = {
   open: boolean;
@@ -76,7 +76,7 @@ function AddTracksModal({ open, setOpen, setSelectedTracks, selectedTracks }: Mo
           alignItems: "left",
           backgroundColor: theme.palette.primary.main,
           color: "white",
-          width: "600px",
+          width: "900px",
         }}
       >
         <Box display="flex" width="100%" alignItems="center" justifyContent="space-between" gap={1} mb={0}>
@@ -90,9 +90,30 @@ function AddTracksModal({ open, setOpen, setSelectedTracks, selectedTracks }: Mo
         <DialogContentText sx={{ color: "#cccccc" }}>Select up to 10 DNase and ATAC signal track</DialogContentText>
       </DialogTitle>
       {/* Content */}
-      <DialogContent sx={{ width: "600px" }}>
+      <DialogContent sx={{ width: "100%" }}>
         {Object.entries(bigwigsData).map(([lineage, assays]) => (
-          <Accordion key={lineage} sx={{ width: "550px" }} slotProps={{ transition: { unmountOnExit: true } }}>
+          <Accordion
+            key={lineage}
+            sx={{
+              width: "100%",
+              border: "1px solid #e0e0e0",
+              borderRadius: "8px",
+              mb: 1,
+              mt: 1,
+              overflow: "hidden",
+              "&:before": {
+                display: "none",
+              },
+              "& .MuiAccordionSummary-root": {
+                borderLeft: `4px solid ${trackColor(lineage)}`,
+                backgroundColor: "#fafafa",
+              },
+              "& .MuiAccordionDetails-root": {
+                borderLeft: `4px solid ${trackColor(lineage)}`,
+              },
+            }}
+            slotProps={{ transition: { unmountOnExit: true } }}
+          >
             <AccordionSummary>
               <Box
                 width="100%"
@@ -106,22 +127,84 @@ function AddTracksModal({ open, setOpen, setSelectedTracks, selectedTracks }: Mo
                   {lineageName(lineage)}
                 </Typography>
                 <Typography>
-                  {newTracks.filter((t) => t.lineage === lineage).length} / {assays.dnase.length + assays.atac.length}
+                  {newTracks.filter((t) => t.lineage === lineage).length} /{" "}
+                  {assays.dnase.length + assays.atac.length + assays.rna.length}
                 </Typography>
               </Box>
             </AccordionSummary>
-            <AccordionDetails
-              sx={{ display: "flex", flexDirection: "column", gap: 1, justifyContent: "space-between" }}
-            >
-              <Box display="flex" flexDirection="row" justifyContent="space-around" width="100%">
-                <Typography fontWeight="bold">DNase</Typography>
-                <Typography fontWeight="bold">ATAC</Typography>
-              </Box>
-              {/* Track columns */}
-              <Box display="flex" gap={1} flexDirection="row" justifyContent="space-evenly" paddingInline={1}>
-                <TrackCheckboxes tracks={assays.dnase} newTracks={newTracks} handleChange={handleChange} />
-                <TrackCheckboxes tracks={assays.atac} newTracks={newTracks} handleChange={handleChange} />
-              </Box>
+            <AccordionDetails sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+              <Accordion
+                sx={{
+                  border: "1px solid #e0e0e0",
+                  borderRadius: "6px",
+                  mb: 1,
+                  "&:before": {
+                    display: "none",
+                  },
+                  "& .MuiAccordionSummary-root": {
+                    borderLeft: `3px solid ${assayColor("DNase")}`,
+                    backgroundColor: "#f8f8f8",
+                  },
+                  "& .MuiAccordionDetails-root": {
+                    borderLeft: `3px solid ${assayColor("DNase")}`,
+                  },
+                }}
+              >
+                <AccordionSummary>
+                  <Typography fontWeight="bold">DNase</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <TrackCheckboxes tracks={assays.dnase} newTracks={newTracks} handleChange={handleChange} />
+                </AccordionDetails>
+              </Accordion>
+              <Accordion
+                sx={{
+                  border: "1px solid #e0e0e0",
+                  borderRadius: "6px",
+                  mb: 1,
+                  "&:before": {
+                    display: "none",
+                  },
+                  "& .MuiAccordionSummary-root": {
+                    borderLeft: `3px solid ${assayColor("ATAC")}`,
+                    backgroundColor: "#f8f8f8",
+                  },
+                  "& .MuiAccordionDetails-root": {
+                    borderLeft: `3px solid ${assayColor("ATAC")}`,
+                  },
+                }}
+              >
+                <AccordionSummary>
+                  <Typography fontWeight="bold">ATAC</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <TrackCheckboxes tracks={assays.atac} newTracks={newTracks} handleChange={handleChange} />
+                </AccordionDetails>
+              </Accordion>
+              <Accordion
+                sx={{
+                  border: "1px solid #e0e0e0",
+                  borderRadius: "6px",
+                  mb: 1,
+                  "&:before": {
+                    display: "none",
+                  },
+                  "& .MuiAccordionSummary-root": {
+                    borderLeft: `3px solid ${assayColor("RNA")}`,
+                    backgroundColor: "#f8f8f8",
+                  },
+                  "& .MuiAccordionDetails-root": {
+                    borderLeft: `3px solid ${assayColor("RNA")}`,
+                  },
+                }}
+              >
+                <AccordionSummary>
+                  <Typography fontWeight="bold">RNA</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <TrackCheckboxes tracks={assays.rna} newTracks={newTracks} handleChange={handleChange} />
+                </AccordionDetails>
+              </Accordion>
             </AccordionDetails>
           </Accordion>
         ))}
@@ -157,7 +240,7 @@ function TrackCheckboxes({
   handleChange: (event: React.ChangeEvent<HTMLInputElement>, track: BigWig) => void;
 }) {
   return (
-    <Box width="50%" display="flex" gap={1} flexDirection="column">
+    <Box width="100%" display="flex" gap={1} flexDirection="column">
       {tracks.length == 0 ? (
         <Typography>No tracks available</Typography>
       ) : (
