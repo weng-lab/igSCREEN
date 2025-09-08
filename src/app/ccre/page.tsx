@@ -1,3 +1,5 @@
+"use client";
+
 import { OpenInNew, Search } from "@mui/icons-material";
 import Typography from "@mui/material/Typography";
 import { Box, Button, Container, Paper } from "@mui/material";

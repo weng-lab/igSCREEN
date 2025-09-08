@@ -41,6 +41,18 @@ export function trackColor(lineage: string) {
   }
 }
 
+export function assayColor(assay: string) {
+  switch (assay) {
+    case "DNase":
+      return "#06DA93";
+    case "ATAC":
+      return "#02c7b9";
+    case "RNA":
+      return "#00aa00";
+  }
+  return "#000000";
+}
+
 export function lineageName(lineage: string) {
   switch (lineage) {
     case "Bcells":
