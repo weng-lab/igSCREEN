@@ -8,7 +8,7 @@ import { useTheme } from "@mui/material/styles";
 // import { GQLCytobands } from "@weng-lab/genomebrowser";
 import { useRouter } from "next/navigation";
 import { GenomeSearch, Result } from "@weng-lab/ui-components";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { GenomicElementType, GenomicRange } from "types/globalTypes";
 import { Rect } from "umms-gb/dist/components/tracks/bigbed/types";
 import AddTracksModal, { BigWig } from "./addTracksModal";
@@ -22,7 +22,11 @@ import {
   BrowserStoreInstance,
   Chromosome,
   createBrowserStore,
+  createBrowserStoreMemo,
+  createDataStoreMemo,
   createTrackStore,
+  createTrackStoreMemo,
+  DataStoreInstance,
   DisplayMode,
   Domain,
   InitialBrowserState,
@@ -31,6 +35,13 @@ import {
   TrackType,
   Transcript,
 } from "@weng-lab/genomebrowser";
+import {
+  getLocalBrowser,
+  getLocalSelectedTracks,
+  setLocalBrowser,
+  setLocalSelectedTracks,
+  setLocalTracks,
+} from "./localStorage";
 
 function expandCoordinates(coordinates: GenomicRange) {
   let length = coordinates.end - coordinates.start;
@@ -54,23 +65,33 @@ export default function GenomeBrowserView({
   name: string;
   type: GenomicElementType;
 }) {
-  const initialState: InitialBrowserState = {
-    domain: expandCoordinates(coordinates),
-    marginWidth: 150,
-    trackWidth: 1350,
-    multiplier: 3,
-    highlights: [
-      {
-        id: name || coordinates.chromosome + ":" + coordinates.start + "-" + coordinates.end,
-        domain: { chromosome: coordinates.chromosome, start: coordinates.start, end: coordinates.end },
-        color: randomColor(),
-      },
-    ],
-  };
-  const browserStore = createBrowserStore(initialState);
+  const initialState: InitialBrowserState = useMemo(
+    () => ({
+      domain: getLocalBrowser(name)?.domain || expandCoordinates(coordinates),
+      marginWidth: 150,
+      trackWidth: 1350,
+      multiplier: 3,
+      highlights: getLocalBrowser(name)?.highlights || [
+        {
+          id: name || coordinates.chromosome + ":" + coordinates.start + "-" + coordinates.end,
+          domain: { chromosome: coordinates.chromosome, start: coordinates.start, end: coordinates.end },
+          color: randomColor(),
+        },
+      ],
+    }),
+    [name, coordinates]
+  );
+  const browserStore = createBrowserStoreMemo(initialState);
   const addHighlight = browserStore((state) => state.addHighlight);
   const removeHighlight = browserStore((state) => state.removeHighlight);
   const setDomain = browserStore((state) => state.setDomain);
+
+  const domain = browserStore((state) => state.domain);
+  const highlights = browserStore((state) => state.highlights);
+
+  useEffect(() => {
+    setLocalBrowser(name, { domain, highlights });
+  }, [domain, highlights]);
 
   const onIcreClick = useCallback((item: Rect) => {
     const accession = item.name;
@@ -171,11 +192,21 @@ export default function GenomeBrowserView({
     [addHighlight, removeHighlight, onIcreClick, onGeneClick, type, name]
   );
 
-  const trackStore = createTrackStore(initialTracks);
+  const trackStore = createTrackStoreMemo(initialTracks, [initialTracks]);
   const editTrack = trackStore((state) => state.editTrack);
+
   const router = useRouter();
 
   const theme = useTheme();
+
+  const [showAddTracksModal, setShowAddTracksModal] = useState(false);
+  const [selectedTracks, setSelectedTracks] = useState<BigWig[]>(getLocalSelectedTracks());
+  const dataStore = createDataStoreMemo([]);
+  useAddTracks({ trackStore, selectedTracks, dataStore });
+
+  useEffect(() => {
+    setLocalSelectedTracks(selectedTracks);
+  }, [selectedTracks]);
 
   return (
     <Grid2 container spacing={2} sx={{ mt: "0rem", mb: "1rem" }} justifyContent="center" alignItems="center">
@@ -230,7 +261,24 @@ export default function GenomeBrowserView({
           />
           <Box display="flex" gap={2}>
             <HighlightButton browserStore={browserStore} />
-            <AddTracks trackStore={trackStore} />
+            <Button
+              variant="contained"
+              startIcon={<EditIcon />}
+              size="small"
+              sx={{
+                backgroundColor: theme.palette.primary.main,
+                color: "white",
+              }}
+              onClick={() => setShowAddTracksModal(true)}
+            >
+              Add signal tracks
+            </Button>
+            <AddTracksModal
+              open={showAddTracksModal}
+              setOpen={setShowAddTracksModal}
+              setSelectedTracks={setSelectedTracks}
+              selectedTracks={selectedTracks}
+            />
           </Box>
         </Box>
         <Box
@@ -245,7 +293,7 @@ export default function GenomeBrowserView({
         <ControlButtons browserStore={browserStore} />
       </Grid2>
       <Grid2 size={{ xs: 12, lg: 12 }}>
-        <Browser browserStore={browserStore} trackStore={trackStore} />
+        <Browser browserStore={browserStore} trackStore={trackStore} externalDataStore={dataStore} />
       </Grid2>
       <Box
         sx={{
@@ -259,19 +307,35 @@ export default function GenomeBrowserView({
   );
 }
 
-function AddTracks({ trackStore }: { trackStore: TrackStoreInstance }) {
-  const [showAddTracksModal, setShowAddTracksModal] = useState(false);
-  const [selectedTracks, setSelectedTracks] = useState<BigWig[]>([]);
-  const theme = useTheme();
-
-  const currentTracks = trackStore((state) => state.tracks);
+function useAddTracks({
+  trackStore,
+  selectedTracks,
+  dataStore,
+}: {
+  trackStore: TrackStoreInstance;
+  selectedTracks: BigWig[];
+  dataStore: DataStoreInstance;
+}) {
+  const previousTracksRef = useRef<BigWig[]>([]);
   const insertTrack = trackStore((state) => state.insertTrack);
   const removeTrack = trackStore((state) => state.removeTrack);
+  const loading = dataStore((state) => state.loading);
+  const fetching = dataStore((state) => state.fetching);
 
   useEffect(() => {
-    selectedTracks.forEach((track) => {
-      // check if the track is not already in the browser state
-      if (!currentTracks.some((t) => t.id === track.name + "_temp")) {
+    const previousTracks = previousTracksRef.current;
+
+    // Calculate added and removed tracks based on previous selection
+    const addedTracks = selectedTracks.filter((track) => !previousTracks.some((t) => t.name === track.name));
+    const removedTracks = previousTracks.filter((track) => !selectedTracks.some((t) => t.name === track.name));
+    let timeout = 0;
+    // Insert new tracks
+    if (previousTracksRef.current.length === 0) {
+      timeout = 4000;
+    }
+
+    setTimeout(() => {
+      addedTracks.forEach((track) => {
         const trackToAdd: BigWigConfig = {
           id: track.name + "_temp",
           title: track.assay + " " + track.displayName,
@@ -282,40 +346,19 @@ function AddTracks({ trackStore }: { trackStore: TrackStoreInstance }) {
           displayMode: DisplayMode.Full,
           trackType: TrackType.BigWig,
         };
-        insertTrack(trackToAdd, currentTracks.length);
-      }
+        insertTrack(trackToAdd);
+      });
+    }, timeout);
+
+    // Remove unselected tracks
+    removedTracks.forEach((track) => {
+      const trackId = track.name + "_temp";
+      removeTrack(trackId);
     });
 
-    // Remove tracks that are no longer selected
-    currentTracks.forEach((track) => {
-      if (track.id.includes("_temp") && !selectedTracks.some((t) => t.name + "_temp" === track.id)) {
-        removeTrack(track.id);
-      }
-    });
-  }, [currentTracks, selectedTracks, insertTrack, removeTrack]);
-
-  return (
-    <>
-      <Button
-        variant="contained"
-        startIcon={<EditIcon />}
-        size="small"
-        sx={{
-          backgroundColor: theme.palette.primary.main,
-          color: "white",
-        }}
-        onClick={() => setShowAddTracksModal(true)}
-      >
-        Add signal tracks
-      </Button>
-      <AddTracksModal
-        open={showAddTracksModal}
-        setOpen={setShowAddTracksModal}
-        setSelectedTracks={setSelectedTracks}
-        selectedTracks={selectedTracks}
-      />
-    </>
-  );
+    // Update the ref for next run
+    previousTracksRef.current = selectedTracks;
+  }, [selectedTracks, insertTrack, removeTrack, loading, fetching]);
 }
 
 function HighlightButton({ browserStore }: { browserStore: BrowserStoreInstance }) {
