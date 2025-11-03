@@ -169,7 +169,7 @@
         "assay": "ATAC",
         "displayName": "Bulk B cells, stimulated with 10µg/ml anti-IgG/IgM antibodies and 20 ng/ml IL-4 for 24 hours, in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Bulk_B-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Bulk_B-S.bigWig"
       },
       {
         "name": "1002-Bulk_B-S",
@@ -177,7 +177,7 @@
         "assay": "ATAC",
         "displayName": "Bulk B cells, stimulated with 10µg/ml anti-IgG/IgM antibodies and 20 ng/ml IL-4 for 24 hours, in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Bulk_B-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Bulk_B-S.bigWig"
       },
       {
         "name": "1003-Bulk_B-S",
@@ -185,7 +185,7 @@
         "assay": "ATAC",
         "displayName": "Bulk B cells, stimulated with 10µg/ml anti-IgG/IgM antibodies and 20 ng/ml IL-4 for 24 hours, in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Bulk_B-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Bulk_B-S.bigWig"
       },
       {
         "name": "1002-Bulk_B-U",
@@ -193,7 +193,7 @@
         "assay": "ATAC",
         "displayName": "Bulk B cells in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Bulk_B-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Bulk_B-U.bigWig"
       },
       {
         "name": "1004-Bulk_B-U",
@@ -201,7 +201,7 @@
         "assay": "ATAC",
         "displayName": "Bulk B cells in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Bulk_B-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Bulk_B-U.bigWig"
       },
       {
         "name": "1001-Bulk_B-U",
@@ -209,7 +209,7 @@
         "assay": "ATAC",
         "displayName": "Bulk B cells in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Bulk_B-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Bulk_B-U.bigWig"
       },
       {
         "name": "1003-Bulk_B-U",
@@ -217,7 +217,7 @@
         "assay": "ATAC",
         "displayName": "Bulk B cells in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Bulk_B-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Bulk_B-U.bigWig"
       },
       {
         "name": "4983-Bcell-SRX1427836",
@@ -225,7 +225,7 @@
         "assay": "ATAC",
         "displayName": "B cell in donor 4983",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/4983-Bcell-SRX1427836.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/4983-Bcell-SRX1427836.bigWig"
       },
       {
         "name": "5483-Bcell-SRX1427840",
@@ -233,7 +233,7 @@
         "assay": "ATAC",
         "displayName": "B cell in donor 5483",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/5483-Bcell-SRX1427840.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/5483-Bcell-SRX1427840.bigWig"
       },
       {
         "name": "1022-Bcell-SRX1427815",
@@ -241,7 +241,7 @@
         "assay": "ATAC",
         "displayName": "B cell in donor 1022",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1022-Bcell-SRX1427815.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1022-Bcell-SRX1427815.bigWig"
       },
       {
         "name": "5483-Bcell-SRX1427867",
@@ -249,7 +249,7 @@
         "assay": "ATAC",
         "displayName": "B cell in donor 5483",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/5483-Bcell-SRX1427867.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/5483-Bcell-SRX1427867.bigWig"
       },
       {
         "name": "1001-Naive_B-U",
@@ -257,7 +257,7 @@
         "assay": "ATAC",
         "displayName": "Naïve B cells in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Naive_B-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Naive_B-U.bigWig"
       },
       {
         "name": "1004-Naive_B-U",
@@ -265,7 +265,7 @@
         "assay": "ATAC",
         "displayName": "Naïve B cells in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Naive_B-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Naive_B-U.bigWig"
       },
       {
         "name": "1003-Naive_B-U",
@@ -273,7 +273,7 @@
         "assay": "ATAC",
         "displayName": "Naïve B cells in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Naive_B-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Naive_B-U.bigWig"
       },
       {
         "name": "1002-Naive_B-U",
@@ -281,7 +281,7 @@
         "assay": "ATAC",
         "displayName": "Naïve B cells in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Naive_B-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Naive_B-U.bigWig"
       },
       {
         "name": "1001-Naive_B-S",
@@ -289,7 +289,7 @@
         "assay": "ATAC",
         "displayName": "Naïve B cells, stimulated with 10µg/ml anti-IgG/IgM antibodies and 20 ng/ml IL-4 for 24 hours, in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Naive_B-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Naive_B-S.bigWig"
       },
       {
         "name": "1003-Naive_B-S",
@@ -297,7 +297,7 @@
         "assay": "ATAC",
         "displayName": "Naïve B cells, stimulated with 10µg/ml anti-IgG/IgM antibodies and 20 ng/ml IL-4 for 24 hours, in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Naive_B-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Naive_B-S.bigWig"
       },
       {
         "name": "1002-Naive_B-S",
@@ -305,7 +305,7 @@
         "assay": "ATAC",
         "displayName": "Naïve B cells, stimulated with 10µg/ml anti-IgG/IgM antibodies and 20 ng/ml IL-4 for 24 hours, in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Naive_B-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Naive_B-S.bigWig"
       },
       {
         "name": "1003-Mem_B-U",
@@ -313,7 +313,7 @@
         "assay": "ATAC",
         "displayName": "Memory B cells in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Mem_B-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Mem_B-U.bigWig"
       },
       {
         "name": "1001-Mem_B-U",
@@ -321,7 +321,7 @@
         "assay": "ATAC",
         "displayName": "Memory B cells in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Mem_B-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Mem_B-U.bigWig"
       },
       {
         "name": "1002-Mem_B-U",
@@ -329,7 +329,7 @@
         "assay": "ATAC",
         "displayName": "Memory B cells in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Mem_B-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Mem_B-U.bigWig"
       },
       {
         "name": "1004-Mem_B-U",
@@ -337,7 +337,7 @@
         "assay": "ATAC",
         "displayName": "Memory B cells in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Mem_B-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Mem_B-U.bigWig"
       },
       {
         "name": "1010-Mem_B-S",
@@ -345,7 +345,7 @@
         "assay": "ATAC",
         "displayName": "Memory B cells, stimulated with 10µg/ml anti-IgG/IgM antibodies and 20 ng/ml IL-4 for 24 hours, in donor 1010",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1010-Mem_B-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1010-Mem_B-S.bigWig"
       },
       {
         "name": "1002-Mem_B-S",
@@ -353,7 +353,7 @@
         "assay": "ATAC",
         "displayName": "Memory B cells, stimulated with 10µg/ml anti-IgG/IgM antibodies and 20 ng/ml IL-4 for 24 hours, in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Mem_B-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Mem_B-S.bigWig"
       },
       {
         "name": "1001-Mem_B-S",
@@ -361,7 +361,7 @@
         "assay": "ATAC",
         "displayName": "Memory B cells, stimulated with 10µg/ml anti-IgG/IgM antibodies and 20 ng/ml IL-4 for 24 hours, in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Mem_B-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Mem_B-S.bigWig"
       },
       {
         "name": "1003-Mem_B-S",
@@ -369,7 +369,7 @@
         "assay": "ATAC",
         "displayName": "Memory B cells, stimulated with 10µg/ml anti-IgG/IgM antibodies and 20 ng/ml IL-4 for 24 hours, in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Mem_B-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Mem_B-S.bigWig"
       },
       {
         "name": "1002-Plasmablasts-U",
@@ -377,7 +377,7 @@
         "assay": "ATAC",
         "displayName": "Plasmablasts in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Plasmablasts-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Plasmablasts-U.bigWig"
       },
       {
         "name": "1001-Plasmablasts-U",
@@ -385,7 +385,7 @@
         "assay": "ATAC",
         "displayName": "Plasmablasts in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Plasmablasts-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Plasmablasts-U.bigWig"
       },
       {
         "name": "1010-Plasmablasts-U",
@@ -393,7 +393,7 @@
         "assay": "ATAC",
         "displayName": "Plasmablasts in donor 1010",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1010-Plasmablasts-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1010-Plasmablasts-U.bigWig"
       }
     ],
     "rna": [
@@ -2888,7 +2888,7 @@
         "assay": "ATAC",
         "displayName": "CD4+ T cells in donor 4983",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/4983-CD4Tcell-SRX1427837.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/4983-CD4Tcell-SRX1427837.bigWig"
       },
       {
         "name": "5483-CD4Tcell-SRX1427842",
@@ -2896,7 +2896,7 @@
         "assay": "ATAC",
         "displayName": "CD4+ T cells in donor 5483",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/5483-CD4Tcell-SRX1427842.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/5483-CD4Tcell-SRX1427842.bigWig"
       },
       {
         "name": "5483-CD4Tcell-SRX1427841",
@@ -2904,7 +2904,7 @@
         "assay": "ATAC",
         "displayName": "CD4+ T cells in donor 5483",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/5483-CD4Tcell-SRX1427841.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/5483-CD4Tcell-SRX1427841.bigWig"
       },
       {
         "name": "2596-CD4Tcell-SRX1427819",
@@ -2912,7 +2912,7 @@
         "assay": "ATAC",
         "displayName": "CD4+ T cells in donor 2596",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/2596-CD4Tcell-SRX1427819.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/2596-CD4Tcell-SRX1427819.bigWig"
       },
       {
         "name": "1022-CD4Tcell-SRX1427816",
@@ -2920,7 +2920,7 @@
         "assay": "ATAC",
         "displayName": "CD4+ T cells in donor 1022",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1022-CD4Tcell-SRX1427816.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1022-CD4Tcell-SRX1427816.bigWig"
       },
       {
         "name": "1003-Regulatory_T-S",
@@ -2928,7 +2928,7 @@
         "assay": "ATAC",
         "displayName": "Regulatory CD4+ T cells, stimulated with 1:1 CD3/CD28 coated beads and 300 U/ml IL-2 for 24 hours, in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Regulatory_T-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Regulatory_T-S.bigWig"
       },
       {
         "name": "1002-Regulatory_T-S",
@@ -2936,7 +2936,7 @@
         "assay": "ATAC",
         "displayName": "Regulatory CD4+ T cells, stimulated with 1:1 CD3/CD28 coated beads and 300 U/ml IL-2 for 24 hours, in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Regulatory_T-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Regulatory_T-S.bigWig"
       },
       {
         "name": "1001-Regulatory_T-S",
@@ -2944,7 +2944,7 @@
         "assay": "ATAC",
         "displayName": "Regulatory CD4+ T cells, stimulated with 1:1 CD3/CD28 coated beads and 300 U/ml IL-2 for 24 hours, in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Regulatory_T-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Regulatory_T-S.bigWig"
       },
       {
         "name": "1004-Regulatory_T-S",
@@ -2952,7 +2952,7 @@
         "assay": "ATAC",
         "displayName": "Regulatory CD4+ T cells, stimulated with 1:1 CD3/CD28 coated beads and 300 U/ml IL-2 for 24 hours, in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Regulatory_T-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Regulatory_T-S.bigWig"
       },
       {
         "name": "1001-Regulatory_T-U",
@@ -2960,7 +2960,7 @@
         "assay": "ATAC",
         "displayName": "Regulatory CD4+ T cells in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Regulatory_T-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Regulatory_T-U.bigWig"
       },
       {
         "name": "1003-Regulatory_T-U",
@@ -2968,7 +2968,7 @@
         "assay": "ATAC",
         "displayName": "Regulatory CD4+ T cells in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Regulatory_T-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Regulatory_T-U.bigWig"
       },
       {
         "name": "1004-Regulatory_T-U",
@@ -2976,7 +2976,7 @@
         "assay": "ATAC",
         "displayName": "Regulatory CD4+ T cells in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Regulatory_T-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Regulatory_T-U.bigWig"
       },
       {
         "name": "1002-Regulatory_T-U",
@@ -2984,7 +2984,7 @@
         "assay": "ATAC",
         "displayName": "Regulatory CD4+ T cells in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Regulatory_T-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Regulatory_T-U.bigWig"
       },
       {
         "name": "1004-Naive_Tregs-S",
@@ -2992,7 +2992,7 @@
         "assay": "ATAC",
         "displayName": "Naïve T regulatory cells, stimulated with 1:1 CD3/CD28 coated beads and 300 U/ml IL-2 for 24 hours, in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Naive_Tregs-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Naive_Tregs-S.bigWig"
       },
       {
         "name": "1010-Naive_Tregs-S",
@@ -3000,7 +3000,7 @@
         "assay": "ATAC",
         "displayName": "Naïve T regulatory cells, stimulated with 1:1 CD3/CD28 coated beads and 300 U/ml IL-2 for 24 hours, in donor 1010",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1010-Naive_Tregs-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1010-Naive_Tregs-S.bigWig"
       },
       {
         "name": "1004-Naive_Tregs-U",
@@ -3008,7 +3008,7 @@
         "assay": "ATAC",
         "displayName": "Naïve T regulatory cells in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Naive_Tregs-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Naive_Tregs-U.bigWig"
       },
       {
         "name": "1008-Naive_Tregs-U",
@@ -3016,7 +3016,7 @@
         "assay": "ATAC",
         "displayName": "Naïve T regulatory cells in donor 1008",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1008-Naive_Tregs-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1008-Naive_Tregs-U.bigWig"
       },
       {
         "name": "1002-Memory_Tregs-U",
@@ -3024,7 +3024,7 @@
         "assay": "ATAC",
         "displayName": "Memory T regulatory cell in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Memory_Tregs-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Memory_Tregs-U.bigWig"
       },
       {
         "name": "1003-Memory_Tregs-U",
@@ -3032,7 +3032,7 @@
         "assay": "ATAC",
         "displayName": "Memory T regulatory cell in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Memory_Tregs-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Memory_Tregs-U.bigWig"
       },
       {
         "name": "1001-Memory_Tregs-U",
@@ -3040,7 +3040,7 @@
         "assay": "ATAC",
         "displayName": "Memory T regulatory cell in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Memory_Tregs-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Memory_Tregs-U.bigWig"
       },
       {
         "name": "1004-Memory_Tregs-U",
@@ -3048,7 +3048,7 @@
         "assay": "ATAC",
         "displayName": "Memory T regulatory cell in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Memory_Tregs-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Memory_Tregs-U.bigWig"
       },
       {
         "name": "1001-Memory_Tregs-S",
@@ -3056,7 +3056,7 @@
         "assay": "ATAC",
         "displayName": "Memory T regulatory cell, stimulated with 1:1 CD3/CD28 coated beads and 300 U/ml IL-2 for 24 hours, in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Memory_Tregs-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Memory_Tregs-S.bigWig"
       },
       {
         "name": "1002-Memory_Tregs-S",
@@ -3064,7 +3064,7 @@
         "assay": "ATAC",
         "displayName": "Memory T regulatory cell, stimulated with 1:1 CD3/CD28 coated beads and 300 U/ml IL-2 for 24 hours, in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Memory_Tregs-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Memory_Tregs-S.bigWig"
       },
       {
         "name": "1004-Memory_Tregs-S",
@@ -3072,7 +3072,7 @@
         "assay": "ATAC",
         "displayName": "Memory T regulatory cell, stimulated with 1:1 CD3/CD28 coated beads and 300 U/ml IL-2 for 24 hours, in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Memory_Tregs-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Memory_Tregs-S.bigWig"
       },
       {
         "name": "1003-Memory_Tregs-S",
@@ -3080,7 +3080,7 @@
         "assay": "ATAC",
         "displayName": "Memory T regulatory cell, stimulated with 1:1 CD3/CD28 coated beads and 300 U/ml IL-2 for 24 hours, in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Memory_Tregs-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Memory_Tregs-S.bigWig"
       },
       {
         "name": "1003-Effector_CD4pos_T-U",
@@ -3088,7 +3088,7 @@
         "assay": "ATAC",
         "displayName": "Effector CD4 T cell in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Effector_CD4pos_T-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Effector_CD4pos_T-U.bigWig"
       },
       {
         "name": "1001-Effector_CD4pos_T-U",
@@ -3096,7 +3096,7 @@
         "assay": "ATAC",
         "displayName": "Effector CD4 T cell in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Effector_CD4pos_T-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Effector_CD4pos_T-U.bigWig"
       },
       {
         "name": "1004-Effector_CD4pos_T-U",
@@ -3104,7 +3104,7 @@
         "assay": "ATAC",
         "displayName": "Effector CD4 T cell in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Effector_CD4pos_T-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Effector_CD4pos_T-U.bigWig"
       },
       {
         "name": "1002-Effector_CD4pos_T-U",
@@ -3112,7 +3112,7 @@
         "assay": "ATAC",
         "displayName": "Effector CD4 T cell in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Effector_CD4pos_T-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Effector_CD4pos_T-U.bigWig"
       },
       {
         "name": "1001-Effector_CD4pos_T-S",
@@ -3120,7 +3120,7 @@
         "assay": "ATAC",
         "displayName": "Effector CD4 T cell, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Effector_CD4pos_T-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Effector_CD4pos_T-S.bigWig"
       },
       {
         "name": "1002-Effector_CD4pos_T-S",
@@ -3128,7 +3128,7 @@
         "assay": "ATAC",
         "displayName": "Effector CD4 T cell, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Effector_CD4pos_T-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Effector_CD4pos_T-S.bigWig"
       },
       {
         "name": "1003-Effector_CD4pos_T-S",
@@ -3136,7 +3136,7 @@
         "assay": "ATAC",
         "displayName": "Effector CD4 T cell, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Effector_CD4pos_T-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Effector_CD4pos_T-S.bigWig"
       },
       {
         "name": "1003-Naive_Teffs-U",
@@ -3144,7 +3144,7 @@
         "assay": "ATAC",
         "displayName": "Naïve T effector cells in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Naive_Teffs-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Naive_Teffs-U.bigWig"
       },
       {
         "name": "1004-Naive_Teffs-U",
@@ -3152,7 +3152,7 @@
         "assay": "ATAC",
         "displayName": "Naïve T effector cells in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Naive_Teffs-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Naive_Teffs-U.bigWig"
       },
       {
         "name": "1002-Naive_Teffs-U",
@@ -3160,7 +3160,7 @@
         "assay": "ATAC",
         "displayName": "Naïve T effector cells in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Naive_Teffs-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Naive_Teffs-U.bigWig"
       },
       {
         "name": "1001-Naive_Teffs-U",
@@ -3168,7 +3168,7 @@
         "assay": "ATAC",
         "displayName": "Naïve T effector cells in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Naive_Teffs-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Naive_Teffs-U.bigWig"
       },
       {
         "name": "1011-Naive_Teffs-S",
@@ -3176,7 +3176,7 @@
         "assay": "ATAC",
         "displayName": "Effector CD4 T cell, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1011",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1011-Naive_Teffs-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1011-Naive_Teffs-S.bigWig"
       },
       {
         "name": "1002-Naive_Teffs-S",
@@ -3184,7 +3184,7 @@
         "assay": "ATAC",
         "displayName": "Effector CD4 T cell, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Naive_Teffs-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Naive_Teffs-S.bigWig"
       },
       {
         "name": "1004-Naive_Teffs-S",
@@ -3192,7 +3192,7 @@
         "assay": "ATAC",
         "displayName": "Effector CD4 T cell, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Naive_Teffs-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Naive_Teffs-S.bigWig"
       },
       {
         "name": "1003-Naive_Teffs-S",
@@ -3200,7 +3200,7 @@
         "assay": "ATAC",
         "displayName": "Effector CD4 T cell, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Naive_Teffs-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Naive_Teffs-S.bigWig"
       },
       {
         "name": "1001-Naive_Teffs-S",
@@ -3208,7 +3208,7 @@
         "assay": "ATAC",
         "displayName": "Effector CD4 T cell, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Naive_Teffs-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Naive_Teffs-S.bigWig"
       },
       {
         "name": "1001-Memory_Teffs-S",
@@ -3216,7 +3216,7 @@
         "assay": "ATAC",
         "displayName": "Memory T effector cells, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Memory_Teffs-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Memory_Teffs-S.bigWig"
       },
       {
         "name": "1004-Memory_Teffs-S",
@@ -3224,7 +3224,7 @@
         "assay": "ATAC",
         "displayName": "Memory T effector cells, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Memory_Teffs-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Memory_Teffs-S.bigWig"
       },
       {
         "name": "1003-Memory_Teffs-S",
@@ -3232,7 +3232,7 @@
         "assay": "ATAC",
         "displayName": "Memory T effector cells, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Memory_Teffs-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Memory_Teffs-S.bigWig"
       },
       {
         "name": "1002-Memory_Teffs-S",
@@ -3240,7 +3240,7 @@
         "assay": "ATAC",
         "displayName": "Memory T effector cells, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Memory_Teffs-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Memory_Teffs-S.bigWig"
       },
       {
         "name": "1001-Memory_Teffs-U",
@@ -3248,7 +3248,7 @@
         "assay": "ATAC",
         "displayName": "Memory T effector cells in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Memory_Teffs-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Memory_Teffs-U.bigWig"
       },
       {
         "name": "1002-Memory_Teffs-U",
@@ -3256,7 +3256,7 @@
         "assay": "ATAC",
         "displayName": "Memory T effector cells in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Memory_Teffs-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Memory_Teffs-U.bigWig"
       },
       {
         "name": "1003-Memory_Teffs-U",
@@ -3264,7 +3264,7 @@
         "assay": "ATAC",
         "displayName": "Memory T effector cells in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Memory_Teffs-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Memory_Teffs-U.bigWig"
       },
       {
         "name": "1004-Memory_Teffs-U",
@@ -3272,7 +3272,7 @@
         "assay": "ATAC",
         "displayName": "Memory T effector cells in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Memory_Teffs-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Memory_Teffs-U.bigWig"
       },
       {
         "name": "1002-Th1_precursors-S",
@@ -3280,7 +3280,7 @@
         "assay": "ATAC",
         "displayName": "T helper 1 cell precursors, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Th1_precursors-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Th1_precursors-S.bigWig"
       },
       {
         "name": "1003-Th1_precursors-S",
@@ -3288,7 +3288,7 @@
         "assay": "ATAC",
         "displayName": "T helper 1 cell precursors, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Th1_precursors-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Th1_precursors-S.bigWig"
       },
       {
         "name": "1001-Th1_precursors-S",
@@ -3296,7 +3296,7 @@
         "assay": "ATAC",
         "displayName": "T helper 1 cell precursors, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Th1_precursors-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Th1_precursors-S.bigWig"
       },
       {
         "name": "1004-Th1_precursors-S",
@@ -3304,7 +3304,7 @@
         "assay": "ATAC",
         "displayName": "T helper 1 cell precursors, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Th1_precursors-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Th1_precursors-S.bigWig"
       },
       {
         "name": "1004-Th1_precursors-U",
@@ -3312,7 +3312,7 @@
         "assay": "ATAC",
         "displayName": "T helper 1 cell precursors in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Th1_precursors-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Th1_precursors-U.bigWig"
       },
       {
         "name": "1002-Th1_precursors-U",
@@ -3320,7 +3320,7 @@
         "assay": "ATAC",
         "displayName": "T helper 1 cell precursors in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Th1_precursors-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Th1_precursors-U.bigWig"
       },
       {
         "name": "1001-Th1_precursors-U",
@@ -3328,7 +3328,7 @@
         "assay": "ATAC",
         "displayName": "T helper 1 cell precursors in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Th1_precursors-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Th1_precursors-U.bigWig"
       },
       {
         "name": "1003-Th1_precursors-U",
@@ -3336,7 +3336,7 @@
         "assay": "ATAC",
         "displayName": "T helper 1 cell precursors in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Th1_precursors-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Th1_precursors-U.bigWig"
       },
       {
         "name": "1003-Th2_precursors-U",
@@ -3344,7 +3344,7 @@
         "assay": "ATAC",
         "displayName": "T helper 2 cell precursors in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Th2_precursors-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Th2_precursors-U.bigWig"
       },
       {
         "name": "1004-Th2_precursors-U",
@@ -3352,7 +3352,7 @@
         "assay": "ATAC",
         "displayName": "T helper 2 cell precursors in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Th2_precursors-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Th2_precursors-U.bigWig"
       },
       {
         "name": "1001-Th2_precursors-U",
@@ -3360,7 +3360,7 @@
         "assay": "ATAC",
         "displayName": "T helper 2 cell precursors in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Th2_precursors-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Th2_precursors-U.bigWig"
       },
       {
         "name": "1002-Th2_precursors-U",
@@ -3368,7 +3368,7 @@
         "assay": "ATAC",
         "displayName": "T helper 2 cell precursors in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Th2_precursors-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Th2_precursors-U.bigWig"
       },
       {
         "name": "1004-Th2_precursors-S",
@@ -3376,7 +3376,7 @@
         "assay": "ATAC",
         "displayName": "T helper 2 cell precursors, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Th2_precursors-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Th2_precursors-S.bigWig"
       },
       {
         "name": "1003-Th2_precursors-S",
@@ -3384,7 +3384,7 @@
         "assay": "ATAC",
         "displayName": "T helper 2 cell precursors, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Th2_precursors-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Th2_precursors-S.bigWig"
       },
       {
         "name": "1001-Th2_precursors-S",
@@ -3392,7 +3392,7 @@
         "assay": "ATAC",
         "displayName": "T helper 2 cell precursors, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Th2_precursors-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Th2_precursors-S.bigWig"
       },
       {
         "name": "1002-Th2_precursors-S",
@@ -3400,7 +3400,7 @@
         "assay": "ATAC",
         "displayName": "T helper 2 cell precursors, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Th2_precursors-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Th2_precursors-S.bigWig"
       },
       {
         "name": "1004-Th17_precursors-U",
@@ -3408,7 +3408,7 @@
         "assay": "ATAC",
         "displayName": "T helper 17 cell precursors in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Th17_precursors-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Th17_precursors-U.bigWig"
       },
       {
         "name": "1001-Th17_precursors-U",
@@ -3416,7 +3416,7 @@
         "assay": "ATAC",
         "displayName": "T helper 17 cell precursors in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Th17_precursors-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Th17_precursors-U.bigWig"
       },
       {
         "name": "1002-Th17_precursors-U",
@@ -3424,7 +3424,7 @@
         "assay": "ATAC",
         "displayName": "T helper 17 cell precursors in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Th17_precursors-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Th17_precursors-U.bigWig"
       },
       {
         "name": "1004-Th17_precursors-S",
@@ -3432,7 +3432,7 @@
         "assay": "ATAC",
         "displayName": "T helper 17 cell precursors, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Th17_precursors-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Th17_precursors-S.bigWig"
       },
       {
         "name": "1001-Th17_precursors-S",
@@ -3440,7 +3440,7 @@
         "assay": "ATAC",
         "displayName": "T helper 17 cell precursors, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Th17_precursors-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Th17_precursors-S.bigWig"
       },
       {
         "name": "1003-Th17_precursors-S",
@@ -3448,7 +3448,7 @@
         "assay": "ATAC",
         "displayName": "T helper 17 cell precursors, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Th17_precursors-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Th17_precursors-S.bigWig"
       },
       {
         "name": "1002-Th17_precursors-S",
@@ -3456,7 +3456,7 @@
         "assay": "ATAC",
         "displayName": "T helper 17 cell precursors, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Th17_precursors-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Th17_precursors-S.bigWig"
       },
       {
         "name": "1001-Follicular_T_Helper-U",
@@ -3464,7 +3464,7 @@
         "assay": "ATAC",
         "displayName": "T follicular helper cells in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Follicular_T_Helper-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Follicular_T_Helper-U.bigWig"
       },
       {
         "name": "1003-Follicular_T_Helper-U",
@@ -3472,7 +3472,7 @@
         "assay": "ATAC",
         "displayName": "T follicular helper cells in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Follicular_T_Helper-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Follicular_T_Helper-U.bigWig"
       },
       {
         "name": "1004-Follicular_T_Helper-U",
@@ -3480,7 +3480,7 @@
         "assay": "ATAC",
         "displayName": "T follicular helper cells in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Follicular_T_Helper-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Follicular_T_Helper-U.bigWig"
       },
       {
         "name": "1002-Follicular_T_Helper-U",
@@ -3488,7 +3488,7 @@
         "assay": "ATAC",
         "displayName": "T follicular helper cells in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Follicular_T_Helper-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Follicular_T_Helper-U.bigWig"
       },
       {
         "name": "1010-Follicular_T_Helper-U",
@@ -3496,7 +3496,7 @@
         "assay": "ATAC",
         "displayName": "T follicular helper cells in donor 1010",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1010-Follicular_T_Helper-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1010-Follicular_T_Helper-U.bigWig"
       },
       {
         "name": "1003-Follicular_T_Helper-S",
@@ -3504,7 +3504,7 @@
         "assay": "ATAC",
         "displayName": "T follicular helper cells, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Follicular_T_Helper-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Follicular_T_Helper-S.bigWig"
       },
       {
         "name": "1001-Follicular_T_Helper-S",
@@ -3512,7 +3512,7 @@
         "assay": "ATAC",
         "displayName": "T follicular helper cells, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Follicular_T_Helper-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Follicular_T_Helper-S.bigWig"
       },
       {
         "name": "1002-Follicular_T_Helper-S",
@@ -3520,7 +3520,7 @@
         "assay": "ATAC",
         "displayName": "T follicular helper cells, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Follicular_T_Helper-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Follicular_T_Helper-S.bigWig"
       },
       {
         "name": "1004-Follicular_T_Helper-S",
@@ -3528,7 +3528,7 @@
         "assay": "ATAC",
         "displayName": "T follicular helper cells, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Follicular_T_Helper-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Follicular_T_Helper-S.bigWig"
       }
     ],
     "rna": [
@@ -5208,7 +5208,7 @@
         "assay": "ATAC",
         "displayName": "CD8+ T cells in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-CD8pos_T-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-CD8pos_T-U.bigWig"
       },
       {
         "name": "4983-CD8Tcell-SRX1427838",
@@ -5216,7 +5216,7 @@
         "assay": "ATAC",
         "displayName": "CD8+ T cells in donor 4983",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/4983-CD8Tcell-SRX1427838.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/4983-CD8Tcell-SRX1427838.bigWig"
       },
       {
         "name": "2596-CD8Tcell-SRX1427820",
@@ -5224,7 +5224,7 @@
         "assay": "ATAC",
         "displayName": "CD8+ T cells in donor 2596",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/2596-CD8Tcell-SRX1427820.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/2596-CD8Tcell-SRX1427820.bigWig"
       },
       {
         "name": "1022-CD8Tcell-SRX1427817",
@@ -5232,7 +5232,7 @@
         "assay": "ATAC",
         "displayName": "CD8+ T cells in donor 1022",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1022-CD8Tcell-SRX1427817.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1022-CD8Tcell-SRX1427817.bigWig"
       },
       {
         "name": "5483-CD8Tcell-SRX1427843",
@@ -5240,7 +5240,7 @@
         "assay": "ATAC",
         "displayName": "CD8+ T cells in donor 5483",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/5483-CD8Tcell-SRX1427843.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/5483-CD8Tcell-SRX1427843.bigWig"
       },
       {
         "name": "1001-CD8pos_T-U",
@@ -5248,7 +5248,7 @@
         "assay": "ATAC",
         "displayName": "CD8+ T cells in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-CD8pos_T-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-CD8pos_T-U.bigWig"
       },
       {
         "name": "1004-CD8pos_T-U",
@@ -5256,7 +5256,7 @@
         "assay": "ATAC",
         "displayName": "CD8+ T cells in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-CD8pos_T-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-CD8pos_T-U.bigWig"
       },
       {
         "name": "1002-CD8pos_T-U",
@@ -5264,7 +5264,7 @@
         "assay": "ATAC",
         "displayName": "CD8+ T cells in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-CD8pos_T-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-CD8pos_T-U.bigWig"
       },
       {
         "name": "5483-CD8Tcell-SRX1427844",
@@ -5272,7 +5272,7 @@
         "assay": "ATAC",
         "displayName": "CD8+ T cells in donor 5483",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/5483-CD8Tcell-SRX1427844.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/5483-CD8Tcell-SRX1427844.bigWig"
       },
       {
         "name": "1002-CD8pos_T-S",
@@ -5280,7 +5280,7 @@
         "assay": "ATAC",
         "displayName": "CD8+ T cells, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-CD8pos_T-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-CD8pos_T-S.bigWig"
       },
       {
         "name": "1001-CD8pos_T-S",
@@ -5288,7 +5288,7 @@
         "assay": "ATAC",
         "displayName": "CD8+ T cells, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-CD8pos_T-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-CD8pos_T-S.bigWig"
       },
       {
         "name": "1003-CD8pos_T-S",
@@ -5296,7 +5296,7 @@
         "assay": "ATAC",
         "displayName": "CD8+ T cells, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-CD8pos_T-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-CD8pos_T-S.bigWig"
       },
       {
         "name": "1002-Naive_CD8_T-S",
@@ -5304,7 +5304,7 @@
         "assay": "ATAC",
         "displayName": "Naïve CD8+ T cells, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Naive_CD8_T-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Naive_CD8_T-S.bigWig"
       },
       {
         "name": "1004-Naive_CD8_T-S",
@@ -5312,7 +5312,7 @@
         "assay": "ATAC",
         "displayName": "Naïve CD8+ T cells, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Naive_CD8_T-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Naive_CD8_T-S.bigWig"
       },
       {
         "name": "1003-Naive_CD8_T-S",
@@ -5320,7 +5320,7 @@
         "assay": "ATAC",
         "displayName": "Naïve CD8+ T cells, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Naive_CD8_T-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Naive_CD8_T-S.bigWig"
       },
       {
         "name": "1001-Naive_CD8_T-S",
@@ -5328,7 +5328,7 @@
         "assay": "ATAC",
         "displayName": "Naïve CD8+ T cells, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Naive_CD8_T-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Naive_CD8_T-S.bigWig"
       },
       {
         "name": "1004-Naive_CD8_T-U",
@@ -5336,7 +5336,7 @@
         "assay": "ATAC",
         "displayName": "Naïve CD8+ T cells in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Naive_CD8_T-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Naive_CD8_T-U.bigWig"
       },
       {
         "name": "1003-Naive_CD8_T-U",
@@ -5344,7 +5344,7 @@
         "assay": "ATAC",
         "displayName": "Naïve CD8+ T cells in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Naive_CD8_T-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Naive_CD8_T-U.bigWig"
       },
       {
         "name": "1002-Naive_CD8_T-U",
@@ -5352,7 +5352,7 @@
         "assay": "ATAC",
         "displayName": "Naïve CD8+ T cells in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Naive_CD8_T-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Naive_CD8_T-U.bigWig"
       },
       {
         "name": "1001-Naive_CD8_T-U",
@@ -5360,7 +5360,7 @@
         "assay": "ATAC",
         "displayName": "Naïve CD8+ T cells in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Naive_CD8_T-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Naive_CD8_T-U.bigWig"
       },
       {
         "name": "1001-Central_memory_CD8pos_T-S",
@@ -5368,7 +5368,7 @@
         "assay": "ATAC",
         "displayName": "Central memory CD8+ T cells, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Central_memory_CD8pos_T-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Central_memory_CD8pos_T-S.bigWig"
       },
       {
         "name": "1003-Central_memory_CD8pos_T-S",
@@ -5376,7 +5376,7 @@
         "assay": "ATAC",
         "displayName": "Central memory CD8+ T cells, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Central_memory_CD8pos_T-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Central_memory_CD8pos_T-S.bigWig"
       },
       {
         "name": "1002-Central_memory_CD8pos_T-S",
@@ -5384,7 +5384,7 @@
         "assay": "ATAC",
         "displayName": "Central memory CD8+ T cells, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Central_memory_CD8pos_T-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Central_memory_CD8pos_T-S.bigWig"
       },
       {
         "name": "1004-Central_memory_CD8pos_T-S",
@@ -5392,7 +5392,7 @@
         "assay": "ATAC",
         "displayName": "Central memory CD8+ T cells, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Central_memory_CD8pos_T-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Central_memory_CD8pos_T-S.bigWig"
       },
       {
         "name": "1002-Central_memory_CD8pos_T-U",
@@ -5400,7 +5400,7 @@
         "assay": "ATAC",
         "displayName": "Central memory CD8+ T cells in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Central_memory_CD8pos_T-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Central_memory_CD8pos_T-U.bigWig"
       },
       {
         "name": "1004-Central_memory_CD8pos_T-U",
@@ -5408,7 +5408,7 @@
         "assay": "ATAC",
         "displayName": "Central memory CD8+ T cells in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Central_memory_CD8pos_T-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Central_memory_CD8pos_T-U.bigWig"
       },
       {
         "name": "1003-Central_memory_CD8pos_T-U",
@@ -5416,7 +5416,7 @@
         "assay": "ATAC",
         "displayName": "Central memory CD8+ T cells in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Central_memory_CD8pos_T-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Central_memory_CD8pos_T-U.bigWig"
       },
       {
         "name": "1001-Central_memory_CD8pos_T-U",
@@ -5424,7 +5424,7 @@
         "assay": "ATAC",
         "displayName": "Central memory CD8+ T cells in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Central_memory_CD8pos_T-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Central_memory_CD8pos_T-U.bigWig"
       },
       {
         "name": "1002-Effector_memory_CD8pos_T-U",
@@ -5432,7 +5432,7 @@
         "assay": "ATAC",
         "displayName": "Effector memory CD8+ T cells in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Effector_memory_CD8pos_T-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Effector_memory_CD8pos_T-U.bigWig"
       },
       {
         "name": "1003-Effector_memory_CD8pos_T-U",
@@ -5440,7 +5440,7 @@
         "assay": "ATAC",
         "displayName": "Effector memory CD8+ T cells in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Effector_memory_CD8pos_T-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Effector_memory_CD8pos_T-U.bigWig"
       },
       {
         "name": "1001-Effector_memory_CD8pos_T-U",
@@ -5448,7 +5448,7 @@
         "assay": "ATAC",
         "displayName": "Effector memory CD8+ T cells in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Effector_memory_CD8pos_T-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Effector_memory_CD8pos_T-U.bigWig"
       },
       {
         "name": "1004-Effector_memory_CD8pos_T-U",
@@ -5456,7 +5456,7 @@
         "assay": "ATAC",
         "displayName": "Effector memory CD8+ T cells in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Effector_memory_CD8pos_T-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Effector_memory_CD8pos_T-U.bigWig"
       },
       {
         "name": "1004-Effector_memory_CD8pos_T-S",
@@ -5464,7 +5464,7 @@
         "assay": "ATAC",
         "displayName": "Effector memory CD8+ T cells, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Effector_memory_CD8pos_T-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Effector_memory_CD8pos_T-S.bigWig"
       },
       {
         "name": "1001-Effector_memory_CD8pos_T-S",
@@ -5472,7 +5472,7 @@
         "assay": "ATAC",
         "displayName": "Effector memory CD8+ T cells, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Effector_memory_CD8pos_T-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Effector_memory_CD8pos_T-S.bigWig"
       },
       {
         "name": "1003-Effector_memory_CD8pos_T-S",
@@ -5480,7 +5480,7 @@
         "assay": "ATAC",
         "displayName": "Effector memory CD8+ T cells, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Effector_memory_CD8pos_T-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Effector_memory_CD8pos_T-S.bigWig"
       },
       {
         "name": "1002-Effector_memory_CD8pos_T-S",
@@ -5488,7 +5488,7 @@
         "assay": "ATAC",
         "displayName": "Effector memory CD8+ T cells, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Effector_memory_CD8pos_T-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Effector_memory_CD8pos_T-S.bigWig"
       }
     ],
     "rna": [
@@ -5984,7 +5984,7 @@
         "assay": "ATAC",
         "displayName": "Erythrocyte in donor 2596",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/2596-Ery-SRX1427827.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/2596-Ery-SRX1427827.bigWig"
       },
       {
         "name": "5483-Ery-SRX1427848",
@@ -5992,7 +5992,7 @@
         "assay": "ATAC",
         "displayName": "Erythrocyte in donor 5483",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/5483-Ery-SRX1427848.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/5483-Ery-SRX1427848.bigWig"
       },
       {
         "name": "5483-Ery-SRX1427846",
@@ -6000,7 +6000,7 @@
         "assay": "ATAC",
         "displayName": "Erythrocyte in donor 5483",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/5483-Ery-SRX1427846.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/5483-Ery-SRX1427846.bigWig"
       },
       {
         "name": "2596-Ery-SRX1427826",
@@ -6008,7 +6008,7 @@
         "assay": "ATAC",
         "displayName": "Erythrocyte in donor 2596",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/2596-Ery-SRX1427826.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/2596-Ery-SRX1427826.bigWig"
       },
       {
         "name": "6926-Ery-SRX1427852",
@@ -6016,7 +6016,7 @@
         "assay": "ATAC",
         "displayName": "Erythrocyte in donor 6926",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/6926-Ery-SRX1427852.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/6926-Ery-SRX1427852.bigWig"
       },
       {
         "name": "2596-Ery-SRX1427825",
@@ -6024,7 +6024,7 @@
         "assay": "ATAC",
         "displayName": "Erythrocyte in donor 2596",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/2596-Ery-SRX1427825.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/2596-Ery-SRX1427825.bigWig"
       },
       {
         "name": "5483-Ery-SRX1427847",
@@ -6032,7 +6032,7 @@
         "assay": "ATAC",
         "displayName": "Erythrocyte in donor 5483",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/5483-Ery-SRX1427847.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/5483-Ery-SRX1427847.bigWig"
       },
       {
         "name": "6926-Ery-SRX1427853",
@@ -6040,7 +6040,7 @@
         "assay": "ATAC",
         "displayName": "Erythrocyte in donor 6926",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/6926-Ery-SRX1427853.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/6926-Ery-SRX1427853.bigWig"
       }
     ],
     "rna": [
@@ -6079,7 +6079,7 @@
         "assay": "ATAC",
         "displayName": "Leukemia merged",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/ATAC_Leukemia_merged_signal.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/ATAC_Leukemia_merged_signal.bigWig"
       },
       {
         "name": "SU070-Blast-SRX1427877",
@@ -6087,7 +6087,7 @@
         "assay": "ATAC",
         "displayName": "Leukemic Blast Cells in donor SU07",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU070-Blast-SRX1427877.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU070-Blast-SRX1427877.bigWig"
       },
       {
         "name": "SU501-Blast-SRX1427903",
@@ -6095,7 +6095,7 @@
         "assay": "ATAC",
         "displayName": "Leukemic Blast Cells in donor SU50",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU501-Blast-SRX1427903.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU501-Blast-SRX1427903.bigWig"
       },
       {
         "name": "SU048-Blast-SRX1427873",
@@ -6103,7 +6103,7 @@
         "assay": "ATAC",
         "displayName": "Leukemic Blast Cells in donor SU04",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU048-Blast-SRX1427873.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU048-Blast-SRX1427873.bigWig"
       },
       {
         "name": "SU048-Blast-SRX1427869",
@@ -6111,7 +6111,7 @@
         "assay": "ATAC",
         "displayName": "Leukemic Blast Cells in donor SU04",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU048-Blast-SRX1427869.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU048-Blast-SRX1427869.bigWig"
       },
       {
         "name": "SU070-Blast-SRX1427876",
@@ -6119,7 +6119,7 @@
         "assay": "ATAC",
         "displayName": "Leukemic Blast Cells in donor SU07",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU070-Blast-SRX1427876.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU070-Blast-SRX1427876.bigWig"
       },
       {
         "name": "SU351-Blast-SRX1427890",
@@ -6127,7 +6127,7 @@
         "assay": "ATAC",
         "displayName": "Leukemic Blast Cells in donor SU35",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU351-Blast-SRX1427890.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU351-Blast-SRX1427890.bigWig"
       },
       {
         "name": "SU575-Blast-SRX1427905",
@@ -6135,7 +6135,7 @@
         "assay": "ATAC",
         "displayName": "Leukemic Blast Cells in donor SU57",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU575-Blast-SRX1427905.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU575-Blast-SRX1427905.bigWig"
       },
       {
         "name": "SU209-Blast-SRX1427881",
@@ -6143,7 +6143,7 @@
         "assay": "ATAC",
         "displayName": "Leukemic Blast Cells in donor SU20",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU209-Blast-SRX1427881.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU209-Blast-SRX1427881.bigWig"
       },
       {
         "name": "SU336-Blast-SRX1427888",
@@ -6151,7 +6151,7 @@
         "assay": "ATAC",
         "displayName": "Leukemic Blast Cells in donor SU33",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU336-Blast-SRX1427888.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU336-Blast-SRX1427888.bigWig"
       },
       {
         "name": "SU583-Blast-SRX1427908",
@@ -6159,7 +6159,7 @@
         "assay": "ATAC",
         "displayName": "Leukemic Blast Cells in donor SU58",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU583-Blast-SRX1427908.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU583-Blast-SRX1427908.bigWig"
       },
       {
         "name": "SU496-Blast-SRX1427900",
@@ -6167,7 +6167,7 @@
         "assay": "ATAC",
         "displayName": "Leukemic Blast Cells in donor SU49",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU496-Blast-SRX1427900.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU496-Blast-SRX1427900.bigWig"
       },
       {
         "name": "SU048-Blast-SRX1427871",
@@ -6175,7 +6175,7 @@
         "assay": "ATAC",
         "displayName": "Leukemic Blast Cells in donor SU04",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU048-Blast-SRX1427871.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU048-Blast-SRX1427871.bigWig"
       },
       {
         "name": "SU048-Blast-SRX1427870",
@@ -6183,7 +6183,7 @@
         "assay": "ATAC",
         "displayName": "Leukemic Blast Cells in donor SU04",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU048-Blast-SRX1427870.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU048-Blast-SRX1427870.bigWig"
       },
       {
         "name": "SU048-Blast-SRX1427874",
@@ -6191,7 +6191,7 @@
         "assay": "ATAC",
         "displayName": "Leukemic Blast Cells in donor SU04",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU048-Blast-SRX1427874.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU048-Blast-SRX1427874.bigWig"
       },
       {
         "name": "SU623-Blast-SRX1427912",
@@ -6199,7 +6199,7 @@
         "assay": "ATAC",
         "displayName": "Leukemic Blast Cells in donor SU62",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU623-Blast-SRX1427912.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU623-Blast-SRX1427912.bigWig"
       },
       {
         "name": "SU623-Blast-SRX1427913",
@@ -6207,7 +6207,7 @@
         "assay": "ATAC",
         "displayName": "Leukemic Blast Cells in donor SU62",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU623-Blast-SRX1427913.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU623-Blast-SRX1427913.bigWig"
       },
       {
         "name": "SU306-Blast-SRX1427886",
@@ -6215,7 +6215,7 @@
         "assay": "ATAC",
         "displayName": "Leukemic Blast Cells in donor SU30",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU306-Blast-SRX1427886.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU306-Blast-SRX1427886.bigWig"
       },
       {
         "name": "SU048-Blast-SRX1427872",
@@ -6223,7 +6223,7 @@
         "assay": "ATAC",
         "displayName": "Leukemic Blast Cells in donor SU04",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU048-Blast-SRX1427872.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU048-Blast-SRX1427872.bigWig"
       },
       {
         "name": "SU353-Blast-SRX1427892",
@@ -6231,7 +6231,7 @@
         "assay": "ATAC",
         "displayName": "Leukemic Blast Cells in donor SU35",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU353-Blast-SRX1427892.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU353-Blast-SRX1427892.bigWig"
       },
       {
         "name": "SU654-Blast-SRX1427916",
@@ -6239,7 +6239,7 @@
         "assay": "ATAC",
         "displayName": "Leukemic Blast Cells in donor SU65",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU654-Blast-SRX1427916.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU654-Blast-SRX1427916.bigWig"
       },
       {
         "name": "SU623-Blast-SRX1427914",
@@ -6247,7 +6247,7 @@
         "assay": "ATAC",
         "displayName": "Leukemic Blast Cells in donor SU62",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU623-Blast-SRX1427914.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU623-Blast-SRX1427914.bigWig"
       },
       {
         "name": "SU444-Blast-SRX1427895",
@@ -6255,7 +6255,7 @@
         "assay": "ATAC",
         "displayName": "Leukemic Blast Cells in donor SU44",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU444-Blast-SRX1427895.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU444-Blast-SRX1427895.bigWig"
       },
       {
         "name": "SU484-Blast-SRX1427898",
@@ -6263,7 +6263,7 @@
         "assay": "ATAC",
         "displayName": "Leukemic Blast Cells in donor SU48",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU484-Blast-SRX1427898.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU484-Blast-SRX1427898.bigWig"
       },
       {
         "name": "SU583-LSC-SRX1427909",
@@ -6271,7 +6271,7 @@
         "assay": "ATAC",
         "displayName": "Leukemia Stem Cells in donor SU58",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU583-LSC-SRX1427909.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU583-LSC-SRX1427909.bigWig"
       },
       {
         "name": "SU353-LSC-SRX1427893",
@@ -6279,7 +6279,7 @@
         "assay": "ATAC",
         "displayName": "Leukemia Stem Cells in donor SU35",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU353-LSC-SRX1427893.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU353-LSC-SRX1427893.bigWig"
       },
       {
         "name": "SU496-LSC-SRX1427901",
@@ -6287,7 +6287,7 @@
         "assay": "ATAC",
         "displayName": "Leukemia Stem Cells in donor SU49",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU496-LSC-SRX1427901.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU496-LSC-SRX1427901.bigWig"
       },
       {
         "name": "SU070-LSC-SRX1427878",
@@ -6295,7 +6295,7 @@
         "assay": "ATAC",
         "displayName": "Leukemia Stem Cells in donor SU07",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU070-LSC-SRX1427878.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU070-LSC-SRX1427878.bigWig"
       },
       {
         "name": "SU654-LSC-SRX1427917",
@@ -6303,7 +6303,7 @@
         "assay": "ATAC",
         "displayName": "Leukemia Stem Cells in donor SU65",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU654-LSC-SRX1427917.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU654-LSC-SRX1427917.bigWig"
       },
       {
         "name": "SU209-LSC-SRX1427882",
@@ -6311,7 +6311,7 @@
         "assay": "ATAC",
         "displayName": "Leukemia Stem Cells in donor SU20",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU209-LSC-SRX1427882.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU209-LSC-SRX1427882.bigWig"
       },
       {
         "name": "SU444-LSC-SRX1427896",
@@ -6319,7 +6319,7 @@
         "assay": "ATAC",
         "displayName": "Leukemia Stem Cells in donor SU44",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU444-LSC-SRX1427896.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU444-LSC-SRX1427896.bigWig"
       },
       {
         "name": "SU575-LSC-SRX1427906",
@@ -6327,7 +6327,7 @@
         "assay": "ATAC",
         "displayName": "Leukemia Stem Cells in donor SU57",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU575-LSC-SRX1427906.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU575-LSC-SRX1427906.bigWig"
       }
     ],
     "rna": [
@@ -6791,7 +6791,7 @@
         "assay": "ATAC",
         "displayName": "Monocytes in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Monocytes-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Monocytes-U.bigWig"
       },
       {
         "name": "4983-Mono-SRX1427798",
@@ -6799,7 +6799,7 @@
         "assay": "ATAC",
         "displayName": "Monocytes in donor 4983",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/4983-Mono-SRX1427798.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/4983-Mono-SRX1427798.bigWig"
       },
       {
         "name": "1003-Monocytes-U",
@@ -6807,7 +6807,7 @@
         "assay": "ATAC",
         "displayName": "Monocytes in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Monocytes-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Monocytes-U.bigWig"
       },
       {
         "name": "4983-Mono-SRX1427799",
@@ -6815,7 +6815,7 @@
         "assay": "ATAC",
         "displayName": "Monocytes in donor 4983",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/4983-Mono-SRX1427799.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/4983-Mono-SRX1427799.bigWig"
       },
       {
         "name": "1004-Monocytes-U",
@@ -6823,7 +6823,7 @@
         "assay": "ATAC",
         "displayName": "Monocytes in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Monocytes-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Monocytes-U.bigWig"
       },
       {
         "name": "6792-Mono-SRX1427811",
@@ -6831,7 +6831,7 @@
         "assay": "ATAC",
         "displayName": "Monocytes in donor 6792",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/6792-Mono-SRX1427811.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/6792-Mono-SRX1427811.bigWig"
       },
       {
         "name": "6792-Mono-SRX1427810",
@@ -6839,7 +6839,7 @@
         "assay": "ATAC",
         "displayName": "Monocytes in donor 6792",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/6792-Mono-SRX1427810.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/6792-Mono-SRX1427810.bigWig"
       },
       {
         "name": "7256-Mono-SRX1427866",
@@ -6847,7 +6847,7 @@
         "assay": "ATAC",
         "displayName": "Monocytes in donor 7256",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/7256-Mono-SRX1427866.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/7256-Mono-SRX1427866.bigWig"
       },
       {
         "name": "7256-Mono-SRX1427865",
@@ -6855,7 +6855,7 @@
         "assay": "ATAC",
         "displayName": "Monocytes in donor 7256",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/7256-Mono-SRX1427865.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/7256-Mono-SRX1427865.bigWig"
       },
       {
         "name": "1008-Monocytes-S",
@@ -6863,7 +6863,7 @@
         "assay": "ATAC",
         "displayName": "Monocytes, stimulated with 1 µg/ml LPS for 24 hours, in donor 1008",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1008-Monocytes-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1008-Monocytes-S.bigWig"
       },
       {
         "name": "1003-Monocytes-S",
@@ -6871,7 +6871,7 @@
         "assay": "ATAC",
         "displayName": "Monocytes, stimulated with 100 ng/ml LPS for 6 hours, in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Monocytes-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Monocytes-S.bigWig"
       },
       {
         "name": "1004-Monocytes-S",
@@ -6879,7 +6879,7 @@
         "assay": "ATAC",
         "displayName": "Monocytes, stimulated with 100 ng/ml LPS for 6 hours, in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Monocytes-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Monocytes-S.bigWig"
       },
       {
         "name": "1002-Monocytes-S",
@@ -6887,7 +6887,7 @@
         "assay": "ATAC",
         "displayName": "Monocytes, stimulated with 100 ng/ml LPS for 6 hours, in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Monocytes-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Monocytes-S.bigWig"
       },
       {
         "name": "1001-Monocytes-S",
@@ -6895,7 +6895,7 @@
         "assay": "ATAC",
         "displayName": "Monocytes, stimulated with 100 ng/ml LPS for 6 hours, in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Monocytes-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Monocytes-S.bigWig"
       },
       {
         "name": "1010-Monocytes-S",
@@ -6903,7 +6903,7 @@
         "assay": "ATAC",
         "displayName": "Monocytes, stimulated with 1 µg/ml LPS for 24 hours, in donor 1010",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1010-Monocytes-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1010-Monocytes-S.bigWig"
       },
       {
         "name": "1001-Myeloid_DCs-U",
@@ -6911,7 +6911,7 @@
         "assay": "ATAC",
         "displayName": "Myeloid Dendritic cells in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Myeloid_DCs-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Myeloid_DCs-U.bigWig"
       },
       {
         "name": "1008-Myeloid_DCs-U",
@@ -6919,7 +6919,7 @@
         "assay": "ATAC",
         "displayName": "Myeloid Dendritic cells in donor 1008",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1008-Myeloid_DCs-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1008-Myeloid_DCs-U.bigWig"
       },
       {
         "name": "1002-Myeloid_DCs-U",
@@ -6927,7 +6927,7 @@
         "assay": "ATAC",
         "displayName": "Myeloid Dendritic cells in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Myeloid_DCs-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Myeloid_DCs-U.bigWig"
       },
       {
         "name": "1008-pDCs-U",
@@ -6935,7 +6935,7 @@
         "assay": "ATAC",
         "displayName": "Plasmacytoid dendritic cells in donor 1008",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1008-pDCs-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1008-pDCs-U.bigWig"
       },
       {
         "name": "1002-pDCs-U",
@@ -6943,7 +6943,7 @@
         "assay": "ATAC",
         "displayName": "Plasmacytoid dendritic cells in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-pDCs-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-pDCs-U.bigWig"
       },
       {
         "name": "1001-pDCs-U",
@@ -6951,7 +6951,7 @@
         "assay": "ATAC",
         "displayName": "Plasmacytoid dendritic cells in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-pDCs-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-pDCs-U.bigWig"
       }
     ],
     "rna": [
@@ -7199,7 +7199,7 @@
         "assay": "ATAC",
         "displayName": "Natural Killer cells in donor 5483",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/5483-NKcell-SRX1427850.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/5483-NKcell-SRX1427850.bigWig"
       },
       {
         "name": "1022-NKcell-SRX1427818",
@@ -7207,7 +7207,7 @@
         "assay": "ATAC",
         "displayName": "Natural Killer cells in donor 1022",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1022-NKcell-SRX1427818.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1022-NKcell-SRX1427818.bigWig"
       },
       {
         "name": "5483-NKcell-SRX1427849",
@@ -7215,7 +7215,7 @@
         "assay": "ATAC",
         "displayName": "Natural Killer cells in donor 5483",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/5483-NKcell-SRX1427849.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/5483-NKcell-SRX1427849.bigWig"
       },
       {
         "name": "2596-NKcell-SRX1427834",
@@ -7223,7 +7223,7 @@
         "assay": "ATAC",
         "displayName": "Natural Killer cells in donor 2596",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/2596-NKcell-SRX1427834.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/2596-NKcell-SRX1427834.bigWig"
       },
       {
         "name": "2596-NKcell-SRX1427835",
@@ -7231,7 +7231,7 @@
         "assay": "ATAC",
         "displayName": "Natural Killer cells in donor 2596",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/2596-NKcell-SRX1427835.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/2596-NKcell-SRX1427835.bigWig"
       },
       {
         "name": "4983-NKcell-SRX1427839",
@@ -7239,7 +7239,7 @@
         "assay": "ATAC",
         "displayName": "Natural Killer cells in donor 4983",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/4983-NKcell-SRX1427839.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/4983-NKcell-SRX1427839.bigWig"
       },
       {
         "name": "1001-Immature_NK-U",
@@ -7247,7 +7247,7 @@
         "assay": "ATAC",
         "displayName": "Immature Natural Killer cells in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Immature_NK-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Immature_NK-U.bigWig"
       },
       {
         "name": "1004-Immature_NK-U",
@@ -7255,7 +7255,7 @@
         "assay": "ATAC",
         "displayName": "Immature Natural Killer cells in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Immature_NK-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Immature_NK-U.bigWig"
       },
       {
         "name": "1002-Immature_NK-U",
@@ -7263,7 +7263,7 @@
         "assay": "ATAC",
         "displayName": "Immature Natural Killer cells in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Immature_NK-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Immature_NK-U.bigWig"
       },
       {
         "name": "1008-Immature_NK-U",
@@ -7271,7 +7271,7 @@
         "assay": "ATAC",
         "displayName": "Immature Natural Killer cells in donor 1008",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1008-Immature_NK-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1008-Immature_NK-U.bigWig"
       },
       {
         "name": "1003-Immature_NK-U",
@@ -7279,7 +7279,7 @@
         "assay": "ATAC",
         "displayName": "Immature Natural Killer cells in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Immature_NK-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Immature_NK-U.bigWig"
       },
       {
         "name": "1002-Memory_NK-U",
@@ -7287,7 +7287,7 @@
         "assay": "ATAC",
         "displayName": "Memory Natural Killer cells in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Memory_NK-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Memory_NK-U.bigWig"
       },
       {
         "name": "1008-Memory_NK-U",
@@ -7295,7 +7295,7 @@
         "assay": "ATAC",
         "displayName": "Memory Natural Killer cells in donor 1008",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1008-Memory_NK-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1008-Memory_NK-U.bigWig"
       },
       {
         "name": "1004-Memory_NK-U",
@@ -7303,7 +7303,7 @@
         "assay": "ATAC",
         "displayName": "Memory Natural Killer cells in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Memory_NK-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Memory_NK-U.bigWig"
       },
       {
         "name": "1003-Memory_NK-U",
@@ -7311,7 +7311,7 @@
         "assay": "ATAC",
         "displayName": "Memory Natural Killer cells in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Memory_NK-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Memory_NK-U.bigWig"
       },
       {
         "name": "1001-Memory_NK-U",
@@ -7319,7 +7319,7 @@
         "assay": "ATAC",
         "displayName": "Memory Natural Killer cells in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Memory_NK-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Memory_NK-U.bigWig"
       },
       {
         "name": "1010-Memory_NK-U",
@@ -7327,7 +7327,7 @@
         "assay": "ATAC",
         "displayName": "Memory Natural Killer cells in donor 1010",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1010-Memory_NK-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1010-Memory_NK-U.bigWig"
       },
       {
         "name": "1010-Mature_NK-S",
@@ -7335,7 +7335,7 @@
         "assay": "ATAC",
         "displayName": "Mature Natural Killer cells, stimulated with 200 U/ml IL-2 for 24 hours, in donor 1010",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1010-Mature_NK-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1010-Mature_NK-S.bigWig"
       },
       {
         "name": "1001-Mature_NK-S",
@@ -7343,7 +7343,7 @@
         "assay": "ATAC",
         "displayName": "Mature Natural Killer cells, stimulated with 1:2 CD2/CD355 coated beads and 500 U/ml IL-2 for 48 hours, in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Mature_NK-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Mature_NK-S.bigWig"
       },
       {
         "name": "1002-Mature_NK-S",
@@ -7351,7 +7351,7 @@
         "assay": "ATAC",
         "displayName": "Mature Natural Killer cells, stimulated with 1:2 CD2/CD355 coated beads and 500 U/ml IL-2 for 48 hours, in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Mature_NK-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Mature_NK-S.bigWig"
       },
       {
         "name": "1003-Mature_NK-S",
@@ -7359,7 +7359,7 @@
         "assay": "ATAC",
         "displayName": "Mature Natural Killer cells, stimulated with 1:2 CD2/CD355 coated beads and 500 U/ml IL-2 for 48 hours, in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Mature_NK-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Mature_NK-S.bigWig"
       },
       {
         "name": "1008-Mature_NK-S",
@@ -7367,7 +7367,7 @@
         "assay": "ATAC",
         "displayName": "Mature Natural Killer cells, stimulated with 200 U/ml IL-2 for 24 hours, in donor 1008",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1008-Mature_NK-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1008-Mature_NK-S.bigWig"
       },
       {
         "name": "1004-Mature_NK-S",
@@ -7375,7 +7375,7 @@
         "assay": "ATAC",
         "displayName": "Mature Natural Killer cells, stimulated with 1:2 CD2/CD355 coated beads and 500 U/ml IL-2 for 48 hours, in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Mature_NK-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Mature_NK-S.bigWig"
       },
       {
         "name": "1001-Mature_NK-U",
@@ -7383,7 +7383,7 @@
         "assay": "ATAC",
         "displayName": "Mature Natural Killer cells in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Mature_NK-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Mature_NK-U.bigWig"
       },
       {
         "name": "1004-Mature_NK-U",
@@ -7391,7 +7391,7 @@
         "assay": "ATAC",
         "displayName": "Mature Natural Killer cells in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Mature_NK-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Mature_NK-U.bigWig"
       },
       {
         "name": "1008-Mature_NK-U",
@@ -7399,7 +7399,7 @@
         "assay": "ATAC",
         "displayName": "Mature Natural Killer cells in donor 1008",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1008-Mature_NK-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1008-Mature_NK-U.bigWig"
       },
       {
         "name": "1003-Mature_NK-U",
@@ -7407,7 +7407,7 @@
         "assay": "ATAC",
         "displayName": "Mature Natural Killer cells in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Mature_NK-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Mature_NK-U.bigWig"
       }
     ],
     "rna": [
@@ -7719,7 +7719,7 @@
         "assay": "ATAC",
         "displayName": "CD34+ Bone Marrow in donor 7291",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/7291-CD34_Bone_Marrow-SRX1427812.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/7291-CD34_Bone_Marrow-SRX1427812.bigWig"
       },
       {
         "name": "1020-CD34_Cord_Blood-SRX1427814",
@@ -7727,7 +7727,7 @@
         "assay": "ATAC",
         "displayName": "CD34+ Cord Blood in donor 1020",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1020-CD34_Cord_Blood-SRX1427814.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1020-CD34_Cord_Blood-SRX1427814.bigWig"
       },
       {
         "name": "6792-HSC-SRX1427800",
@@ -7735,7 +7735,7 @@
         "assay": "ATAC",
         "displayName": "Hematopoetic Stem Cells in donor 6792",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/6792-HSC-SRX1427800.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/6792-HSC-SRX1427800.bigWig"
       },
       {
         "name": "6792-HSC-SRX1427801",
@@ -7743,7 +7743,7 @@
         "assay": "ATAC",
         "displayName": "Hematopoetic Stem Cells in donor 6792",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/6792-HSC-SRX1427801.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/6792-HSC-SRX1427801.bigWig"
       },
       {
         "name": "7256-HSC-SRX1427854",
@@ -7751,7 +7751,7 @@
         "assay": "ATAC",
         "displayName": "Hematopoetic Stem Cells in donor 7256",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/7256-HSC-SRX1427854.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/7256-HSC-SRX1427854.bigWig"
       },
       {
         "name": "4983-HSC-SRX1427789",
@@ -7759,7 +7759,7 @@
         "assay": "ATAC",
         "displayName": "Hematopoetic Stem Cells in donor 4983",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/4983-HSC-SRX1427789.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/4983-HSC-SRX1427789.bigWig"
       },
       {
         "name": "2596-HSC-SRX1427830",
@@ -7767,7 +7767,7 @@
         "assay": "ATAC",
         "displayName": "Hematopoetic Stem Cells in donor 2596",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/2596-HSC-SRX1427830.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/2596-HSC-SRX1427830.bigWig"
       },
       {
         "name": "2596-HSC-SRX1427829",
@@ -7775,7 +7775,7 @@
         "assay": "ATAC",
         "displayName": "Hematopoetic Stem Cells in donor 2596",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/2596-HSC-SRX1427829.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/2596-HSC-SRX1427829.bigWig"
       },
       {
         "name": "7292-CD34_Bone_Marrow-SRX1427813",
@@ -7783,7 +7783,7 @@
         "assay": "ATAC",
         "displayName": "CD34+ Bone Marrow in donor 7292",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/7292-CD34_Bone_Marrow-SRX1427813.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/7292-CD34_Bone_Marrow-SRX1427813.bigWig"
       },
       {
         "name": "7256-HSC-SRX1427855",
@@ -7791,7 +7791,7 @@
         "assay": "ATAC",
         "displayName": "Hematopoetic Stem Cells in donor 7256",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/7256-HSC-SRX1427855.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/7256-HSC-SRX1427855.bigWig"
       },
       {
         "name": "2596-MPP-SRX1427833",
@@ -7799,7 +7799,7 @@
         "assay": "ATAC",
         "displayName": "Mulipotent Progenitors in donor 2596",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/2596-MPP-SRX1427833.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/2596-MPP-SRX1427833.bigWig"
       },
       {
         "name": "2596-MPP-SRX1427832",
@@ -7807,7 +7807,7 @@
         "assay": "ATAC",
         "displayName": "Mulipotent Progenitors in donor 2596",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/2596-MPP-SRX1427832.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/2596-MPP-SRX1427832.bigWig"
       },
       {
         "name": "6792-MPP-SRX1427802",
@@ -7815,7 +7815,7 @@
         "assay": "ATAC",
         "displayName": "Mulipotent Progenitors in donor 6792",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/6792-MPP-SRX1427802.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/6792-MPP-SRX1427802.bigWig"
       },
       {
         "name": "7256-MPP-SRX1427856",
@@ -7823,7 +7823,7 @@
         "assay": "ATAC",
         "displayName": "Mulipotent Progenitors in donor 7256",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/7256-MPP-SRX1427856.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/7256-MPP-SRX1427856.bigWig"
       },
       {
         "name": "7256-MPP-SRX1427857",
@@ -7831,7 +7831,7 @@
         "assay": "ATAC",
         "displayName": "Mulipotent Progenitors in donor 7256",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/7256-MPP-SRX1427857.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/7256-MPP-SRX1427857.bigWig"
       },
       {
         "name": "4983-MPP-SRX1427790",
@@ -7839,7 +7839,7 @@
         "assay": "ATAC",
         "displayName": "Mulipotent Progenitors in donor 4983",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/4983-MPP-SRX1427790.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/4983-MPP-SRX1427790.bigWig"
       },
       {
         "name": "6792-CMP-SRX1427804",
@@ -7847,7 +7847,7 @@
         "assay": "ATAC",
         "displayName": "Common Myeloid Progenitors in donor 6792",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/6792-CMP-SRX1427804.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/6792-CMP-SRX1427804.bigWig"
       },
       {
         "name": "4983-CMP-SRX1427792",
@@ -7855,7 +7855,7 @@
         "assay": "ATAC",
         "displayName": "Common Myeloid Progenitors in donor 4983",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/4983-CMP-SRX1427792.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/4983-CMP-SRX1427792.bigWig"
       },
       {
         "name": "2596-CMP-SRX1427824",
@@ -7863,7 +7863,7 @@
         "assay": "ATAC",
         "displayName": "Common Myeloid Progenitors in donor 2596",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/2596-CMP-SRX1427824.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/2596-CMP-SRX1427824.bigWig"
       },
       {
         "name": "2596-CMP-SRX1427823",
@@ -7871,7 +7871,7 @@
         "assay": "ATAC",
         "displayName": "Common Myeloid Progenitors in donor 2596",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/2596-CMP-SRX1427823.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/2596-CMP-SRX1427823.bigWig"
       },
       {
         "name": "4983-CMP-SRX1427793",
@@ -7879,7 +7879,7 @@
         "assay": "ATAC",
         "displayName": "Common Myeloid Progenitors in donor 4983",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/4983-CMP-SRX1427793.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/4983-CMP-SRX1427793.bigWig"
       },
       {
         "name": "7256-CMP-SRX1427859",
@@ -7887,7 +7887,7 @@
         "assay": "ATAC",
         "displayName": "Common Myeloid Progenitors in donor 7256",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/7256-CMP-SRX1427859.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/7256-CMP-SRX1427859.bigWig"
       },
       {
         "name": "6792-CMP-SRX1427805",
@@ -7895,7 +7895,7 @@
         "assay": "ATAC",
         "displayName": "Common Myeloid Progenitors in donor 6792",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/6792-CMP-SRX1427805.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/6792-CMP-SRX1427805.bigWig"
       },
       {
         "name": "7256-CMP-SRX1427860",
@@ -7903,7 +7903,7 @@
         "assay": "ATAC",
         "displayName": "Common Myeloid Progenitors in donor 7256",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/7256-CMP-SRX1427860.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/7256-CMP-SRX1427860.bigWig"
       },
       {
         "name": "6792-MEP-SRX1427809",
@@ -7911,7 +7911,7 @@
         "assay": "ATAC",
         "displayName": "Megakaryocyte Erythroid Progenitor in donor 6792",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/6792-MEP-SRX1427809.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/6792-MEP-SRX1427809.bigWig"
       },
       {
         "name": "7256-MEP-SRX1427863",
@@ -7919,7 +7919,7 @@
         "assay": "ATAC",
         "displayName": "Megakaryocyte Erythroid Progenitor in donor 7256",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/7256-MEP-SRX1427863.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/7256-MEP-SRX1427863.bigWig"
       },
       {
         "name": "4983-MEP-SRX1427797",
@@ -7927,7 +7927,7 @@
         "assay": "ATAC",
         "displayName": "Megakaryocyte Erythroid Progenitor in donor 4983",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/4983-MEP-SRX1427797.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/4983-MEP-SRX1427797.bigWig"
       },
       {
         "name": "2596-MEP-SRX1427831",
@@ -7935,7 +7935,7 @@
         "assay": "ATAC",
         "displayName": "Megakaryocyte Erythroid Progenitor in donor 2596",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/2596-MEP-SRX1427831.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/2596-MEP-SRX1427831.bigWig"
       },
       {
         "name": "6792-MEP-SRX1427808",
@@ -7943,7 +7943,7 @@
         "assay": "ATAC",
         "displayName": "Megakaryocyte Erythroid Progenitor in donor 6792",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/6792-MEP-SRX1427808.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/6792-MEP-SRX1427808.bigWig"
       },
       {
         "name": "4983-MEP-SRX1427796",
@@ -7951,7 +7951,7 @@
         "assay": "ATAC",
         "displayName": "Megakaryocyte Erythroid Progenitor in donor 4983",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/4983-MEP-SRX1427796.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/4983-MEP-SRX1427796.bigWig"
       },
       {
         "name": "7256-MEP-SRX1427864",
@@ -7959,7 +7959,7 @@
         "assay": "ATAC",
         "displayName": "Megakaryocyte Erythroid Progenitor in donor 7256",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/7256-MEP-SRX1427864.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/7256-MEP-SRX1427864.bigWig"
       },
       {
         "name": "2596-GMP-SRX1427828",
@@ -7967,7 +7967,7 @@
         "assay": "ATAC",
         "displayName": "Granulocyte-Monocyte Progenitors in donor 2596",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/2596-GMP-SRX1427828.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/2596-GMP-SRX1427828.bigWig"
       },
       {
         "name": "6792-GMP-SRX1427806",
@@ -7975,7 +7975,7 @@
         "assay": "ATAC",
         "displayName": "Granulocyte-Monocyte Progenitors in donor 6792",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/6792-GMP-SRX1427806.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/6792-GMP-SRX1427806.bigWig"
       },
       {
         "name": "4983-GMP-SRX1427795",
@@ -7983,7 +7983,7 @@
         "assay": "ATAC",
         "displayName": "Granulocyte-Monocyte Progenitors in donor 4983",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/4983-GMP-SRX1427795.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/4983-GMP-SRX1427795.bigWig"
       },
       {
         "name": "7256-GMP-SRX1427861",
@@ -7991,7 +7991,7 @@
         "assay": "ATAC",
         "displayName": "Granulocyte-Monocyte Progenitors in donor 7256",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/7256-GMP-SRX1427861.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/7256-GMP-SRX1427861.bigWig"
       },
       {
         "name": "6792-GMP-SRX1427807",
@@ -7999,7 +7999,7 @@
         "assay": "ATAC",
         "displayName": "Granulocyte-Monocyte Progenitors in donor 6792",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/6792-GMP-SRX1427807.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/6792-GMP-SRX1427807.bigWig"
       },
       {
         "name": "7256-GMP-SRX1427862",
@@ -8007,7 +8007,7 @@
         "assay": "ATAC",
         "displayName": "Granulocyte-Monocyte Progenitors in donor 7256",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/7256-GMP-SRX1427862.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/7256-GMP-SRX1427862.bigWig"
       },
       {
         "name": "4983-GMP-SRX1427794",
@@ -8015,7 +8015,7 @@
         "assay": "ATAC",
         "displayName": "Granulocyte-Monocyte Progenitors in donor 4983",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/4983-GMP-SRX1427794.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/4983-GMP-SRX1427794.bigWig"
       },
       {
         "name": "4983-LMPP-SRX1427791",
@@ -8023,7 +8023,7 @@
         "assay": "ATAC",
         "displayName": "Lymphocyte-Primed Multipotent Progenitor in donor 4983",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/4983-LMPP-SRX1427791.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/4983-LMPP-SRX1427791.bigWig"
       },
       {
         "name": "7256-LMPP-SRX1427858",
@@ -8031,7 +8031,7 @@
         "assay": "ATAC",
         "displayName": "Lymphocyte-Primed Multipotent Progenitor in donor 7256",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/7256-LMPP-SRX1427858.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/7256-LMPP-SRX1427858.bigWig"
       },
       {
         "name": "6792-LMPP-SRX1427803",
@@ -8039,7 +8039,7 @@
         "assay": "ATAC",
         "displayName": "Lymphocyte-Primed Multipotent Progenitor in donor 6792",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/6792-LMPP-SRX1427803.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/6792-LMPP-SRX1427803.bigWig"
       },
       {
         "name": "2596-CLP-SRX1427822",
@@ -8047,7 +8047,7 @@
         "assay": "ATAC",
         "displayName": "Common Lymphoid Progenitor in donor 2596",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/2596-CLP-SRX1427822.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/2596-CLP-SRX1427822.bigWig"
       },
       {
         "name": "6926-CLP-SRX1427851",
@@ -8055,7 +8055,7 @@
         "assay": "ATAC",
         "displayName": "Common Lymphoid Progenitor in donor 6926",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/6926-CLP-SRX1427851.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/6926-CLP-SRX1427851.bigWig"
       },
       {
         "name": "5483-CLP-SRX1427845",
@@ -8063,7 +8063,7 @@
         "assay": "ATAC",
         "displayName": "Common Lymphoid Progenitor in donor 5483",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/5483-CLP-SRX1427845.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/5483-CLP-SRX1427845.bigWig"
       },
       {
         "name": "6926-CLP-SRX1427868",
@@ -8071,7 +8071,7 @@
         "assay": "ATAC",
         "displayName": "Common Lymphoid Progenitor in donor 6926",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/6926-CLP-SRX1427868.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/6926-CLP-SRX1427868.bigWig"
       },
       {
         "name": "2596-CLP-SRX1427821",
@@ -8079,7 +8079,7 @@
         "assay": "ATAC",
         "displayName": "Common Lymphoid Progenitor in donor 2596",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/2596-CLP-SRX1427821.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/2596-CLP-SRX1427821.bigWig"
       },
       {
         "name": "SU070-pHSC-SRX1427880",
@@ -8087,7 +8087,7 @@
         "assay": "ATAC",
         "displayName": "Preleukemic Hematopoetic Stem Cells in donor SU07",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU070-pHSC-SRX1427880.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU070-pHSC-SRX1427880.bigWig"
       },
       {
         "name": "SU209-pHSC-SRX1427884",
@@ -8095,7 +8095,7 @@
         "assay": "ATAC",
         "displayName": "Preleukemic Hematopoetic Stem Cells in donor SU20",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU209-pHSC-SRX1427884.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU209-pHSC-SRX1427884.bigWig"
       },
       {
         "name": "SU623-pHSC-SRX1427915",
@@ -8103,7 +8103,7 @@
         "assay": "ATAC",
         "displayName": "Preleukemic Hematopoetic Stem Cells in donor SU62",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU623-pHSC-SRX1427915.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU623-pHSC-SRX1427915.bigWig"
       },
       {
         "name": "SU336-pHSC-SRX1427889",
@@ -8111,7 +8111,7 @@
         "assay": "ATAC",
         "displayName": "Preleukemic Hematopoetic Stem Cells in donor SU33",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU336-pHSC-SRX1427889.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU336-pHSC-SRX1427889.bigWig"
       },
       {
         "name": "SU353-pHSC-SRX1427894",
@@ -8119,7 +8119,7 @@
         "assay": "ATAC",
         "displayName": "Preleukemic Hematopoetic Stem Cells in donor SU35",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU353-pHSC-SRX1427894.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU353-pHSC-SRX1427894.bigWig"
       },
       {
         "name": "SU575-pHSC-SRX1427907",
@@ -8127,7 +8127,7 @@
         "assay": "ATAC",
         "displayName": "Preleukemic Hematopoetic Stem Cells in donor SU57",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU575-pHSC-SRX1427907.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU575-pHSC-SRX1427907.bigWig"
       },
       {
         "name": "SU484-pHSC-SRX1427899",
@@ -8135,7 +8135,7 @@
         "assay": "ATAC",
         "displayName": "Preleukemic Hematopoetic Stem Cells in donor SU48",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU484-pHSC-SRX1427899.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU484-pHSC-SRX1427899.bigWig"
       },
       {
         "name": "SU654-pHSC-SRX1427918",
@@ -8143,7 +8143,7 @@
         "assay": "ATAC",
         "displayName": "Preleukemic Hematopoetic Stem Cells in donor SU65",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU654-pHSC-SRX1427918.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU654-pHSC-SRX1427918.bigWig"
       },
       {
         "name": "SU209-pHSC-SRX1427885",
@@ -8151,7 +8151,7 @@
         "assay": "ATAC",
         "displayName": "Preleukemic Hematopoetic Stem Cells in donor SU20",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU209-pHSC-SRX1427885.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU209-pHSC-SRX1427885.bigWig"
       },
       {
         "name": "SU306-pHSC-SRX1427887",
@@ -8159,7 +8159,7 @@
         "assay": "ATAC",
         "displayName": "Preleukemic Hematopoetic Stem Cells in donor SU30",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU306-pHSC-SRX1427887.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU306-pHSC-SRX1427887.bigWig"
       },
       {
         "name": "SU583-pHSC-SRX1427910",
@@ -8167,7 +8167,7 @@
         "assay": "ATAC",
         "displayName": "Preleukemic Hematopoetic Stem Cells in donor SU58",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU583-pHSC-SRX1427910.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU583-pHSC-SRX1427910.bigWig"
       },
       {
         "name": "SU444-pHSC-SRX1427897",
@@ -8175,7 +8175,7 @@
         "assay": "ATAC",
         "displayName": "Preleukemic Hematopoetic Stem Cells in donor SU44",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU444-pHSC-SRX1427897.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU444-pHSC-SRX1427897.bigWig"
       },
       {
         "name": "SU070-pHSC-SRX1427879",
@@ -8183,7 +8183,7 @@
         "assay": "ATAC",
         "displayName": "Preleukemic Hematopoetic Stem Cells in donor SU07",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU070-pHSC-SRX1427879.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU070-pHSC-SRX1427879.bigWig"
       },
       {
         "name": "SU048-pHSC-SRX1427875",
@@ -8191,7 +8191,7 @@
         "assay": "ATAC",
         "displayName": "Preleukemic Hematopoetic Stem Cells in donor SU04",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU048-pHSC-SRX1427875.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU048-pHSC-SRX1427875.bigWig"
       },
       {
         "name": "SU351-pHSC-SRX1427891",
@@ -8199,7 +8199,7 @@
         "assay": "ATAC",
         "displayName": "Preleukemic Hematopoetic Stem Cells in donor SU35",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU351-pHSC-SRX1427891.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU351-pHSC-SRX1427891.bigWig"
       },
       {
         "name": "SU583-pHSC-SRX1427911",
@@ -8207,7 +8207,7 @@
         "assay": "ATAC",
         "displayName": "Preleukemic Hematopoetic Stem Cells in donor SU58",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU583-pHSC-SRX1427911.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU583-pHSC-SRX1427911.bigWig"
       },
       {
         "name": "SU501-pHSC-SRX1427904",
@@ -8215,7 +8215,7 @@
         "assay": "ATAC",
         "displayName": "Preleukemic Hematopoetic Stem Cells in donor SU50",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU501-pHSC-SRX1427904.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU501-pHSC-SRX1427904.bigWig"
       },
       {
         "name": "SU209-pHSC-SRX1427883",
@@ -8223,7 +8223,7 @@
         "assay": "ATAC",
         "displayName": "Preleukemic Hematopoetic Stem Cells in donor SU20",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU209-pHSC-SRX1427883.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU209-pHSC-SRX1427883.bigWig"
       },
       {
         "name": "SU496-pHSC-SRX1427902",
@@ -8231,7 +8231,7 @@
         "assay": "ATAC",
         "displayName": "Preleukemic Hematopoetic Stem Cells in donor SU49",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/SU496-pHSC-SRX1427902.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/SU496-pHSC-SRX1427902.bigWig"
       }
     ],
     "rna": [
@@ -8487,7 +8487,7 @@
         "assay": "ATAC",
         "displayName": "Gamma delta T cells, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Gamma_delta_T-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Gamma_delta_T-S.bigWig"
       },
       {
         "name": "1003-Gamma_delta_T-S",
@@ -8495,7 +8495,7 @@
         "assay": "ATAC",
         "displayName": "Gamma delta T cells, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Gamma_delta_T-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Gamma_delta_T-S.bigWig"
       },
       {
         "name": "1004-Gamma_delta_T-S",
@@ -8503,7 +8503,7 @@
         "assay": "ATAC",
         "displayName": "Gamma delta T cells, stimulated with 1:1 CD3/CD28 coated beads and 50 U/ml IL-2 for 24 hours, in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Gamma_delta_T-S.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Gamma_delta_T-S.bigWig"
       },
       {
         "name": "1001-Gamma_delta_T-U",
@@ -8511,7 +8511,7 @@
         "assay": "ATAC",
         "displayName": "Gamma delta T cells in donor 1001",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1001-Gamma_delta_T-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1001-Gamma_delta_T-U.bigWig"
       },
       {
         "name": "1004-Gamma_delta_T-U",
@@ -8519,7 +8519,7 @@
         "assay": "ATAC",
         "displayName": "Gamma delta T cells in donor 1004",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1004-Gamma_delta_T-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1004-Gamma_delta_T-U.bigWig"
       },
       {
         "name": "1002-Gamma_delta_T-U",
@@ -8527,7 +8527,7 @@
         "assay": "ATAC",
         "displayName": "Gamma delta T cells in donor 1002",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1002-Gamma_delta_T-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1002-Gamma_delta_T-U.bigWig"
       },
       {
         "name": "1003-Gamma_delta_T-U",
@@ -8535,7 +8535,7 @@
         "assay": "ATAC",
         "displayName": "Gamma delta T cells in donor 1003",
         "fileID": "",
-        "url": "http://downloads.wenglab.org/igscreen/1003-Gamma_delta_T-U.bigWig"
+        "url": "https://downloads.wenglab.org/igscreen/1003-Gamma_delta_T-U.bigWig"
       }
     ],
     "rna": [

@@ -153,7 +153,7 @@ export default function GenomeBrowserView({
         color: "#9378bc",
         trackType: TrackType.BigBed,
         displayMode: DisplayMode.Dense,
-        url: "http://downloads.wenglab.org/igscreen/iCREs.bigBed",
+        url: "https://downloads.wenglab.org/igscreen/iCREs.bigBed",
         onHover: (rect) => {
           addHighlight({
             id: rect.name + "-temp" || "ihqoviun",
@@ -319,8 +319,6 @@ function useAddTracks({
   const previousTracksRef = useRef<BigWig[]>([]);
   const insertTrack = trackStore((state) => state.insertTrack);
   const removeTrack = trackStore((state) => state.removeTrack);
-  const loading = dataStore((state) => state.loading);
-  const fetching = dataStore((state) => state.fetching);
 
   useEffect(() => {
     const previousTracks = previousTracksRef.current;
@@ -331,13 +329,13 @@ function useAddTracks({
     let timeout = 0;
     // Insert new tracks
     if (previousTracksRef.current.length === 0) {
-      timeout = 4000;
+      timeout = 2000;
     }
 
     setTimeout(() => {
       addedTracks.forEach((track) => {
         const trackToAdd: BigWigConfig = {
-          id: track.name + "_temp",
+          id: track.name + "_temp" + Math.random().toString(36).substring(2, 15),
           title: track.assay + " " + track.displayName,
           url: track.url,
           color: trackColor(track.lineage),
@@ -358,7 +356,7 @@ function useAddTracks({
 
     // Update the ref for next run
     previousTracksRef.current = selectedTracks;
-  }, [selectedTracks, insertTrack, removeTrack, loading, fetching]);
+  }, [selectedTracks, insertTrack, removeTrack]);
 }
 
 function HighlightButton({ browserStore }: { browserStore: BrowserStoreInstance }) {
