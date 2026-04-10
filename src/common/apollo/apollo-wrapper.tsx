@@ -11,13 +11,11 @@ import {
   SSRMultipartLink,
   ApolloClient
 } from "@apollo/experimental-nextjs-app-support";
-import Config from "../../config.json"
-
 // See https://www.apollographql.com/blog/using-apollo-client-with-next-js-13-releasing-an-official-library-to-support-the-app-router
 
 function makeClient() {
   const httpLink = new HttpLink({
-      uri: Config.API.CcreAPI,
+      uri: "/api/graphql",
   });
 
   return new ApolloClient({
