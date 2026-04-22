@@ -4,24 +4,19 @@ import { AxisLeft } from "@visx/axis";
 import { FC, useMemo } from "react";
 import { scaleLinear } from "@visx/scale";
 import { Group } from "@visx/group";
-import { defaultStyles as defaultTooltipStyles, useTooltip, TooltipWithBounds as TT } from "@visx/tooltip";
+import { defaultStyles as defaultTooltipStyles, useTooltip, TooltipWithBounds } from "@visx/tooltip";
 import { Text } from "@visx/text";
 import { MouseEvent } from "react";
 import { toScientificNotationElement } from "../../common/utility";
 import { getCellCategoryDisplayname, getCellCategoryColor } from "common/utility";
-const TooltipWithBounds = TT as unknown as FC<{
-  top: number;
-  left: number;
-  style: React.CSSProperties;
-  children: React.ReactNode;
-}>;
+
 type Props = {
   width: string;
   height: string;
   data: LDSCDataPoint[];
   pValCutoff: number;
   stimView: "S" | "U" | "B";
-  legendEntries: { label: string; value: string; color: string }[];
+  legendEntries: { label: string; value: number; color: string }[];
   rotate?: boolean;
   svgRef: React.RefObject<SVGSVGElement>;
 };

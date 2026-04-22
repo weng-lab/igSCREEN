@@ -1,4 +1,5 @@
-import { ApolloError, useQuery } from "@apollo/client";
+import { ErrorLike } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
 import { useMemo } from "react";
 import { gql } from "types/generated/gql";
 import { GeneExpressionQuery } from "types/generated/graphql";
@@ -30,12 +31,12 @@ export type UseGeneDataParams = {
 export type UseGeneExpressionReturn = {
   data: GeneExpressionQuery["immuneRnaUmapQuery"] | undefined;
   loading: boolean;
-  error: ApolloError
+  error: ErrorLike
 }
 
 export const useGeneExpression = ({ id }: UseGeneDataParams): UseGeneExpressionReturn => {
 
-  const { data, loading, error } = useQuery(
+  const { data, loading, error } = useQuery<GeneExpressionQuery>(
     GET_GENE_EXPRESSION,
     {
       variables: {

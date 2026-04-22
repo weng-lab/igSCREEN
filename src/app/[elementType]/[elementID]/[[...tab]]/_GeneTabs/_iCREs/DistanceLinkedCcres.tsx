@@ -1,7 +1,7 @@
 import { Box, Skeleton, Typography } from "@mui/material";
 import useNearbycCREs from "common/hooks/useNearBycCREs";
 import useCcreDetails from "common/hooks/useCcreDetails";
-import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid";
+import { Table, TableColDef } from "@weng-lab/ui-components";
 import { UseGeneDataReturn } from "common/hooks/useGeneData";
 import { LinkComponent } from "common/components/LinkComponent";
 
@@ -34,7 +34,7 @@ export default function DistanceLinkedCcres({
     })
     ?.filter((d) => allcCREs || d.isiCRE);
 
-  const cols: CustomDataGridColDef<(typeof nearbyccres)[number]>[] = [
+  const cols: TableColDef<(typeof nearbyccres)[number]>[] = [
     {
       field: "ccre",
       headerName: "Accession",
@@ -111,10 +111,11 @@ export default function DistanceLinkedCcres({
       {geneData.loading || loadingNearby || loadingCcreDetails ? (
         <Skeleton variant="rounded" width={"100%"} height={100} />
       ) : (
-        <CustomDataGrid
+        <Table
           rows={nearbyccres}
           columns={cols}
-          tableTitle={allcCREs ? "Nearby cCREs" : "Nearby iCREs"}
+          divHeight={{ height: 400 }}
+          label={allcCREs ? "Nearby cCREs" : "Nearby iCREs"}
           initialState={{
             sorting: {
               sortModel: [{ field: "distance", sort: "asc" }],

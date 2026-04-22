@@ -1,8 +1,16 @@
 {
   "compilerOptions": {
-    "baseUrl": "src/",
+    "paths": {
+      "app/*": ["./src/app/*"],
+      "common/*": ["./src/common/*"],
+      "types/*": ["./src/types/*"]
+    },
     "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,
@@ -12,7 +20,7 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "incremental": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
@@ -31,7 +39,14 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "next.config.mjs",
-    "src/app/[elementType]/[elementID]/[[...tab]]/_GeneTabs/_linkedICREs"
+    "src/app/[elementType]/[elementID]/[[...tab]]/_GeneTabs/_linkedICREs",
+    ".next/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules", "yarn.lock", "yarn-error.log", ".cache", "dist"]
+  "exclude": [
+    "node_modules",
+    "yarn.lock",
+    "yarn-error.log",
+    ".cache",
+    "dist"
+  ]
 }

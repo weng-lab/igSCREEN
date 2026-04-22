@@ -1,6 +1,4 @@
-import TwoPaneLayout from "../../../../../../common/components/TwoPaneLayout";
-import { useState } from "react";
-import { BarData } from "../../../../../../common/components/VerticalBarPlot";
+import { TwoPaneLayout, useTablePlotSync } from "@weng-lab/ui-components";
 import IcreActivityTable from "./IcreActivityTable";
 import { useIcreActivity, UseIcreActivityReturn } from "common/hooks/useIcreActivity";
 import IcreActivityBarPlot from "./IcreActivityBarPlot";
@@ -8,7 +6,6 @@ import IcreActivityUMAP from "./IcreActivityUMAP";
 import { BarChart, CandlestickChart, ScatterPlot, SchemaRounded } from "@mui/icons-material";
 import IcreActivityTree from "./IcreActivityTree";
 import IcreActivityViolinPlot from "./IcreActivityViolinPlot";
-import { Distribution, ViolinPoint } from "psychscreen-legacy-components";
 
 export type IcreActivityProps = {
   accession: string;
@@ -16,54 +13,21 @@ export type IcreActivityProps = {
 
 export type PointMetadata = UseIcreActivityReturn["data"][number];
 
-export type SharedIcreActivityPlotProps = {
-  selected: PointMetadata[];
-  iCREActivitydata: UseIcreActivityReturn;
-  sortedFilteredData: PointMetadata[];
-};
-
 const IcreActivity = ({ accession }: IcreActivityProps) => {
-  const [selected, setSelected] = useState<PointMetadata[]>([]);
-  const [sortedFilteredData, setSortedFilteredData] = useState<PointMetadata[]>([]);
-
   const iCREActivitydata = useIcreActivity({ accession });
 
-  const handlePointsSelected = (pointsInfo: PointMetadata[]) => {
-    setSelected([...selected, ...pointsInfo]);
-  };
-
-  const handleSelectionChange = (selected: PointMetadata[]) => {
-    setSelected(selected);
-  };
-
-  const handleBarClick = (bar: BarData<PointMetadata>) => {
-    if (selected.includes(bar.metadata)) {
-      setSelected(selected.filter((x) => x !== bar.metadata));
-    } else setSelected([...selected, bar.metadata]);
-  };
-
-  const handleViolinClick = (violin: Distribution<PointMetadata>) => {
-    const metadataArray = violin.data.map((point) => point.metaData);
-    if (selected.length === metadataArray.length && selected[0].lineage === metadataArray[0].lineage) {
-      setSelected([]);
-    } else setSelected(metadataArray);
-  };
-
-  const handleViolinPointClick = (point: ViolinPoint<PointMetadata>) => {
-    if (selected.includes(point.metaData)) {
-      setSelected(selected.filter((x) => x !== point.metaData));
-    } else setSelected([...selected, point.metaData]);
-  };
+  const { selected, setSelected, sortedFilteredData, tableProps, toggleSelection, getRowId } = useTablePlotSync({
+    rows: iCREActivitydata.data ?? [],
+    getRowId: (r) => r.name,
+  });
 
   return (
     <TwoPaneLayout
+      direction={{ xs: "column", lg: "row" }}
       TableComponent={
         <IcreActivityTable
           accession={accession}
-          selected={selected}
-          onSelectionChange={handleSelectionChange}
-          sortedFilteredData={sortedFilteredData}
-          setSortedFilteredData={setSortedFilteredData}
+          tableProps={tableProps}
           iCREActivitydata={iCREActivitydata}
         />
       }
@@ -77,7 +41,8 @@ const IcreActivity = ({ accession }: IcreActivityProps) => {
               selected={selected}
               sortedFilteredData={sortedFilteredData}
               iCREActivitydata={iCREActivitydata}
-              onBarClicked={handleBarClick}
+              toggleSelection={toggleSelection}
+              getRowId={getRowId}
             />
           ),
         },
@@ -87,10 +52,9 @@ const IcreActivity = ({ accession }: IcreActivityProps) => {
           plotComponent: (
             <IcreActivityUMAP
               accession={accession}
-              sortedFilteredData={sortedFilteredData}
-              iCREActivitydata={iCREActivitydata}
               selected={selected}
-              onSelectionChange={(points) => handlePointsSelected(points.map((x) => x.metaData))}
+              setSelected={setSelected}
+              iCREActivitydata={iCREActivitydata}
             />
           ),
         },
@@ -101,10 +65,11 @@ const IcreActivity = ({ accession }: IcreActivityProps) => {
             <IcreActivityViolinPlot
               accession={accession}
               selected={selected}
+              setSelected={setSelected}
               sortedFilteredData={sortedFilteredData}
               iCREActivitydata={iCREActivitydata}
-              onViolinClicked={handleViolinClick}
-              onPointClicked={handleViolinPointClick}
+              toggleSelection={toggleSelection}
+              getRowId={getRowId}
             />
           ),
         },
@@ -114,8 +79,6 @@ const IcreActivity = ({ accession }: IcreActivityProps) => {
           plotComponent: (
             <IcreActivityTree
               accession={accession}
-              sortedFilteredData={sortedFilteredData}
-              iCREActivitydata={iCREActivitydata}
               selected={selected}
             />
           ),

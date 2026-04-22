@@ -1,4 +1,5 @@
-import { ApolloError, useQuery } from "@apollo/client";
+import { ErrorLike } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
 import { gql } from "types/generated/gql";
 import { IcresZscoresQuery } from "types/generated/graphql";
 
@@ -38,12 +39,12 @@ export type UseIcreActivityParams = {
 export type UseIcreActivityReturn = {
   data: IcresZscoresQuery["immuneiCREsUmapQuery"] | undefined;
   loading: boolean;
-  error: ApolloError
+  error: ErrorLike
 }
 
 export const useIcreActivity = ({ accession }: UseIcreActivityParams): UseIcreActivityReturn => {
 
-  const { data, loading, error } = useQuery(
+  const { data, loading, error } = useQuery<IcresZscoresQuery>(
     GET_ICRE_ACTIVITY,
     {
       variables: {

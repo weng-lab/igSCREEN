@@ -1,7 +1,7 @@
 import { Button, Typography } from "@mui/material";
 import { GenomicRange } from "types/globalTypes";
 import Image from "next/image";
-import Grid2 from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 
 export type RegionSearchHeaderProps = {
   region: GenomicRange;
@@ -9,7 +9,7 @@ export type RegionSearchHeaderProps = {
 
 const RegionSearchHeader = ({ region }: RegionSearchHeaderProps) => {
   return (
-    <Grid2
+    <Grid
       sx={{ p: 1 }}
       border={(theme) => `1px solid ${theme.palette.divider}`}
       borderRadius={1}
@@ -17,14 +17,14 @@ const RegionSearchHeader = ({ region }: RegionSearchHeaderProps) => {
       justifyContent={"space-between"}
       container
     >
-      <Grid2 size={{ xs: 12, sm: 9 }}>
+      <Grid size={{ xs: 12, sm: 9 }}>
         <Typography variant="subtitle1">Region Search</Typography>
         <Typography variant="h4">{region.chromosome}:{region.start.toLocaleString()}-{region.end.toLocaleString()}</Typography>
-      </Grid2>
-      <Grid2 size={{ xs: 12, sm: 3 }}>
-        <Grid2 container direction="column" spacing={1} sx={{ height: "100%" }} textAlign={"right"}>
-          <Grid2 container spacing={1} sx={{ flexGrow: 1 }} order={{ xs: 2, sm: 1 }} justifyContent={"flex-end"}>
-            <Grid2
+      </Grid>
+      <Grid size={{ xs: 12, sm: 3 }}>
+        <Grid container direction="column" spacing={1} sx={{ height: "100%" }} textAlign={"right"}>
+          <Grid container spacing={1} sx={{ flexGrow: 1 }} order={{ xs: 2, sm: 1 }} justifyContent={"flex-end"}>
+            <Grid
               size={{ xs: 12 }}
               sx={{ display: "flex" }}
               height={{ xs: 65, sm: "auto" }}
@@ -43,11 +43,11 @@ const RegionSearchHeader = ({ region }: RegionSearchHeaderProps) => {
                   alt="screen-card-button"
                 />
               </Button>
-            </Grid2>
-          </Grid2>
-        </Grid2>
-      </Grid2>
-    </Grid2>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
+    </Grid>
   );
 };
 

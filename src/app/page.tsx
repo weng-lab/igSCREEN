@@ -3,7 +3,7 @@
 "use client";
 import { Box, Button, Divider, IconButton, Stack, Typography } from "@mui/material";
 import React from "react";
-import Grid2 from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 import Image from "next/image";
 import { ArrowForwardIos, ExpandMore, Search } from "@mui/icons-material";
 import AutoComplete from "../common/components/autocomplete";
@@ -82,13 +82,10 @@ export default function Home() {
         <AutoComplete
           style={{ width: 400, maxWidth: '100%' }}
           slots={{
-            button: (
-              <IconButton color="primary">
-                <Search />
-              </IconButton>
-            ),
+            button: IconButton,
           }}
           slotProps={{
+            button: {color: "primary", children: <Search />},
             box: { gap: 2 },
             input: {
               label: "Enter a gene, iCRE, variant, or locus",

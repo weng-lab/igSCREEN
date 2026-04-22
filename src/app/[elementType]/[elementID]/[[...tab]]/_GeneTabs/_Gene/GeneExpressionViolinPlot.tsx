@@ -1,14 +1,21 @@
-import { GeneExpressionProps, PointMetadata, SharedGeneExpressionPlotProps } from "./GeneExpression";
-import { useMemo } from "react";
+import { GeneExpressionProps, PointMetadata } from "./GeneExpression";
+import { Dispatch, SetStateAction, useMemo } from "react";
 import { getCellCategoryColor, getCellCategoryDisplayname } from "common/utility";
 import { Box } from "@mui/material";
-import { Distribution, ViolinPlot, ViolinPlotProps, ViolinPoint } from "psychscreen-legacy-components";
+import { Distribution, ViolinPlot, ViolinPoint } from "@weng-lab/visualization";
+import { UseGeneExpressionReturn } from "common/hooks/useGeneExpression";
 
-export type GeneExpressionViolinPlotProps = GeneExpressionProps &
-  SharedGeneExpressionPlotProps &
-  Partial<ViolinPlotProps<PointMetadata>>;
+export type GeneExpressionViolinPlotProps = {
+  geneData: GeneExpressionProps["geneData"];
+  geneExpressionData: UseGeneExpressionReturn;
+  selected: PointMetadata[];
+  setSelected: Dispatch<SetStateAction<PointMetadata[]>>;
+  sortedFilteredData: PointMetadata[];
+  toggleSelection: (item: PointMetadata) => void;
+  getRowId: (item: PointMetadata) => string;
+};
 
-const GeneExpressionBarPlot = ({ geneData, selected, sortedFilteredData, ...rest }: GeneExpressionViolinPlotProps) => {
+const GeneExpressionViolinPlot = ({ geneData, selected, setSelected, sortedFilteredData, toggleSelection }: GeneExpressionViolinPlotProps) => {
   const violinData: Distribution<PointMetadata>[] = useMemo(() => {
     if (!sortedFilteredData) return [];
 
@@ -29,7 +36,7 @@ const GeneExpressionBarPlot = ({ geneData, selected, sortedFilteredData, ...rest
 
       const data: ViolinPoint<PointMetadata>[] = values.map((value, i) => {
         const metadata = group[i];
-        const isSelected = selected.length === 0 || selected.some((s) => s.name === metadata.name) ? true : false;
+        const isSelected = selected.length === 0 || selected.some((s) => s.name === metadata.name);
         const pointColor = isSelected ? getCellCategoryColor(lineage) : "grey";
         const pointRadius = isSelected ? 4 : 2;
 
@@ -43,15 +50,8 @@ const GeneExpressionBarPlot = ({ geneData, selected, sortedFilteredData, ...rest
   }, [selected, sortedFilteredData]);
 
   return (
-    <Box
-      width={"100%"}
-      height={"100%"}
-      overflow={"auto"}
-      padding={1}
-      sx={{ border: "1px solid", borderColor: "divider", borderRadius: 1, position: "relative" }}
-    >
+    <Box width={"100%"} height={"100%"} overflow={"auto"} padding={1}>
       <ViolinPlot
-        {...rest}
         distributions={violinData}
         axisLabel={`${geneData?.data.name} Expression - TPM`}
         loading={geneData.loading}
@@ -61,35 +61,35 @@ const GeneExpressionBarPlot = ({ geneData, selected, sortedFilteredData, ...rest
           showAllPoints: true,
           jitter: 10,
         }}
-        pointTooltipBody={(point) => {
-          return (
-            <Box>
-              {/* {point.outlier && (
-                <div>
-                  <strong>Outlier</strong>
-                </div>
-              )} */}
-              <div>
-                <strong>Biosample:</strong> {point.metaData?.biosample}
-              </div>
-              <div>
-                <strong>TPM:</strong> {point.value.toFixed(1)}
-              </div>
-              <div>
-                <strong>Stimulation:</strong> {point.metaData?.stimulation}
-              </div>
-              <div>
-                <strong>Lineage:</strong> {point.metaData?.lineage}
-              </div>
-              <div>
-                <strong>Study:</strong> {point.metaData?.study}
-              </div>
-            </Box>
-          );
+        onViolinClicked={(violin) => {
+          const group = violin.data.map((p) => p.metadata);
+          if (selected.length === group.length && selected[0]?.lineage === group[0]?.lineage) {
+            setSelected([]);
+          } else setSelected(group);
         }}
+        onPointClicked={(point) => toggleSelection(point.metadata)}
+        pointTooltipBody={(point) => (
+          <Box>
+            <div>
+              <strong>Biosample:</strong> {point.metadata?.biosample}
+            </div>
+            <div>
+              <strong>TPM:</strong> {point.value.toFixed(1)}
+            </div>
+            <div>
+              <strong>Stimulation:</strong> {point.metadata?.stimulation}
+            </div>
+            <div>
+              <strong>Lineage:</strong> {point.metadata?.lineage}
+            </div>
+            <div>
+              <strong>Study:</strong> {point.metadata?.study}
+            </div>
+          </Box>
+        )}
       />
     </Box>
   );
 };
 
-export default GeneExpressionBarPlot;
+export default GeneExpressionViolinPlot;

@@ -1,8 +1,9 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
 
 
 export default function useCcreDetails(accessions: string[]) {
-  const { data, loading, error } = useQuery(CCRE_QUERY, {
+  const { data, loading, error } = useQuery<{ cCREQuery: CCREInfo[] }>(CCRE_QUERY, {
     variables: { accessions },
     skip: !accessions || (accessions.length === 0)
   });

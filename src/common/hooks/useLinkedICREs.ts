@@ -1,4 +1,5 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
 
 const CCRE_ICRE_QUERY = gql(`query cCREAutocompleteQuery(
   $accession: [String!]
@@ -15,7 +16,7 @@ const CCRE_ICRE_QUERY = gql(`query cCREAutocompleteQuery(
   }
 }`);
 export default function useLinkedICREs(geneid: string) {
-  const { data, loading, error } = useQuery(LINKED_ICRE_QUERY, {
+  const { data, loading, error } = useQuery<{ linkedcCREs: LinkedICREInfo[] }>(LINKED_ICRE_QUERY, {
     variables: { geneid: [geneid.split(".")[0]], assembly: "grch38" },
     skip: !geneid
   });
@@ -28,7 +29,7 @@ export default function useLinkedICREs(geneid: string) {
     data: ccredata,
     loading: ccreloading,
     error: ccreerror,
-  } = useQuery(CCRE_ICRE_QUERY, {
+  } = useQuery<{ cCREAutocompleteQuery: { accession: string; isiCRE: boolean }[] }>(CCRE_ICRE_QUERY, {
     variables: { assembly: "grch38", includeiCREs: true, accession: [...new Set(data?.linkedcCREs.map((l) => l.accession))]  },
     skip: loading || !data || (data && data.linkedcCREs.length === 0 ),
   });

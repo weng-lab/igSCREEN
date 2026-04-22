@@ -1,4 +1,5 @@
-import { ApolloError, useQuery } from "@apollo/client";
+import { ErrorLike } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
 import { gql } from "types/generated/gql";
 import { GeneQuery } from "types/generated/graphql";
 import { GenomicElementType, GenomicRange } from "types/globalTypes";
@@ -29,12 +30,12 @@ export type UseGeneDataParams =
 
 export type UseGeneDataReturn<T extends UseGeneDataParams> =
   T extends ({ coordinates: GenomicRange | GenomicRange[] } | { name: string[] })
-  ? { data: GeneQuery["gene"] | undefined; loading: boolean; error: ApolloError }
-  : { data: GeneQuery["gene"][0] | undefined; loading: boolean; error: ApolloError };
+  ? { data: GeneQuery["gene"] | undefined; loading: boolean; error: ErrorLike }
+  : { data: GeneQuery["gene"][0] | undefined; loading: boolean; error: ErrorLike };
 
 export const useGeneData = <T extends UseGeneDataParams>({name, coordinates, elementType}: T): UseGeneDataReturn<T> => {
 
-  const { data, loading, error } = useQuery(
+  const { data, loading, error } = useQuery<GeneQuery>(
     GENE_Query,
     {
       variables: {

@@ -2,7 +2,7 @@
 import { Typography } from "@mui/material";
 import { GenomicRange } from "types/globalTypes";
 import { useSnpData } from "common/hooks/useSnpData";
-import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid";
+import { Table, TableColDef } from "@weng-lab/ui-components";
 import { LinkComponent } from "./LinkComponent";
 
 const IntersectingSNPs = ({ region }: { region: GenomicRange }) => {
@@ -14,7 +14,7 @@ const IntersectingSNPs = ({ region }: { region: GenomicRange }) => {
 
   type RowObj = (typeof dataSnps)[number];
 
-  const columns: CustomDataGridColDef<RowObj>[] = [
+  const columns: TableColDef<RowObj>[] = [
     {
       field: "id",
       headerName: "rsID",
@@ -37,7 +37,7 @@ const IntersectingSNPs = ({ region }: { region: GenomicRange }) => {
   return errorSnps ? (
     <Typography>Error Fetching SNPs</Typography>
   ) : (
-    <CustomDataGrid
+    <Table
       rows={dataSnps}
       columns={columns}
       loading={loadingSnps}
@@ -46,9 +46,10 @@ const IntersectingSNPs = ({ region }: { region: GenomicRange }) => {
           sortModel: [{ field: "coordinates", sort: "asc" }],
         },
       }}
-      tableTitle="Intersecting Variants"
+      label="Intersecting Variants"
       pageSizeOptions={[10, 25, 50, 100]}
       emptyTableFallback={"No intersecting variants found in this region"}
+      divHeight={{height: 400}}
     />
   );
 };

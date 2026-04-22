@@ -2,13 +2,13 @@
 import { Typography } from "@mui/material";
 import { GenomicRange } from "types/globalTypes";
 import { useGeneData } from "common/hooks/useGeneData";
-import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid";
+import { Table, TableColDef } from "@weng-lab/ui-components";
 import { LinkComponent } from "common/components/LinkComponent";
 
 const IntersectionGenes = ({ region }: { region: GenomicRange }) => {
   const { data: dataSnps, loading: loadingSnps, error: errorSnps } = useGeneData({ coordinates: region });
 
-  const columns: CustomDataGridColDef<(typeof dataSnps)[number]>[] = [
+  const columns: TableColDef<(typeof dataSnps)[number]>[] = [
     {
       field: "name",
       headerName: "Symbol",
@@ -39,16 +39,17 @@ const IntersectionGenes = ({ region }: { region: GenomicRange }) => {
   return errorSnps ? (
     <Typography>Error Fetching Genes</Typography>
   ) : (
-    <CustomDataGrid
+    <Table
       rows={dataSnps || []}
       columns={columns}
+      divHeight={{ height: 400 }}
       loading={loadingSnps}
       initialState={{
         sorting: {
           sortModel: [{ field: "coordinates", sort: "asc" }],
         },
       }}
-      tableTitle="Intersecting Genes"
+      label="Intersecting Genes"
       pageSizeOptions={[10, 25, 50, 100]}
       emptyTableFallback={"No intersecting genes found in this region"}
     />

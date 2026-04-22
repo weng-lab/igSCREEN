@@ -1,10 +1,10 @@
-import { useQuery } from "@apollo/client";
-import { Grid2, Skeleton, Stack, Box, Typography } from "@mui/material";
+import { useQuery } from "@apollo/client/react";
+import { Grid, Skeleton, Stack, Box, Typography } from "@mui/material";
 import { toScientificNotationElement } from "common/utility";
 import { gql } from "types/generated";
 import { useElementMetadataReturn } from "common/hooks/useElementMetadata";
 import { GenomicElementType } from "types/globalTypes";
-import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid";
+import { Table, TableColDef } from "@weng-lab/ui-components";
 import { LinkComponent } from "./LinkComponent";
 
 const EQTL_QUERY = gql(`
@@ -69,7 +69,7 @@ export default function EQTLs<T extends GenomicElementType>({
   const gtexRows = eqtlData?.immuneeQTLsQuery.filter((i) => i.study === "GTEX");
   const oneK1KRows = eqtlData?.immuneeQTLsQuery.filter((i) => i.study === "OneK1K");
 
-  const gtexColumns: CustomDataGridColDef<(typeof gtexRows)[number]>[] = [];
+  const gtexColumns: TableColDef<(typeof gtexRows)[number]>[] = [];
 
   gtexColumns.push({
     field: "variant_id",
@@ -139,7 +139,7 @@ export default function EQTLs<T extends GenomicElementType>({
     });
   }
 
-  const oneK1KColumns: CustomDataGridColDef<(typeof gtexRows)[number]>[] = [];
+  const oneK1KColumns: TableColDef<(typeof gtexRows)[number]>[] = [];
 
   if (elementType === "gene" || elementType === "icre") {
     oneK1KColumns.push(
@@ -214,14 +214,14 @@ export default function EQTLs<T extends GenomicElementType>({
 
   if (loading) {
     return (
-      <Grid2 container spacing={2}>
-        <Grid2 size={12}>
+      <Grid container spacing={2}>
+        <Grid size={12}>
           <Skeleton variant="rounded" width={"100%"} height={500} />
-        </Grid2>
-        <Grid2 size={12}>
+        </Grid>
+        <Grid size={12}>
           <Skeleton variant="rounded" width={"100%"} height={500} />
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     );
   }
 
@@ -232,10 +232,11 @@ export default function EQTLs<T extends GenomicElementType>({
   return (
     <Stack spacing={2}>
       <Box sx={{ flex: "1 1 auto" }}>
-        <CustomDataGrid
+        <Table
           columns={gtexColumns}
           rows={gtexRows}
-          tableTitle={gtexTitle}
+          divHeight={{ height: 400 }}
+          label={gtexTitle}
           initialState={{
             sorting: {
               sortModel: [{ field: "pval_nominal", sort: "asc" }],
@@ -245,10 +246,11 @@ export default function EQTLs<T extends GenomicElementType>({
         />
       </Box>
       <Box sx={{ flex: "1 1 auto" }}>
-        <CustomDataGrid
+        <Table
           columns={oneK1KColumns}
           rows={oneK1KRows}
-          tableTitle={onekTitle}
+          divHeight={{ height: 400 }}
+          label={onekTitle}
           initialState={{
             sorting: {
               sortModel: [{ field: "fdr", sort: "asc" }],

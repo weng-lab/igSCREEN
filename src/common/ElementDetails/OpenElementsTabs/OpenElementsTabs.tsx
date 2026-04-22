@@ -296,7 +296,7 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
         </Stack>
       </Paper>
       {/* Content is child of OpenElementTabs due to ARIA accessibility guidelines: https://www.w3.org/WAI/ARIA/apg/patterns/tabs/ */}
-      <TabPanel value={tabIndex} sx={{ p: 0, flexGrow: 1, minHeight: 0 }} id="element-details-TabPanel">
+      <TabPanel value={tabIndex} sx={{ p: 0, flexGrow: 1, minHeight: 0 }}>
         {children}
       </TabPanel>
     </TabContext>
