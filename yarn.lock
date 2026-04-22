@@ -45,42 +45,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/client@npm:^3.14.0":
-  version: 3.14.1
-  resolution: "@apollo/client@npm:3.14.1"
-  dependencies:
-    "@graphql-typed-document-node/core": "npm:^3.1.1"
-    "@wry/caches": "npm:^1.0.0"
-    "@wry/equality": "npm:^0.5.6"
-    "@wry/trie": "npm:^0.5.0"
-    graphql-tag: "npm:^2.12.6"
-    hoist-non-react-statics: "npm:^3.3.2"
-    optimism: "npm:^0.18.0"
-    prop-types: "npm:^15.7.2"
-    rehackt: "npm:^0.1.0"
-    symbol-observable: "npm:^4.0.0"
-    ts-invariant: "npm:^0.10.3"
-    tslib: "npm:^2.3.0"
-    zen-observable-ts: "npm:^1.2.5"
-  peerDependencies:
-    graphql: ^15.0.0 || ^16.0.0
-    graphql-ws: ^5.5.5 || ^6.0.3
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || >=19.0.0-rc
-    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || >=19.0.0-rc
-    subscriptions-transport-ws: ^0.9.0 || ^0.11.0
-  peerDependenciesMeta:
-    graphql-ws:
-      optional: true
-    react:
-      optional: true
-    react-dom:
-      optional: true
-    subscriptions-transport-ws:
-      optional: true
-  checksum: 10/e22f3449b0d3710e5e1e7be9668cf83f69af907b8647c6caf18d58a421dd0f7cb2921f13733930613f243a6da59aa68a8add60ef24f8229a226881450e1ee07b
-  languageName: node
-  linkType: hard
-
 "@apollo/client@npm:^4":
   version: 4.1.7
   resolution: "@apollo/client@npm:4.1.7"
@@ -3449,20 +3413,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@weng-lab/genomebrowser@npm:~1.6.0":
-  version: 1.6.3
-  resolution: "@weng-lab/genomebrowser@npm:1.6.3"
+"@weng-lab/genomebrowser@npm:1.8.5-beta.4":
+  version: 1.8.5-beta.4
+  resolution: "@weng-lab/genomebrowser@npm:1.8.5-beta.4"
   dependencies:
-    "@apollo/client": "npm:^3.14.0"
-    graphql: "npm:^16.11.0"
+    axios: "npm:0.18.1"
+    genomic-reader: "npm:^1.4.10"
     logo-test: "npm:^0.0.5"
     react-colorful: "npm:^5.6.1"
     react-draggable: "npm:^4.5.0"
     zustand: "npm:^5.0.8"
   peerDependencies:
+    "@apollo/client": ^4.1.7
+    graphql: ^16.11.0
     react: ^19.0.0
     react-dom: ^19.0.0
-  checksum: 10/5ba68aa2f94f4ff6218a835f816f3fac5d87eac758b4b28f406ecc3e6edff528832985b1d661ff73cedb972f97c013ac1b9f63323d01c53d79eb1eabb3beae9a
+  checksum: 10/c9cdb11745d08242dc6b97ba991f331bcc52061d209724e9c1a79951f6e434fd641626ee77e4d42bb5f98c3ccf7e96482127bb0892bfbbe7bb02dcb7f2a8a55b
   languageName: node
   linkType: hard
 
@@ -4019,13 +3985,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^0.18.0":
+"axios@npm:0.18.1, axios@npm:^0.18.0":
   version: 0.18.1
   resolution: "axios@npm:0.18.1"
   dependencies:
     follow-redirects: "npm:1.5.10"
     is-buffer: "npm:^2.0.2"
   checksum: 10/e89e662c4998a2617bd7c34b9444a5d0b2029e3df952e5aa8756c5882e3f1d5a7143d10b5d6435d9276a71a199a3494672d7f1cc72cc8e598224feaf99793ef7
+  languageName: node
+  linkType: hard
+
+"axios@npm:^0.21.1":
+  version: 0.21.4
+  resolution: "axios@npm:0.21.4"
+  dependencies:
+    follow-redirects: "npm:^1.14.0"
+  checksum: 10/da644592cb6f8f9f8c64fdabd7e1396d6769d7a4c1ea5f8ae8beb5c2eb90a823e3a574352b0b934ac62edc762c0f52647753dc54f7d07279127a7e5c4cd20272
   languageName: node
   linkType: hard
 
@@ -6302,6 +6277,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"follow-redirects@npm:^1.14.0":
+  version: 1.16.0
+  resolution: "follow-redirects@npm:1.16.0"
+  peerDependenciesMeta:
+    debug:
+      optional: true
+  checksum: 10/3fbe3d80b3b544c22705d837aa5d4a0d07a740d913534a2620b0a004c610af4148e3b58723536dd099aaa1c9d3a155964bde9665d6e5cb331460809a1fc572fd
+  languageName: node
+  linkType: hard
+
 "for-each@npm:^0.3.3":
   version: 0.3.3
   resolution: "for-each@npm:0.3.3"
@@ -6425,6 +6410,16 @@ __metadata:
   version: 2.0.1
   resolution: "generator-function@npm:2.0.1"
   checksum: 10/eb7e7eb896c5433f3d40982b2ccacdb3dd990dd3499f14040e002b5d54572476513be8a2e6f9609f6e41ab29f2c4469307611ddbfc37ff4e46b765c326663805
+  languageName: node
+  linkType: hard
+
+"genomic-reader@npm:^1.4.10":
+  version: 1.4.10
+  resolution: "genomic-reader@npm:1.4.10"
+  dependencies:
+    axios: "npm:^0.21.1"
+    pako: "npm:^1.0.10"
+  checksum: 10/d1571fba84d0c203b8b24fe34c5d7cdb94a663fa86e5e8442c816ba7fac27e25de74b67dd24667e4bff5660dc0d81e9c69cd8678fd6cdef3ebf3f168110173aa
   languageName: node
   linkType: hard
 
@@ -6716,13 +6711,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql@npm:^16.11.0":
-  version: 16.13.2
-  resolution: "graphql@npm:16.13.2"
-  checksum: 10/9ede86f0a7227d47a41e2076e0132839f66fbd14899abfd818d7de2ab81076ee249c8788ad42243367d68a027a8763cc4c7be2e441ccfb03a8549490c7b66c2f
-  languageName: node
-  linkType: hard
-
 "has-bigints@npm:^1.0.1, has-bigints@npm:^1.0.2":
   version: 1.0.2
   resolution: "has-bigints@npm:1.0.2"
@@ -6827,7 +6815,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hoist-non-react-statics@npm:^3.3.1, hoist-non-react-statics@npm:^3.3.2":
+"hoist-non-react-statics@npm:^3.3.1":
   version: 3.3.2
   resolution: "hoist-non-react-statics@npm:3.3.2"
   dependencies:
@@ -6951,7 +6939,7 @@ __metadata:
     "@visx/text": "npm:^3"
     "@visx/tooltip": "npm:^3"
     "@visx/zoom": "npm:^3"
-    "@weng-lab/genomebrowser": "npm:~1.6.0"
+    "@weng-lab/genomebrowser": "npm:1.8.5-beta.4"
     "@weng-lab/ui-components": "npm:3.0.0"
     "@weng-lab/visualization": "npm:1.3.2"
     bpnet-ui: "npm:^0.3.8"
@@ -9316,21 +9304,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rehackt@npm:^0.1.0":
-  version: 0.1.0
-  resolution: "rehackt@npm:0.1.0"
-  peerDependencies:
-    "@types/react": "*"
-    react: "*"
-  peerDependenciesMeta:
-    "@types/react":
-      optional: true
-    react:
-      optional: true
-  checksum: 10/c81adead82c165dffc574cbf9e1de3605522782a56b48df48b68d53d45c4d8c9253df3790109335bf97072424e54ad2423bb9544ca3a985fa91995dda43452fc
-  languageName: node
-  linkType: hard
-
 "relay-runtime@npm:12.0.0":
   version: 12.0.0
   resolution: "relay-runtime@npm:12.0.0"
@@ -10291,13 +10264,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"symbol-observable@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "symbol-observable@npm:4.0.0"
-  checksum: 10/983aef3912ad080fc834b9ad115d44bc2994074c57cea4fb008e9f7ab9bb4118b908c63d9edc861f51257bc0595025510bdf7263bb09d8953a6929f240165c24
-  languageName: node
-  linkType: hard
-
 "sync-fetch@npm:0.6.0-2":
   version: 0.6.0-2
   resolution: "sync-fetch@npm:0.6.0-2"
@@ -10474,15 +10440,6 @@ __metadata:
   peerDependencies:
     react: ^16.3.1
   checksum: 10/e1a4d3aeb608d50ea12be692267b1a7aaaed6463e3131c48e86fc15141134d6c16f66ae2663235f1539d24297bbdbd7e302b2d3b38b66b1968d39f4e9eb6ad83
-  languageName: node
-  linkType: hard
-
-"ts-invariant@npm:^0.10.3":
-  version: 0.10.3
-  resolution: "ts-invariant@npm:0.10.3"
-  dependencies:
-    tslib: "npm:^2.1.0"
-  checksum: 10/bb07d56fe4aae69d8860e0301dfdee2d375281159054bc24bf1e49e513fb0835bf7f70a11351344d213a79199c5e695f37ebbf5a447188a377ce0cd81d91ddb5
   languageName: node
   linkType: hard
 
@@ -11258,22 +11215,6 @@ __metadata:
   version: 0.1.0
   resolution: "yocto-queue@npm:0.1.0"
   checksum: 10/f77b3d8d00310def622123df93d4ee654fc6a0096182af8bd60679ddcdfb3474c56c6c7190817c84a2785648cdee9d721c0154eb45698c62176c322fb46fc700
-  languageName: node
-  linkType: hard
-
-"zen-observable-ts@npm:^1.2.5":
-  version: 1.2.5
-  resolution: "zen-observable-ts@npm:1.2.5"
-  dependencies:
-    zen-observable: "npm:0.8.15"
-  checksum: 10/2384cf92a60e39e7b9735a0696f119684fee0f8bcc81d71474c92d656eca1bc3e87b484a04e97546e56bd539f8756bf97cf21a28a933ff7a94b35a8d217848eb
-  languageName: node
-  linkType: hard
-
-"zen-observable@npm:0.8.15":
-  version: 0.8.15
-  resolution: "zen-observable@npm:0.8.15"
-  checksum: 10/30eac3f4055d33f446b4cd075d3543da347c2c8e68fbc35c3f5a19fb43be67c6ed27ee136bc8f8933efa547be7ce04957809ad00ee7f1b00a964f199ae6fb514
   languageName: node
   linkType: hard
 
