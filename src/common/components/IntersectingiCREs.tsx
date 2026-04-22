@@ -8,7 +8,7 @@ import { useIcreActivity, UseIcreActivityReturn } from "common/hooks/useIcreActi
 import { useMemo } from "react";
 import { ExpandMore } from "@mui/icons-material";
 import ActiveCellTypesAccordion from "common/components/ActiveCellTypesAccordion";
-import CustomDataGrid, { CustomDataGridColDef, CustomDataGridProps } from "common/components/CustomDataGrid";
+import { Table, TableColDef, TableProps } from "@weng-lab/ui-components";
 import { LinkComponent } from "./LinkComponent";
 
 const IntersectingiCREs = ({
@@ -16,7 +16,7 @@ const IntersectingiCREs = ({
   customDataGridProps,
 }: {
   region: GenomicRange;
-  customDataGridProps?: Partial<Omit<CustomDataGridProps<any>, "rows" | "columns">>;
+  customDataGridProps?: Partial<Omit<TableProps, "rows" | "columns">>;
 }) => {
   const { data: dataIcres, loading: loadingIcres, error: errorIcres } = useIcreData({ coordinates: region });
 
@@ -60,7 +60,7 @@ const IntersectingiCREs = ({
 
   type Row = (typeof rowsWithExps)[number];
 
-  const columns: CustomDataGridColDef<Row>[] = [
+  const columns: TableColDef<Row>[] = [
     {
       field: "accession",
       headerName: "Accession",
@@ -151,7 +151,7 @@ const IntersectingiCREs = ({
   return errorIcres ? (
     <Typography>Error Fetching iCRES</Typography>
   ) : (
-    <CustomDataGrid
+    <Table
       rows={rowsWithExps}
       columns={columns.map((col) => ({
         ...col,
@@ -164,7 +164,7 @@ const IntersectingiCREs = ({
           sortModel: [{ field: "coordinates", sort: "asc" }],
         },
       }}
-      tableTitle="Intersecting iCREs"
+      label="Intersecting iCREs"
       pageSizeOptions={[10, 25, 50, 100]}
       getRowHeight={() => "auto"}
       emptyTableFallback={"No intersecting iCREs found in this region"}

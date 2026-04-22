@@ -67,7 +67,7 @@ export default function ComputationalLinkedCcres({
 
   const tables: TableDef<LinkedICREInfo>[] = [
     {
-      tableTitle: "Intact Hi-C Loops",
+      label: "Intact Hi-C Loops",
       rows: HiCLinked,
       columns: [accessionCol, ...IntactHiCLoopsCols.slice(2)],
       sortColumn: "p_val",
@@ -75,7 +75,7 @@ export default function ComputationalLinkedCcres({
       emptyTableFallback: `No intact Hi-C loops overlap ${allcCREs ? "a cCRE": "an iCRE"} and the promoter of this gene`
     },
     {
-      tableTitle: "ChIA-PET",
+      label: "ChIA-PET",
       rows: ChIAPETLinked,
       columns: [accessionCol, ...ChIAPETCols.slice(2)],
       sortColumn: "score",
@@ -83,7 +83,7 @@ export default function ComputationalLinkedCcres({
       emptyTableFallback: `No ChIA-PET interactions overlap ${allcCREs ? "a cCRE": "an iCRE"} and the promoter of this gene`,
     },
     {
-      tableTitle: "CRISPRi-FlowFISH",
+      label: "CRISPRi-FlowFISH",
       rows: crisprLinked,
       columns: [accessionCol, ...CrisprFlowFISHCols.slice(2)],
       sortColumn: "p_val",
@@ -91,7 +91,7 @@ export default function ComputationalLinkedCcres({
       emptyTableFallback: `No ${allcCREs ? "cCREs" : "iCREs"} targeted in a CRISPRi-FlowFISH experiment were linked to this gene`,
     },
     {
-      tableTitle: "eQTLs",
+      label: "eQTLs",
       rows: eqtlLinked,
       columns: [accessionCol, ...eQTLCols.slice(2)],
       sortColumn: "p_val",

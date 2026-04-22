@@ -12,7 +12,7 @@ export default function About() {
   const [error, setError] = useState({ name: false, email: false, message: false })
   const [success, setSuccess] = useState(false)
 
-  const form = useRef();
+  const form = useRef(null);
 
   function isValidEmail(email) {
     //hopefully this is right, got it from ChatGPT
@@ -50,7 +50,7 @@ export default function About() {
   const sendEmail = () => {
     return new Promise((resolve, reject) => {
       //These IDs come from the emailjs website (using screenumass gmail account)
-      emailjs.sendForm('service_k7xidgk', 'contactUs', form.current, 'VU9U1vX9cAro8XtUK')
+      emailjs.sendForm('service_k7xidgk', 'contactUs', form?.current, 'VU9U1vX9cAro8XtUK')
         .then((result) => {
           resolve(result);
         })

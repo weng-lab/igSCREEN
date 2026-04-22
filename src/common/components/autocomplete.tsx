@@ -46,6 +46,7 @@ export default function AutoComplete({ closeDrawer, ...props }: AutoCompleteProp
   return (
     <GenomeSearch
       assembly="GRCh38"
+      graphqlUrl="/api/graphql"
       queries={["Gene", "cCRE", "SNP", "Coordinate"]}
       showiCREFlag
       onSearchSubmit={handleSearchSubmit}

@@ -82,13 +82,10 @@ export default function Home() {
         <AutoComplete
           style={{ width: 400, maxWidth: '100%' }}
           slots={{
-            button: (
-              <IconButton color="primary">
-                <Search />
-              </IconButton>
-            ),
+            button: IconButton,
           }}
           slotProps={{
+            button: {color: "primary"},
             box: { gap: 2 },
             input: {
               label: "Enter a gene, iCRE, variant, or locus",

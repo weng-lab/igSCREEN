@@ -196,15 +196,12 @@ function ResponsiveAppBar({ maintenance }: ResponsiveAppBarProps) {
             <AutoComplete
               style={{ width: 400 }}
               slots={{
-                button: (
-                  <IconButton sx={{ color: "white" }}>
-                    <Search />
-                  </IconButton>
-                ),
+                button: IconButton,
               }}
               //Needed to find element to focus it from OpenElementsTabs
               id="desktop-search-component"
               slotProps={{
+                button: {sx: {color: "white"}},
                 box: { gap: 1 },
                 input: {
                   size: "small",

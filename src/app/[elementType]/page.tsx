@@ -1,6 +1,6 @@
 "use client";
 import { Box, Button, Divider, Grid2, IconButton, Stack, Typography } from "@mui/material";
-import { GenomeSearch, Result } from "psychscreen-legacy-components";
+import { GenomeSearch, Result } from "@weng-lab/ui-components";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { isValidGenomicElement } from "types/globalTypes";
@@ -67,6 +67,7 @@ function ClientPortalPage({ elementType }: { elementType: string }) {
           </Typography>
           <Typography mb={2}>{portalDescriptions[elementType]}</Typography>
           <GenomeSearch
+            graphqlUrl="/api/graphql"
             assembly="GRCh38"
             onSearchSubmit={handleSearchSubmit}
             queries={[elementType === "gene" ? "Gene" : elementType === "icre" ? "iCRE" : "SNP"]}

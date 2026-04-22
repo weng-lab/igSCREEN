@@ -229,20 +229,17 @@ export default function GenomeBrowserView({
           }}
         >
           <GenomeSearch
+            graphqlUrl="/api/graphql"
             size="small"
             assembly="GRCh38"
             onSearchSubmit={handeSearchSubmit}
             queries={["Gene", "SNP", "iCRE", "Coordinate"]}
-            geneLimit={3}
             sx={{ width: "400px" }}
             slots={{
-              button: (
-                <IconButton sx={{ color: theme.palette.primary.main }}>
-                  <Search />
-                </IconButton>
-              ),
+              button: IconButton,
             }}
             slotProps={{
+              button: {sx: { color: theme.palette.primary.main }},
               input: {
                 label: "Change browser region",
                 sx: {

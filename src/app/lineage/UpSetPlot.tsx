@@ -7,13 +7,8 @@ import { AxisLeft, AxisBottom } from "@visx/axis";
 import { GridRows, GridColumns } from "@visx/grid";
 import { JoinFull } from "@mui/icons-material";
 import { GetIcreCountsQuery } from "types/generated/graphql";
-import { defaultStyles as defaultTooltipStyles, useTooltip, TooltipWithBounds as TT } from "@visx/tooltip";
-const TooltipWithBounds = TT as unknown as FC<{
-  top: number;
-  left: number;
-  style: React.CSSProperties;
-  children: React.ReactNode;
-}>;
+import { defaultStyles as defaultTooltipStyles, useTooltip, TooltipWithBounds } from "@visx/tooltip";
+
 export type UpSetPlotDatum = GetIcreCountsQuery["upsetploticrecounts"][number];
 
 export type BarsProps = {

@@ -54,13 +54,10 @@ export default function MobileMenu({ pageLinks }: MobileMenuProps) {
               style={{ width: "100%" }}
               closeDrawer={handleCloseDrawer}
               slots={{
-                button: (
-                  <IconButton sx={{ color: "black" }}>
-                    <Search />
-                  </IconButton>
-                ),
+                button: IconButton,
               }}
               slotProps={{
+                button: {sx: {color: "black"}, onClick: handleCloseDrawer},
                 box: { gap: 1 },
                 input: {
                   size: "small",
@@ -70,9 +67,6 @@ export default function MobileMenu({ pageLinks }: MobileMenuProps) {
                       backgroundColor: "#ffffff",
                     },
                   },
-                },
-                button: {
-                  onClick: handleCloseDrawer,
                 },
               }}
             />

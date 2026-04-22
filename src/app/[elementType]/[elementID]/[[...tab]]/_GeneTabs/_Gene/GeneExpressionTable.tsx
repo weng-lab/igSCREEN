@@ -6,10 +6,10 @@ import {
   GridRowSelectionModel,
   useGridApiRef,
   GRID_CHECKBOX_SELECTION_COL_DEF,
-} from "@mui/x-data-grid-pro";
+} from "@mui/x-data-grid-premium";
 import { OpenInNew } from "@mui/icons-material";
 import { Dispatch, SetStateAction } from "react";
-import CustomDataGrid, { CustomDataGridColDef } from "common/components/CustomDataGrid";
+import { Table, TableColDef } from "@weng-lab/ui-components";
 
 export type GeneExpressionTableProps = GeneExpressionProps &
   SharedGeneExpressionPlotProps & {
@@ -34,9 +34,9 @@ const GeneExpressionTable = ({
     </div>
   );
 
-  const columns: CustomDataGridColDef<PointMetadata>[] = [
+  const columns: TableColDef<PointMetadata>[] = [
     {
-      ...(GRID_CHECKBOX_SELECTION_COL_DEF as CustomDataGridColDef<PointMetadata>), //Override checkbox column https://mui.com/x/react-data-grid/row-selection/#custom-checkbox-column
+      ...(GRID_CHECKBOX_SELECTION_COL_DEF as TableColDef<PointMetadata>), //Override checkbox column https://mui.com/x/react-data-grid/row-selection/#custom-checkbox-column
       sortable: true,
       hideable: false,
       renderHeader: StopPropagationWrapper,
@@ -87,8 +87,8 @@ const GeneExpressionTable = ({
     },
   ];
 
-  const handleRowSelectionModelChange = (ids: GridRowSelectionModel) => {
-    const selectedRows = ids.map((id) => data.find((row) => row.name === id));
+  const handleRowSelectionModelChange = (rowSelectionModel: GridRowSelectionModel) => {
+    const selectedRows = [...rowSelectionModel.ids.values().map((id) => data.find((row) => row.name === id))];
     onSelectionChange(selectedRows);
   };
 
@@ -115,9 +115,9 @@ const GeneExpressionTable = ({
   };
 
   return (
-    <CustomDataGrid
+    <Table
       apiRef={apiRef}
-      tableTitle={
+      label={
         <Typography variant="h6">
           <i>{geneData?.data.name}</i> Expression
         </Typography>
@@ -135,7 +135,7 @@ const GeneExpressionTable = ({
       checkboxSelection
       getRowId={(row) => row.name} //needed to match up data with the ids returned by onRowSelectionModelChange
       onRowSelectionModelChange={handleRowSelectionModelChange}
-      rowSelectionModel={selected.map((x) => x.name)}
+      rowSelectionModel={{type: "include", ids: new Set(selected.map(x => x.name))}}
       keepNonExistentRowsSelected // Needed to prevent clearing selections on changing filters
       onStateChange={handleSync} // Not really supposed to be using this, is not documented by MUI. Not using its structure, just the callback trigger
     />
