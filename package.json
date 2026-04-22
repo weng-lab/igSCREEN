@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint .",
     "gen-types": "dotenv -e .env.local -- graphql-codegen",
-    "gen-types -w": "dotenv -e .env.local -- graphql-codegen -w"
+    "gen-types -w": "dotenv -e .env.local -- graphql-codegen -w",
+    "typecheck-native": "tsgo --noEmit"
   },
   "dependencies": {
     "@apollo/client": "^4",
@@ -61,6 +62,7 @@
     "@graphql-codegen/client-preset": "^4",
     "@graphql-typed-document-node/core": "^3",
     "@parcel/watcher": "^2.5.1",
+    "@typescript/native-preview": "7.0.0-dev.20260421.2",
     "dotenv-cli": "^11",
     "graphql": "^16",
     "typescript": "^5"

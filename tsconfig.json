@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
-    "baseUrl": "src/",
+    "paths": {
+      "app/*": ["./src/app/*"],
+      "common/*": ["./src/common/*"],
+      "types/*": ["./src/types/*"]
+    },
     "target": "ES2017",
     "lib": [
       "dom",
