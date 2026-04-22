@@ -72,6 +72,7 @@ export default function SnpGWASLdr({ snpid }: { snpid: string }) {
         <Table
           rows={gwasnps}
           columns={cols}
+          divHeight={{ height: 400 }}
           initialState={{
             sorting: {
               sortModel: [{ field: "zscore", sort: "desc" }],

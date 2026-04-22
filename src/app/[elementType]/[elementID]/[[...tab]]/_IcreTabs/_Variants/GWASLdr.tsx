@@ -94,6 +94,7 @@ export default function GWASLdr({ accession }: { accession: string }) {
         <Table
           rows={gwasSnps}
           columns={cols}
+          divHeight={{ height: 400 }}
           loading={loading || loadingSnpAlleles}
           initialState={{
             sorting: {

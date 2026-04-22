@@ -76,6 +76,7 @@ const IcreActivityTable = ({ accession, tableProps, iCREActivitydata }: IcreActi
     <Table
       {...syncedTableProps}
       label={`${accession} Activity`}
+      divHeight={{ height: 400 }}
       density="standard"
       rows={data}
       loading={loading}

@@ -26,6 +26,7 @@ export default function LinkedElements<T extends LinkedGeneInfo | LinkedICREInfo
               sortModel: [{ field: table.sortColumn, sort: table.sortDirection }],
             },
           }}
+          divHeight={{height: 400}}
           {...table}
         />
       ))}

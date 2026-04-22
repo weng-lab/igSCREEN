@@ -160,6 +160,7 @@ export default function IcreLinkedGenes({ accession, coordinates }: { accession:
       <Table
         rows={closestGenes}
         columns={closestGenesCols}
+        divHeight={{ height: 400 }}
         hideFooter
         label="Closest Genes"
         emptyTableFallback={"No closest genes found"}

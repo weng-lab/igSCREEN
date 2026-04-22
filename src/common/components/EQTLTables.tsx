@@ -235,6 +235,7 @@ export default function EQTLs<T extends GenomicElementType>({
         <Table
           columns={gtexColumns}
           rows={gtexRows}
+          divHeight={{ height: 400 }}
           label={gtexTitle}
           initialState={{
             sorting: {
@@ -248,6 +249,7 @@ export default function EQTLs<T extends GenomicElementType>({
         <Table
           columns={oneK1KColumns}
           rows={oneK1KRows}
+          divHeight={{ height: 400 }}
           label={onekTitle}
           initialState={{
             sorting: {

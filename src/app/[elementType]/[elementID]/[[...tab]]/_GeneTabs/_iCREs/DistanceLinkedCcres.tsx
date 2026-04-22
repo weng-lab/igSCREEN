@@ -114,6 +114,7 @@ export default function DistanceLinkedCcres({
         <Table
           rows={nearbyccres}
           columns={cols}
+          divHeight={{ height: 400 }}
           label={allcCREs ? "Nearby cCREs" : "Nearby iCREs"}
           initialState={{
             sorting: {

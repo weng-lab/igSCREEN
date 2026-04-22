@@ -76,6 +76,7 @@ const GeneExpressionTable = ({
   return (
     <Table
       {...syncedTableProps}
+      divHeight={{ height: 400 }}
       label={
         <Typography variant="h6">
           <i>{geneData?.data.name}</i> Expression

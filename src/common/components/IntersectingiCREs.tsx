@@ -158,6 +158,7 @@ const IntersectingiCREs = ({
         display: "flex",
       }))}
       loading={loadingIcres}
+      divHeight={{ height: 400 }}
       pagination
       initialState={{
         sorting: {

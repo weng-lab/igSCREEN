@@ -42,6 +42,7 @@ const IntersectionGenes = ({ region }: { region: GenomicRange }) => {
     <Table
       rows={dataSnps || []}
       columns={columns}
+      divHeight={{ height: 400 }}
       loading={loadingSnps}
       initialState={{
         sorting: {
