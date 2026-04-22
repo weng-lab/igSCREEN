@@ -3,7 +3,7 @@ import { Search } from "@mui/icons-material";
 import EditIcon from "@mui/icons-material/Edit";
 import HighlightIcon from "@mui/icons-material/Highlight";
 import { Box, Button, IconButton } from "@mui/material";
-import Grid2 from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 import { useTheme } from "@mui/material/styles";
 // import { GQLCytobands } from "@weng-lab/genomebrowser";
 import { useRouter } from "next/navigation";
@@ -209,8 +209,8 @@ export default function GenomeBrowserView({
   }, [selectedTracks]);
 
   return (
-    <Grid2 container spacing={2} sx={{ mt: "0rem", mb: "1rem" }} justifyContent="center" alignItems="center">
-      <Grid2
+    <Grid container spacing={2} sx={{ mt: "0rem", mb: "1rem" }} justifyContent="center" alignItems="center">
+      <Grid
         size={{ xs: 12, lg: 12 }}
         style={{
           display: "flex",
@@ -288,10 +288,10 @@ export default function GenomeBrowserView({
           <Info browserStore={browserStore} />
         </Box>
         <ControlButtons browserStore={browserStore} />
-      </Grid2>
-      <Grid2 size={{ xs: 12, lg: 12 }}>
+      </Grid>
+      <Grid size={{ xs: 12, lg: 12 }}>
         <Browser browserStore={browserStore} trackStore={trackStore} externalDataStore={dataStore} />
-      </Grid2>
+      </Grid>
       <Box
         sx={{
           width: "100%",
@@ -300,7 +300,7 @@ export default function GenomeBrowserView({
           justifyContent: "flex-end",
         }}
       ></Box>
-    </Grid2>
+    </Grid>
   );
 }
 

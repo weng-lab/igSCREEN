@@ -1,14 +1,21 @@
-import { IcreActivityProps, SharedIcreActivityPlotProps, PointMetadata } from "./IcreActivity";
-import { useMemo } from "react";
+import { IcreActivityProps, PointMetadata } from "./IcreActivity";
+import { Dispatch, SetStateAction, useMemo } from "react";
 import { getCellCategoryColor, getCellCategoryDisplayname } from "common/utility";
 import { Box } from "@mui/material";
-import { Distribution, ViolinPlot, ViolinPlotProps, ViolinPoint } from "psychscreen-legacy-components";
+import { Distribution, ViolinPlot, ViolinPoint } from "psychscreen-legacy-components";
+import { UseIcreActivityReturn } from "common/hooks/useIcreActivity";
 
-export type GeneExpressionViolinPlotProps = IcreActivityProps &
-  SharedIcreActivityPlotProps &
-  Partial<ViolinPlotProps<PointMetadata>>;
+export type IcreActivityViolinPlotProps = {
+  accession: IcreActivityProps["accession"];
+  iCREActivitydata: UseIcreActivityReturn;
+  selected: PointMetadata[];
+  setSelected: Dispatch<SetStateAction<PointMetadata[]>>;
+  sortedFilteredData: PointMetadata[];
+  toggleSelection: (item: PointMetadata) => void;
+  getRowId: (item: PointMetadata) => string;
+};
 
-const GeneExpressionBarPlot = ({ accession, selected, sortedFilteredData, ...rest }: GeneExpressionViolinPlotProps) => {
+const IcreActivityViolinPlot = ({ accession, selected, setSelected, sortedFilteredData, toggleSelection }: IcreActivityViolinPlotProps) => {
   const violinData: Distribution<PointMetadata>[] = useMemo(() => {
     if (!sortedFilteredData) return [];
 
@@ -29,7 +36,7 @@ const GeneExpressionBarPlot = ({ accession, selected, sortedFilteredData, ...res
 
       const data: ViolinPoint<PointMetadata>[] = values.map((value, i) => {
         const metadata = group[i];
-        const isSelected = selected.length === 0 || selected.some((s) => s.name === metadata.name) ? true : false;
+        const isSelected = selected.length === 0 || selected.some((s) => s.name === metadata.name);
         const pointColor = isSelected ? getCellCategoryColor(lineage) : "grey";
         const pointRadius = isSelected ? 4 : 2;
 
@@ -43,15 +50,8 @@ const GeneExpressionBarPlot = ({ accession, selected, sortedFilteredData, ...res
   }, [selected, sortedFilteredData]);
 
   return (
-    <Box
-      width={"100%"}
-      height={"100%"}
-      overflow={"auto"}
-      padding={1}
-      sx={{ border: "1px solid", borderColor: "divider", borderRadius: 1, position: "relative" }}
-    >
+    <Box width={"100%"} height={"100%"} overflow={"auto"} padding={1}>
       <ViolinPlot
-        {...rest}
         distributions={violinData}
         axisLabel={`${accession} Z-Scores`}
         loading={violinData.length === 0}
@@ -61,38 +61,38 @@ const GeneExpressionBarPlot = ({ accession, selected, sortedFilteredData, ...res
           showAllPoints: true,
           jitter: 10,
         }}
-        pointTooltipBody={(point) => {
-          return (
-            <Box>
-              {/* {point.outlier && (
-                <div>
-                  <strong>Outlier</strong>
-                </div>
-              )} */}
-              <div>
-                <strong>Biosample:</strong> {point.metaData?.biosample}
-              </div>
-              <div>
-                <strong>Assay:</strong> {point.metaData?.assay}
-              </div>
-              <div>
-                <strong>Z-Score:</strong> {point.value.toFixed(2)}
-              </div>
-              <div>
-                <strong>Stimulation:</strong> {point.metaData?.stimulation}
-              </div>
-              <div>
-                <strong>Lineage:</strong> {point.metaData?.lineage}
-              </div>
-              <div>
-                <strong>Study:</strong> {point.metaData?.study}
-              </div>
-            </Box>
-          );
+        onViolinClicked={(violin) => {
+          const group = violin.data.map((p) => p.metaData);
+          if (selected.length === group.length && selected[0]?.lineage === group[0]?.lineage) {
+            setSelected([]);
+          } else setSelected(group);
         }}
+        onPointClicked={(point) => toggleSelection(point.metaData)}
+        pointTooltipBody={(point) => (
+          <Box>
+            <div>
+              <strong>Biosample:</strong> {point.metaData?.biosample}
+            </div>
+            <div>
+              <strong>Assay:</strong> {point.metaData?.assay}
+            </div>
+            <div>
+              <strong>Z-Score:</strong> {point.value.toFixed(2)}
+            </div>
+            <div>
+              <strong>Stimulation:</strong> {point.metaData?.stimulation}
+            </div>
+            <div>
+              <strong>Lineage:</strong> {point.metaData?.lineage}
+            </div>
+            <div>
+              <strong>Study:</strong> {point.metaData?.study}
+            </div>
+          </Box>
+        )}
       />
     </Box>
   );
 };
 
-export default GeneExpressionBarPlot;
+export default IcreActivityViolinPlot;

@@ -1,36 +1,20 @@
-import { IconButton, Link } from "@mui/material"
-import { getCellCategoryDisplayname, getStudyLink } from "common/utility"
-import { gridFilteredSortedRowEntriesSelector, GridRowSelectionModel, useGridApiRef, GRID_CHECKBOX_SELECTION_COL_DEF } from "@mui/x-data-grid-premium"
-import { IcreActivityProps, PointMetadata, SharedIcreActivityPlotProps } from "./IcreActivity"
-import { OpenInNew } from "@mui/icons-material"
-import { Dispatch, SetStateAction} from "react"
-import { Table, TableColDef } from "@weng-lab/ui-components"
+import { IconButton, Link } from "@mui/material";
+import { getCellCategoryDisplayname, getStudyLink } from "common/utility";
+import { IcreActivityProps, PointMetadata } from "./IcreActivity";
+import { OpenInNew } from "@mui/icons-material";
+import { Table, TableColDef, useSyncedTable, useTablePlotSync } from "@weng-lab/ui-components";
+import { UseIcreActivityReturn } from "common/hooks/useIcreActivity";
 
-export type IcreActivityTableProps =
-  IcreActivityProps &
-  SharedIcreActivityPlotProps &
-  {
-    onSelectionChange: (selected: PointMetadata[]) => void,
-    setSortedFilteredData: Dispatch<SetStateAction<PointMetadata[]>>
-  }
+export type IcreActivityTableProps = {
+  accession: IcreActivityProps["accession"];
+  tableProps: ReturnType<typeof useTablePlotSync<PointMetadata>>["tableProps"];
+  iCREActivitydata: UseIcreActivityReturn;
+};
 
-const IcreActivityTable = ({ accession, selected, onSelectionChange, iCREActivitydata, setSortedFilteredData, sortedFilteredData }: IcreActivityTableProps) => {
-
-  const {data, loading, error} = iCREActivitydata
-
-  //This is used to prevent sorting from happening when clicking on the header checkbox
-  const StopPropagationWrapper = (params) =>
-    <div id={'StopPropogationWrapper'} onClick={(e) => e.stopPropagation()}>
-      <GRID_CHECKBOX_SELECTION_COL_DEF.renderHeader {...params} />
-    </div>
+const IcreActivityTable = ({ accession, tableProps, iCREActivitydata }: IcreActivityTableProps) => {
+  const { data, loading } = iCREActivitydata;
 
   const columns: TableColDef<PointMetadata>[] = [
-    {
-      ...(GRID_CHECKBOX_SELECTION_COL_DEF as TableColDef<PointMetadata>), //Override checkbox column https://mui.com/x/react-data-grid/row-selection/#custom-checkbox-column
-      sortable: true,
-      hideable: false,
-      renderHeader: StopPropagationWrapper,
-    },
     {
       field: "biosample",
       headerName: "Biosample",
@@ -81,55 +65,23 @@ const IcreActivityTable = ({ accession, selected, onSelectionChange, iCREActivit
     },
   ];
 
-  const handleRowSelectionModelChange = (rowSelectionModel: GridRowSelectionModel) => {
-    const selectedRows = [...rowSelectionModel.ids.values().map((id) => data.find((row) => row.name === id))];
-    onSelectionChange(selectedRows);
-  };
-
-  const apiRef = useGridApiRef()
-
-  const arraysAreEqual = (arr1: PointMetadata[], arr2: PointMetadata[]): boolean => {
-    if (arr1.length !== arr2.length) {
-      return false
-    }
-  
-    for (let i = 0; i < arr1.length; i++) {
-      if (arr1[i].name !== arr2[i].name) {
-        return false
-      }
-    }
-    return true
-  };
-
-  const handleSync = () => {
-    const rows = gridFilteredSortedRowEntriesSelector(apiRef).map(x => x.model) as PointMetadata[]
-    if (!arraysAreEqual(sortedFilteredData, rows)) {
-      setSortedFilteredData(rows)
-    }
-  }
+  const { syncedTableProps } = useSyncedTable({
+    tableProps,
+    columns,
+    initialSort: [{ field: "value", sort: "desc" }],
+    isPresorted: false,
+  });
 
   return (
     <Table
-      apiRef={apiRef}
+      {...syncedTableProps}
       label={`${accession} Activity`}
       density="standard"
       rows={data}
-      columns={columns}
       loading={loading}
       pageSizeOptions={[10, 25, 50]}
-      initialState={{
-        sorting: {
-          sortModel: [{ field: "value", sort: "desc" }],
-        },
-      }}
-      checkboxSelection
-      getRowId={(row) => row.name}
-      onRowSelectionModelChange={handleRowSelectionModelChange}
-      rowSelectionModel={{type: "include", ids: new Set(selected.map(x => x.name))}}
-      keepNonExistentRowsSelected // Needed to prevent clearing selections on changing filters
-      onStateChange={handleSync} // Not really supposed to be using this, is not documented by MUI. Not using its structure, just the callback trigger
     />
   );
-}
+};
 
-export default IcreActivityTable
+export default IcreActivityTable;

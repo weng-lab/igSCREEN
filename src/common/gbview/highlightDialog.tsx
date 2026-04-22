@@ -9,7 +9,7 @@ import {
   AccordionSummary,
   AccordionDetails,
 } from "@mui/material";
-import Grid2 from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 import { DialogTitle } from "@mui/material";
 import { Dialog } from "@mui/material";
 import { Delete, Add, ExpandMore } from "@mui/icons-material";
@@ -162,8 +162,8 @@ function HighlightCreationForm({ browserStore }: { browserStore: BrowserStoreIns
         </Typography>
       </AccordionSummary>
       <AccordionDetails>
-        <Grid2 container spacing={2}>
-          <Grid2 size={{ xs: 12, sm: 6 }}>
+        <Grid container spacing={2}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <TextField
               fullWidth
               label="ID"
@@ -172,8 +172,8 @@ function HighlightCreationForm({ browserStore }: { browserStore: BrowserStoreIns
               size="small"
               placeholder="Enter highlight ID"
             />
-          </Grid2>
-          <Grid2 size={{ xs: 12, sm: 6 }}>
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <TextField
               fullWidth
               label="Chromosome"
@@ -184,8 +184,8 @@ function HighlightCreationForm({ browserStore }: { browserStore: BrowserStoreIns
               error={!!errors.chromosome}
               helperText={errors.chromosome}
             />
-          </Grid2>
-          <Grid2 size={{ xs: 12, sm: 6 }}>
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <TextField
               fullWidth
               label="Start Position"
@@ -197,8 +197,8 @@ function HighlightCreationForm({ browserStore }: { browserStore: BrowserStoreIns
               error={!!errors.start}
               helperText={errors.start}
             />
-          </Grid2>
-          <Grid2 size={{ xs: 12, sm: 6 }}>
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <TextField
               fullWidth
               label="End Position"
@@ -210,8 +210,8 @@ function HighlightCreationForm({ browserStore }: { browserStore: BrowserStoreIns
               error={!!errors.end}
               helperText={errors.end}
             />
-          </Grid2>
-          <Grid2 size={{ xs: 12, sm: 6 }}>
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <TextField
               fullWidth
               label="Color"
@@ -226,8 +226,8 @@ function HighlightCreationForm({ browserStore }: { browserStore: BrowserStoreIns
                 },
               }}
             />
-          </Grid2>
-          <Grid2 size={{ xs: 12, sm: 6 }}>
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Button
               fullWidth
               variant="contained"
@@ -238,8 +238,8 @@ function HighlightCreationForm({ browserStore }: { browserStore: BrowserStoreIns
             >
               Add Highlight
             </Button>
-          </Grid2>
-        </Grid2>
+          </Grid>
+        </Grid>
       </AccordionDetails>
     </Accordion>
   );

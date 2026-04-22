@@ -16,7 +16,7 @@ type Props = {
   data: LDSCDataPoint[];
   pValCutoff: number;
   stimView: "S" | "U" | "B";
-  legendEntries: { label: string; value: string; color: string }[];
+  legendEntries: { label: string; value: number; color: string }[];
   rotate?: boolean;
   svgRef: React.RefObject<SVGSVGElement>;
 };

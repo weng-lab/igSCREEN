@@ -1,4 +1,4 @@
-import { Box, Grid2, Skeleton } from "@mui/material";
+import { Box, Grid, Skeleton } from "@mui/material";
 import useLinkedICREs, { LinkedICREInfo } from "common/hooks/useLinkedICREs";
 import { ChIAPETCols, CrisprFlowFISHCols, eQTLCols, IntactHiCLoopsCols } from "../../_IcreTabs/_Genes/columns";
 import LinkedElements, { TableDef } from "common/components/linkedElements/linkedElements";
@@ -17,20 +17,20 @@ export default function ComputationalLinkedCcres({
 
   if (geneData.loading || loading) {
     return (
-      <Grid2 container spacing={2} width={"100%"}>
-        <Grid2 size={12}>
+      <Grid container spacing={2} width={"100%"}>
+        <Grid size={12}>
           <Skeleton variant="rounded" width={"100%"} height={100} />
-        </Grid2>
-        <Grid2 size={12}>
+        </Grid>
+        <Grid size={12}>
           <Skeleton variant="rounded" width={"100%"} height={100} />
-        </Grid2>
-        <Grid2 size={12}>
+        </Grid>
+        <Grid size={12}>
           <Skeleton variant="rounded" width={"100%"} height={100} />
-        </Grid2>
-        <Grid2 size={12}>
+        </Grid>
+        <Grid size={12}>
           <Skeleton variant="rounded" width={"100%"} height={100} />
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     );
   }
 

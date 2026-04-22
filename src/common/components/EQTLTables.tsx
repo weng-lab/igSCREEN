@@ -1,5 +1,5 @@
-import { useQuery } from "@apollo/client";
-import { Grid2, Skeleton, Stack, Box, Typography } from "@mui/material";
+import { useQuery } from "@apollo/client/react";
+import { Grid, Skeleton, Stack, Box, Typography } from "@mui/material";
 import { toScientificNotationElement } from "common/utility";
 import { gql } from "types/generated";
 import { useElementMetadataReturn } from "common/hooks/useElementMetadata";
@@ -214,14 +214,14 @@ export default function EQTLs<T extends GenomicElementType>({
 
   if (loading) {
     return (
-      <Grid2 container spacing={2}>
-        <Grid2 size={12}>
+      <Grid container spacing={2}>
+        <Grid size={12}>
           <Skeleton variant="rounded" width={"100%"} height={500} />
-        </Grid2>
-        <Grid2 size={12}>
+        </Grid>
+        <Grid size={12}>
           <Skeleton variant="rounded" width={"100%"} height={500} />
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     );
   }
 

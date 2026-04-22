@@ -1,4 +1,5 @@
-import { gql, useQuery } from "@apollo/client";
+import { gql } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
 
 const CCRE_ICRE_QUERY = gql(`query cCREAutocompleteQuery(
   $accession: [String!]
@@ -16,7 +17,7 @@ const CCRE_ICRE_QUERY = gql(`query cCREAutocompleteQuery(
   }
 }`);
 export default function useNearbycCREs(geneid: string) {
-  const { data, loading, error } = useQuery(NEAR_BY_CCRES_QUERY, {
+  const { data, loading, error } = useQuery<{ closestGenetocCRE: { chromosome: string; stop: number; start: number; ccre: string; gene: { chromosome: string; stop: number; start: number; name: string; type: string } }[] }>(NEAR_BY_CCRES_QUERY, {
     variables: { geneid: [geneid.split(".")[0]] },
     skip: !geneid
   });
@@ -25,7 +26,7 @@ export default function useNearbycCREs(geneid: string) {
     data: ccredata,
     loading: ccreloading,
     error: ccreerror,
-  } = useQuery(CCRE_ICRE_QUERY, {
+  } = useQuery<{ cCREAutocompleteQuery: { accession: string; isiCRE: boolean }[] }>(CCRE_ICRE_QUERY, {
     variables: { assembly: "grch38", includeiCREs: true, accession: [...new Set(data?.closestGenetocCRE.map((l) => l.ccre))]  },
     skip: loading || !data || (data && data.closestGenetocCRE.length === 0 ),
   });

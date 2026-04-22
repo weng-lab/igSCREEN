@@ -1,5 +1,5 @@
 "use client";
-import { Box, Button, Divider, Grid2, IconButton, Stack, Typography } from "@mui/material";
+import { Box, Button, Divider, Grid, IconButton, Stack, Typography } from "@mui/material";
 import { GenomeSearch, Result } from "@weng-lab/ui-components";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -103,9 +103,9 @@ function ClientPortalPage({ elementType }: { elementType: string }) {
           We recommend to start with these {formatPortal(elementType)}s
         </Typography>
       </Stack>
-      <Grid2 container spacing={5} justifyContent="flex-start" marginTop={2}>
+      <Grid container spacing={5} justifyContent="flex-start" marginTop={2}>
         {popularSearches[elementType].map((element, index) => (
-          <Grid2
+          <Grid
             key={index}
             size={{
               xs: 12,
@@ -151,9 +151,9 @@ function ClientPortalPage({ elementType }: { elementType: string }) {
             >
               Quick search
             </Button>
-          </Grid2>
+          </Grid>
         ))}
-      </Grid2>
+      </Grid>
     </Stack>
   );
 }

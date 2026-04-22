@@ -1,7 +1,7 @@
 "use client"
 import React, { useRef, useState } from "react"
 import { Box, Button, Link, TextField, Typography } from "@mui/material"
-import Grid2 from "@mui/material/Grid2"
+import Grid from "@mui/material/Grid"
 import emailjs from '@emailjs/browser';
 
 export default function About() {
@@ -61,16 +61,16 @@ export default function About() {
   };
 
   return (
-      <Grid2 container spacing={4} sx={{ maxWidth: "70%", mr: "auto", ml: "auto", mt: '3rem', mb: '3rem' }}>
-        <Grid2 size={12}>
+      <Grid container spacing={4} sx={{ maxWidth: "70%", mr: "auto", ml: "auto", mt: '3rem', mb: '3rem' }}>
+        <Grid size={12}>
           <Typography paragraph variant="h3">About igSCREEN</Typography>
           <Typography paragraph variant="h5">Search <i>immune</i> Candidate cis-Regulatory Elements</Typography>
           <Typography paragraph>igSCREEN is a comprehensive catalog of multi-omic knowledge about human immune cells. It was designed and built by Dr. Zhiping Weng’s and Dr. Jill Moore’s labs at UMass Chan Medical School.</Typography>
           <Typography paragraph>For questions or comments please contact us at Zhiping.Weng@umassmed.edu and Jill.Moore@umassmed.edu</Typography>
           <Typography paragraph>This work is supported by U01AI173584.</Typography>
-        </Grid2>
+        </Grid>
         {/* Contact Us */}
-        <Grid2 id="contact-us" size={12}>
+        <Grid id="contact-us" size={12}>
           <Typography mb={1} variant="h2">Contact Us</Typography>
           <Typography mb={1} variant="body1">Send us a message and we&apos;ll be in touch!</Typography>
           <Typography mb={1} variant="body1">As this is a beta site, we would greatly appreciate any feedback you may have. Knowing how our users are using the site and documenting issues they may have are important to make this resource better and easier to use.</Typography>
@@ -147,7 +147,7 @@ export default function About() {
             </Button>
           </Box>
           {success && <Typography>Submitted successfully, thank you!</Typography>}
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
   );
 }

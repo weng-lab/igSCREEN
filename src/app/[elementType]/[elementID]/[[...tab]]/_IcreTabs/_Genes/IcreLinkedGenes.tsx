@@ -1,8 +1,8 @@
-import { Grid2 as Grid, Skeleton, Stack, Typography } from "@mui/material";
+import { Grid as Grid, Skeleton, Stack, Typography } from "@mui/material";
 import useLinkedGenes, { LinkedGeneInfo } from "common/hooks/useLinkedGenes";
 import { ChIAPETCols, CrisprFlowFISHCols, eQTLCols, IntactHiCLoopsCols } from "./columns";
 import LinkedElements, { TableDef } from "common/components/linkedElements/linkedElements";
-import { useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
 import { calcDistRegionToRegion } from "common/utility";
 import { GenomicRange } from "types/globalTypes";
 import { Table, TableColDef } from "@weng-lab/ui-components";

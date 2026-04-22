@@ -3,7 +3,7 @@
 "use client";
 import { Box, Button, Divider, IconButton, Stack, Typography } from "@mui/material";
 import React from "react";
-import Grid2 from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 import Image from "next/image";
 import { ArrowForwardIos, ExpandMore, Search } from "@mui/icons-material";
 import AutoComplete from "../common/components/autocomplete";

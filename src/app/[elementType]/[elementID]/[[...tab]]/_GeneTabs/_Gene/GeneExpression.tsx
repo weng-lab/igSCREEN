@@ -1,69 +1,33 @@
-import TwoPaneLayout from "../../../../../../common/components/TwoPaneLayout";
-import { useState } from "react";
+import { TwoPaneLayout, useTablePlotSync } from "@weng-lab/ui-components";
 import GeneExpressionTable from "./GeneExpressionTable";
 import GeneExpressionUMAP from "./GeneExpressionUMAP";
 import GeneExpressionBarPlot from "./GeneExpressionBarPlot";
-import { BarData } from "../../../../../../common/components/VerticalBarPlot";
 import { useGeneExpression, UseGeneExpressionReturn } from "common/hooks/useGeneExpression";
 import { BarChart, ScatterPlot, CandlestickChart } from "@mui/icons-material";
 import { UseGeneDataReturn } from "common/hooks/useGeneData";
 import GeneExpressionViolinPlot from "./GeneExpressionViolinPlot";
-import { Distribution, ViolinPoint } from "psychscreen-legacy-components";
 
 export type PointMetadata = UseGeneExpressionReturn["data"][number];
-
-export type SharedGeneExpressionPlotProps = {
-  selected: PointMetadata[];
-  geneExpressionData: UseGeneExpressionReturn;
-  sortedFilteredData: PointMetadata[];
-};
 
 export type GeneExpressionProps = {
   geneData: UseGeneDataReturn<{ name: string }>;
 };
 
 const GeneExpression = ({ geneData }: GeneExpressionProps) => {
-  const [selected, setSelected] = useState<PointMetadata[]>([]);
-  const [sortedFilteredData, setSortedFilteredData] = useState<PointMetadata[]>([]);
-
   const geneExpressionData = useGeneExpression({ id: geneData?.data.id });
 
-  const handlePointsSelected = (pointsInfo: PointMetadata[]) => {
-    setSelected([...selected, ...pointsInfo]);
-  };
-
-  const handleSelectionChange = (selected: PointMetadata[]) => {
-    setSelected(selected);
-  };
-
-  const handleBarClick = (bar: BarData<PointMetadata>) => {
-    if (selected.includes(bar.metadata)) {
-      setSelected(selected.filter((x) => x !== bar.metadata));
-    } else setSelected([...selected, bar.metadata]);
-  };
-
-  const handleViolinClick = (violin: Distribution<PointMetadata>) => {
-    const metadataArray = violin.data.map((point) => point.metaData);
-    if (selected.length === metadataArray.length && selected[0].lineage === metadataArray[0].lineage) {
-      setSelected([]);
-    } else setSelected(metadataArray);
-  };
-
-  const handleViolinPointClick = (point: ViolinPoint<PointMetadata>) => {
-    if (selected.includes(point.metaData)) {
-      setSelected(selected.filter((x) => x !== point.metaData));
-    } else setSelected([...selected, point.metaData]);
-  };
+  const { selected, setSelected, sortedFilteredData, tableProps, toggleSelection, getRowId } = useTablePlotSync({
+    rows: geneExpressionData.data ?? [],
+    getRowId: (r) => r.name,
+  });
 
   return (
     <TwoPaneLayout
+      direction={{ xs: "column", lg: "row" }}
       TableComponent={
         <GeneExpressionTable
           geneData={geneData}
-          selected={selected}
-          onSelectionChange={handleSelectionChange}
-          sortedFilteredData={sortedFilteredData}
-          setSortedFilteredData={setSortedFilteredData}
+          tableProps={tableProps}
           geneExpressionData={geneExpressionData}
         />
       }
@@ -77,7 +41,8 @@ const GeneExpression = ({ geneData }: GeneExpressionProps) => {
               selected={selected}
               sortedFilteredData={sortedFilteredData}
               geneExpressionData={geneExpressionData}
-              onBarClicked={handleBarClick}
+              toggleSelection={toggleSelection}
+              getRowId={getRowId}
             />
           ),
         },
@@ -88,9 +53,8 @@ const GeneExpression = ({ geneData }: GeneExpressionProps) => {
             <GeneExpressionUMAP
               geneData={geneData}
               selected={selected}
-              sortedFilteredData={sortedFilteredData}
+              setSelected={setSelected}
               geneExpressionData={geneExpressionData}
-              onSelectionChange={(points) => handlePointsSelected(points.map((x) => x.metaData))}
             />
           ),
         },
@@ -101,10 +65,11 @@ const GeneExpression = ({ geneData }: GeneExpressionProps) => {
             <GeneExpressionViolinPlot
               geneData={geneData}
               selected={selected}
+              setSelected={setSelected}
               sortedFilteredData={sortedFilteredData}
               geneExpressionData={geneExpressionData}
-              onViolinClicked={handleViolinClick}
-              onPointClicked={handleViolinPointClick}
+              toggleSelection={toggleSelection}
+              getRowId={getRowId}
             />
           ),
         },

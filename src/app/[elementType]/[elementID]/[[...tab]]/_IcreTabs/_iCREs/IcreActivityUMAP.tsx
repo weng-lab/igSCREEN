@@ -10,28 +10,34 @@ import {
   Typography,
 } from "@mui/material";
 import { getCellCategoryColor, getCellCategoryDisplayname } from "common/utility";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
 import { interpolateYlOrRd } from "d3-scale-chromatic";
 import { Point, ScatterPlot, ChartProps } from "psychscreen-legacy-components";
-import { IcreActivityProps, SharedIcreActivityPlotProps, PointMetadata } from "./IcreActivity";
+import { IcreActivityProps, PointMetadata } from "./IcreActivity";
 import { scaleLinear } from "@visx/scale";
+import { UseIcreActivityReturn } from "common/hooks/useIcreActivity";
 
-export type IcreActivityUmapProps<T, S extends boolean | undefined, Z extends boolean | undefined> = IcreActivityProps &
-  SharedIcreActivityPlotProps &
+export type IcreActivityUmapProps<T, S extends boolean | undefined, Z extends boolean | undefined> =
+  IcreActivityProps &
+  {
+    selected: PointMetadata[];
+    iCREActivitydata: UseIcreActivityReturn;
+    setSelected: Dispatch<SetStateAction<PointMetadata[]>>;
+  } &
   Partial<ChartProps<T, S, Z>>;
 
 const IcreActivityUMAP = <T extends PointMetadata, S extends true, Z extends boolean | undefined>({
   accession,
   selected,
-  sortedFilteredData,
   iCREActivitydata,
+  setSelected,
   ...rest
 }: IcreActivityUmapProps<T, S, Z>) => {
   const [colorScheme, setColorScheme] = useState<"Zscore" | "lineage">("Zscore");
   const [showLegend, setShowLegend] = useState<boolean>(true);
   const [assay, setAssay] = useState<"ATAC" | "DNase" | "Combined">("Combined");
 
-  const { data, loading, error } = iCREActivitydata;
+  const { data, loading } = iCREActivitydata;
 
   const handleColorSchemeChange = (event: SelectChangeEvent) => {
     setColorScheme(event.target.value as "Zscore" | "lineage");
@@ -50,12 +56,10 @@ const IcreActivityUMAP = <T extends PointMetadata, S extends true, Z extends boo
     },
   };
 
-  //prevent scroll on UMAP
   useEffect(() => {
     const handleWheel = (event: WheelEvent) => {
       if (graphContainerRef.current && graphContainerRef.current.contains(event.target)) {
-        event.preventDefault(); // Prevent page scroll
-        // Your zoom logic here
+        event.preventDefault();
       }
     };
 
@@ -66,19 +70,11 @@ const IcreActivityUMAP = <T extends PointMetadata, S extends true, Z extends boo
     };
   }, []);
 
-  //find the max logTPM for the domain fo the gradient
   const maxValue = useMemo(() => {
     if (!data || data.length === 0) return 0;
     return Math.max(...data.map((x) => x.value));
   }, [data]);
 
-  //find the max logTPM for the domain fo the gradient
-  const minValue = useMemo(() => {
-    if (!data || data.length === 0) return 0;
-    return Math.min(...data.map((x) => x.value));
-  }, [data]);
-
-  //generate the domain for the gradient based on the max number
   const generateDomain = (max: number, steps: number) => {
     return Array.from({ length: steps }, (_, i) => (i / (steps - 1)) * max);
   };
@@ -86,8 +82,8 @@ const IcreActivityUMAP = <T extends PointMetadata, S extends true, Z extends boo
   const colorScale = useMemo(
     () =>
       scaleLinear({
-        domain: generateDomain(maxValue, 9), // 9 evenly spaced domain stops (9 colors)
-        range: Array.from({ length: 9 }, (_, i) => i / 8), // Normalize range for interpolation
+        domain: generateDomain(maxValue, 9),
+        range: Array.from({ length: 9 }, (_, i) => i / 8),
         clamp: true,
       }),
     [maxValue]
@@ -109,9 +105,7 @@ const IcreActivityUMAP = <T extends PointMetadata, S extends true, Z extends boo
 
         const getColor = () => {
           if (isHighlighted(x) || selected.length === 0) {
-            if (colorScheme === "Zscore") {
-              return gradientColor;
-            } else return getCellCategoryColor(x.lineage);
+            return colorScheme === "Zscore" ? gradientColor : getCellCategoryColor(x.lineage);
           } else return "#CCCCCC";
         };
 
@@ -131,7 +125,6 @@ const IcreActivityUMAP = <T extends PointMetadata, S extends true, Z extends boo
     if (!scatterData) return [];
 
     if (colorScheme === "lineage") {
-      // Count occurrences of each unique cellType
       const cellTypeCounts = scatterData.reduce((acc, point) => {
         const cellType = point.metaData.lineage;
         acc.set(cellType, (acc.get(cellType) || 0) + 1);
@@ -148,66 +141,60 @@ const IcreActivityUMAP = <T extends PointMetadata, S extends true, Z extends boo
     }
   }, [scatterData, colorScheme]);
 
-  const TooltipBody = (point: Point<PointMetadata>) => {
-    return (
-      <>
-        <Typography>
-          <b>Lineage:</b> {getCellCategoryDisplayname(point.metaData.lineage)}
-        </Typography>
-        <Typography>
-          <b>Biosample:</b> {point.metaData.biosample}, {point.metaData.stimulation}
-        </Typography>
-        <Typography>
-          <b>Assay:</b> {point.metaData.assay}
-        </Typography>
-        <Typography>
-          <b>Z-score:</b> {point.metaData.value.toFixed(2)}
-        </Typography>
-        <Typography>
-          <b>Source:</b> {point.metaData.source}
-        </Typography>
-      </>
-    );
-  };
+  const TooltipBody = (point: Point<PointMetadata>) => (
+    <>
+      <Typography>
+        <b>Lineage:</b> {getCellCategoryDisplayname(point.metaData.lineage)}
+      </Typography>
+      <Typography>
+        <b>Biosample:</b> {point.metaData.biosample}, {point.metaData.stimulation}
+      </Typography>
+      <Typography>
+        <b>Assay:</b> {point.metaData.assay}
+      </Typography>
+      <Typography>
+        <b>Z-score:</b> {point.metaData.value.toFixed(2)}
+      </Typography>
+      <Typography>
+        <b>Source:</b> {point.metaData.source}
+      </Typography>
+    </>
+  );
 
-  const AssaySelect = () => {
-    return (
-      <FormControl>
-        <InputLabel>Assay</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={assay}
-          label="Assay"
-          onChange={handleAssayChange}
-          MenuProps={{ disableScrollLock: true }}
-        >
-          <MenuItem value={"Combined"}>ATAC & DNase</MenuItem>
-          <MenuItem value={"ATAC"}>ATAC</MenuItem>
-          <MenuItem value={"DNase"}>DNase</MenuItem>
-        </Select>
-      </FormControl>
-    );
-  };
+  const AssaySelect = () => (
+    <FormControl>
+      <InputLabel>Assay</InputLabel>
+      <Select
+        labelId="demo-simple-select-label"
+        id="demo-simple-select"
+        value={assay}
+        label="Assay"
+        onChange={handleAssayChange}
+        MenuProps={{ disableScrollLock: true }}
+      >
+        <MenuItem value={"Combined"}>ATAC & DNase</MenuItem>
+        <MenuItem value={"ATAC"}>ATAC</MenuItem>
+        <MenuItem value={"DNase"}>DNase</MenuItem>
+      </Select>
+    </FormControl>
+  );
 
-  const ColorBySelect = () => {
-    return (
-      <FormControl>
-        <InputLabel>Color By</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={colorScheme}
-          label="Color By"
-          onChange={handleColorSchemeChange}
-          MenuProps={{ disableScrollLock: true }}
-        >
-          <MenuItem value={"Zscore"}>Z-score</MenuItem>
-          <MenuItem value={"lineage"}>Lineage</MenuItem>
-        </Select>
-      </FormControl>
-    );
-  };
+  const ColorBySelect = () => (
+    <FormControl>
+      <InputLabel>Color By</InputLabel>
+      <Select
+        labelId="demo-simple-select-label"
+        id="demo-simple-select"
+        value={colorScheme}
+        label="Color By"
+        onChange={handleColorSchemeChange}
+        MenuProps={{ disableScrollLock: true }}
+      >
+        <MenuItem value={"Zscore"}>Z-score</MenuItem>
+        <MenuItem value={"lineage"}>Lineage</MenuItem>
+      </Select>
+    </FormControl>
+  );
 
   return (
     <>
@@ -217,11 +204,7 @@ const IcreActivityUMAP = <T extends PointMetadata, S extends true, Z extends boo
       </Stack>
       <Box
         padding={1}
-        //hacky height, have to subtract the pixel value of the Colorby select and the margin to line it up with the table
         sx={{
-          border: "1px solid",
-          borderColor: "divider",
-          borderRadius: 1,
           position: "relative",
           width: "100%",
           height: "calc(100% - 72px)",
@@ -231,7 +214,7 @@ const IcreActivityUMAP = <T extends PointMetadata, S extends true, Z extends boo
         mb={2}
       >
         <Typography variant="body2" align="right">
-          {"\u25EF unstimulated, \u25B3 stimulated "}
+          {"◯ unstimulated, △ stimulated "}
         </Typography>
         <ScatterPlot
           {...rest}
@@ -241,6 +224,9 @@ const IcreActivityUMAP = <T extends PointMetadata, S extends true, Z extends boo
           loading={loading}
           miniMap={map}
           groupPointsAnchor="lineage"
+          onSelectionChange={(points) =>
+            setSelected((prev) => [...prev, ...points.map((x) => x.metaData)])
+          }
           tooltipBody={(point) => <TooltipBody {...point} />}
         />
         <Button
@@ -251,7 +237,6 @@ const IcreActivityUMAP = <T extends PointMetadata, S extends true, Z extends boo
           Toggle Legend
         </Button>
       </Box>
-      {/* legend */}
       {showLegend && (
         <Box sx={{ display: "flex", flexDirection: "column" }}>
           <Typography mb={1}>
@@ -277,7 +262,6 @@ const IcreActivityUMAP = <T extends PointMetadata, S extends true, Z extends boo
             /**
              * @todo clean this up. No way this legend needs to be this complicated
              */
-            /* Normal legend for cell types */
             <Box
               sx={{
                 display: "flex",

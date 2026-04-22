@@ -1,5 +1,5 @@
 "use client";
-import { useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
 import ChangeHistoryTwoToneIcon from "@mui/icons-material/ChangeHistoryTwoTone";
 import CircleTwoToneIcon from "@mui/icons-material/CircleTwoTone";
 import {
@@ -19,7 +19,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import Grid2 from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 import { getCellCategoryColor, getCellCategoryDisplayname } from "common/utility";
 import { useEffect, useMemo, useRef, useState } from "react";
 import LDSCplot from "./ldsc";
@@ -51,14 +51,14 @@ export default function Phenotype() {
   const [pValCutoff, setPValCutoff] = useState<number>(0.05);
   const [stimView, setStimView] = useState<"S" | "U" | "B">("B");
 
-  const { data: dataStudies } = useQuery(ICRE_STUDIES);
+  const { data: dataStudies } = useQuery<{ iCRELdscStudiesQuery: { category: string; disease: string; value: string; study_source: string; author: string }[] }>(ICRE_STUDIES);
 
-  const { data: dataiCRELDSC, loading: loadingiCRELDSC } = useQuery(iCRE_LDSC_QUERY, {
+  const { data: dataiCRELDSC, loading: loadingiCRELDSC } = useQuery<{ iCRELdscQuery: LDSCDataPoint[] }>(iCRE_LDSC_QUERY, {
     variables: { study: selectedStudy },
     skip: !selectedStudy,
   });
 
-  const { data: dataBaseline } = useQuery(iCRE_LDSC_BASELINE_QUERY, {
+  const { data: dataBaseline } = useQuery<{ iCRELdscBaselineQuery: LDSCDataPoint[] }>(iCRE_LDSC_BASELINE_QUERY, {
     variables: { study: selectedStudy },
     skip: !selectedStudy,
   });
@@ -82,7 +82,8 @@ export default function Phenotype() {
         label: "Baseline",
         color: "#000000", // gray color for baseline
         value: dataBaseline?.iCRELdscBaselineQuery.filter((x) => !x.celltype.startsWith("MAF_Adj")).length || 0,
-      });
+      })
+      ;
   }, [dataiCRELDSC, dataBaseline]);
 
   let LDSCStudies = dataStudies && dataStudies.iCRELdscStudiesQuery;
@@ -120,8 +121,8 @@ export default function Phenotype() {
   }, [theme.breakpoints.values]);
 
   return (
-    <Grid2 container mt={3} display={"flex"} flexDirection={"column"} justifyContent={"center"}>
-      <Grid2 margin={"auto"} width={"75%"}>
+    <Grid container mt={3} display={"flex"} flexDirection={"column"} justifyContent={"center"}>
+      <Grid margin={"auto"} width={"75%"}>
         <Box margin={"auto"} maxWidth={600} display={"flex"} flexDirection={"column"} justifyContent={"center"} gap={2}>
           {/* Header */}
           <Box>
@@ -222,9 +223,9 @@ export default function Phenotype() {
             </RadioGroup>
           </FormControl>
         </Box>
-      </Grid2>
+      </Grid>
       {/* LDSC Plot */}
-      <Grid2 margin={"auto"} width={"75%"} display={"flex"} justifyContent={"center"} mb={2}>
+      <Grid margin={"auto"} width={"75%"} display={"flex"} justifyContent={"center"} mb={2}>
         {loadingiCRELDSC ? (
           <CircularProgress />
         ) : (
@@ -253,8 +254,8 @@ export default function Phenotype() {
             </Box>
           )
         )}
-      </Grid2>
-    </Grid2>
+      </Grid>
+    </Grid>
   );
 }
 

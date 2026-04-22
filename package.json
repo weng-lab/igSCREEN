@@ -6,13 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "export": "next export",
+    "lint": "eslint .",
     "gen-types": "dotenv -e .env.local -- graphql-codegen",
     "gen-types -w": "dotenv -e .env.local -- graphql-codegen -w"
   },
   "dependencies": {
-    "@apollo/client": "^3",
-    "@apollo/experimental-nextjs-app-support": "^0.11",
+    "@apollo/client": "^4",
+    "@apollo/experimental-nextjs-app-support": "^0.14",
     "@emailjs/browser": "^4.4.1",
     "@emotion/cache": "^11",
     "@emotion/react": "^11",
@@ -20,13 +20,13 @@
     "@hello-pangea/dnd": "^18.0.1",
     "@mui/icons-material": "^7",
     "@mui/lab": "^7",
-    "@mui/material": "^6",
+    "@mui/material": "^7",
     "@mui/material-nextjs": "^7",
     "@mui/x-data-grid-premium": "^8",
     "@types/node": "^22",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "@vercel/analytics": "^1.5.0",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@vercel/analytics": "^2",
     "@visx/axis": "^3",
     "@visx/drag": "^3",
     "@visx/event": "^3",
@@ -45,14 +45,14 @@
     "@weng-lab/ui-components": "3.0.0",
     "bpnet-ui": "^0.3.8",
     "d3-scale-chromatic": "^3",
-    "eslint": "^8",
-    "eslint-config-next": "^15",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.4",
     "lz-string": "^1.5.0",
-    "next": "15",
+    "next": "16.2.4",
     "psychscreen-legacy-components": "^1.0.6",
     "queryz": "^0.0.3",
-    "react": "^19",
-    "react-dom": "^19",
+    "react": "19.2.5",
+    "react-dom": "19.2.5",
     "umms-gb": "^3.9.14",
     "uuid": "^10.0.0"
   },
@@ -65,5 +65,9 @@
     "graphql": "^16",
     "typescript": "^5"
   },
-  "packageManager": "yarn@4.14.1"
+  "packageManager": "yarn@4.14.1",
+  "resolutions": {
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3"
+  }
 }

@@ -2,7 +2,7 @@ import { GenomicElementType, GenomicRange } from "types/globalTypes";
 import { useGeneData, UseGeneDataReturn } from "./useGeneData";
 import { useIcreData, UseIcreDataReturn } from "./useIcreData";
 import { useSnpData, UseSnpDataReturn } from "./useSnpData";
-import { ApolloError } from "@apollo/client";
+import { ErrorLike } from "@apollo/client";
 import { parseGenomicRangeString } from "common/utility";
 
 type useElementMetadataParams<T extends GenomicElementType> = {
@@ -11,7 +11,7 @@ type useElementMetadataParams<T extends GenomicElementType> = {
 }
 
 //faking a return type of the same form as the others to make it easy
-type UseGenomicRangeReturn = { data: {__typename?: "Region", coordinates: GenomicRange}; loading: boolean; error: ApolloError }
+type UseGenomicRangeReturn = { data: {__typename?: "Region", coordinates: GenomicRange}; loading: boolean; error: ErrorLike }
 
 export type useElementMetadataReturn<T extends GenomicElementType> = T extends "gene"
   ? UseGeneDataReturn<{ name: string }>

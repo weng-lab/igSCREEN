@@ -25,7 +25,7 @@ import MultiSelect from "./MultiSelect";
 import Image from "next/image";
 import { BarChartOutlined, Close, Download, Info, NavigateNext, Sync } from "@mui/icons-material";
 import { gql } from "types/generated";
-import { useLazyQuery } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client/react";
 import { AssayEnum } from "types/generated/graphql";
 import NewUpSetPlot, { UpSetPlotDatum } from "app/lineage/UpSetPlot";
 import { v4 as uuidv4 } from "uuid";
