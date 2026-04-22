@@ -12,7 +12,7 @@ import {
 import { getCellCategoryColor, getCellCategoryDisplayname } from "common/utility";
 import { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from "react";
 import { interpolateYlOrRd } from "d3-scale-chromatic";
-import { Point, ScatterPlot, ChartProps } from "psychscreen-legacy-components";
+import { Point, ScatterPlot, ChartProps } from "@weng-lab/visualization";
 import { IcreActivityProps, PointMetadata } from "./IcreActivity";
 import { scaleLinear } from "@visx/scale";
 import { UseIcreActivityReturn } from "common/hooks/useIcreActivity";

@@ -2,7 +2,7 @@ import { GeneExpressionProps, PointMetadata } from "./GeneExpression";
 import { Dispatch, SetStateAction, useMemo } from "react";
 import { getCellCategoryColor, getCellCategoryDisplayname } from "common/utility";
 import { Box } from "@mui/material";
-import { Distribution, ViolinPlot, ViolinPoint } from "psychscreen-legacy-components";
+import { Distribution, ViolinPlot, ViolinPoint } from "@weng-lab/visualization";
 import { UseGeneExpressionReturn } from "common/hooks/useGeneExpression";
 
 export type GeneExpressionViolinPlotProps = {
@@ -62,28 +62,28 @@ const GeneExpressionViolinPlot = ({ geneData, selected, setSelected, sortedFilte
           jitter: 10,
         }}
         onViolinClicked={(violin) => {
-          const group = violin.data.map((p) => p.metaData);
+          const group = violin.data.map((p) => p.metadata);
           if (selected.length === group.length && selected[0]?.lineage === group[0]?.lineage) {
             setSelected([]);
           } else setSelected(group);
         }}
-        onPointClicked={(point) => toggleSelection(point.metaData)}
+        onPointClicked={(point) => toggleSelection(point.metadata)}
         pointTooltipBody={(point) => (
           <Box>
             <div>
-              <strong>Biosample:</strong> {point.metaData?.biosample}
+              <strong>Biosample:</strong> {point.metadata?.biosample}
             </div>
             <div>
               <strong>TPM:</strong> {point.value.toFixed(1)}
             </div>
             <div>
-              <strong>Stimulation:</strong> {point.metaData?.stimulation}
+              <strong>Stimulation:</strong> {point.metadata?.stimulation}
             </div>
             <div>
-              <strong>Lineage:</strong> {point.metaData?.lineage}
+              <strong>Lineage:</strong> {point.metadata?.lineage}
             </div>
             <div>
-              <strong>Study:</strong> {point.metaData?.study}
+              <strong>Study:</strong> {point.metadata?.study}
             </div>
           </Box>
         )}

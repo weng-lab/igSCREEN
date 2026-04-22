@@ -2,7 +2,7 @@ import { IcreActivityProps, PointMetadata } from "./IcreActivity";
 import { Dispatch, SetStateAction, useMemo } from "react";
 import { getCellCategoryColor, getCellCategoryDisplayname } from "common/utility";
 import { Box } from "@mui/material";
-import { Distribution, ViolinPlot, ViolinPoint } from "psychscreen-legacy-components";
+import { Distribution, ViolinPlot, ViolinPoint } from "@weng-lab/visualization";
 import { UseIcreActivityReturn } from "common/hooks/useIcreActivity";
 
 export type IcreActivityViolinPlotProps = {
@@ -62,31 +62,31 @@ const IcreActivityViolinPlot = ({ accession, selected, setSelected, sortedFilter
           jitter: 10,
         }}
         onViolinClicked={(violin) => {
-          const group = violin.data.map((p) => p.metaData);
+          const group = violin.data.map((p) => p.metadata);
           if (selected.length === group.length && selected[0]?.lineage === group[0]?.lineage) {
             setSelected([]);
           } else setSelected(group);
         }}
-        onPointClicked={(point) => toggleSelection(point.metaData)}
+        onPointClicked={(point) => toggleSelection(point.metadata)}
         pointTooltipBody={(point) => (
           <Box>
             <div>
-              <strong>Biosample:</strong> {point.metaData?.biosample}
+              <strong>Biosample:</strong> {point.metadata?.biosample}
             </div>
             <div>
-              <strong>Assay:</strong> {point.metaData?.assay}
+              <strong>Assay:</strong> {point.metadata?.assay}
             </div>
             <div>
               <strong>Z-Score:</strong> {point.value.toFixed(2)}
             </div>
             <div>
-              <strong>Stimulation:</strong> {point.metaData?.stimulation}
+              <strong>Stimulation:</strong> {point.metadata?.stimulation}
             </div>
             <div>
-              <strong>Lineage:</strong> {point.metaData?.lineage}
+              <strong>Lineage:</strong> {point.metadata?.lineage}
             </div>
             <div>
-              <strong>Study:</strong> {point.metaData?.study}
+              <strong>Study:</strong> {point.metadata?.study}
             </div>
           </Box>
         )}
