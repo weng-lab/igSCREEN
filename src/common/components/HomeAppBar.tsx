@@ -201,7 +201,7 @@ function ResponsiveAppBar({ maintenance }: ResponsiveAppBarProps) {
               //Needed to find element to focus it from OpenElementsTabs
               id="desktop-search-component"
               slotProps={{
-                button: {sx: {color: "white"}},
+                button: {sx: {color: "white"}, children: <Search />},
                 box: { gap: 1 },
                 input: {
                   size: "small",

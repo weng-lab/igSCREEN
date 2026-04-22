@@ -239,7 +239,7 @@ export default function GenomeBrowserView({
               button: IconButton,
             }}
             slotProps={{
-              button: {sx: { color: theme.palette.primary.main }},
+              button: { sx: { color: theme.palette.primary.main }, children: <Search /> },
               input: {
                 label: "Change browser region",
                 sx: {

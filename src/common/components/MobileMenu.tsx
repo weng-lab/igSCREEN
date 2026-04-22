@@ -41,7 +41,7 @@ export default function MobileMenu({ pageLinks }: MobileMenuProps) {
         onClose={handleCloseDrawer}
         SlideProps={{
           onEntered: () => setIsMenuMounted(true),
-          onExited: () => setIsMenuMounted(false)
+          onExited: () => setIsMenuMounted(false),
         }}
       >
         <Box sx={{ width: 350, p: 2 }}>
@@ -57,7 +57,7 @@ export default function MobileMenu({ pageLinks }: MobileMenuProps) {
                 button: IconButton,
               }}
               slotProps={{
-                button: {sx: {color: "black"}, onClick: handleCloseDrawer},
+                button: { sx: { color: "black" }, onClick: handleCloseDrawer, children: <Search /> },
                 box: { gap: 1 },
                 input: {
                   size: "small",

@@ -85,7 +85,7 @@ export default function Home() {
             button: IconButton,
           }}
           slotProps={{
-            button: {color: "primary"},
+            button: {color: "primary", children: <Search />},
             box: { gap: 2 },
             input: {
               label: "Enter a gene, iCRE, variant, or locus",

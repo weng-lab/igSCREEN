@@ -49,6 +49,7 @@ const IntersectingSNPs = ({ region }: { region: GenomicRange }) => {
       label="Intersecting Variants"
       pageSizeOptions={[10, 25, 50, 100]}
       emptyTableFallback={"No intersecting variants found in this region"}
+      divHeight={{height: 400}}
     />
   );
 };
