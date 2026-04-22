@@ -128,7 +128,7 @@ export default function GenomeBrowserView({
         color: "#AAAAAA",
         trackType: TrackType.Transcript,
         assembly: "GRCh38",
-        version: 47,
+        version: 40,
         displayMode: DisplayMode.Squish,
         geneName: type === "gene" ? name : "",
         onHover: (item: Transcript) => {
@@ -153,7 +153,7 @@ export default function GenomeBrowserView({
         color: "#9378bc",
         trackType: TrackType.BigBed,
         displayMode: DisplayMode.Dense,
-        url: "http://downloads.wenglab.org/igscreen/iCREs.bigBed",
+        url: "https://downloads.wenglab.org/igscreen/iCREs.bigBed",
         onHover: (rect) => {
           addHighlight({
             id: rect.name + "-temp" || "ihqoviun",
