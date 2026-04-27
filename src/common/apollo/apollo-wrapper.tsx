@@ -10,7 +10,7 @@ import {
   InMemoryCache,
   SSRMultipartLink,
   ApolloClient
-} from "@apollo/experimental-nextjs-app-support";
+} from "@apollo/client-integration-nextjs";
 // See https://www.apollographql.com/blog/using-apollo-client-with-next-js-13-releasing-an-official-library-to-support-the-app-router
 
 function makeClient() {

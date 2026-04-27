@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@apollo/client": "^4",
-    "@apollo/experimental-nextjs-app-support": "^0.14",
+    "@apollo/client-integration-nextjs": "^0.14",
     "@emailjs/browser": "^4.4.1",
     "@emotion/cache": "^11",
     "@emotion/react": "^11",
@@ -54,6 +54,7 @@
     "queryz": "^0.0.3",
     "react": "19.2.5",
     "react-dom": "19.2.5",
+    "rxjs": "^7",
     "umms-gb": "^3.9.14",
     "uuid": "^10.0.0"
   },
