@@ -15,7 +15,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/client-integration-nextjs@npm:0.14.5":
+"@apollo/client-integration-nextjs@npm:^0.14":
   version: 0.14.5
   resolution: "@apollo/client-integration-nextjs@npm:0.14.5"
   dependencies:
@@ -73,20 +73,6 @@ __metadata:
     subscriptions-transport-ws:
       optional: true
   checksum: 10/eb2861c2bb9bb00b9c6b25fd6f0defafeada325552f01943755b52642ba536f85f0b6037a4b51ba81be8084122aee5544831877ee0f8e10417117269fac36755
-  languageName: node
-  linkType: hard
-
-"@apollo/experimental-nextjs-app-support@npm:^0.14":
-  version: 0.14.5
-  resolution: "@apollo/experimental-nextjs-app-support@npm:0.14.5"
-  dependencies:
-    "@apollo/client-integration-nextjs": "npm:0.14.5"
-  peerDependencies:
-    "@apollo/client": ^4.0.0
-    next: ^15.2.3
-    react: ^19
-    rxjs: ^7.3.0
-  checksum: 10/93ac1ebbfc2fc4336ee568e80ff857ab4d21f1aebbd17917d33369011ebb7bf541da9aed92546c45fd158966126f667d006908d9b80fdf425a3f373021ea5f75
   languageName: node
   linkType: hard
 
@@ -6905,7 +6891,7 @@ __metadata:
   resolution: "igscreen@workspace:."
   dependencies:
     "@apollo/client": "npm:^4"
-    "@apollo/experimental-nextjs-app-support": "npm:^0.14"
+    "@apollo/client-integration-nextjs": "npm:^0.14"
     "@emailjs/browser": "npm:^4.4.1"
     "@emotion/cache": "npm:^11"
     "@emotion/react": "npm:^11"
@@ -6953,6 +6939,7 @@ __metadata:
     queryz: "npm:^0.0.3"
     react: "npm:19.2.5"
     react-dom: "npm:19.2.5"
+    rxjs: "npm:^7"
     typescript: "npm:^5"
     umms-gb: "npm:^3.9.14"
     uuid: "npm:^10.0.0"
@@ -9495,7 +9482,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rxjs@npm:^7.5.5":
+"rxjs@npm:^7, rxjs@npm:^7.5.5":
   version: 7.8.2
   resolution: "rxjs@npm:7.8.2"
   dependencies:
