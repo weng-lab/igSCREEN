@@ -20,7 +20,7 @@ export function makeClient() {
         new SSRMultipartLink({ stripDefer: true }),
         new HttpLink({
           uri: Config.API.CcreAPI,
-          headers: { Authorization: "Bearer " + process.env.SCREEN_API_KEY! },
+          headers: { Authorization: "Bearer " + process.env.SHARED_API_KEY! },
         }),
       ]),
     });
