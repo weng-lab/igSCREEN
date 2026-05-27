@@ -1,41 +1,37 @@
 "use client";
 
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
+import { ApolloLink, HttpLink } from "@apollo/client";
 import {
-  ApolloLink,
-  HttpLink,
-} from "@apollo/client";
-import {
+  ApolloClient,
   ApolloNextAppProvider,
   InMemoryCache,
   SSRMultipartLink,
-  ApolloClient
-} from "@apollo/experimental-nextjs-app-support";
-// See https://www.apollographql.com/blog/using-apollo-client-with-next-js-13-releasing-an-official-library-to-support-the-app-router
+} from "@apollo/client-integration-nextjs";
+import Config from "../../config.json";
 
-function makeClient() {
-  const httpLink = new HttpLink({
-      uri: "/api/graphql",
-  });
+export function makeClient() {
+  if (typeof window === "undefined") {
+    return new ApolloClient({
+      // SSR: hit the backend directly to avoid the /api/graphql proxy hop,
+      // attaching the API key which is only available server-side.
+      cache: new InMemoryCache(),
+      link: ApolloLink.from([
+        new SSRMultipartLink({ stripDefer: true }),
+        new HttpLink({
+          uri: Config.API.CcreAPI,
+          headers: { Authorization: "Bearer " + process.env.SCREEN_API_KEY! },
+        }),
+      ]),
+    });
+  }
 
   return new ApolloClient({
     cache: new InMemoryCache(),
-    link:
-      typeof window === "undefined"
-        ? ApolloLink.from([
-            new SSRMultipartLink({
-              stripDefer: true,
-            }),
-            httpLink,
-          ])
-        : httpLink,
+    link: new HttpLink({ uri: "/api/graphql" }),
   });
 }
 
 export function ApolloWrapper({ children }: { children: ReactNode }) {
-  return (
-    <ApolloNextAppProvider makeClient={makeClient}>
-      {children}
-    </ApolloNextAppProvider>
-  );
+  return <ApolloNextAppProvider makeClient={makeClient}>{children}</ApolloNextAppProvider>;
 }
