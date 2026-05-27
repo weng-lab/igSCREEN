@@ -1,5 +1,5 @@
 "use client";
-import { Box, Stack } from "@mui/material";
+import { Box, Divider, Stack } from "@mui/material";
 import ElementDetailsTabs from "./ElementDetailsTabs";
 import ElementDetailsHeader, { ElementDetailsHeaderProps } from "./ElementDetailsHeader";
 import RegionSearchHeader from "./RegionSearchHeader";
@@ -9,47 +9,40 @@ import { OpenElementsTabs } from "./OpenElementsTabs/OpenElementsTabs";
 export type ElementDetailsLayoutProps = ElementDetailsHeaderProps & { children: React.ReactNode };
 
 export default function ElementDetailsLayout({ elementID, elementType, children }: ElementDetailsLayoutProps) {
-  const verticalTabsWidth = 90
-  
   return (
     // Content is child of OpenElementTabs due to ARIA accessibility guidelines: https://www.w3.org/WAI/ARIA/apg/patterns/tabs/. Children wrapped in <TabPanel>
     <OpenElementsTabs>
-      {/* Everything below the open elements tabs */}
-      <Stack direction={"row"} id="element-details-wrapper">
-        {/* View tabs, shown only on desktop */}
-        <Box sx={{ display: { xs: "none", md: "initial", height: "100%" } }} id="element-details-desktop-tabs">
-          <Box sx={{ position: "fixed", height: "100%" }}>
-            <ElementDetailsTabs elementType={elementType} elementID={elementID} orientation="vertical" verticalTabsWidth={verticalTabsWidth} />
-          </Box>
-          {/* Needed to bump over the rest of the content since above is using position="fixed" */}
-          <div style={{ width: verticalTabsWidth }} /> 
-        </Box>
-        <Stack
-          width={"100%"}
-          height={"100%"}
-          overflow={"auto"}
-          // minWidth of 0 needed to properly constrain children when resizing
-          minWidth={0}
-          boxSizing={"border-box"}
-          spacing={2}
-          p={2}
-          id="element-details-main-content"
+      <Box
+        id="split-pane-container"
+        display={"grid"}
+        height={"100%"}
+        gridTemplateColumns={{ xs: "minmax(0, 1fr)", md: "auto minmax(0, 1fr)" }}
+      >
+        <Box
+          id="vertical-view-tabs-container"
+          gridColumn={1}
+          gridRow={1}
+          bgcolor={"#F2F2F2"}
+          position={"sticky"}
+          top={"calc(var(--header-height, 64px) + var(--open-elements-tabs, 48px))"}
+          maxHeight={"calc(100vh - var(--header-height, 64px) - var(--open-elements-tabs, 48px))"}
+          display={{ xs: "none", md: "block" }}
         >
+          <ElementDetailsTabs elementType={elementType} elementID={elementID} orientation="vertical" />
+        </Box>
+        <Stack id="element-details-main-content" spacing={2} m={2} gridColumn={{ xs: 1, md: 2 }} gridRow={1}>
           {elementType === "region" ? (
             <RegionSearchHeader region={parseGenomicRangeString(elementID)} />
           ) : (
             <ElementDetailsHeader elementType={elementType} elementID={elementID} />
           )}
-          {/* View tabs, shown only on mobile */}
-          <Box
-            sx={{ display: { xs: "initial", md: "none" }, borderBottom: 1, borderColor: "divider" }}
-            id="element-details-desktop-tabs"
-          >
+          <Box id="horizontal-view-tabs-container" display={{ xs: "block", md: "none" }}>
             <ElementDetailsTabs elementType={elementType} elementID={elementID} orientation="horizontal" />
+            <Divider />
           </Box>
           {children}
         </Stack>
-      </Stack>
+      </Box>
     </OpenElementsTabs>
   );
 }
