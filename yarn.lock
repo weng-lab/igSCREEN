@@ -76,7 +76,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/experimental-nextjs-app-support@npm:^0.14":
+"@apollo/experimental-nextjs-app-support@npm:^0.14.5":
   version: 0.14.5
   resolution: "@apollo/experimental-nextjs-app-support@npm:0.14.5"
   dependencies:
@@ -6905,7 +6905,7 @@ __metadata:
   resolution: "igscreen@workspace:."
   dependencies:
     "@apollo/client": "npm:^4"
-    "@apollo/experimental-nextjs-app-support": "npm:^0.14"
+    "@apollo/experimental-nextjs-app-support": "npm:^0.14.5"
     "@emailjs/browser": "npm:^4.4.1"
     "@emotion/cache": "npm:^11"
     "@emotion/react": "npm:^11"
