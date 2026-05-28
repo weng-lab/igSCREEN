@@ -1,16 +1,18 @@
-import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client"
-import { registerApolloClient } from "@apollo/experimental-nextjs-app-support"
-import Config from "../../config.json"
+import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
+import { registerApolloClient } from "@apollo/client-integration-nextjs";
+import Config from "../../config.json";
+/**
+ * @returns an ApolloClient instance scoped for the current request
+ */
 
-// See https://www.apollographql.com/blog/using-apollo-client-with-next-js-13-releasing-an-official-library-to-support-the-app-router
-
-export const { getClient, query } = registerApolloClient(() => {
+export const { getClient, query, PreloadQuery } = registerApolloClient(() => {
   return new ApolloClient({
+    ssrMode: true,
     cache: new InMemoryCache(),
     link: new HttpLink({
       uri: Config.API.CcreAPI,
       headers: {
-        "api-key": process.env.SCREEN_API_KEY!,
+        Authorization: "Bearer " + process.env.SHARED_API_KEY!,
       },
     }),
   });

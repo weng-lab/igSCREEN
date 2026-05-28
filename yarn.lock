@@ -76,7 +76,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/experimental-nextjs-app-support@npm:^0.14":
+"@apollo/experimental-nextjs-app-support@npm:^0.14.5":
   version: 0.14.5
   resolution: "@apollo/experimental-nextjs-app-support@npm:0.14.5"
   dependencies:
@@ -3432,9 +3432,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@weng-lab/ui-components@npm:3.0.0":
-  version: 3.0.0
-  resolution: "@weng-lab/ui-components@npm:3.0.0"
+"@weng-lab/ui-components@npm:3.1.1":
+  version: 3.1.1
+  resolution: "@weng-lab/ui-components@npm:3.1.1"
   peerDependencies:
     "@emotion/react": ^11.14.0
     "@emotion/styled": ^11.14.0
@@ -3443,7 +3443,7 @@ __metadata:
     "@mui/x-data-grid-premium": ^8.18.0
     react: ^19.1.0
     react-dom: ^19.1.0
-  checksum: 10/718b4f6f7b454f89e60957943c92f9f2974f2ff5b525368a715a1dc086997daf0e31b5162c1e17269281934134069b242bb93552a95c1a1d270ecee6132e0744
+  checksum: 10/de05033ca4484062c2d8ab0fb30f6200077aa18919fd1287898be0bdbb6ceebfbcdec6031e46a1a500e71bdd3dd5b0c301fb2550850cb62acea5e1e318dc778e
   languageName: node
   linkType: hard
 
@@ -6905,7 +6905,7 @@ __metadata:
   resolution: "igscreen@workspace:."
   dependencies:
     "@apollo/client": "npm:^4"
-    "@apollo/experimental-nextjs-app-support": "npm:^0.14"
+    "@apollo/experimental-nextjs-app-support": "npm:^0.14.5"
     "@emailjs/browser": "npm:^4.4.1"
     "@emotion/cache": "npm:^11"
     "@emotion/react": "npm:^11"
@@ -6940,7 +6940,7 @@ __metadata:
     "@visx/tooltip": "npm:^3"
     "@visx/zoom": "npm:^3"
     "@weng-lab/genomebrowser": "npm:1.8.5-beta.4"
-    "@weng-lab/ui-components": "npm:3.0.0"
+    "@weng-lab/ui-components": "npm:3.1.1"
     "@weng-lab/visualization": "npm:1.3.2"
     bpnet-ui: "npm:^0.3.8"
     d3-scale-chromatic: "npm:^3"
