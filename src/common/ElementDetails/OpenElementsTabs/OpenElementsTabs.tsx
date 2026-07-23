@@ -1,5 +1,5 @@
 import { Add } from "@mui/icons-material";
-import { Tab, Stack, Paper, Tooltip } from "@mui/material";
+import { Box, Tab, Stack, Paper, Tooltip } from "@mui/material";
 import { OpenElement, OpenElementsContext } from "common/OpenElementsContext";
 import { compressOpenElementsToURL, decompressOpenElementsFromURL } from "common/utility";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -16,10 +16,7 @@ import { DraggableTab } from "./DraggableTab";
 export const constructElementURL = (element: OpenElement) =>
   `/${element.elementType}/${element.elementID}/${element.tab}`;
 
-export type ElementDetailsHeaderProps = {
-  elementType: GenomicElementType;
-  elementID: string;
-};
+const SORT_ORDER: GenomicElementType[] = ["region", "gene", "icre", "variant"];
 
 export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) => {
   const [openElements, dispatch] = useContext(OpenElementsContext);
@@ -29,16 +26,21 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // Attributes of current element
-  const urlElementType = pathname.split("/")[1] as GenomicElementType;
-  const urlElementID = pathname.split("/")[2];
-  const urlTab = (pathname.split("/")[3] ?? "") as TabRoute;
-  const currentElementState = openElements.find((el) => el.elementID === urlElementID);
-  
+  const urlElement = useMemo(
+    () => ({
+      elementType: pathname.split("/")[1] as GenomicElementType,
+      elementID: pathname.split("/")[2],
+      tab: (pathname.split("/")[3] ?? "") as TabRoute,
+    }),
+    [pathname]
+  );
+
+  const currentElementState = openElements.find((el) => el.elementID === urlElement.elementID);
+
   // ------- Initialize state from URL on initial load -------
 
   const isInitializedRef = useRef(false);
-  
+
   useEffect(() => {
     if (!isInitializedRef.current) {
       const openParam = searchParams.get("open");
@@ -51,7 +53,7 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
       isInitializedRef.current = true;
     }
   }, [dispatch, searchParams]);
-  
+
   // ------- Routing Related --------
 
   const isRoutingRef = useRef(false); // used to prevent race conditions when updating internal state and url (both async)
@@ -62,7 +64,6 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
    */
   const navigateAndMark = useCallback(
     (url: string) => {
-      console.log("called with " + url)
       isRoutingRef.current = true;
       router.push(url);
     },
@@ -74,7 +75,7 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
    */
   useEffect(() => {
     isRoutingRef.current = false;
-  }, [urlElementID]);
+  }, [urlElement.elementID]);
 
   /**
    * Sync URL with current internal state (skip if not initialized yet)
@@ -84,43 +85,27 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
   useEffect(() => {
     if (!openElements.length || isRoutingRef.current) return;
     const newUrl = pathname + "?open=" + compressOpenElementsToURL(openElements);
-    router.push(newUrl);
-  }, [openElements, pathname, navigateAndMark, router]);
+    router.replace(newUrl); //don't use navigateAndMark since it's only set to false when navigating between elements (would be stuck false)
+  }, [navigateAndMark, openElements, pathname, router]);
 
-  /**
-   * 
-   */
+  // if current route is not in open elements, and routing is not currently underway
   useEffect(() => {
-    // if current route is not in open elements, and routing is not currently underway
     if (!isRoutingRef.current && !currentElementState) {
-      dispatch({
-        type: "addElement",
-        element: {
-          elementID: urlElementID,
-          elementType: urlElementType,
-          tab: urlTab,
-        },
-      });
+      dispatch({ type: "addElement", element: urlElement });
     }
-  }, [currentElementState, dispatch, urlElementID, urlElementType, urlTab]);
+  }, [currentElementState, dispatch, urlElement]);
 
-  //sync the current view to the state
+  // sync the current view to the state
   useEffect(() => {
-    if (!isRoutingRef.current && currentElementState && urlTab !== currentElementState.tab) {
-      dispatch({
-        type: "updateElement",
-        element: {
-          ...currentElementState,
-          tab: urlTab,
-        },
-      });
+    if (!isRoutingRef.current && currentElementState && urlElement.tab !== currentElementState.tab) {
+      dispatch({ type: "updateElement", element: { ...currentElementState, tab: urlElement.tab } });
     }
-  }, [urlTab, currentElementState, dispatch]);
+  }, [urlElement, currentElementState, dispatch]);
 
   /**
    * Called when Drag ends within <DragDropContext>. Dispatches reorder event
    */
-  const onDragEnd: OnDragEndResponder<string> = (result, provided) => {
+  const onDragEnd: OnDragEndResponder<string> = (result, _) => {
     if (result.destination.index !== result.source.index) {
       dispatch({
         type: "reorder",
@@ -144,7 +129,7 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
     (elToClose: OpenElement) => {
       if (openElements.length > 1) {
         // only need to navigate if you're closing the tab that you're on
-        const needToNavigate = elToClose.elementID === urlElementID;
+        const needToNavigate = elToClose.elementID === urlElement.elementID;
         if (needToNavigate) {
           const toCloseIndex = openElements.findIndex((openEl) => openEl.elementID === elToClose.elementID);
 
@@ -155,55 +140,31 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
           navigateAndMark(constructElementURL(elToNavTo));
         }
 
-        dispatch({
-          type: "removeElement",
-          element: elToClose,
-        });
+        dispatch({ type: "removeElement", element: elToClose });
       }
     },
-    [openElements, urlElementID, dispatch, navigateAndMark]
+    [openElements, urlElement.elementID, dispatch, navigateAndMark]
   );
 
   //  ------- End <DraggableTab> Helpers -------
 
   //  ------- <OpenElementsTabsMenu> Helpers -------
 
-  const moreThanOneElementOpen = useMemo(() => {
-    if (openElements.length > 1) {
-      return true;
-    } else return false;
-  }, [openElements]);
+  const moreThanOneElementOpen = openElements.length > 1;
 
-  const handleCloseAll = useCallback(
-    moreThanOneElementOpen
-      ? () => {
-          dispatch({
-            type: "setState",
-            state: [currentElementState],
-          });
-        }
-      : undefined, // fallback to undefined and menu will disable the option
-    [currentElementState, dispatch]
-  );
+  const handleCloseAll = useCallback(() => {
+    dispatch({ type: "setState", state: [currentElementState] });
+  }, [currentElementState, dispatch]);
 
-  const handleSort = useCallback(
-    moreThanOneElementOpen
-      ? () => {
-          const sortOrder: GenomicElementType[] = ["region", "gene", "icre", "variant"];
-          dispatch({
-            type: "setState",
-            state: [...openElements].sort((a, b) => {
-              const typeComparison = sortOrder.indexOf(a.elementType) - sortOrder.indexOf(b.elementType);
-              if (typeComparison === 0) {
-                return a.elementID.localeCompare(b.elementID);
-              }
-              return typeComparison;
-            }),
-          });
-        }
-      : undefined, // fallback to undefined and menu will disable the option
-    [dispatch, openElements]
-  );
+  const handleSort = useCallback(() => {
+    dispatch({
+      type: "setState",
+      state: [...openElements].sort((a, b) => {
+        const typeComparison = SORT_ORDER.indexOf(a.elementType) - SORT_ORDER.indexOf(b.elementType);
+        return typeComparison === 0 ? a.elementID.localeCompare(b.elementID) : typeComparison;
+      }),
+    });
+  }, [openElements, dispatch]);
 
   // ------- End <OpenElementsTabsMenu> Helpers -------
 
@@ -235,24 +196,26 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
 
   /**
    * Index of current route's element within internal state
-   */ 
-  const tabIndex = useMemo(
-    () => {
-      const index = openElements.findIndex((el) => el.elementID === urlElementID);
-      return index >= 0 ? index : 0;
-    },
-    [openElements, urlElementID]
-  );
+   */
+  const tabIndex = useMemo(() => {
+    const index = openElements.findIndex((el) => el.elementID === urlElement.elementID);
+    return index >= 0 ? index : 0; // Fix MUI invalid tab error. Return 0 on initial load when usePathname hasn't resolved
+  }, [openElements, urlElement.elementID]);
 
   return (
     <TabContext value={tabIndex}>
-      {/* z index of scrollbar in DataGrid is 60 */}
-      <Paper elevation={1} square sx={{ position: "sticky", top: 0, zIndex: 61 }} id="open-elements-tabs">
-        <Stack direction={"row"}>
-          <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="droppable" direction="horizontal">
-              {(provided, snapshot) => {
-                return (
+      <Box display={"grid"} height={"100%"} gridTemplateRows={"auto minmax(0, 1fr)"} gridTemplateColumns={"minmax(0, 1fr)"}>
+        {/* z index of scrollbar in DataGrid is 60 */}
+        <Paper
+          elevation={1}
+          square
+          sx={{ position: "sticky", top: "var(--header-height, 64px)", zIndex: 61 }}
+          id="open-elements-tabs" //allows the querySelector in EntityDetailsLayout to find this to measure its height
+        >
+          <Stack direction={"row"}>
+            <DragDropContext onDragEnd={onDragEnd}>
+              <Droppable droppableId="droppable" direction="horizontal">
+                {(provided, snapshot) => (
                   <TabList
                     ref={provided.innerRef} //need to expose highest DOM node to the Droppable component
                     variant="scrollable"
@@ -275,7 +238,7 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
                         index={i}
                         closable={openElements.length > 1}
                         element={element}
-                        isSelected={urlElementID === element.elementID}
+                        isSelected={urlElement.elementID === element.elementID}
                         handleCloseTab={handleCloseTab}
                         handleTabClick={handleTabClick}
                       />
@@ -288,17 +251,20 @@ export const OpenElementsTabs = ({ children }: { children?: React.ReactNode }) =
                     {/* Currently not using placeholder element, but could do so with the below */}
                     {/* {provided.placeholder} */}
                   </TabList>
-                );
-              }}
-            </Droppable>
-          </DragDropContext>
-          <OpenElementsTabsMenu handleCloseAll={handleCloseAll} handleSort={handleSort} />
-        </Stack>
-      </Paper>
-      {/* Content is child of OpenElementTabs due to ARIA accessibility guidelines: https://www.w3.org/WAI/ARIA/apg/patterns/tabs/ */}
-      <TabPanel value={tabIndex} sx={{ p: 0, flexGrow: 1, minHeight: 0 }}>
-        {children}
-      </TabPanel>
+                )}
+              </Droppable>
+            </DragDropContext>
+            <OpenElementsTabsMenu
+              handleCloseAll={moreThanOneElementOpen ? handleCloseAll : undefined}
+              handleSort={moreThanOneElementOpen ? handleSort : undefined}
+            />
+          </Stack>
+        </Paper>
+        {/* Content is child of OpenElementTabs due to ARIA accessibility guidelines: https://www.w3.org/WAI/ARIA/apg/patterns/tabs/ */}
+        <TabPanel value={tabIndex} sx={{ p: 0 }} id="element-details-TabPanel">
+          {children}
+        </TabPanel>
+      </Box>
     </TabContext>
   );
 };
