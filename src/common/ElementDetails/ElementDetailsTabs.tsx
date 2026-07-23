@@ -64,9 +64,10 @@ const ElementDetailsTabs = ({ elementType, elementID, orientation }: ElementDeta
       iconWidth={verticalTabs ? 50 : 40}
       iconHeight={verticalTabs ? 50 : 40}
       sx={{
+        position: "sticky",
+        top: "calc(var(--header-height, 64px) + var(--open-elements-tabs, 48px))",
         width: verticalTabs ? 100 : "100%",
         maxHeight: "100%",
-        position: "sticky",
       }}
     />
   );

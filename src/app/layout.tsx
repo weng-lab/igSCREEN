@@ -1,6 +1,5 @@
-import AppBar from "common/components/HomeAppBar"
-import Footer from "common/components/Footer"
-import { Box, CssBaseline, Stack } from "@mui/material"
+import ClientAppWrapper from "common/components/ClientAppWrapper"
+import { CssBaseline } from "@mui/material"
 import { ThemeProvider } from '@mui/material/styles';
 import { theme } from "./theme"
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
@@ -26,15 +25,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <ThemeProvider theme={theme}>
                 <MenuControlProvider>
                   <OpenElementsContextProvider>
-                    {/* Overall wrapper set to be screen height */}
-                    <Stack height={"100vh"} minHeight={0} id="app-wrapper">
-                      <AppBar maintenance={false} />
-                      {/* Overflow=auto provides scrolling ancestor for OpenElementsTab. This allows it to be position=sticky with top=0, and right under AppBar*/}
-                      <Stack flexGrow={1} overflow={"auto"} minHeight={0} id="content-wrapper">
-                        <Stack flexGrow={1}>{children}</Stack>
-                        <Footer />
-                      </Stack>
-                    </Stack>
+                    <ClientAppWrapper>{children}</ClientAppWrapper>
                   </OpenElementsContextProvider>
                 </MenuControlProvider>
               </ThemeProvider>
