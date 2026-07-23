@@ -3480,9 +3480,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@weng-lab/genomebrowser@npm:1.8.7":
-  version: 1.8.7
-  resolution: "@weng-lab/genomebrowser@npm:1.8.7"
+"@weng-lab/genomebrowser@npm:1.8.5-beta.4":
+  version: 1.8.5-beta.4
+  resolution: "@weng-lab/genomebrowser@npm:1.8.5-beta.4"
   dependencies:
     axios: "npm:0.18.1"
     genomic-reader: "npm:^1.4.10"
@@ -3495,7 +3495,7 @@ __metadata:
     graphql: ^16.11.0
     react: ^19.0.0
     react-dom: ^19.0.0
-  checksum: 10/caa6a391837e18d725f3c9bf00173090a7acb8a0e2be2af2e6c044678f6340e5e59b987c0a26a2faa93fd0d13ced16a519adf23c0c4b83d105d1a4e44646e10a
+  checksum: 10/c9cdb11745d08242dc6b97ba991f331bcc52061d209724e9c1a79951f6e434fd641626ee77e4d42bb5f98c3ccf7e96482127bb0892bfbbe7bb02dcb7f2a8a55b
   languageName: node
   linkType: hard
 
@@ -7006,7 +7006,7 @@ __metadata:
     "@visx/text": "npm:^3"
     "@visx/tooltip": "npm:^3"
     "@visx/zoom": "npm:^3"
-    "@weng-lab/genomebrowser": "npm:1.8.7"
+    "@weng-lab/genomebrowser": "npm:1.8.5-beta.4"
     "@weng-lab/ui-components": "npm:3.2.0"
     "@weng-lab/visualization": "npm:1.6.1"
     bpnet-ui: "npm:^0.3.8"
